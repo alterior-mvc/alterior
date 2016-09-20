@@ -5,3 +5,6 @@ static/
 typings/
 config.js
 *~
+**/*.d.ts
+**/*.js
+**/*.js.map
