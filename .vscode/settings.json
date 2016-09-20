@@ -1,0 +1,16 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/.DS_Store": true,
+		"lib/**/*.js": true,
+		"lib/**/*.d.ts": true,
+		"lib/**/*.js.map": true,
+		"index.js": true,
+		"index.js.map": true,
+		"index.d.ts": true, 
+		"*~": true
+	}
+}
