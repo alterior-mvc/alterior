@@ -29,7 +29,6 @@ export interface ApplicationOptions {
 	providers? : Provider[];
 	middleware? : (Function | [string, Function])[];
 	controllers? : Function[];
-	asyncProviders?: Promise<Provider>[];
 	autoregisterControllers? : boolean;
 }
 
@@ -50,7 +49,10 @@ export function bootstrap(app : Function, providers = []): Promise<ApplicationIn
 	console.log('options');
 	let appOptions = <ApplicationOptions>Reflect.getMetadata("slvr:Application", app);
 	(appOptions.providers || [])
+		.filter(x => !x['then'])
 		.forEach(x => providers.push(x));
+
+	let asyncProviders = (appOptions.providers || []).filter(x => x['then']);
 
 	// Determine our set of controller classes.
 	// It may be provided via @AppOptions(), or it may
@@ -96,7 +98,7 @@ export function bootstrap(app : Function, providers = []): Promise<ApplicationIn
 
 	console.log('async-di');
 	return Promise
-		.all(appOptions.asyncProviders || [])
+		.all(asyncProviders || [])
 		.catch(e => {
 			console.log('error while resolving async providers');
 			console.error(e);
