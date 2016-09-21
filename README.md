@@ -193,3 +193,8 @@ class FooController {
     }
 }
 ```
+
+## Custom services
+
+This is Angular 2's dependency injector, so you can define your own services just as you would in Angular.
+You can add providers at the bootstrap, app-class or controller levels.
