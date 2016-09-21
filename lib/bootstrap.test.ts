@@ -89,4 +89,23 @@ import { AppOptions, OnInit, OnSanityCheck } from '../lib/application';
 
 		_bootstrap(FakeApp).then(app => app.stop());;
 	}
+
+	@it 'should resolve to a valid AppInstance' (done) {
+
+		@AppOptions({ 
+			port: 10001, 
+			silent: true,
+		}) 
+		class FakeApp { 
+		}
+
+		_bootstrap(FakeApp).then(app => {
+			assert(app.app);
+			assert(app.express);
+			assert(app.http);
+			
+			app.stop();
+			done();
+		});
+	}
 }

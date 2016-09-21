@@ -85,7 +85,7 @@ describe("sanity", () => {
 				}
 			}
 
-			_bootstrap(FakeApp).then(app => app.stop());
+			_bootstrap(FakeApp);
 		}
 
 		@it 'should signal failed sanity check when app throws' (done) {
@@ -106,7 +106,7 @@ describe("sanity", () => {
 				}
 			}
 
-			_bootstrap(FakeApp).then(app => app.stop());
+			_bootstrap(FakeApp);
 		}
 
 		@it 'should signal failed sanity check when app promise throws' (done) {
@@ -123,7 +123,7 @@ describe("sanity", () => {
 				}
 			}
 
-			_bootstrap(FakeApp).then(app => app.stop());
+			_bootstrap(FakeApp);
 		}
 
 		@it 'should signal failed sanity check when app does' (done) {
@@ -140,7 +140,7 @@ describe("sanity", () => {
 				}
 			}
 
-			_bootstrap(FakeApp).then(app => app.stop());
+			_bootstrap(FakeApp);
 		}
 	}
 });
