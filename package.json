@@ -6,7 +6,7 @@
   "main": "index.js",
   "typings": "index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node ./node_modules/mocha/bin/mocha",
     "build": "tsc"
   },
   "author": "William Lahti <wilahti@gmail.com>",
@@ -22,9 +22,11 @@
     "mongodb": "^2.2.8",
     "reflect-metadata": "^0.1.8"
   },
-
   "devDependencies": {
-    "typescript": "^1.8.10",
-    "jasmine": "^2.5.2"
+    "jasmine": "^2.5.2",
+    "jasmine-core": "^2.5.2",
+    "mocha": "^3.0.2",
+    "mocha-typescript": "^1.0.10",
+    "typescript": "^1.8.10"
   }
 }

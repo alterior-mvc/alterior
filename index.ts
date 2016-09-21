@@ -1,11 +1,13 @@
 
 export * from './lib/accesscontrol';
-export * from './lib/controllers';
+export * from './lib/controller';
 export * from './lib/application';
-export * from './lib/sessions';
-export * from './lib/uploads';  
+export * from './lib/session';
+export * from './lib/upload';  
 export * from './lib/clone';
 export * from './lib/mongo';
 export * from './lib/config';
 export * from './lib/express';
 export * from './lib/middleware';
+export * from './lib/route';
+export * from './lib/bootstrap';
