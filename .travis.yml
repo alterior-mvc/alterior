@@ -6,7 +6,6 @@ node_js:
   - "0.6"
   - "iojs"
 
-install:
-  - npm install
+before_script:
+  - npm i -g typescript typings
   - typings install
-  - npm run prepublish
