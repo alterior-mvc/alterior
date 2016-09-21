@@ -126,9 +126,7 @@ To add route-specific middleware:
 ## MongoDB integration
 
 As a proof-of-concept, MongoDB support is currently built into `@alterior/core`. Alterior is in pre-release, in the near future this functionality will be moved to a separate module. 
-
-Because connecting to a MongoDB is an asynchronous operation, you must connect to MongoDB prior to starting the Alterior application.
-First, you must declare that you want MongoDB to be connected by using the `@AppOptions` decorator.
+First, you must declare how you want MongoDB to connect using the `@AppOptions` decorator.
 
 In your application class file (`app.ts`):
 ```typescript
@@ -136,7 +134,7 @@ import { mongoProvider } from '@alterior/core';
 import * as mongodb from 'mongodb';
 
 @AppOptions({
-    asyncProviders: [mongoProvider(mongodb.Db, "mongodb://localhost:27017/db")]
+    providers: [mongoProvider(mongodb.Db, "mongodb://localhost:27017/db")]
 })
 class Application {
     // ...
