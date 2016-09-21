@@ -4,6 +4,10 @@
   "description": "An Express-based Typescript MVC framework using decorators and Angular 2 dependency injection.",
   "main": "index.js",
   "typings": "index.d.ts",
+  "repository": {
+	  "type": "git",
+	  "url": "https://github.com/rezonant/alterior-core.git"
+  },
   "scripts": {
     "test": "tsc && node ./node_modules/mocha/bin/mocha **/*.test.js",
     "dev-test": "nodemon -e ts --ignore \"*.d.ts\" --exec npm test ",
