@@ -6,7 +6,6 @@ export * from './lib/session';
 export * from './lib/upload';  
 export * from './lib/clone';
 export * from './lib/mongo';
-export * from './lib/config';
 export * from './lib/express';
 export * from './lib/middleware';
 export * from './lib/route';

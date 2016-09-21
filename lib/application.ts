@@ -1,18 +1,7 @@
-import 'reflect-metadata';
-import * as express from "express";
-import * as http from "http";
+import { Provider } from '@angular/core';
 
-// require('reflect-metadata');
-
-import { accessControl } from './accesscontrol';
-import { controllerClasses } from './controllers';
-import { ReflectiveInjector, Provider } from '@angular/core';
-import { mongoSession } from './sessions';
-import * as mongodb from 'mongodb';
-import { RouteReflector } from './controllers';
-import { MongoClientFactory } from './mongo';
-import { ExpressRef } from './express';
-import { prepareMiddleware } from './middleware';
+import * as express from 'express';
+import * as http from 'http';
 
 export interface OnSanityCheck {
 	/**
@@ -26,9 +15,42 @@ export interface OnInit {
 }
 
 export interface ApplicationOptions {
+	/**
+	 * Enable verbose console logging for Alterior
+	 */
+	verbose? : boolean;
+
+	/**
+	 * Turn off all console output
+	 */
+	silent? : boolean;
+
+	/**
+	 * Port to serve HTTP on. Defaults to 3000.
+	 */
+	port? : number;
+
+	/**
+	 * Dependency injection providers. If a promise is passed into this,
+	 * it will be resolved into a provider before the application is booted.
+	 */
 	providers? : Provider[];
+
+	/**
+	 * Global and mounted middleware. Middleware included here will be
+	 * applied to all routes unless you specify it as an array which contains
+	 * a mountpoint string and the middleware function itself (ie ['/files', fileUpload])
+	 */
 	middleware? : (Function | [string, Function])[];
+
+	/**
+	 * Explicitly-defined controllers. Not needed unless autoregisterControllers is turned off.
+	 */
 	controllers? : Function[];
+
+	/**
+	 * If true, all classes with @Controller() annotation are included automatically.
+	 */
 	autoregisterControllers? : boolean;
 }
 
@@ -50,100 +72,14 @@ export class ApplicationInstance {
 
 	}
 
+	public stop() {
+		// TODO: maybe https://www.npmjs.com/package/express-graceful-exit ?
+		this.http.close();
+		//process.exit();
+	}
+
 	public shutdown() {
 		// TODO: maybe https://www.npmjs.com/package/express-graceful-exit ?
 		process.exit();
-	}
-}
-
-export class ApplicationBase { 
-
-	protected openAccessControl : boolean = true;
-
-	constructor(config : any) {
-		this.config = config;
-		this.express = express();
-
-		if (this.openAccessControl)
-			this.express.use(accessControl);
-		
-		this.express.use('/static', express.static(config.uploadsPath));
-	}
-
-	public run() {
-		this.initMongo().then(() => {
-			this.initExpress();
-			this.listen();
-		}).catch(err => {
-			console.error("error connecting to mongo");
-			console.log(err);
-			process.exit(1);
-		})
-
-	}
-
-	private initExpress() {
-		
-		console.log("express init'ed");
-		this.express.use(mongoSession(null));
-		this.express.get('/', (req, res) => this.homeAction(req, res));
-
-		console.log("controllers:");
-		console.log(controllerClasses);
-
-		this.controllers = controllerClasses.map(x => new x(this));
-	}
-
-	private controllers : any[];
-
-	private initMongo(): Promise<void> {
-
-		const mongoURL = "mongodb://localhost:27017/db";
-		return <any>mongodb.MongoClient.connect(mongoURL)
-			.then(db => this.db = db);
-	}
-
-	private listen() {
-		console.log("listen");
-		const apiPort = 3000;
-		this.express.listen(apiPort, () => {
-			console.log('Sliptap API listening on port 3000!');
-		}); 
-	}
-
-	public homeAction(req : express.Request, res : express.Response) {
-		res.send('@sliptap/backend.user-service');
-	}
-
-	public express : express.Application;
-	public db : mongodb.Db;
-	public config : any;
-
-
-	public isAdmin(req): boolean {
-		console.log('## admin check : starting ##');
-
-		if (!req.session)
-			return false;
-
-		console.log('admin check : has session');
-
-		console.log(req.session);
-		if (!req.session.user)
-			return false;
-
-		console.log('admin check : has user');
-
-		if (!req.session.user.isAdmin)
-			return false;
-
-		console.log('admin check : is admin');
-
-		return true;
-	}
-
-	public init()
-	{
-
 	}
 }

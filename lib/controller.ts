@@ -5,12 +5,3 @@ export function Controller() {
 		controllerClasses.push(target);
 	}
 }
-
-export class ControllerBase {
-	respondWith(member : Function) {
-		var self = this;
-		return function() {
-			member.apply(self, arguments);
-		}
-	}
-}

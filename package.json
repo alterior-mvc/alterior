@@ -6,7 +6,8 @@
   "main": "index.js",
   "typings": "index.d.ts",
   "scripts": {
-    "test": "node ./node_modules/mocha/bin/mocha",
+    "test": "tsc && node ./node_modules/mocha/bin/mocha **/*.test.js",
+	"dev-test": "nodemon -e ts --ignore \"*.d.ts\" --exec npm test ",
     "build": "tsc"
   },
   "author": "William Lahti <wilahti@gmail.com>",
