@@ -7,7 +7,7 @@
   "typings": "index.d.ts",
   "scripts": {
     "test": "tsc && node ./node_modules/mocha/bin/mocha **/*.test.js",
-	"dev-test": "nodemon -e ts --ignore \"*.d.ts\" --exec npm test ",
+    "dev-test": "nodemon -e ts --ignore \"*.d.ts\" --exec npm test ",
     "build": "tsc",
     "prepublish": "typings install && tsc"
   },
@@ -22,7 +22,8 @@
     "express-session": "^1.14.1",
     "mkdirp": "^0.5.1",
     "mongodb": "^2.2.8",
-    "reflect-metadata": "^0.1.8"
+    "reflect-metadata": "^0.1.8",
+    "rxjs": "^5.0.0-beta.12"
   },
   "devDependencies": {
     "jasmine": "^2.5.2",
