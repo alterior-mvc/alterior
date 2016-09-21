@@ -3,7 +3,7 @@
 [![Build status on Travis CI](https://travis-ci.org/rezonant/alterior-core.svg?branch=master)](https://travis-ci.org/rezonant/alterior-core)
 [![Join the chat at https://gitter.im/alterior-mvc/Lobby](https://badges.gitter.im/alterior-core/Lobby.svg)](https://gitter.im/alterior-mvc/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-An Express-based Typescript MVC framework using decorators and Angular 2 dependency injection. 
+An Express-based Typescript MVC framework using decorators and Angular 2 dependency injection.
 
 ## Getting started
 
@@ -198,3 +198,6 @@ class FooController {
 
 This is Angular 2's dependency injector, so you can define your own services just as you would in Angular.
 You can add providers at the bootstrap, app-class or controller levels.
+
+## That's great but how do you pronounce this?
+Alterior is pronounced like "ulterior" but with an A. We know it's not a proper word :-)
