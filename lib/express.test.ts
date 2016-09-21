@@ -10,7 +10,8 @@ describe('express', () => {
 
 			@AppOptions({ 
 				port: 10001, 
-				silent: true
+				silent: true,
+				autoRegisterControllers: false
 			}) 
 			class FakeApp { 
 				constructor(argsService : _ExpressRef) {

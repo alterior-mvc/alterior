@@ -59,7 +59,8 @@ describe("sanity", () => {
 				providers: [
 					{ provide: SanityCheckReporter, useValue: MockSanityCheckReporter.noop() },
 					{ provide: ApplicationArgs, useValue: new MockApplicationArgs(['test']) }
-				]
+				],
+				autoRegisterControllers: false
 			}) 
 			class FakeApp implements OnSanityCheck {
 				altOnSanityCheck() {
@@ -77,7 +78,8 @@ describe("sanity", () => {
 				providers: [
 					{ provide: SanityCheckReporter, useValue: MockSanityCheckReporter.shouldSucceed(done) },
 					{ provide: ApplicationArgs, useValue: new MockApplicationArgs(['test']) }
-				]
+				],
+				autoRegisterControllers: false
 			}) 
 			class FakeApp implements OnSanityCheck {
 				altOnSanityCheck() {
@@ -94,7 +96,8 @@ describe("sanity", () => {
 				providers: [
 					{ provide: SanityCheckReporter, useValue: MockSanityCheckReporter.shouldFail(done) },
 					{ provide: ApplicationArgs, useValue: new MockApplicationArgs(['test']) }
-				]
+				],
+				autoRegisterControllers: false
 			}) 
 			class FakeApp implements OnSanityCheck {
 				altOnSanityCheck() {
@@ -115,7 +118,8 @@ describe("sanity", () => {
 				providers: [
 					{ provide: SanityCheckReporter, useValue: MockSanityCheckReporter.shouldFail(done) },
 					{ provide: ApplicationArgs, useValue: new MockApplicationArgs(['test']) }
-				]
+				],
+				autoRegisterControllers: false
 			}) 
 			class FakeApp implements OnSanityCheck {
 				altOnSanityCheck() {
@@ -132,7 +136,8 @@ describe("sanity", () => {
 				providers: [
 					{ provide: SanityCheckReporter, useValue: MockSanityCheckReporter.shouldFail(done) },
 					{ provide: ApplicationArgs, useValue: new MockApplicationArgs(['test']) }
-				]
+				],
+				autoRegisterControllers: false
 			}) 
 			class FakeApp implements OnSanityCheck {
 				altOnSanityCheck() {

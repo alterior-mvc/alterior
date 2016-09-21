@@ -64,8 +64,9 @@ export class FooController {
 }
 ```
 
-Import your controller at the top of `app.ts`:
+Import your controller at the top of `app.ts`. By default, all classes with the @Controller() decorator declared throughout your application will be automatically registered in your application, but you have to ensure that your class is imported for it to work. You can override this behavior by specifying `autoRegisterControllers: false` in your application's `@AppOptions` decorator. If you do so, only the controllers you specify in the `controllers` array of `@AppOptions` will be included in your application. 
 
+When using automatic discovery, the simplest way to ensure a controller gets loaded is with:
 ```typescript
 import "foo";
 ```
@@ -78,6 +79,12 @@ import { bootstrap } from '@alterior/core';
 
 bootstrap(Application);
 ```
+
+For the time being, it is recommended to set your Typescript to target ES5, or do a compiler pass with an ES6 transpiler before running your app in the newer Node.js versions which are otherwise capable of it. If you target ES6 you will get an error related to a class constructor being called without the `new` operator. This happens when Angular tries to instantiate an ES6 class. Node.js doesn't currently allow the manner of object construction Angular is using. It's a known issue, and it has to be resolved upstream, unfortunately. 
+
+You can use any build system you want, but this works well with standard `tsc` compilation (ie, JS alongside TS). The NPM scripts used in `@alterior/core` to build and test the core library could easily be used to build and test an Alterior application. 
+
+You can test your app however you want as well, but there is a smooth way to do it with `supertest`, `mocha`, and `mocha-typescript` from NPM. You can see this style of testing used in this repository (`lib/**/*.test.ts`).
 
 ## Dependency Injection
 

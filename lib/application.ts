@@ -51,7 +51,7 @@ export interface ApplicationOptions {
 	/**
 	 * If true, all classes with @Controller() annotation are included automatically.
 	 */
-	autoregisterControllers? : boolean;
+	autoRegisterControllers? : boolean;
 }
 
 export function AppOptions(appOptions? : ApplicationOptions) {

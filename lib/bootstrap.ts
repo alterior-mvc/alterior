@@ -45,8 +45,13 @@ export function bootstrap(app : Function, providers = []): Promise<ApplicationIn
 	// be provided by the controllers module (which exports a list of all
 	// loaded classes that have @Controller() on them)
 
+	let autoRegisterControllers = true;
 	let controllers : any[] = appOptions.controllers || [];
-	if (appOptions.autoregisterControllers)
+
+	if ("autoRegisterControllers" in appOptions)
+		autoRegisterControllers = appOptions.autoRegisterControllers;
+	
+	if (autoRegisterControllers)
 		controllers = controllerClasses.slice(0);
 
 	// Make our controllers available via DI 
@@ -229,7 +234,7 @@ export function bootstrap(app : Function, providers = []): Promise<ApplicationIn
 		}).catch(e => {
 			console.log('error while initializing');
 			console.error(e);
-			process.exit(1);
+			//process.exit(1);
 			throw e;
 		});
 }

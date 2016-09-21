@@ -29,7 +29,7 @@ import { AppOptions, OnInit, OnSanityCheck } from '../lib/application';
 
 	@it 'should call altOnInit' (done) {
 
-		@AppOptions({ port: 10001, silent: true }) 
+		@AppOptions({ port: 10001, silent: true, autoRegisterControllers: false }) 
 		class FakeApp implements OnInit {
 			altOnInit() {
 				done();
@@ -75,6 +75,7 @@ import { AppOptions, OnInit, OnSanityCheck } from '../lib/application';
 		@AppOptions({ 
 			port: 10001, 
 			silent: true,
+			autoRegisterControllers: false,
 			providers: [{ provide: ApplicationArgs, useValue: new MockApplicationArgs(['foo', 'bar'])}] 
 		}) 
 		class FakeApp { 
@@ -95,6 +96,7 @@ import { AppOptions, OnInit, OnSanityCheck } from '../lib/application';
 		@AppOptions({ 
 			port: 10001, 
 			silent: true,
+			autoRegisterControllers: false
 		}) 
 		class FakeApp { 
 		}

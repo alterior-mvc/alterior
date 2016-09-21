@@ -24,7 +24,7 @@ describe("route", () => {
 			}
 
 			@AppOptions({ port: 10001, silent: true,
-				autoregisterControllers: false,
+				autoRegisterControllers: false,
 				controllers: [TestController],
 				middleware: [
 					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
@@ -82,7 +82,7 @@ describe("route", () => {
 			}
 
 			@AppOptions({ port: 10001, silent: true,
-				autoregisterControllers: false,
+				autoRegisterControllers: false,
 				controllers: [TestController],
 				middleware: [
 					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
@@ -105,7 +105,7 @@ describe("route", () => {
 			}
 
 			@AppOptions({ port: 10001, silent: true,
-				autoregisterControllers: false,
+				autoRegisterControllers: false,
 				controllers: [TestController],
 				middleware: [
 					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
@@ -138,7 +138,7 @@ describe("route", () => {
 			}
 
 			@AppOptions({ port: 10001, silent: true,
-				autoregisterControllers: false,
+				autoRegisterControllers: false,
 				controllers: [TestController],
 				middleware: [
 					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
@@ -171,7 +171,7 @@ describe("route", () => {
 			}
 
 			@AppOptions({ port: 10001, silent: true,
-				autoregisterControllers: false,
+				autoRegisterControllers: false,
 				controllers: [TestController],
 				middleware: [
 					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
