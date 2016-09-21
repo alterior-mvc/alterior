@@ -5,6 +5,7 @@ import { controllerClasses } from './controller';
 import { Middleware, prepareMiddleware } from './middleware';
 import { RouteReflector } from './route';
 import { ExpressRef } from './express';
+import { HttpException } from './errors';
 
 import * as express from 'express';
 import { ReflectiveInjector } from '@angular/core';
@@ -105,6 +106,8 @@ export function bootstrap(app : Function, providers = []): Promise<ApplicationIn
 			// Instantiate all the controllers in the application, and register
 			// their respective routed methods with the express app we made before.
 
+			let allRoutes = [];
+
 			for (let controller of controllers) {
 				let routes = (new RouteReflector(controller)).routes;
 				let controllerInstance = injector.get(controller);
@@ -124,6 +127,11 @@ export function bootstrap(app : Function, providers = []): Promise<ApplicationIn
 
 				for (let route of routes) {
 					
+					allRoutes.push({
+						controller: controller,
+						route
+					});
+
 					// Select the appropriate express "registrar" method (ie get, put, post, delete, patch) 
 
 					let registrar : Function = expressApp[route.httpMethod.toLowerCase()];
@@ -136,7 +144,37 @@ export function bootstrap(app : Function, providers = []): Promise<ApplicationIn
 
 					// Append the actual controller method
 
-					args.push((req, res) => controllerInstance[route.method](req, res));
+					args.push((req, res) => {
+
+						if (!silent)
+							console.log(`[${new Date().toLocaleString()}] ${route.path} => ${controller.name}.${route.method}()`);
+
+						let result = controllerInstance[route.method](req, res);
+
+						if (!result)
+							return;
+
+						if (result.then) {
+							result = <Promise<any>>result;
+							result.then(result => {
+								if (typeof result === 'object')
+									result = JSON.stringify(result);
+
+								res.status(200).header('Content-Type', 'application/json').send(result);
+							}).catch(e => {
+								if (e.constructor === HttpException) {
+									let httpException = <HttpException>e;
+									res.status(httpException.statusCode).send(httpException.body);
+								} else {
+									res.status(500).send(JSON.stringify({
+										message: 'Failed to resolve this resource.',
+										error: e 
+									}));
+								}
+							});
+						}
+
+					});
 
 					// Send into express (registrar is one of express.get, express.put, express.post etc)
 
@@ -146,8 +184,11 @@ export function bootstrap(app : Function, providers = []): Promise<ApplicationIn
 
 			// Framework is booted.
 
-			if (verbose)
+			if (verbose) {
 				console.log('alterior booted successfully');
+				console.log(allRoutes);
+			}
+
 
 			// Self-testing mechanism 
 
