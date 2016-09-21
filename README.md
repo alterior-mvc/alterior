@@ -1,4 +1,6 @@
 # alterior-core
+
+[![Join the chat at https://gitter.im/alterior-core/Lobby](https://badges.gitter.im/alterior-core/Lobby.svg)](https://gitter.im/alterior-core/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 An Express-based Typescript MVC framework using decorators and Angular 2 dependency injection. 
 
 ## Getting started
