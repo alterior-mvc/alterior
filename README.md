@@ -43,6 +43,24 @@ export class FooController {
     {
         res.status(200).send("/foo works!");
     }
+    
+    /**
+     * You can also return promises.
+     */
+    @Get('/bar')
+    public bar(req : express.Request, res : express.Response)
+    {
+        return Promise.resolve({ nifty: 123 });
+    }
+    
+    /**
+     * Those promises can reject
+     */
+    @Get('/error')
+    public errorExample(req : express.Request, res : express.Response)
+    {
+        return Promise.reject(new HttpException(301, {message: "No, over there"}));
+    }
 }
 ```
 
