@@ -7,7 +7,7 @@
   "typings": "index.d.ts",
   "repository": {
 	  "type": "git",
-	  "url": "https://github.com/rezonant/alterior-core.git"
+	  "url": "https://github.com/alterior-mvc/alterior.git"
   },
   "scripts": {
     "test": "tsc && node ./node_modules/mocha/bin/mocha **/*.test.js",
