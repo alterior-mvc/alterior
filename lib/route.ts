@@ -1,3 +1,4 @@
+import * as express from 'express';
 
 export class RouteReflector {
 	constructor(type : Function) {
@@ -12,6 +13,16 @@ export interface RouteDefinition {
 	httpMethod : string;
 	options : RouteOptions;
 	path : string;
+}
+
+export class RouteEvent {
+	constructor(request : express.Request, response : express.Response) {
+		this.request = request;
+		this.response = response;
+	}
+
+	request : express.Request;
+	response : express.Response;
 }
 
 export interface RouteOptions {

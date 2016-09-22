@@ -1,9 +1,11 @@
 import { controllerClasses, Controller as _Controller } from './controller';
-import { Get, Post, Put, Patch, Delete, Options } from './route';
+import { Get, Post, Put, Patch, Delete, Options, RouteEvent } from './route';
 import { suite, test as it } from 'mocha-typescript';
 import * as assert from 'assert';
 import * as express from 'express';
 import * as http from 'http';
+import * as bodyParser from 'body-parser';
+
 import { HttpException } from './errors';
 
 import { AppOptions } from './application';
@@ -185,6 +187,133 @@ describe("route", () => {
 					.get('/foo')
 					.expect(300, <any>{
 						bar: 777
+					})
+					.end((err, res) => {
+						app.stop();
+						if (err) 
+							return done(err);
+						done();	
+					});
+			});
+		}
+
+		@it 'should be reading parameter type metadata to discover how to provide parameters' (done) {
+
+			@_Controller()
+			class TestController {
+				@Get('/foo')
+				getX(res : express.Response, req : express.Request) { // note they are swapped
+					assert(res.send);
+					assert(req.path);
+
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			@AppOptions({ port: 10001, silent: true,
+				autoRegisterControllers: false,
+				controllers: [TestController],
+				middleware: [
+					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
+				]
+			}) 
+			class FakeApp {
+			}
+
+			bootstrap(FakeApp).then(app => {
+				supertest(app.express)
+					.get('/foo')
+					.expect(200, <any>{
+						ok: true 
+					})
+					.end((err, res) => {
+						app.stop();
+						if (err) 
+							return done(err);
+						done();	
+					});
+			});
+		}
+
+		@it 'should be able to inject body when the body parsing middleware is used' (done) {
+
+			interface MyRequestType {
+				zoom : number;
+			}
+
+			@_Controller()
+			class TestController {
+				@Post('/foo')
+				getX(body : MyRequestType) { 
+					assert(body.zoom === 123);
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			@AppOptions({ port: 10001, silent: true,
+				autoRegisterControllers: false,
+				controllers: [TestController],
+				middleware: [
+					bodyParser.json(),
+					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
+				]
+			}) 
+			class FakeApp {
+			}
+
+			bootstrap(FakeApp).then(app => {
+				supertest(app.express)
+					.post('/foo')
+					.send({
+						zoom: 123
+					})
+					.expect(200, <any>{
+						ok: true 
+					})
+					.end((err, res) => {
+						app.stop();
+						if (err) 
+							return done(err);
+						done();	
+					});
+			});
+		}
+
+		@it 'should be able to inject RouteEvent instead of request/response' (done) {
+
+			interface MyRequestType {
+				zoom : number;
+			}
+
+			@_Controller()
+			class TestController {
+				@Post('/foo')
+				getX(ev : RouteEvent) { 
+					assert(ev.request.path);
+					assert(ev.response.send);
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			@AppOptions({ port: 10001, silent: true,
+				autoRegisterControllers: false,
+				controllers: [TestController],
+				middleware: [
+					bodyParser.json(),
+					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
+				]
+			}) 
+			class FakeApp {
+			} 
+
+			bootstrap(FakeApp).then(app => {
+				supertest(app.express)
+					.post('/foo')
+					.send({
+						zoom: 123
+					})
+					.expect(200, <any>{
+						ok: true 
 					})
 					.end((err, res) => {
 						app.stop();

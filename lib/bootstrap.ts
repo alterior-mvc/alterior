@@ -1,9 +1,11 @@
 import 'reflect-metadata';
 
+const getParameterNames = require('@avejidah/get-parameter-names');
+
 import { AppOptions, ApplicationOptions, ApplicationInstance } from './application';
 import { controllerClasses } from './controller';
 import { Middleware, prepareMiddleware } from './middleware';
-import { RouteReflector } from './route';
+import { RouteReflector, RouteEvent } from './route';
 import { ExpressRef } from './express';
 import { HttpException } from './errors';
 
@@ -147,14 +149,59 @@ export function bootstrap(app : Function, providers = []): Promise<ApplicationIn
 					(route.options.middleware || [])
 						.forEach(x => args.push(prepareMiddleware(childInjector, x)));
 
+					let routeParams = route.path.match(/:([A-Za-z][A-Za-z0-9]*)/);
+
+					// Do analysis of the controller method ahead of time so we can 
+					// minimize the amount of overhead of actual web requests
+
+					let returnType = Reflect.getMetadata("design:returntype", controllerInstance.constructor.prototype, route.method);
+					let paramTypes = Reflect.getMetadata("design:paramtypes", controllerInstance.constructor.prototype, route.method);
+					let paramNames = getParameterNames(controllerInstance[route.method]);
+					let paramFactories = [];
+
+					if (paramTypes) {
+						for (let i = 0, max = paramNames.length; i < max; ++i) {
+							let paramName = paramNames[i];
+							let paramType = paramTypes[i];
+							let simpleTypes = [String, Number];
+
+							if (paramType === RouteEvent) {
+								paramFactories.push(ev => ev);
+							} else if (paramName === "body") {
+								paramFactories.push((ev : RouteEvent) => ev.request['body']);
+							} else if (paramName === "req" || paramName === "request") {
+								paramFactories.push((ev : RouteEvent) => ev.request);
+							} else if (paramName === "res" || paramName === "response") {
+								paramFactories.push((ev : RouteEvent) => ev.response);
+							} else if (routeParams.find(x => x == paramName) && simpleTypes.indexOf(paramType) >= 0) {
+								// This is a route parameter binding.
+								paramFactories.push((ev : RouteEvent) => ev.request.params[paramName]);
+							} else {
+								throw new Error(`Unable to provider parameter ${paramName} of type ${paramType.name}`);
+							}
+
+						}
+					} else {
+						paramFactories = [
+							(ev : RouteEvent) => ev.request, 
+							(ev : RouteEvent) => ev.response
+						];
+					}
+
 					// Append the actual controller method
 
 					args.push((req, res) => {
-
+ 
 						if (!silent)
 							console.log(`[${new Date().toLocaleString()}] ${route.path} => ${controller.name}.${route.method}()`);
 
-						let result = controllerInstance[route.method](req, res);
+						// Execute our function by resolving the parameter factories into a set of parameters to provide to the 
+						// function.
+
+						let ev = new RouteEvent(req, res);
+						let result = controllerInstance[route.method].apply(controllerInstance, paramFactories.map(x => x(ev)));
+
+						// Return value handling
 
 						if (!result)
 							return;
