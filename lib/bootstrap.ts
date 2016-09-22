@@ -14,7 +14,10 @@ import { ReflectiveInjector } from '@angular/core';
 import { SanityCheckReporter } from './sanity';
 import { ApplicationArgs } from './args';
 
-export function bootstrap(app : Function, providers = []): Promise<ApplicationInstance> {
+/**
+ * Bootstrap an Alterior application.
+ */
+export function bootstrap(app : Function, providers = [], additionalOptions? : ApplicationOptions): Promise<ApplicationInstance> {
 
 	// Define the most basic injectables
 
@@ -31,7 +34,15 @@ export function bootstrap(app : Function, providers = []): Promise<ApplicationIn
 	// Read an @AppOptions() decorator if any, and merge providers from it 
 	// into the bootstrapped providers
 
-	let appOptions = <ApplicationOptions>Reflect.getMetadata("slvr:Application", app) || {};
+	let appOptions : ApplicationOptions = {};
+	let appProvidedOptions = <ApplicationOptions>Reflect.getMetadata("slvr:Application", app) || {};
+	
+	for (let key in appProvidedOptions)
+		appOptions[key] = appProvidedOptions[key];
+		 
+	for (let key in additionalOptions)
+		appOptions[key] = additionalOptions[key];
+
 	let verbose = appOptions.verbose || false;
 	let silent = appOptions.silent || false;
 
