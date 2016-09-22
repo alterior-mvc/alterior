@@ -8,6 +8,8 @@ An Express-based Typescript MVC framework using decorators and Angular 2 depende
 
 ## Getting started
 
+Need a sample project? See [Alterior Quickstart](https://github.com/alterior-mvc/quickstart)
+
 Install the package:
 ```
 npm install @alterior/core
