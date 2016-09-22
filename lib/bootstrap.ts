@@ -199,11 +199,25 @@ export function bootstrap(app : Function, providers = []): Promise<ApplicationIn
 						// function.
 
 						let ev = new RouteEvent(req, res);
-						let result = controllerInstance[route.method].apply(controllerInstance, paramFactories.map(x => x(ev)));
+						let result;
+						
+						try {
+							result = controllerInstance[route.method].apply(controllerInstance, paramFactories.map(x => x(ev)));
+						} catch (e) {
+							if (e.constructor === HttpException) {
+								let httpException = <HttpException>e;
+								res.status(httpException.statusCode).send(httpException.body);
+							} else {
+								res.status(500).send(JSON.stringify({
+									message: 'Failed to resolve this resource.',
+									error: e 
+								}));
+							}
+						}
 
 						// Return value handling
 
-						if (!result)
+						if (result === undefined)
 							return;
 
 						if (result.then) {
@@ -224,6 +238,10 @@ export function bootstrap(app : Function, providers = []): Promise<ApplicationIn
 									}));
 								}
 							});
+						} else if (result.constructor === String) {
+							res.status(200).send(result); 
+						} else {
+							res.status(200).header('Content-Type', 'application/json').send(JSON.stringify(result));
 						}
 
 					});

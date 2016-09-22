@@ -129,6 +129,40 @@ describe("route", () => {
 			});
 		}
 
+		@it 'should allow a method to return an explicit body value' (done) {
+
+			@_Controller()
+			class TestController {
+				@Get('/foo')
+				getX(req : express.Request, res : express.Response) {
+					return {foo:"we promised"};
+				}
+			}
+
+			@AppOptions({ port: 10001, silent: true,
+				autoRegisterControllers: false,
+				controllers: [TestController],
+				middleware: [
+					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
+				]
+			}) 
+			class FakeApp {
+			}
+
+			bootstrap(FakeApp).then(app => {
+				supertest(app.express)
+					.get('/foo')
+					.expect(200, <any>{ foo: "we promised" })
+					.end((err, res) => {
+						app.stop();
+						if (err) 
+							return done(err);
+
+						done();	
+					});
+			});
+		}
+
 		@it 'should 500 when a method returns a promise that rejects' (done) {
 
 			@_Controller()
