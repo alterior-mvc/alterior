@@ -59,7 +59,7 @@ export function bootstrap(app : Function, providers = []): Promise<ApplicationIn
 	// Make our controllers available via DI 
 	// (we will instantiate the controllers via DI later)
 
-	(appOptions.controllers || [])
+	(controllers || [])
 		.forEach(x => providers.push(x));
 
 	// Make global middleware available via DI
