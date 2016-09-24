@@ -1,8 +1,24 @@
 import * as express from 'express';
+import { clone } from './clone';
 
 export class RouteReflector {
 	constructor(type : Function) {
-		this.routes = (type.prototype['alterior:routes'] || []).splice(0);
+
+		let controllerMetadata = Reflect.getMetadata("alterior:Controller", type);
+		let basePath = '';
+
+		if (controllerMetadata.basePath) {
+			basePath = controllerMetadata.basePath.replace(/^\/*/, '');
+			basePath = basePath != '' ? `/${basePath}/` : basePath;
+		}
+
+		this.routes = (type.prototype['alterior:routes'] || []).map(x => clone(x));
+
+		if (controllerMetadata.basePath) {
+			this.routes.forEach(route => {
+				route.path = basePath + route.path.replace(/^\/*/, '');
+			})
+		}
 	}
 
 	public routes : RouteDefinition[];

@@ -39,7 +39,7 @@ Create a controller (let's say `foo.ts`):
 import { Controller, Get, RouteEvent } from '@alterior/core';
 import * as express from 'express';
 
-@Controller()
+@Controller('/optional-prefix')
 export class FooController {
     @Get('/foo')
     public foo(ev : RouteEvent)
