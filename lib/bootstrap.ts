@@ -41,7 +41,7 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 		silent: false
 	};
 
-	let appProvidedOptions = <ApplicationOptions>Reflect.getMetadata("slvr:Application", app) || {};
+	let appProvidedOptions = <ApplicationOptions>Reflect.getMetadata("alterior:Application", app) || {};
 	
 	for (let key in appProvidedOptions)
 		appOptions[key] = appProvidedOptions[key];
@@ -83,7 +83,7 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 	// Make global middleware available via DI
 
 	(appOptions.middleware || [])
-		.filter(x => Reflect.getMetadata('slvr:middleware', x) != null)
+		.filter(x => Reflect.getMetadata('alterior:middleware', x) != null)
 		.forEach(x => providers.push(x))
 	;
 
@@ -150,7 +150,7 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 				let childProviders = [];
 				for (let route of routes) {
 					(route.options.middleware || [])
-						.filter(x => Reflect.getMetadata('slvr:middleware', x) != null)
+						.filter(x => Reflect.getMetadata('alterior:middleware', x) != null)
 						.forEach(x => childProviders.push(x));
 				}
 

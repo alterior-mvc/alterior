@@ -2,7 +2,7 @@ import * as express from 'express';
 
 export class RouteReflector {
 	constructor(type : Function) {
-		this.routes = (type.prototype['slvr:routes'] || []).splice(0);
+		this.routes = (type.prototype['alterior:routes'] || []).splice(0);
 	}
 
 	public routes : RouteDefinition[];
@@ -38,7 +38,7 @@ export function Patch(path : string, options? : RouteOptions) { return Route('PA
 
 export function Route(method : string, path : string, options? : RouteOptions) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-		let routes = target['slvr:routes'] || [];
+		let routes = target['alterior:routes'] || [];
 
 		routes.push(<RouteDefinition>{
 			method: propertyKey,
@@ -47,6 +47,6 @@ export function Route(method : string, path : string, options? : RouteOptions) {
 			path: path
 		});
 
-		target['slvr:routes'] = routes;
+		target['alterior:routes'] = routes;
 	};
 }
