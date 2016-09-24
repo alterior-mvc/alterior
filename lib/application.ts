@@ -64,7 +64,7 @@ export function AppOptions(appOptions? : ApplicationOptions) {
 		appOptions = {};
 	
 	return function(target) {
-		Reflect.defineMetadata("slvr:Application", appOptions, target);
+		Reflect.defineMetadata("alterior:Application", appOptions, target);
 	}
 }
 
