@@ -31,6 +31,11 @@ export interface ApplicationOptions {
 	port? : number;
 
 	/**
+	 * Start listening automatically.
+	 */
+	autostart?: boolean,
+
+	/**
 	 * Dependency injection providers. If a promise is passed into this,
 	 * it will be resolved into a provider before the application is booted.
 	 */
@@ -63,23 +68,68 @@ export function AppOptions(appOptions? : ApplicationOptions) {
 	}
 }
 
+/**
+ * Represents a complete application instance, aggregating the application class instance,
+ * the Express application, and the node HTTP server object.
+ * This class can be extended and provided via dependency injection.
+ */
 export class ApplicationInstance {
-	constructor(
-		public app : any, 
-		public express : express.Application,
-		public http : http.Server
-	) {
+	constructor() {
 
 	}
 
+	
+	public app : any;
+	public express : express.Application;
+	public http : http.Server;
+	public configuredPort : number;
+
+	/**
+	 * Bind the application class instance, the express application, and the http server
+	 * objects onto this ApplicationInstance.
+	 */
+	public bind(app, express : express.Application, port : number)
+	{
+		this.app = app;
+		this.express = express;
+		this.configuredPort = port;
+	}
+
+	public start() : http.Server {
+		this.http = this.express.listen(this.configuredPort);
+		return this.http;
+	}
+
+	/**
+	 * Whether we are stopped (true) or not (false)
+	 */
+	public get stopped() {
+		return this._stopped;		
+	}
+
+	private _stopped : boolean = false;
+
+	/**
+	 * Stop listening for new connections on HTTP
+	 */
 	public stop() {
+		if (this.stopped)
+			return;
+		
+		if (this.http == null)
+			throw new Error("Application has not yet been started, or HTTP server is not managed by ApplicationInstance.");
+
 		// TODO: maybe https://www.npmjs.com/package/express-graceful-exit ?
+
+		this._stopped = true;
 		this.http.close();
-		//process.exit();
 	}
 
+	/**
+	 * Shut down 
+	 */
 	public shutdown() {
-		// TODO: maybe https://www.npmjs.com/package/express-graceful-exit ?
+		this.stop();
 		process.exit();
 	}
 }

@@ -24,7 +24,8 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 	let bootstrapProviders = providers;
 	providers = [
 		SanityCheckReporter,
-		ApplicationArgs
+		ApplicationArgs,
+		ApplicationInstance
 	];
 
 	// Then pile on providers from our bootstrap call
@@ -34,7 +35,12 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 	// Read an @AppOptions() decorator if any, and merge providers from it 
 	// into the bootstrapped providers
 
-	let appOptions : ApplicationOptions = {};
+	let appOptions : ApplicationOptions = {
+		autostart: true,
+		verbose: false,
+		silent: false
+	};
+
 	let appProvidedOptions = <ApplicationOptions>Reflect.getMetadata("slvr:Application", app) || {};
 	
 	for (let key in appProvidedOptions)
@@ -43,8 +49,9 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 	for (let key in additionalOptions)
 		appOptions[key] = additionalOptions[key];
 
-	let verbose = appOptions.verbose || false;
-	let silent = appOptions.silent || false;
+	let autostart = appOptions.autostart;
+	let verbose = appOptions.verbose;
+	let silent = appOptions.silent;
 
 	(appOptions.providers || [])
 		.filter(x => !x['then'])
@@ -105,10 +112,18 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 		.then(resolvedProviders => resolvedProviders.forEach(x => providers.push(x)))
 		.then(() => {
 
+			// Late resolve an instance of ApplicationInstance. We do this by first making a temporary
+			// injector, constructing our instance, and then late-binding a provider for a singleton instance.
+
+			let environmentInjector = ReflectiveInjector.resolveAndCreate(providers);
+			let appContainer = <ApplicationInstance>environmentInjector.get(ApplicationInstance);
+			let injector = environmentInjector.resolveAndCreateChild([
+				{ provide: ApplicationInstance, useValue: appContainer }
+			]);
+
 			// Create the injector. 
 			// This is where the magic of DI happens. 
 
-			let injector = ReflectiveInjector.resolveAndCreate(providers);
 			
 			let appInstance = injector.get(app);
 
@@ -302,11 +317,16 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 			if (appInstance['altOnInit'])
 				appInstance['altOnInit']();
 
-			if (!silent) 
-				console.log(`listening on ${port}`);
+			let container = <ApplicationInstance>injector.get(ApplicationInstance);
+			container.bind(appInstance, expressApp, port);
 
-			let server = expressApp.listen(port);
-			return new ApplicationInstance(appInstance, expressApp, server);
+			if (autostart) {
+				if (!silent)
+					console.log(`listening on ${port}`);
+				container.start();
+			}
+
+			return container;
 		}).catch(e => {
 			console.log('error while initializing');
 			console.error(e);
