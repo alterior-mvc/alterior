@@ -22,7 +22,8 @@ describe("response", () => {
 			class TestController {
 				@Get('/foo')
 				getX(req : express.Request, res : express.Response) {
-					return new _Response(201, [['Content-Type', 'text/plain; charset=utf-8']], "token string");
+					return new _Response(201, [['Content-Type', 'text/plain; charset=utf-8']], "token string")
+								.encodeAs('raw');
 				}
 			} 
 
