@@ -84,6 +84,12 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 	// Make global middleware available via DI
 
 	(appOptions.middleware || [])
+		.map((x, i) => {
+			if (x == null) {
+				throw new Error("AppOptions provided null middleware at position "+i);
+			}
+			return x;
+		})
 		.filter(x => Reflect.getMetadata('alterior:middleware', x) != null)
 		.forEach(x => providers.push(x))
 	;
@@ -151,6 +157,12 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 				let childProviders = [];
 				for (let route of routes) {
 					(route.options.middleware || [])
+						.map((x, i) => {
+							if (x == null) {
+								throw new Error("Route "+route.path+" provided null middleware at position "+i);
+							}
+							return x;
+						})
 						.filter(x => Reflect.getMetadata('alterior:middleware', x) != null)
 						.forEach(x => childProviders.push(x));
 				}
