@@ -175,7 +175,7 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 					(route.options.middleware || [])
 						.forEach(x => args.push(prepareMiddleware(childInjector, x)));
 
-					let routeParams = route.path.match(/:([A-Za-z][A-Za-z0-9]*)/);
+					let routeParams = (route.path || "").match(/:([A-Za-z][A-Za-z0-9]*)/) || [];
 
 					// Do analysis of the controller method ahead of time so we can 
 					// minimize the amount of overhead of actual web requests
@@ -195,6 +195,8 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 								paramFactories.push(ev => ev);
 							} else if (paramName === "body") {
 								paramFactories.push((ev : RouteEvent) => ev.request['body']);
+							} else if (paramName === "session") {
+								paramFactories.push((ev : RouteEvent) => ev.request['session']);
 							} else if (paramName === "req" || paramName === "request") {
 								paramFactories.push((ev : RouteEvent) => ev.request);
 							} else if (paramName === "res" || paramName === "response") {
@@ -203,7 +205,7 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 								// This is a route parameter binding.
 								paramFactories.push((ev : RouteEvent) => ev.request.params[paramName]);
 							} else {
-								throw new Error(`Unable to provider parameter ${paramName} of type ${paramType.name}`);
+								throw new Error(`Unable to fulfill route method parameter '${paramName}' of type '${paramType.name}'`);
 							}
 
 						}

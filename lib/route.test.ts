@@ -129,6 +129,43 @@ describe("route", () => {
 			});
 		}
 
+		@it 'should bind parameter `session` to `request.session`' (done) {
+
+			@_Controller()
+			class TestController {
+				@Get('/foo')
+				getX(session : any) {
+					return Promise.resolve(JSON.stringify({foo:session.test}));
+				}
+			}
+
+			@AppOptions({ port: 10001, silent: true,
+				autoRegisterControllers: false,
+				controllers: [TestController],
+				middleware: [
+					(req, res, next) => {
+						req.session = { test: 123 }; 
+						res.header('Content-Type', 'application/json'); 
+						next(); 
+					}
+				]
+			}) 
+			class FakeApp {
+			}
+
+			bootstrap(FakeApp).then(app => {
+				supertest(app.express)
+					.get('/foo')
+					.expect(200, <any>{ foo: 123 })
+					.end((err, res) => {
+						app.stop();
+						if (err) 
+							return done(err);
+						done();	
+					});
+			});
+		}
+
 		@it 'should allow a method to return an explicit body value' (done) {
 
 			@_Controller()
