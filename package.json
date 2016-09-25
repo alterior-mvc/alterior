@@ -23,7 +23,6 @@
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "express-fileupload": "0.0.5",
-    "express-session": "^1.14.1",
     "mkdirp": "^0.5.1",
     "reflect-metadata": "^0.1.8",
     "rxjs": "^5.0.0-beta.12"
