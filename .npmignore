@@ -2,3 +2,5 @@ node_modules/
 npm-debug.log
 typings/
 *~
+lib/**/*.test.js
+lib/**/*.test.ts
