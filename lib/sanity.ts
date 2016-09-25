@@ -2,7 +2,7 @@ export class SanityCheckReporter {
 	public reportSuccess()
 	{
 		console.log('Application passed sanity check.');
-		process.exit(99);
+		process.exit(0);
 	}
 
 	public reportFailure(e : any)
