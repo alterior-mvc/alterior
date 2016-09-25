@@ -39,7 +39,7 @@ export interface ApplicationOptions {
 	 * Dependency injection providers. If a promise is passed into this,
 	 * it will be resolved into a provider before the application is booted.
 	 */
-	providers? : Provider[];
+	providers? : (Provider | Promise<Provider>)[];
 
 	/**
 	 * Global and mounted middleware. Middleware included here will be
