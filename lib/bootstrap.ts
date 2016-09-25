@@ -5,7 +5,8 @@ const getParameterNames = require('@avejidah/get-parameter-names');
 import { AppOptions, ApplicationOptions, ApplicationInstance } from './application';
 import { controllerClasses } from './controller';
 import { Middleware, prepareMiddleware } from './middleware';
-import { RouteReflector, RouteEvent, Response } from './route';
+import { RouteReflector, RouteEvent } from './route';
+import { Response } from './response';
 import { ExpressRef } from './express';
 import { HttpException } from './errors';
 

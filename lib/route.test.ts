@@ -1,5 +1,5 @@
 import { controllerClasses, Controller as _Controller } from './controller';
-import { Get, Post, Put, Patch, Delete, Options, RouteEvent, Response } from './route';
+import { Get, Post, Put, Patch, Delete, Options, RouteEvent } from './route';
 import { suite, test as it } from 'mocha-typescript';
 import * as assert from 'assert';
 import * as express from 'express';
@@ -224,41 +224,6 @@ describe("route", () => {
 				supertest(app.express)
 					.get('/foo')
 					.expect(200, <any>'"token value"')
-					.end((err, res) => {
-						app.stop();
-						if (err) 
-							return done(err);
-
-						done();	
-					});
-			});
-		}
-
-		@it 'should allow raw data to be returned via Response' (done) {
-
-			@_Controller()
-			class TestController {
-				@Get('/foo')
-				getX(req : express.Request, res : express.Response) {
-					return new Response(201, [['Content-Type', 'text/plain; charset=utf-8']], "token string");
-				}
-			}
-
-			@AppOptions({ port: 10001, silent: true,
-				autoRegisterControllers: false,
-				controllers: [TestController],
-				middleware: [
-					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
-				] 
-			}) 
-			class FakeApp {
-			}
-
-			bootstrap(FakeApp).then(app => {
-				supertest(app.express)
-					.get('/foo')
-					.expect(201, <any>'token string')
-					.expect('Content-Type', 'text/plain; charset=utf-8')
 					.end((err, res) => {
 						app.stop();
 						if (err) 
