@@ -235,7 +235,12 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 						} catch (e) {
 							if (e.constructor === HttpException) {
 								let httpException = <HttpException>e;
-								res.status(httpException.statusCode).send(httpException.body);
+								res.status(httpException.statusCode);
+								
+								httpException.headers
+									.forEach(header => res.header(header[0], header[1]));
+
+								res.send(httpException.body);
 							} else {
 								res.status(500).send(JSON.stringify({
 									message: 'Failed to resolve this resource.',
@@ -259,7 +264,12 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 							}).catch(e => {
 								if (e.constructor === HttpException) {
 									let httpException = <HttpException>e;
-									res.status(httpException.statusCode).send(httpException.body);
+									res.status(httpException.statusCode);
+									
+									httpException.headers
+										.forEach(header => res.header(header[0], header[1]));
+
+									res.send(httpException.body);
 								} else {
 									res.status(500).send(JSON.stringify({
 										message: 'Failed to resolve this resource.',
