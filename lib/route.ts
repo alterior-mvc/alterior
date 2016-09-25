@@ -1,6 +1,15 @@
 import * as express from 'express';
 import { clone } from './clone';
 
+export class Response {
+	constructor(
+		public status : number, 
+		public headers : string[][], 
+		public body : string
+	) {
+	}
+}
+
 export class RouteReflector {
 	constructor(type : Function) {
 

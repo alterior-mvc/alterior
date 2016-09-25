@@ -5,7 +5,7 @@ const getParameterNames = require('@avejidah/get-parameter-names');
 import { AppOptions, ApplicationOptions, ApplicationInstance } from './application';
 import { controllerClasses } from './controller';
 import { Middleware, prepareMiddleware } from './middleware';
-import { RouteReflector, RouteEvent } from './route';
+import { RouteReflector, RouteEvent, Response } from './route';
 import { ExpressRef } from './express';
 import { HttpException } from './errors';
 
@@ -218,7 +218,7 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 
 					// Append the actual controller method
 
-					args.push((req, res) => {
+					args.push((req : express.Request, res : express.Response) => {
  
 						if (!silent)
 							console.log(`[${new Date().toLocaleString()}] ${route.path} => ${controller.name}.${route.method}()`);
@@ -266,8 +266,11 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 									}));
 								}
 							});
-						} else if (result.constructor === String) {
-							res.status(200).send(result); 
+						} else if (result.constructor === Response) {
+							let response = <Response>result;
+							res.status(response.status);
+							response.headers.forEach(x => res.header(x[0], x[1]));
+							res.send(response.body); 
 						} else {
 							res.status(200).header('Content-Type', 'application/json').send(JSON.stringify(result));
 						}
