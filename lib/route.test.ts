@@ -273,7 +273,7 @@ describe("route", () => {
 			class TestController {
 				@Get('/foo')
 				getX(req : express.Request, res : express.Response) {
-					return Promise.reject(new HttpException(300, {bar:777}));
+					return Promise.reject(new HttpException(300, [['X-Test', 'pass']], {bar:777}));
 				}
 			}
 
@@ -293,6 +293,7 @@ describe("route", () => {
 					.expect(300, <any>{
 						bar: 777
 					})
+					.expect('X-Test', 'pass')
 					.end((err, res) => {
 						app.stop();
 						if (err) 
