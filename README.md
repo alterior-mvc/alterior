@@ -214,6 +214,45 @@ To add route-specific middleware:
 
 MongoDB integration is no longer bundled in. See [@alterior/mongo](https://github.com/alterior-mvc/alterior-mongo)
 
+## Sessions
+
+To add session support, use `express-session`:
+
+```
+npm i express-session --save
+typings i dt~express-session --save
+```
+
+Include it as middleware:
+
+```typescript
+import * as session from 'express-session';
+@AppOptions({
+	middleware: [session({ secret: SESSION_SECRET })]
+})
+```
+
+You can then use the session by requesting it as a parameter from your controller methods:
+
+```typescript
+
+interface SessionData {
+	username : string;
+	cartTotal : number;
+}
+
+@Controller()
+class SampleController {
+	@Get('/')
+	home(session : SessionData) {
+		return session.cartTotal;
+	}
+}
+```
+
+[Alterior Mongo](https://github.com/alterior-mvc/alterior-mongo) alternatively provides a MongoDB-based session provider based on `connect-mongo`,
+or you can use any Express/Connect middleware that provides `request.session`.
+
 ## Custom services
 
 This is Angular 2's dependency injector, so you can define your own services just as you would in Angular.
