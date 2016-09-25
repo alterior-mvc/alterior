@@ -8,6 +8,13 @@ export class Response {
 		public body : string
 	) {
 	}
+
+	public static created(url, body) : Response {
+		return new Response(201, 
+			[['Location', url]], 
+			JSON.stringify(body)
+		);
+	}
 }
 
 export class RouteReflector {
