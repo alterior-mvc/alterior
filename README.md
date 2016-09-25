@@ -212,45 +212,7 @@ To add route-specific middleware:
 
 ## MongoDB integration
 
-As a proof-of-concept, MongoDB support is currently built into `@alterior/core`. Alterior is in pre-release, in the near future this functionality will be moved to a separate module. 
-First, you must declare how you want MongoDB to connect using the `@AppOptions` decorator.
-
-In your application class file (`app.ts`):
-```typescript
-import { mongoProvider } from '@alterior/core';
-import * as mongodb from 'mongodb';
-
-@AppOptions({
-    providers: [mongoProvider(mongodb.Db, "mongodb://localhost:27017/db")]
-})
-class Application {
-    // ...
-}
-```
-
-The `mongoProvider()` function takes a token to make available via DI (most single-connection apps should use `mongodb.Db` but any value or object/function reference can be used which is useful for having multiple Mongo DB connections) and it takes the URL to the mongodb server.
-Now you can inject `mongodb.Db` (or whatever token you chose) anywhere in your application:
-
-```typescript
-import * as mongodb from 'mongodb';
-import { Controller, Get } from '@alterior/core';
-import * as express from 'express';
-
-@Controller()
-class FooController {
-    constructor(
-        private db : mongodb.Db
-    ) {
-    }
-    
-    @Get("/foo")
-    public foo(req : express.Request, res : express.Response) {
-        this.db.collection("foos").findOne({ color: blue })
-            .then(item => res.status(200).send(JSON.stringify(item)))
-            .catch(e => res.status(500).send("An error occurred"));
-    }
-}
-```
+MongoDB integration is no longer bundled in. See [@alterior/mongo](https://github.com/alterior-mvc/alterior-mongo)
 
 ## Custom services
 
