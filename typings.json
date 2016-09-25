@@ -2,8 +2,7 @@
   "dependencies": {
     "body-parser": "registry:npm/body-parser#1.15.2+20160815132839",
     "express": "registry:npm/express#4.14.0+20160815112707",
-    "mkdirp": "registry:npm/mkdirp#0.5.0+20160723033700",
-    "mongodb": "registry:npm/mongodb#2.1.0+20160721204323"
+    "mkdirp": "registry:npm/mkdirp#0.5.0+20160723033700"
   },
   "globalDependencies": {
     "es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504",
