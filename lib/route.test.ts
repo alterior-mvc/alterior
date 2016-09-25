@@ -303,6 +303,46 @@ describe("route", () => {
 			});
 		}
 
+		@it 'should apply route-specific middleware' (done) {
+
+			@_Controller()
+			class TestController {
+				@Get('/foo', {
+					middleware: [
+						(req, res, next) => {
+							req.fun = 'funfun';
+							next();
+						}
+					]
+				})
+				getX(req : express.Request, res : express.Response) {
+					return req['fun'];
+				}
+			}
+
+			@AppOptions({ port: 10001, silent: true,
+				autoRegisterControllers: false,
+				controllers: [TestController],
+				middleware: [
+					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
+				]
+			}) 
+			class FakeApp {
+			}
+
+			bootstrap(FakeApp).then(app => {
+				supertest(app.express)
+					.get('/foo')
+					.expect(200, <any>'"funfun"')
+					.end((err, res) => {
+						app.stop();
+						if (err) 
+							return done(err);
+						done();	
+					});
+			});
+		}
+
 		@it 'should be reading parameter type metadata to discover how to provide parameters' (done) {
 
 			@_Controller()

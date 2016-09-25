@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { clone } from './clone';
+import { shallowClone, clone } from './clone';
 
 export class RouteReflector {
 	constructor(type : Function) {
@@ -12,7 +12,7 @@ export class RouteReflector {
 			basePath = basePath != '' ? `/${basePath}/` : basePath;
 		}
 
-		this.routes = (type.prototype['alterior:routes'] || []).map(x => clone(x));
+		this.routes = (type.prototype['alterior:routes'] || []).map(x => shallowClone(x));
 
 		if (controllerMetadata.basePath) {
 			this.routes.forEach(route => {
