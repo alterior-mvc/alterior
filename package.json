@@ -10,7 +10,7 @@
     "url": "https://github.com/alterior-mvc/alterior.git"
   },
   "scripts": {
-    "test": "tsc && node ./node_modules/mocha/bin/mocha **/*.test.js",
+    "test": "tsc && node ./node_modules/mocha/bin/mocha lib/**/*.test.js",
     "dev-test": "nodemon -e ts --ignore \"*.d.ts\" --exec npm test ",
     "build": "tsc",
     "prepublish": "typings install && tsc"
