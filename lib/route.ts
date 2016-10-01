@@ -7,14 +7,14 @@ export class RouteReflector {
 		let controllerMetadata = Reflect.getMetadata("alterior:Controller", type);
 		let basePath = '';
 
-		if (controllerMetadata.basePath) {
+		if (controllerMetadata && controllerMetadata.basePath) {
 			basePath = controllerMetadata.basePath.replace(/^\/*/, '');
 			basePath = basePath != '' ? `/${basePath}/` : basePath;
 		}
 
 		this.routes = (type.prototype['alterior:routes'] || []).map(x => shallowClone(x));
 
-		if (controllerMetadata.basePath) {
+		if (controllerMetadata && controllerMetadata.basePath) {
 			this.routes.forEach(route => {
 				route.path = basePath + route.path.replace(/^\/*/, '');
 			})

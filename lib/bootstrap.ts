@@ -81,6 +81,8 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 	(controllers || [])
 		.forEach(x => providers.push(x));
 
+	controllers.push(app);
+
 	// Make global middleware available via DI
 
 	(appOptions.middleware || [])

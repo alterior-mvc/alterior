@@ -79,12 +79,32 @@ export class FooController {
 }
 ```
 
-Import your controller at the top of `app.ts`. By default, all classes with the @Controller() decorator declared throughout your application will be automatically registered in your application, but you have to ensure that your class is imported for it to work. You can override this behavior by specifying `autoRegisterControllers: false` in your application's `@AppOptions` decorator. If you do so, only the controllers you specify in the `controllers` array of `@AppOptions` will be included in your application. 
+Import your controller at the top of `app.ts`. By default, all classes with the @Controller() decorator 
+declared throughout your application will be automatically registered in your application, but you have 
+to ensure that your class is imported for it to work. You can override this behavior by specifying 
+`autoRegisterControllers: false` in your application's `@AppOptions` decorator. If you do so, only the 
+controllers you specify in the `controllers` array of `@AppOptions` will be included in your application. 
 
 When using automatic discovery, the simplest way to ensure a controller gets loaded is with:
 
 ```typescript
 import "foo";
+```
+
+If you are doing microservices or tests, you might want to avoid having an extra single controller class 
+when it's not necessary. Also, there are certain routes (think /, /version, /health) which you may want to 
+respond with some static responses but wouldn't really warrant having an entire controller with separate
+dependencies from your "application", even in larger multi-controller services.
+
+For these reasons, if you choose to, you can put your routes directly on your application class:  
+
+```
+export class Application {
+    @Get('/version')
+	version() {
+		return { version: "1.0.0" };
+	}
+}
 ```
 
 Finally, you must bootstrap your application. Typically this is done in a `main.ts` entrypoint file:
