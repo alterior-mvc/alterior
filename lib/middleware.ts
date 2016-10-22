@@ -23,7 +23,7 @@ export function prepareMiddleware(injector : Injector, middleware: any) {
 	}
 
 	if (alteriorMiddleware) {
-		let instance = injector.get(alteriorMiddleware);
+		let instance = injector.get(middleware);
 		return (req, res, next) => instance.handle(req, res, next);
 	} else {
 		return middleware;
