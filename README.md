@@ -116,7 +116,15 @@ import { bootstrap } from '@alterior/core';
 bootstrap(Application);
 ```
 
-For the time being, it is recommended to set your Typescript to target ES5, or do a compiler pass with an ES6 transpiler before running your app in the newer Node.js versions which are otherwise capable of it. If you target ES6 you will get an error related to a class constructor being called without the `new` operator. This happens when Angular tries to instantiate an ES6 class. Node.js doesn't currently allow the manner of object construction Angular is using. It's a known issue, and it has to be resolved upstream, unfortunately. 
+## Building your app
+
+Note: For the time being, it is recommended to set your Typescript to target ES5, or do a compiler pass
+with an ES6 transpiler before running your app in the newer Node.js versions which are otherwise capable 
+of it. If you target ES6 you will get an error related to Angular calling a class constructor without 
+the `new` operator. This happens when Angular tries to instantiate an ES6 class. Node.js doesn't 
+currently allow the manner of object construction Angular is using. Angular 2 needs to be changed to use 
+[`Reflect.construct`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct) when available. 
+It's a known issue, and it has yet to be resolved upstream, unfortunately. 
 
 You can use any build system you want, but this works well with standard `tsc` compilation (ie, JS alongside TS). The NPM scripts used in `@alterior/core` to build and test the core library could easily be used to build and test an Alterior application. 
 
