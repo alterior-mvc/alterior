@@ -128,40 +128,7 @@ describe("route", () => {
 					});
 			});
 		}
-
-		@it 'should handle URLs with double slashes as if they were single slashes' (done) {
-
-			@_Controller()
-			class TestController {
-				@Get('/foo/bar')
-				getX(req : express.Request, res : express.Response) {
-					return { message: "OK" };
-				}
-			}
-
-			@AppOptions({ port: 10001, silent: true,
-				autoRegisterControllers: false,
-				controllers: [TestController],
-				middleware: [
-					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
-				]
-			}) 
-			class FakeApp {
-			}
-
-			bootstrap(FakeApp).then(app => {
-				supertest(app.express)
-					.get('/foo//////bar')
-					.expect(200, <any>{ message: "OK" })
-					.end((err, res) => {
-						app.stop();
-						if (err) 
-							return done(err);
-						done();	
-					});
-			});
-		}
-
+ 
 		@it 'should bind parameter `session` to `request.session`' (done) {
 
 			@_Controller()
