@@ -242,6 +242,32 @@ To add route-specific middleware:
     }
 ```
 
+## Uncaught Exceptions
+
+When an exception occurs while executing a controller route method (excluding HttpExceptions), Alterior will respond
+with an HTTP 500 error. By default, exception information will be included with the response. If the caught exception 
+has a `toString()` method, it will be executed and its return value will be sent. If it does not, the error object will
+be included directly, being converted along with the rest of the response to JSON.
+
+`throw new Error('This is the error text')` would produce:
+```
+{"message":"An exception occurred while handling this request.","error":"Error: This is the error text                                                                 
+    at FooController.sampleRequest (music.js:36:29)"}
+```
+
+`throw { foo: 'bar' }` would product:
+
+```
+{"message":"An exception occurred while handling this request.","error":{"foo":"bar"}}
+``` 
+
+You can disable the inclusion of exception information in responses (and this is recommended for production).
+To do so, set `AppOptions.hideExceptions` to `true`. The `error` field will then be excluded from 500 responses.
+
+```
+{"message":"An exception occurred while handling this request."}
+``` 
+
 ## MongoDB integration
 
 MongoDB integration is no longer bundled in. See [@alterior/mongo](https://github.com/alterior-mvc/alterior-mongo)

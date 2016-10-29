@@ -26,6 +26,12 @@ export interface ApplicationOptions {
 	silent? : boolean;
 
 	/**
+	 * Hide exception information from 500 responses (should be set for production).
+	 * Defaults to off (ie, exception information is included)
+	 */
+	hideExceptions? : boolean;
+
+	/**
 	 * Port to serve HTTP on. Defaults to 3000.
 	 */
 	port? : number;

@@ -53,6 +53,7 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 	let autostart = appOptions.autostart;
 	let verbose = appOptions.verbose;
 	let silent = appOptions.silent;
+	let hideExceptions = appOptions.hideExceptions || false;
 
 	(appOptions.providers || [])
 		.filter(x => !x['then'])
@@ -256,10 +257,16 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 
 								res.send(httpException.body);
 							} else {
-								res.status(500).send(JSON.stringify({
-									message: 'Failed to resolve this resource.',
-									error: e 
-								}));
+								console.error(`Exception while handling route ${route.path} via method ${controller.name}.${route.method}():`);
+								console.error(e);
+								let response : any = {
+									message: 'An exception occurred while handling this request.'
+								};
+
+								if (!hideExceptions)
+									response.error = e.toString !== Object.prototype.toString ? e.toString() : e;
+
+								res.status(500).send(JSON.stringify(response));
 							}
 						}
 

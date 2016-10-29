@@ -303,6 +303,114 @@ describe("route", () => {
 			});
 		}
 
+		@it 'should stringify a caught throwable and include the result in a 500 response ' (done) {
+
+			@_Controller()
+			class TestController {
+				@Get('/foo')
+				getX(req : express.Request, res : express.Response) {
+					throw { toString: () => "testytest" }
+				}
+			}
+
+			@AppOptions({ port: 10001, silent: true,
+				autoRegisterControllers: false,
+				controllers: [TestController],
+				middleware: [
+					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
+				]
+			}) 
+			class FakeApp {
+			}
+
+			bootstrap(FakeApp).then(app => {
+				supertest(app.express)
+					.get('/foo')
+					.expect(500, <any>{
+						message: 'An exception occurred while handling this request.',
+						error: 'testytest'
+					})
+					.end((err, res) => {
+						app.stop();
+						if (err) 
+							return done(err);
+						done();	
+					});
+			});
+		}
+
+		@it 'should include a caught throwable verbatim in a 500 response when it has no toString() method ' (done) {
+
+			@_Controller()
+			class TestController {
+				@Get('/foo')
+				getX(req : express.Request, res : express.Response) {
+					throw { foo: "bar" }
+				}
+			}
+
+			@AppOptions({ port: 10001, silent: true,
+				autoRegisterControllers: false,
+				controllers: [TestController],
+				middleware: [
+					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
+				]
+			}) 
+			class FakeApp {
+			}
+
+			bootstrap(FakeApp).then(app => {
+				supertest(app.express)
+					.get('/foo')
+					.expect(500, <any>{
+						message: 'An exception occurred while handling this request.',
+						error: {foo: "bar"}
+					})
+					.end((err, res) => {
+						app.stop();
+						if (err) 
+							return done(err);
+						done();	
+					});
+			});
+		}
+
+		@it 'should exclude exception information when `hideExceptions` is true' (done) {
+
+			@_Controller()
+			class TestController {
+				@Get('/foo')
+				getX(req : express.Request, res : express.Response) {
+					throw { toString: () => "testytest" }
+				}
+			}
+
+			@AppOptions({ port: 10001, silent: true,
+				autoRegisterControllers: false,
+				hideExceptions: true,
+				controllers: [TestController],
+				middleware: [
+					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
+				]
+			}) 
+			class FakeApp {
+			}
+
+			bootstrap(FakeApp).then(app => {
+				supertest(app.express)
+					.get('/foo')
+					.expect(500, <any>{
+						message: 'An exception occurred while handling this request.'
+					})
+					.end((err, res) => {
+						app.stop();
+						if (err) 
+							return done(err);
+						done();	
+					});
+			});
+		}
+
 		@it 'should apply route-specific middleware' (done) {
 
 			@_Controller()
