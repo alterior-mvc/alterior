@@ -112,15 +112,22 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 
 	// Load asynchronous assets
 
+	if (verbose)
+		console.log(`initializing async providers...`);
+
 	return Promise
 		.all(asyncProviders || [])
 		.catch(e => {
+			console.error(`caught exception while initializing async providers:`);
 			console.error(e);
 			process.exit(1);
 			throw e;
 		})
 		.then(resolvedProviders => resolvedProviders.forEach(x => providers.push(x)))
 		.then(() => {
+
+			if (verbose)
+				console.log(`async providers initialized successfully`);
 
 			// Late resolve an instance of ApplicationInstance. We do this by first making a temporary
 			// injector, constructing our instance, and then late-binding a provider for a singleton instance.
@@ -150,6 +157,9 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 			// their respective routed methods with the express app we made before.
 
 			let allRoutes = [];
+
+		if (verbose)
+			console.log(`initializing routes...`);
 
 			for (let controller of controllers) {
 				let routes = (new RouteReflector(controller)).routes;
