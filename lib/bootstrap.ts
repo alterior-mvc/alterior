@@ -263,8 +263,12 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 									message: 'An exception occurred while handling this request.'
 								};
 
-								if (!hideExceptions)
-									response.error = e.toString !== Object.prototype.toString ? e.toString() : e;
+								if (!hideExceptions) {
+									if (e.constructor === Error)
+										response.error = e.stack;
+									else
+										response.error = e;
+								}
 
 								res.status(500).send(JSON.stringify(response));
 							}

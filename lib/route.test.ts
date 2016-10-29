@@ -303,13 +303,16 @@ describe("route", () => {
 			});
 		}
 
-		@it 'should stringify a caught throwable and include the result in a 500 response ' (done) {
+		@it 'should include the stack trace of a caught Error in a 500 response' (done) {
+
+			let error = new Error('testytest');
+			let stackText = error.stack;
 
 			@_Controller()
 			class TestController {
 				@Get('/foo')
 				getX(req : express.Request, res : express.Response) {
-					throw { toString: () => "testytest" }
+					throw error;
 				}
 			}
 
@@ -328,7 +331,7 @@ describe("route", () => {
 					.get('/foo')
 					.expect(500, <any>{
 						message: 'An exception occurred while handling this request.',
-						error: 'testytest'
+						error: stackText
 					})
 					.end((err, res) => {
 						app.stop();
@@ -339,7 +342,7 @@ describe("route", () => {
 			});
 		}
 
-		@it 'should include a caught throwable verbatim in a 500 response when it has no toString() method ' (done) {
+		@it 'should include a caught throwable in a 500 response' (done) {
 
 			@_Controller()
 			class TestController {
