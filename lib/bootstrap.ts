@@ -55,6 +55,10 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 	let silent = appOptions.silent;
 	let hideExceptions = appOptions.hideExceptions || false;
 
+	if (verbose) {
+		console.log('alterior bootstrap...');
+	}
+
 	(appOptions.providers || [])
 		.filter(x => !x['then'])
 		.forEach(x => providers.push(x));
@@ -79,12 +83,20 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 	// Make our controllers available via DI 
 	// (we will instantiate the controllers via DI later)
 
+	if (verbose) {
+		console.log('registering controllers...');
+	}
+
 	(controllers || [])
 		.forEach(x => providers.push(x));
 
 	controllers.push(app);
 
 	// Make global middleware available via DI
+
+	if (verbose) {
+		console.log('adding global middleware...');
+	}
 
 	(appOptions.middleware || [])
 		.map((x, i) => {
@@ -100,6 +112,10 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 	providers.push({provide: app, useClass: app});
 
 	// Construct an express app
+
+	if (verbose) {
+		console.log('starting express...');
+	}
 
 	let expressApp = express();
 
