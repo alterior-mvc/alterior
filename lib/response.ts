@@ -11,7 +11,7 @@ export class Response {
 	constructor(
 		public status : number, 
 		public headers : string[][], 
-		public body : string,
+		public body : any,
 		isRawBody? : boolean
 	) {
 		if (isRawBody === undefined)
