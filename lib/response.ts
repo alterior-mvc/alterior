@@ -11,18 +11,18 @@ export class Response {
 	constructor(
 		public status : number, 
 		public headers : string[][], 
-		public body : any,
+		body : any,
 		isRawBody? : boolean
 	) {
 		if (isRawBody === undefined)
 			isRawBody = false;
 		headers = headers || [];
 
-		if (!isRawBody) {
-			this.unencodedBody = body; 
-			this.body = JSON.stringify(body);
-		}
+		this.unencodedBody = body;
+		this.encodeAs(isRawBody ? 'raw' : 'json');
 	}
+
+	public body : string;
 
 	/**
 	 * Stores the raw, unencoded body in case the user calls encodeAs()
