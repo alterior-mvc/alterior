@@ -298,45 +298,50 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 
 								res.status(500).send(JSON.stringify(response));
 							}
+
+							return;
 						}
 
 						// Return value handling
 
-						if (result === undefined)
-							return;
+						function handleResponse(result) {
+								
+							if (result === undefined)
+								return;
 
-						if (result.then) {
-							result = <Promise<any>>result;
-							result.then(result => {
-								if (typeof result === 'object')
-									result = JSON.stringify(result);
+							if (result.then) {
+								result = <Promise<any>>result;
+								result.then(result => {
 
-								res.status(200).header('Content-Type', 'application/json').send(result);
-							}).catch(e => {
-								if (e.constructor === HttpException) {
-									let httpException = <HttpException>e;
-									res.status(httpException.statusCode);
+									handleResponse(result);
 									
-									httpException.headers
-										.forEach(header => res.header(header[0], header[1]));
+								}).catch(e => {
+									if (e.constructor === HttpException) {
+										let httpException = <HttpException>e;
+										res.status(httpException.statusCode);
+										
+										httpException.headers
+											.forEach(header => res.header(header[0], header[1]));
 
-									res.send(httpException.body);
-								} else {
-									res.status(500).send(JSON.stringify({
-										message: 'Failed to resolve this resource.',
-										error: e 
-									}));
-								}
-							});
-						} else if (result.constructor === Response) {
-							let response = <Response>result;
-							res.status(response.status);
-							response.headers.forEach(x => res.header(x[0], x[1]));
-							res.send(response.body); 
-						} else {
-							res.status(200).header('Content-Type', 'application/json').send(JSON.stringify(result));
+										res.send(httpException.body);
+									} else {
+										res.status(500).send(JSON.stringify({
+											message: 'Failed to resolve this resource.',
+											error: e 
+										}));
+									}
+								});
+							} else if (result.constructor === Response) {
+								let response = <Response>result;
+								res.status(response.status);
+								response.headers.forEach(x => res.header(x[0], x[1]));
+								res.send(response.body); 
+							} else {
+								res.status(200).header('Content-Type', 'application/json').send(JSON.stringify(result));
+							}
 						}
 
+						handleResponse(result);
 					});
 
 					// Send into express (registrar is one of express.get, express.put, express.post etc)

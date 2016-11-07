@@ -102,7 +102,7 @@ describe("route", () => {
 			class TestController {
 				@Get('/foo')
 				getX(req : express.Request, res : express.Response) {
-					return Promise.resolve(JSON.stringify({foo:"we promised"}));
+					return Promise.resolve({foo:"we promised"});
 				}
 			}
 
@@ -135,7 +135,7 @@ describe("route", () => {
 			class TestController {
 				@Get('/foo')
 				getX(session : any) {
-					return Promise.resolve(JSON.stringify({foo:session.test}));
+					return Promise.resolve({foo:session.test});
 				}
 			}
 
