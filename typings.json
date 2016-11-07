@@ -11,6 +11,7 @@
     "node": "registry:dt/node#6.0.0+20160826120425",
     "reflect-metadata": "registry:dt/reflect-metadata#0.0.0+20160630155503",
     "superagent": "registry:dt/superagent#2.0.0+20160906143408",
-    "supertest": "registry:dt/supertest#1.1.0+20160724070541"
+    "supertest": "registry:dt/supertest#1.1.0+20160724070541",
+    "underscore": "registry:dt/underscore#1.8.3+20160908111004"
   }
 }

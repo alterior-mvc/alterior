@@ -1,4 +1,5 @@
- 
+import { pairs } from 'underscore';
+
 export type EncodingType = 'json' | 'raw';
 import { HttpException } from './errors';
 
@@ -10,10 +11,16 @@ export class Response {
 	 */
 	constructor(
 		public status : number, 
-		public headers : string[][], 
+		headers : string[][] | any, 
 		body : any,
 		isRawBody? : boolean
 	) {
+		// Normalize headers 
+
+		if (typeof headers === 'object' && !headers.length)
+			headers = pairs(headers);
+		this.headers = headers;
+
 		if (isRawBody === undefined)
 			isRawBody = false;
 		headers = headers || [];
@@ -22,6 +29,14 @@ export class Response {
 		this.encodeAs(isRawBody ? 'raw' : 'json');
 	}
 
+	/**
+	 * Headers for the response, as an array of [key, value] tuple arrays.
+	 */
+	public headers : string[][];
+
+	/**
+	 * Body of the response.
+	 */
 	public body : string;
 
 	/**
