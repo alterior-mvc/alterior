@@ -262,18 +262,11 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 
 					args.push((req : express.Request, res : express.Response) => {
  
-						if (!silent)
-							console.log(`[${new Date().toLocaleString()}] ${route.path} => ${controller.name}.${route.method}()`);
-
-						// Execute our function by resolving the parameter factories into a set of parameters to provide to the 
-						// function.
-
-						let ev = new RouteEvent(req, res);
-						let result;
-						
-						try {
-							result = controllerInstance[route.method].apply(controllerInstance, paramFactories.map(x => x(ev)));
-						} catch (e) {
+						/**
+						 * Handle exception response
+						 */
+						function handleExceptionResponse(e) {
+							
 							if (e.constructor === HttpException) {
 								let httpException = <HttpException>e;
 								res.status(httpException.statusCode);
@@ -298,7 +291,21 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 
 								res.status(500).send(JSON.stringify(response));
 							}
+						}
 
+						if (!silent)
+							console.log(`[${new Date().toLocaleString()}] ${route.path} => ${controller.name}.${route.method}()`);
+
+						// Execute our function by resolving the parameter factories into a set of parameters to provide to the 
+						// function.
+
+						let ev = new RouteEvent(req, res);
+						let result;
+
+						try {
+							result = controllerInstance[route.method].apply(controllerInstance, paramFactories.map(x => x(ev)));
+						} catch (e) {
+							handleExceptionResponse(e);
 							return;
 						}
 
@@ -311,33 +318,20 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 
 							if (result.then) {
 								result = <Promise<any>>result;
-								result.then(result => {
-
-									handleResponse(result);
-									
-								}).catch(e => {
-									if (e.constructor === HttpException) {
-										let httpException = <HttpException>e;
-										res.status(httpException.statusCode);
-										
-										httpException.headers
-											.forEach(header => res.header(header[0], header[1]));
-
-										res.send(httpException.body);
-									} else {
-										res.status(500).send(JSON.stringify({
-											message: 'Failed to resolve this resource.',
-											error: e 
-										}));
-									}
-								});
+								result
+									.then(result => handleResponse(result))
+									.catch(e => handleExceptionResponse(e))
+								;
 							} else if (result.constructor === Response) {
 								let response = <Response>result;
 								res.status(response.status);
 								response.headers.forEach(x => res.header(x[0], x[1]));
 								res.send(response.body); 
 							} else {
-								res.status(200).header('Content-Type', 'application/json').send(JSON.stringify(result));
+								res	.status(200)
+									.header('Content-Type', 'application/json')
+									.send(JSON.stringify(result))
+								;
 							}
 						}
 
