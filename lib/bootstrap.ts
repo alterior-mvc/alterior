@@ -15,6 +15,8 @@ import { ReflectiveInjector } from '@angular/core';
 import { SanityCheckReporter } from './sanity';
 import { ApplicationArgs } from './args';
 
+require('source-map-support').install();
+
 /**
  * Bootstrap an Alterior application.
  */

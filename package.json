@@ -25,7 +25,8 @@
     "express-fileupload": "0.0.5",
     "mkdirp": "^0.5.1",
     "reflect-metadata": "^0.1.8",
-    "rxjs": "^5.0.0-beta.12"
+    "rxjs": "^5.0.0-beta.12",
+    "source-map-support": "^0.4.6"
   },
   "devDependencies": {
     "chai": "^3.5.0",
