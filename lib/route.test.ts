@@ -454,6 +454,43 @@ describe("route", () => {
 			});
 		}
 
+		@it 'should be injecting express URL parameters when appropriate' (done) {
+			
+			@_Controller()
+			class TestController {
+				@Get('/foo/:bar/:baz')
+				getX(bar : string, baz : string) {
+					assert(bar == '123');
+					assert(baz == '321');
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			@AppOptions({ port: 10001, silent: true,
+				autoRegisterControllers: false,
+				controllers: [TestController],
+				middleware: [
+					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
+				]
+			}) 
+			class FakeApp {
+			}
+
+			bootstrap(FakeApp).then(app => {
+				supertest(app.express)
+					.get('/foo/123/321')
+					.expect(200, <any>{
+						ok: true 
+					})
+					.end((err, res) => {
+						app.stop();
+						if (err) 
+							return done(err);
+						done();	
+					});
+			});
+		}
+
 		@it 'should be reading parameter type metadata to discover how to provide parameters' (done) {
 
 			@_Controller()
