@@ -5,7 +5,7 @@ node_js:
   - "5.11"
 
 before_install:
-  - npm i -g typescript typings
+  - npm i -g typescript@2.1.4 typings
 
 notifications:
   webhooks:
