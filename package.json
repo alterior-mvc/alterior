@@ -35,6 +35,6 @@
     "mocha": "^3.0.2",
     "mocha-typescript": "^1.0.10",
     "supertest": "^2.0.0",
-    "typescript": "^1.8.10"
+    "typescript": "^2.0.0"
   }
 }
