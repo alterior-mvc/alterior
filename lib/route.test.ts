@@ -129,6 +129,39 @@ describe("route", () => {
 			});
 		}
  
+		@it 'should allow a method to return null as a JSON value' (done) {
+
+			@_Controller()
+			class TestController {
+				@Get('/foo')
+				getX(req : express.Request, res : express.Response) {
+					return null;
+				}
+			}
+
+			@AppOptions({ port: 10001, silent: true,
+				autoRegisterControllers: false,
+				controllers: [TestController],
+				middleware: [
+					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
+				]
+			}) 
+			class FakeApp {
+			}
+
+			bootstrap(FakeApp).then(app => {
+				supertest(app.express)
+					.get('/foo')
+					.expect(200, <any>null)
+					.end((err, res) => {
+						app.stop();
+						if (err) 
+							return done(err);
+						done();	
+					});
+			});
+		}
+
 		@it 'should bind parameter `session` to `request.session`' (done) {
 
 			@_Controller()

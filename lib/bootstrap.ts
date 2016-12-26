@@ -322,6 +322,13 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 							if (result === undefined)
 								return;
 
+							if (result === null) {
+								res	.status(200)
+									.header('Content-Type', 'application/json')
+									.send(JSON.stringify(result))
+								; 
+							}
+
 							if (result.then) {
 								result = <Promise<any>>result;
 								result
