@@ -1,6 +1,6 @@
 {
   "name": "@alterior/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "description": "An Express-based Typescript MVC framework using decorators and Angular 2 dependency injection.",
   "main": "index.js",
