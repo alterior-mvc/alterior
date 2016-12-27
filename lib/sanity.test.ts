@@ -69,7 +69,7 @@ describe("sanity", () => {
 				}
 			}
 
-			_bootstrap(FakeApp).then(app => app.stop());
+			_bootstrap(FakeApp);
 		}
 		
 		@it 'should signal successful sanity check when app does' (done) {
