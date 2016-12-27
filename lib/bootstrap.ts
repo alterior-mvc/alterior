@@ -326,7 +326,8 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 								res	.status(200)
 									.header('Content-Type', 'application/json')
 									.send(JSON.stringify(result))
-								; 
+								;
+								return;
 							}
 
 							if (result.then) {
