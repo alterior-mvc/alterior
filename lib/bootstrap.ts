@@ -392,13 +392,13 @@ export function bootstrap(app : Function, providers = [], additionalOptions? : A
 				return;
 			}
 
+			let container = <ApplicationInstance>injector.get(ApplicationInstance);
+			container.bind(appInstance, expressApp, port);
+
 			// Run the application. 
 
 			if (appInstance['altOnInit'])
 				appInstance['altOnInit']();
-
-			let container = <ApplicationInstance>injector.get(ApplicationInstance);
-			container.bind(appInstance, expressApp, port);
 
 			if (autostart) {
 				if (!silent)
