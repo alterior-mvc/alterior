@@ -7,7 +7,7 @@ import { CONTROLLER_CLASSES } from './controller';
 import { Middleware, prepareMiddleware } from './middleware';
 import { RouteReflector, RouteEvent } from './route';
 import { Response } from './response';
-import { ExpressRef } from './express';
+import { ExpressRef } from './express-ref';
 import { HttpException } from './errors';
 
 import * as express from 'express';

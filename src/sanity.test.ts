@@ -1,8 +1,8 @@
 import * as assert from 'assert';
 import { suite, test as it } from 'mocha-typescript';
 
-import { bootstrap as _bootstrap } from '../lib/bootstrap';
-import { AppOptions, OnInit, OnSanityCheck } from '../lib/application';
+import { bootstrap as _bootstrap } from './bootstrap';
+import { AppOptions, OnInit, OnSanityCheck } from './application';
 import { SanityCheckReporter } from './sanity';
 import { ApplicationArgs } from './args';
 
@@ -74,7 +74,7 @@ describe("sanity", () => {
 		
 		@it 'should signal successful sanity check when app does' (done) {
 		
-			@AppOptions({ port: 10002, silent: true,
+			@AppOptions({ port: 10003, silent: true,
 				providers: [
 					{ provide: SanityCheckReporter, useValue: MockSanityCheckReporter.shouldSucceed(done) },
 					{ provide: ApplicationArgs, useValue: new MockApplicationArgs(['test']) }
@@ -92,7 +92,7 @@ describe("sanity", () => {
 
 		@it 'should signal failed sanity check when app throws' (done) {
 			
-			@AppOptions({ port: 10002, silent: true,
+			@AppOptions({ port: 10004, silent: true,
 				providers: [
 					{ provide: SanityCheckReporter, useValue: MockSanityCheckReporter.shouldFail(done) },
 					{ provide: ApplicationArgs, useValue: new MockApplicationArgs(['test']) }
@@ -114,7 +114,7 @@ describe("sanity", () => {
 
 		@it 'should signal failed sanity check when app promise throws' (done) {
 			
-			@AppOptions({ port: 10002, silent: true,
+			@AppOptions({ port: 10005, silent: true,
 				providers: [
 					{ provide: SanityCheckReporter, useValue: MockSanityCheckReporter.shouldFail(done) },
 					{ provide: ApplicationArgs, useValue: new MockApplicationArgs(['test']) }
@@ -132,7 +132,7 @@ describe("sanity", () => {
 
 		@it 'should signal failed sanity check when app does' (done) {
 			
-			@AppOptions({ port: 10002, silent: true,
+			@AppOptions({ port: 10006, silent: true,
 				providers: [
 					{ provide: SanityCheckReporter, useValue: MockSanityCheckReporter.shouldFail(done) },
 					{ provide: ApplicationArgs, useValue: new MockApplicationArgs(['test']) }

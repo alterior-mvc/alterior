@@ -1,8 +1,8 @@
 import * as assert from 'assert';
 import { suite, test as it } from 'mocha-typescript';
-import { ApplicationArgs } from '../lib/args';
-import { bootstrap as _bootstrap } from '../lib/bootstrap';
-import { AppOptions, OnInit, OnSanityCheck } from '../lib/application';
+import { ApplicationArgs } from './args';
+import { bootstrap as _bootstrap } from './bootstrap';
+import { AppOptions, OnInit, OnSanityCheck } from './application';
 
 @suite class bootstrap {
 	@it async 'should not accept a number for application class'() {

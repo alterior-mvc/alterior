@@ -1,5 +1,5 @@
 import { suite, test as it } from 'mocha-typescript';
-import { ExpressRef as _ExpressRef } from './express';
+import { ExpressRef as _ExpressRef } from './express-ref';
 import { bootstrap } from './bootstrap';
 import { AppOptions } from './application';
 import * as assert from 'assert';
