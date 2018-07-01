@@ -1,16 +1,14 @@
 language: node_js
 node_js:
-  - "6"
+  - "10"
+  - "8"
   - "6.1"
   - "5.11"
-
-before_install:
-  - npm i -g typescript@2.1.4 typings
 
 notifications:
   webhooks:
     urls:
       - https://webhooks.gitter.im/e/f1fe6ddbce1fc2921e75
-    on_success: always  # options: [always|never|change] default: always
-    on_failure: always  # options: [always|never|change] default: always
-    on_start: always     # options: [always|never|change] default: always
+    on_success: always
+    on_failure: always
+    on_start: always
