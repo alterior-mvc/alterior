@@ -1,4 +1,4 @@
-import { controllerClasses, Controller as _Controller } from './controller';
+import { CONTROLLER_CLASSES, Controller as _Controller } from './controller';
 import { Get, Post, Put, Patch, Delete, Options, RouteEvent } from './route';
 import { suite, test as it } from 'mocha-typescript';
 import * as assert from 'assert';

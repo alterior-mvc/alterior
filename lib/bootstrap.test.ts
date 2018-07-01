@@ -5,10 +5,10 @@ import { bootstrap as _bootstrap } from '../lib/bootstrap';
 import { AppOptions, OnInit, OnSanityCheck } from '../lib/application';
 
 @suite class bootstrap {
-	@it 'should not accept a number for application class'() {
+	@it async 'should not accept a number for application class'() {
 
 		try {
-			_bootstrap(<any>123);
+			await _bootstrap(<any>123);
 		} catch (e) {
 			return; // expected behavior
 		}
@@ -16,10 +16,10 @@ import { AppOptions, OnInit, OnSanityCheck } from '../lib/application';
 		throw new Error("bootstrap should throw when presented with 'class' 123");
 	}
 
-	@it 'should not accept a string for application class'() {
+	@it async 'should not accept a string for application class'() {
 
 		try {
-			_bootstrap(<any>'fubar');
+			await _bootstrap(<any>'fubar');
 		} catch (e) {
 			return; // expected behavior
 		}

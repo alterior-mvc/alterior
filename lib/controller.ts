@@ -1,5 +1,6 @@
 
-export let controllerClasses = [];
+export const CONTROLLER_CLASSES = [];
+
 export function Controller(basePath? : string) {
 	return function(target) {
 		
@@ -12,6 +13,6 @@ export function Controller(basePath? : string) {
 
 		// Add the controller to the global registry
 		
-		controllerClasses.push(target);
+		CONTROLLER_CLASSES.push(target);
 	}
 }

@@ -1,4 +1,4 @@
-import { controllerClasses, Controller } from './controller';
+import { CONTROLLER_CLASSES, Controller } from './controller';
 import { Get, Post, Put, Patch, Delete, Options, RouteEvent } from './route';
 import { Response as _Response } from './response';
 import * as assert from 'assert';

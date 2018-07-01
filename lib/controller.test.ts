@@ -1,4 +1,4 @@
-import { controllerClasses, Controller as _Controller } from './controller';
+import { CONTROLLER_CLASSES, Controller as _Controller } from './controller';
 import { Get, Post, Put, RouteReflector } from './route';
 import { suite, test as it } from 'mocha-typescript';
 import * as assert from 'assert';
@@ -28,12 +28,12 @@ class foo {
 		class foo {
 		} 
 
-		assert(controllerClasses.find(x => x === foo));
+		assert(CONTROLLER_CLASSES.find(x => x === foo));
 	}
 
 	@it "should cause routes within it to be modified by basePath" () {
 		
-		assert(controllerClasses.find(x => x === foo));
+		assert(CONTROLLER_CLASSES.find(x => x === foo));
 		let reflector = new RouteReflector(foo);
 		assert(reflector.routes.length === 2);
 		assert(reflector.routes[0].path === '/foo/bar');
