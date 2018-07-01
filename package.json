@@ -10,7 +10,7 @@
     "url": "https://github.com/alterior-mvc/alterior.git"
   },
   "scripts": {
-    "test": "tsc && node ./node_modules/mocha/bin/mocha lib/**/*.test.js",
+    "test": "npm run build && mocha lib/**/*.test.js",
     "dev-test": "nodemon -e ts --ignore \"*.d.ts\" --exec npm test ",
     "build": "tsc",
     "prepublish": "typings install && tsc"
@@ -35,7 +35,9 @@
     "jasmine-core": "^2.5.2",
     "mocha": "^3.0.2",
     "mocha-typescript": "^1.0.10",
+    "nodemon": "^1.17.4",
     "supertest": "^2.0.0",
+    "typings": "^2.1.1",
     "typescript": "^2.0.0"
   }
 }
