@@ -443,6 +443,11 @@ export class Response {
 			this.body = this.unencodedBody;
 		} else if (encoding === 'json') {
 			this.body = JSON.stringify(this.unencodedBody);
+
+			if (!this.headers.find(x => x[0].toLowerCase() == 'content-type')) {
+				this.headers.push([ 'Content-Type', 'application/json; charset=utf-8' ]);
+			}
+
 		} else {
 			throw new Error(`Unknown encoding '${encoding}'`);
 		}

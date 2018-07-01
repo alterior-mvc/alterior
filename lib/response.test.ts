@@ -47,9 +47,11 @@ describe("response", () => {
 				let httpe = <HttpException>e;
 				expect(httpe.body).to.equal(`"hello"`);
 				expect(httpe.statusCode).to.equal(123);
-				expect(httpe.headers.length).to.equal(1);
+				expect(httpe.headers.length).to.equal(2);
 				expect(httpe.headers[0][0]).to.equal('X-Test');
 				expect(httpe.headers[0][1]).to.equal('pass');
+				expect(httpe.headers[1][0]).to.equal('Content-Type');
+				expect(httpe.headers[1][1]).to.equal('application/json; charset=utf-8');
 			}
 		});
 		
@@ -66,10 +68,7 @@ describe("response", () => {
 
 			@AppOptions({ port: 10001, silent: true,
 				autoRegisterControllers: false,
-				controllers: [TestController],
-				middleware: [
-					(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
-				] 
+				controllers: [TestController]
 			}) 
 			class FakeApp {
 			}
@@ -79,6 +78,38 @@ describe("response", () => {
 					.get('/foo')
 					.expect(201, <any>'token string')
 					.expect('Content-Type', 'text/plain; charset=utf-8')
+					.end((err, res) => {
+						app.stop();
+						if (err) 
+							return done(err);
+
+						done();	
+					});
+			});
+		});
+
+		it('should cause Content-Type: application/json when response is JSON', (done) => {
+    
+			@Controller()
+			class TestController {
+				@Get('/foo')
+				getX(req : express.Request, res : express.Response) {
+					return new _Response(201, [], { stuff: 'and things' });
+				}
+			} 
+
+			@AppOptions({ port: 10001, silent: true,
+				autoRegisterControllers: false,
+				controllers: [TestController]
+			}) 
+			class FakeApp {
+			}
+
+			bootstrap(FakeApp).then(app => {
+				supertest(app.express)
+					.get('/foo')
+					.expect(201, <any>'{"stuff":"and things"}')
+					.expect('Content-Type', 'application/json; charset=utf-8')
 					.end((err, res) => {
 						app.stop();
 						if (err) 
