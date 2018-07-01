@@ -4,6 +4,7 @@
   "private": false,
   "description": "An Express-based Typescript MVC framework using decorators and Angular 2 dependency injection.",
   "main": "dist/index.js",
+  "module": "dist.esm/index.js",
   "typings": "dist/index.d.ts",
   "repository": {
     "type": "git",
@@ -13,6 +14,7 @@
     "test": "npm run build && mocha dist/**/*.test.js",
     "dev-test": "nodemon -e ts --ignore \"*.d.ts\" --exec npm test ",
     "build": "tsc -p .",
+    "build:esm": "tsc -p tsconfig.esm.json",
     "prepublish": "npm run build"
   },
   "author": "William Lahti <wilahti@gmail.com>",

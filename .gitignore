@@ -1,7 +1,5 @@
 node_modules/
 npm-debug.log
-typings/
-**/*.d.ts
-**/*.js
-**/*.js.map
+dist/
+dist.esm/
 *~
