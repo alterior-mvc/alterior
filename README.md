@@ -23,11 +23,11 @@ import { OnSanityCheck, OnInit, AppOptions } from '@alterior/core';
 
 export class Application implements OnSanityCheck, OnInit {
     public altOnSanityCheck(): Promise<boolean> {
-    	// Perform "health" checks like connecting to database, etc
-		// When your app is called with 'test' as first argument,
-		// Alterior will execute this and exit with code 0 on success,
-		// code 1 on error. You could then use this as a prestart check
-		// during deployment
+        // Perform "health" checks like connecting to database, etc
+        // When your app is called with 'test' as first argument,
+        // Alterior will execute this and exit with code 0 on success,
+        // code 1 on error. You could then use this as a prestart check
+        // during deployment
     	return Promise.resolve(true);
     }
     
