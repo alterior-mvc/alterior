@@ -48,7 +48,7 @@ export class FooController {
     @Get('/foo')
     public foo(ev : RouteEvent)
     {
-        res.status(200).send("/foo works!");
+        ev.response.status(200).send("/foo works!");
     }
     
     /**
