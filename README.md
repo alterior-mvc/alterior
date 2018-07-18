@@ -37,7 +37,7 @@ export class Application implements OnSanityCheck, OnInit {
 }
 ```
 
-Create a controller (let's say `foo.ts`):
+Now, create a controller (let's say `foo.ts`). Note that everything a controller can have, the `Application` class can have as well! You don't need to make a Controller if you don't want to (more details on that later).
 
 ```typescript
 import { Controller, Get, RouteEvent } from '@alterior/core';
@@ -45,17 +45,47 @@ import * as express from 'express';
 
 @Controller('/optional-prefix')
 export class FooController {
-    @Get('/foo')
-    public foo(ev : RouteEvent)
+    @Get('/simple')
+    public simple(ev : RouteEvent)
+    {
+    	return { status: 'success!' };
+    }
+    
+    /**
+     * You can also return promises.
+     */
+    @Get('/promises')
+    public canHazPromises()
+    {
+        return Promise.resolve({ nifty: 123 });
+    }
+    
+    /**
+     * Or use async/await (the recommended way!)
+     */
+    @Get('/async')
+    public async canHasAsync()
+    {
+    	return await someFunction();
+    }
+    
+    /**
+     * The parameters specified by your route methods are automatically analyzed,
+     * and the correct value is provided depending on what type (and in some cases what name)
+     * your parameter has.
+     *
+     * For example, you can get access to the Express request and response by injecting RouteEvent.
+     */
+    @Get('/useRouteEvent')
+    public canHazRouteEvent(ev : RouteEvent)
     {
         ev.response.status(200).send("/foo works!");
     }
     
     /**
-     * You can also return promises, or 
-	 * request the Express request/response explicitly (note that this is 
-	 * based on the parameter name, see below for more information about
-	 * route method parameters.  
+     * You can also request the Express request/response explicitly (note that this is 
+     * based on the parameter name, see below for more details about
+     * route method parameters).
      */
     @Get('/bar')
     public bar(req : express.Request, res : express.Response)
@@ -63,19 +93,35 @@ export class FooController {
         return Promise.resolve({ nifty: 123 });
     }
     
+    /**
+     * Promises can reject with an HttpException to specify HTTP errors...
+     */
     @Get('/error')
     public errorExample(req : express.Request, res : express.Response)
     {
-		//  Promises can reject
         return Promise.reject(new HttpException(301, {message: "No, over there"}));
     }
 
-    @Get('/error')
-    public errorExample(req : express.Request, res : express.Response)
+    /**
+     * Or return an Alterior Response object for more flexibility...
+     */
+    @Get('/specificResponse')
+    public specificResponseAndSuch(req : express.Request, res : express.Response)
     {
-		// Values are OK too
-        return { nifty: 123};
+	return Response.serverError({ message: `uh oh, that's never happened before` });
     }
+    
+    /**
+     * You can even specify middleware directly on a route method...
+     */
+    @Get('/middlewareRocks', {
+        middleware: [ myGreatMiddleware(someParameters) ]
+    })
+    public middlewareRolls(req : express.Request, res : express.Response)
+    {
+	return Response.serverError({ message: `uh oh, that's never happened before` });
+    }
+    
 }
 ```
 
