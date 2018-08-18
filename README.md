@@ -4,7 +4,7 @@
 [![Join the chat at https://gitter.im/alterior-mvc/Lobby](https://badges.gitter.im/alterior-core/Lobby.svg)](https://gitter.im/alterior-mvc/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![npm version](https://badge.fury.io/js/%40alterior%2Fcore.svg)](https://www.npmjs.com/package/@alterior/core)
 
-An Express-based Typescript MVC framework using decorators and Angular 2 dependency injection.
+An Express-based Typescript MVC framework using decorators and Angular's dependency injection.
 
 ## Getting started
 
@@ -231,8 +231,7 @@ Alterior includes a `Response` class that makes it easy to return a rich HTTP re
 
 ## Dependency Injection
 
-Alterior supports dependency injection using Angular 2's dependency injector. A number of injectable services are 
-in the box- perhaps you need access to the Express application object to do something Alterior doesn't support:
+Alterior supports dependency injection using the same pattern as with Angular's dependency injection system (via the excellent `injection-js` spinoff library). A number of injectable services are in the box- perhaps you need access to the Express application object to do something Alterior doesn't support:
 
 ```typescript
 import 
@@ -366,7 +365,7 @@ or you can use any Express/Connect middleware that provides `request.session`.
 
 ## Custom services
 
-This is Angular 2's dependency injector, so you can define your own services just as you would in Angular.
+This is Angular's dependency injector, so you can define your own services just as you would in Angular.
 You can add providers at the bootstrap, or app-class levels.
 
 ## That's great but how do you pronounce this?
