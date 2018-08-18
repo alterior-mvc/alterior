@@ -13,7 +13,8 @@
   "scripts": {
     "test": "npm run build && mocha dist/**/*.test.js",
     "dev-test": "nodemon -e ts --ignore \"*.d.ts\" --exec npm test ",
-    "build": "tsc -p .",
+    "clean": "rimraf dist dist.esm",
+    "build": "npm run clean && tsc -p .",
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublish": "npm run build"
   },
@@ -35,6 +36,7 @@
     "mocha": "^5.2.0",
     "mocha-typescript": "^1.1.16",
     "nodemon": "^1.17.4",
+    "rimraf": "^2.6.2",
     "supertest": "^3.1.0",
     "typescript": "^2.9.2"
   }
