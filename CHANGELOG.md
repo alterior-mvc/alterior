@@ -1,4 +1,4 @@
-# 2.0 (wip)
+# 2.0
 - Transitioned from `@angular/core` DI to `injection-js`, substantially reducing install times
   and complexity of install (`injection-js` is [5.1KB](https://github.com/mgechev/injection-js))
 - Improved and updated dev documentation
