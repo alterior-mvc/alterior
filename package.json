@@ -1,6 +1,6 @@
 {
   "name": "@alterior/core",
-  "version": "2.0.2",
+  "version": "2.0.1",
   "private": false,
   "description": "An Express-based Typescript MVC framework with decorators and dependency injection.",
   "main": "dist/index.js",
@@ -32,9 +32,6 @@
     "@types/node": "^10.5.1",
     "@types/supertest": "^2.0.4",
     "chai": "^3.5.0",
-    "growl": "^1.10.5",
-    "jasmine": "^2.5.2",
-    "jasmine-core": "^2.5.2",
     "mocha": "^5.2.0",
     "mocha-typescript": "^1.1.16",
     "nodemon": "^1.17.4",
