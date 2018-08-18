@@ -1,5 +1,3 @@
-import { pairs } from 'underscore';
-
 export type EncodingType = 'json' | 'raw';
 import { HttpException } from './errors';
 
@@ -18,7 +16,7 @@ export class Response {
 		// Normalize headers 
 
 		if (typeof headers === 'object' && !headers.length)
-			headers = pairs(headers);
+			headers = Object.keys(headers).map(key => [key, headers[key]]);
 		this.headers = headers;
 
 		if (isRawBody === undefined)
