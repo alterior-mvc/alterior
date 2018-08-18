@@ -1,4 +1,4 @@
-import { Injector } from '@angular/core';
+import { Injector } from 'injection-js';
 
 export function Middleware() {
 	return (target) => {

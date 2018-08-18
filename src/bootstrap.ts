@@ -11,7 +11,7 @@ import { ExpressRef } from './express-ref';
 import { HttpException } from './errors';
 
 import * as express from 'express';
-import { ReflectiveInjector, Provider } from '@angular/core';
+import { ReflectiveInjector, Provider } from 'injection-js';
 import { SanityCheckReporter } from './sanity';
 import { ApplicationArgs } from './args';
 

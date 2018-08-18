@@ -201,7 +201,7 @@ export class FooController {
 Other builtin injectables include:
  - The Application class. You will be given the singleton instance of your Application class.
  - `ExpressRef`: Provides reference to the `express.Application` instance as configured for your application
- - `Injector` (from `@angular/core`): Provides access to the injector which resolved your class's dependencies
+ - `Injector` (from `injection-js`): Provides access to the injector which resolved your class's dependencies
 
 ## Applying Middleware
 Alterior is based on Express (https://expressjs.com/), so naturally it supports any Express or Connect based middleware. Middleware can be used globally, it can be mounted to a specific set of URLs,  or it can be declared as part of a route, just like you can with vanilla Express.

@@ -1,4 +1,4 @@
-import { Provider } from '@angular/core';
+import { Provider } from 'injection-js';
 
 import * as express from 'express';
 import * as http from 'http';
