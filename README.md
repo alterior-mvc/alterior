@@ -23,11 +23,11 @@ import { OnSanityCheck, OnInit, AppOptions } from '@alterior/core';
 
 export class Application implements OnSanityCheck, OnInit {
     public altOnSanityCheck(): Promise<boolean> {
-    	// Perform "health" checks like connecting to database, etc
-		// When your app is called with 'test' as first argument,
-		// Alterior will execute this and exit with code 0 on success,
-		// code 1 on error. You could then use this as a prestart check
-		// during deployment
+        // Perform "health" checks like connecting to database, etc
+        // When your app is called with 'test' as first argument,
+        // Alterior will execute this and exit with code 0 on success,
+        // code 1 on error. You could then use this as a prestart check
+        // during deployment
     	return Promise.resolve(true);
     }
     
@@ -37,7 +37,7 @@ export class Application implements OnSanityCheck, OnInit {
 }
 ```
 
-Create a controller (let's say `foo.ts`):
+Now, create a controller (let's say `foo.ts`). Note that everything a controller can have, the `Application` class can have as well! You don't need to make a Controller if you don't want to (more details on that later).
 
 ```typescript
 import { Controller, Get, RouteEvent } from '@alterior/core';
@@ -45,17 +45,47 @@ import * as express from 'express';
 
 @Controller('/optional-prefix')
 export class FooController {
-    @Get('/foo')
-    public foo(ev : RouteEvent)
+    @Get('/simple')
+    public simple(ev : RouteEvent)
     {
-        res.status(200).send("/foo works!");
+    	return { status: 'success!' };
     }
     
     /**
-     * You can also return promises, or 
-	 * request the Express request/response explicitly (note that this is 
-	 * based on the parameter name, see below for more information about
-	 * route method parameters.  
+     * You can also return promises.
+     */
+    @Get('/promises')
+    public canHazPromises()
+    {
+        return Promise.resolve({ nifty: 123 });
+    }
+    
+    /**
+     * Or use async/await (the recommended way!)
+     */
+    @Get('/async')
+    public async canHasAsync()
+    {
+    	return await someFunction();
+    }
+    
+    /**
+     * The parameters specified by your route methods are automatically analyzed,
+     * and the correct value is provided depending on what type (and in some cases what name)
+     * your parameter has.
+     *
+     * For example, you can get access to the Express request and response by injecting RouteEvent.
+     */
+    @Get('/useRouteEvent')
+    public canHazRouteEvent(ev : RouteEvent)
+    {
+        ev.response.status(200).send("/foo works!");
+    }
+    
+    /**
+     * You can also request the Express request/response explicitly (note that this is 
+     * based on the parameter name, see below for more details about
+     * route method parameters).
      */
     @Get('/bar')
     public bar(req : express.Request, res : express.Response)
@@ -63,35 +93,53 @@ export class FooController {
         return Promise.resolve({ nifty: 123 });
     }
     
+    /**
+     * Promises can reject with an HttpException to specify HTTP errors...
+     */
     @Get('/error')
     public errorExample(req : express.Request, res : express.Response)
     {
-		//  Promises can reject
         return Promise.reject(new HttpException(301, {message: "No, over there"}));
     }
 
-    @Get('/error')
-    public errorExample(req : express.Request, res : express.Response)
+    /**
+     * Or return an Alterior Response object for more flexibility...
+     */
+    @Get('/specificResponse')
+    public specificResponseAndSuch(req : express.Request, res : express.Response)
     {
-		// Values are OK too
-        return { nifty: 123};
+	return Response.serverError({ message: `uh oh, that's never happened before` });
     }
+    
+    /**
+     * You can even specify middleware directly on a route method...
+     */
+    @Get('/middlewareRocks', {
+        middleware: [ myGreatMiddleware(someParameters) ]
+    })
+    public middlewareRolls(req : express.Request, res : express.Response)
+    {
+	return Response.serverError({ message: `uh oh, that's never happened before` });
+    }
+    
 }
 ```
 
-Import your controller at the top of `app.ts`. By default, all classes with the @Controller() decorator 
-declared throughout your application will be automatically registered in your application, but you have 
-to ensure that your class is imported for it to work. You can override this behavior by specifying 
+By default, all classes with the @Controller() decorator declared throughout your application will 
+be automatically registered in your application, but you have to ensure that your class is imported 
+for it to work. You can override this behavior by specifying 
 `autoRegisterControllers: false` in your application's `@AppOptions` decorator. If you do so, only the 
 controllers you specify in the `controllers` array of `@AppOptions` will be included in your application. 
 
-When using automatic discovery, the simplest way to ensure a controller gets loaded is with:
+When using automatic discovery, the recommended way to ensure a controller gets loaded is with a bare import, like so:
 
 ```typescript
 import "foo";
 ```
 
-If you are doing microservices or tests, you might want to avoid having an extra single controller class 
+You could put these into your `main.ts` or wherever you are bootstrapping Alterior.
+
+Note: If you are doing microservices or tests, you might want to avoid having an extra single controller class 
 when it's not necessary. Also, there are certain routes (think /, /version, /health) which you may want to 
 respond with some static responses but wouldn't really warrant having an entire controller with separate
 dependencies from your "application", even in larger multi-controller services.
@@ -101,13 +149,13 @@ For these reasons, if you choose to, you can put your routes directly on your ap
 ```
 export class Application {
     @Get('/version')
-	version() {
-		return { version: "1.0.0" };
-	}
+    version() {
+        return { version: "1.0.0" };
+    }
 }
 ```
 
-Finally, you must bootstrap your application. Typically this is done in a `main.ts` entrypoint file:
+Finally, you must bootstrap your application. Typically this is done in a `main.ts` entrypoint file, but could be done wherever or however you want to do it:
 
 ```typescript
 import { Application } from './app';
@@ -116,19 +164,15 @@ import { bootstrap } from '@alterior/core';
 bootstrap(Application);
 ```
 
+Hint: This is a good place to bare-import your controllers when using automatic controller discovery as described above.
+
 ## Building your app
 
-Note: For the time being, it is recommended to set your Typescript to target ES5, or do a compiler pass
-with an ES6 transpiler before running your app in the newer Node.js versions which are otherwise capable 
-of it. If you target ES6 you will get an error related to Angular calling a class constructor without 
-the `new` operator. This happens when Angular tries to instantiate an ES6 class. Node.js doesn't 
-currently allow the manner of object construction Angular is using. Angular 2 needs to be changed to use 
-[`Reflect.construct`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct) when available. 
-It's a known issue, and it has yet to be resolved upstream, unfortunately. 
+It is recommended to set your Typescript to target ES5, or do a compiler pass with an ES6 transpiler. Alterior does ship with an ESM build, so you can try it, but your mileage may vary. 
 
-You can use any build system you want, but this works well with standard `tsc` compilation (ie, JS alongside TS). The NPM scripts used in `@alterior/core` to build and test the core library could easily be used to build and test an Alterior application. 
+You can use any build system you want, but the standard Typescript compiler (ie `tsc`) is recommended. The NPM scripts used in `@alterior/core` to build and test the core library could easily be used to build and test an Alterior application. 
 
-You can test your app however you want as well, but there is a smooth way to do it with `supertest`, `mocha`, and `mocha-typescript` from NPM. You can see this style of testing used in this repository (`lib/**/*.test.ts`).
+You can test your app however you want as well, but there is a slick way to do it with `supertest`, `mocha`, and `mocha-typescript` from NPM. You can see this style of testing used in this repository (`lib/**/*.test.ts`). Or, supercharge your testing with Zone.js using https://github.com/rezonant/razmin (shameless plug)!
 
 ## Route Parameters
 
@@ -152,8 +196,8 @@ doThings(req : express.Request, res : express.Response) {
 }
 ```
 
-Also, parameters named `body` will be filled with the value of `request.body`, which is useful since you can set the type of the parameter to whatever you
-need to, such as an interface describing the expected fields that clients can send. When combined with value returns, you can achieve a very natural style:  
+Parameters named `body` will be filled with the value of `request.body`, which is useful since you can set the type of the parameter to whatever you
+need to, such as an interface describing the expected fields that clients can send (coupled with the appropriate Express body parsing middleware). When combined with value returns, you can achieve a very natural style:  
 
 ```typescript
 interface MyRequestType {
@@ -174,6 +218,15 @@ The `HttpException` class is included to signal Alterior to send certain HTTP st
 ```typescript
 	// Perhaps we couldn't contact a microservice needed to fulfill the request.
 	throw new HttpException(502, "Service is not available");
+```
+
+## `Response` class
+
+Alterior includes a `Response` class that makes it easy to return a rich HTTP response from your method. You can use this instead of HTTP exceptions if you wish, so here's the same example using `Response`:
+
+```typescript
+	// Perhaps we couldn't contact a microservice needed to fulfill the request.
+	return Response.badGateway({ message: "Service is not available" });
 ```
 
 ## Dependency Injection
