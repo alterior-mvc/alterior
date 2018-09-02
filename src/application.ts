@@ -2,6 +2,8 @@ import { Provider } from 'injection-js';
 
 import * as express from 'express';
 import * as http from 'http';
+import { ServiceDescription } from './bootstrap';
+import { Controller } from './controller';
 
 export interface OnSanityCheck {
 	/**
@@ -15,10 +17,22 @@ export interface OnInit {
 }
 
 export interface ApplicationOptions {
+	
+	name? : string;
+	description? : string;
+	summary? : string;
+	tags? : string[];
+	group? : string;
+	
 	/**
 	 * Enable verbose console logging for Alterior
 	 */
 	verbose? : boolean;
+
+	/**
+	 * Imported modules
+	 */
+	imports? : Function[];
 
 	/**
 	 * Turn off all console output
@@ -71,6 +85,9 @@ export function AppOptions(appOptions? : ApplicationOptions) {
 	
 	return function(target) {
 		Reflect.defineMetadata("alterior:Application", appOptions, target);
+		Controller('', {
+			group: appOptions.group
+		})(target);
 	}
 }
 
@@ -89,16 +106,18 @@ export class ApplicationInstance {
 	public express : express.Application;
 	public http : http.Server;
 	public configuredPort : number;
+	public serviceDescription : ServiceDescription;
 
 	/**
 	 * Bind the application class instance, the express application, and the http server
 	 * objects onto this ApplicationInstance.
 	 */
-	public bind(app, express : express.Application, port : number)
+	public bind(app, express : express.Application, port : number, serviceDescription : ServiceDescription)
 	{
 		this.app = app;
 		this.express = express;
 		this.configuredPort = port;
+		this.serviceDescription = serviceDescription;
 	}
 
 	public start() : http.Server {

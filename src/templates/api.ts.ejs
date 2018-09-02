@@ -1,0 +1,14 @@
+import { Injectable } from 'injection-js';
+
+@Injectable()
+export class <%= name %>Api {
+    constructor() {
+    }
+
+<% for (let route of routes) { %>
+    async <%= route.method %>() {
+
+    }
+<% } %>
+
+}

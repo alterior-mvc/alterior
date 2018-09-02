@@ -23,8 +23,14 @@
   "license": "MIT",
   "dependencies": {
     "@avejidah/get-parameter-names": "^0.3.2",
+    "@types/ejs": "^2.6.0",
+    "@types/mkdirp": "^0.5.2",
+    "@types/rimraf": "^2.0.2",
+    "dotenv": "^6.0.0",
+    "ejs": "^2.6.1",
     "express": "^4.14.0",
     "injection-js": "^2.2.1",
+    "mkdirp": "^0.5.1",
     "reflect-metadata": "^0.1.8",
     "source-map-support": "^0.4.6"
   },
@@ -39,6 +45,7 @@
     "nodemon": "^1.17.4",
     "rimraf": "^2.6.2",
     "supertest": "^3.1.0",
+    "swagger-editor-dist": "^3.6.9",
     "typescript": "^2.9.2"
   }
 }

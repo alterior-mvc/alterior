@@ -1,27 +1,59 @@
 import * as express from 'express';
 import { shallowClone, clone } from './clone';
+import { Provider } from 'injection-js';
 
 export class RouteReflector {
-	constructor(type : Function) {
+	constructor(type : Function, mountPath? : string) {
 
 		let controllerMetadata = Reflect.getMetadata("alterior:Controller", type);
-		let basePath = '';
+		let basePath = '/' + (mountPath || '').replace(/^\/+|\/+$/g, '');
 
+		if (basePath === '/')
+			basePath = '';
+		
 		if (controllerMetadata && controllerMetadata.basePath) {
-			basePath = controllerMetadata.basePath.replace(/^\/*/, '');
-			basePath = basePath != '' ? `/${basePath}/` : basePath;
+			let controllerBasePath = controllerMetadata.basePath.replace(/^\/+|\/+$/g, '');
+			if (controllerBasePath !== '') {
+				basePath += `/${controllerBasePath}`;
+			}
 		}
 
+		if (basePath === '/')
+			basePath = '';
+		
 		this.routes = (type.prototype['alterior:routes'] || []).map(x => shallowClone(x));
+		this.routes.forEach(route => {
+			route.path = `${basePath}/${route.path.replace(/^\/*/, '')}`.replace(/\/+$/g, '');
+			if (route.path === '')
+				route.path = '/';
+		});
 
-		if (controllerMetadata && controllerMetadata.basePath) {
-			this.routes.forEach(route => {
-				route.path = basePath + route.path.replace(/^\/*/, '');
-			})
-		}
+		this.mounts = (type.prototype['alterior:mounts'] || []).map(x => shallowClone(x));
+		this.mounts.forEach(mount => {
+			mount.path = `${basePath}/${mount.path.replace(/^\/*/, '')}`
+			if (!mount.controllers)
+				mount.controllers = [];
+
+			if (mount.options && mount.options.controllers)
+				mount.controllers.push(...mount.options.controllers);
+		});
 	}
 
 	public routes : RouteDefinition[];
+	public mounts : MountDefinition[];
+}
+
+export interface MountDefinition {
+	path : string;
+	controllers : Function[];
+	options : MountOptions;
+	
+	propertyKey? : string;
+}
+
+export interface MountOptions {
+	providers? : Provider[];
+	controllers? : Function[];
 }
 
 export interface RouteDefinition {
@@ -43,16 +75,19 @@ export class RouteEvent {
 
 export interface RouteOptions {
 	middleware?: Function[];
+	description?: string;
+	summary?: string;
+	group?: string;
 }
 
-export function Get(path : string, options? : RouteOptions) { return Route('GET', path, options); }
-export function Put(path : string, options? : RouteOptions) { return Route('PUT', path, options); }
-export function Post(path : string, options? : RouteOptions) { return Route('POST', path, options); }
-export function Delete(path : string, options? : RouteOptions) { return Route('DELETE', path, options); }
-export function Options(path : string, options? : RouteOptions) { return Route('OPTIONS', path, options); }
-export function Patch(path : string, options? : RouteOptions) { return Route('PATCH', path, options); }
+export function Get(path? : string, options? : RouteOptions) { return Route('GET', path, options); }
+export function Put(path? : string, options? : RouteOptions) { return Route('PUT', path, options); }
+export function Post(path? : string, options? : RouteOptions) { return Route('POST', path, options); }
+export function Delete(path? : string, options? : RouteOptions) { return Route('DELETE', path, options); }
+export function Options(path? : string, options? : RouteOptions) { return Route('OPTIONS', path, options); }
+export function Patch(path? : string, options? : RouteOptions) { return Route('PATCH', path, options); }
 
-export function Route(method : string, path : string, options? : RouteOptions) {
+export function Route(method : string, path? : string, options? : RouteOptions) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
 		let routes = target['alterior:routes'] || [];
 
@@ -60,9 +95,23 @@ export function Route(method : string, path : string, options? : RouteOptions) {
 			method: propertyKey,
 			httpMethod: method || "GET", 
 			options: options || {},
-			path: path
+			path: path || ''
 		});
 
 		target['alterior:routes'] = routes;
+	};
+}
+
+export function Mount(path? : string, options? : MountOptions) {
+    return function (target: any, propertyKey: string) {
+		let mounts = target['alterior:mounts'] || [];
+
+		mounts.push(<MountDefinition>{
+			path: path,
+			options: options,
+			propertyKey
+		});
+
+		target['alterior:mounts'] = mounts;
 	};
 }

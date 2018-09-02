@@ -1,0 +1,5 @@
+<% 
+    for (let exp of exports) 
+        echo(`export * from '` + exp + `';\n`);
+%>
+export * from './api.module';

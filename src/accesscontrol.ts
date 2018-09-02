@@ -1,6 +1,12 @@
 import * as express from 'express';
 import * as url from 'url';
 
+/**
+ * @deprecated Use a third party Express-compatible middleware package instead
+ * @param req 
+ * @param res 
+ * @param next 
+ */
 export function accessControl(req : express.Request, res : express.Response, next) {
 	let referer = req.header("Referer") || req.header("Host");
 	let refererUrl = url.parse(referer);
