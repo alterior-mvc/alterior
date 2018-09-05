@@ -1,0 +1,36 @@
+{
+  "name": "@alterior/runtime",
+  "version": "2.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p .",
+    "prepare": "npm run build",
+    "test": "npm run build && node dist/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alterior-mvc/alterior.git"
+  },
+  "author": "William Lahti",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alterior-mvc/alterior/issues"
+  },
+  "homepage": "https://github.com/alterior-mvc/alterior#readme",
+  "dependencies": {
+    "@alterior/annotations": "^2.0.0",
+    "@alterior/common": "^2.0.0",
+    "@alterior/di": "^2.0.0",
+    "@avejidah/get-parameter-names": "^0.3.2",
+    "injection-js": "^2.2.1",
+    "mkdirp": "^0.5.1",
+    "reflect-metadata": "^0.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^10.9.4",
+    "razmin": "^0.1.0",
+    "require-glob": "^3.2.0"
+  }
+}

@@ -172,8 +172,6 @@ It is recommended to set your Typescript to target ES5, or do a compiler pass wi
 
 You can use any build system you want, but the standard Typescript compiler (ie `tsc`) is recommended. The NPM scripts used in `@alterior/core` to build and test the core library could easily be used to build and test an Alterior application. 
 
-You can test your app however you want as well, but there is a slick way to do it with `supertest`, `mocha`, and `mocha-typescript` from NPM. You can see this style of testing used in this repository (`lib/**/*.test.ts`). Or, supercharge your testing with Zone.js using https://github.com/rezonant/razmin (shameless plug)!
-
 ## Route Parameters
 
 Alterior inspects the parameters of controller methods to determine what values to provide. Firstly, parameters of type `RouteEvent` will be provided with an instance of that class which

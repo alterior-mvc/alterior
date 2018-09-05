@@ -4,7 +4,6 @@
 		"target": "es5",
 		"sourceMap": true,
 		"outDir": "./dist",
-		"baseUrl": "./src",
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"lib": [
@@ -12,10 +11,7 @@
 			"dom"
 		],
 		"declaration": true,
-		"emitDecoratorMetadata": true,
-		"paths": {
-			"@/*": ["./*"]
-		}
+		"emitDecoratorMetadata": true
 	},
 	"include": [
 		"src"

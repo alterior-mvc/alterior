@@ -1,0 +1,29 @@
+{
+  "name": "@alterior/common",
+  "version": "2.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p .",
+    "prepare": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alterior-mvc/alterior.git"
+  },
+  "author": "William Lahti",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alterior-mvc/alterior/issues"
+  },
+  "homepage": "https://github.com/alterior-mvc/alterior#readme",
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "rxjs": "^6.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^10.9.4"
+  }
+}
