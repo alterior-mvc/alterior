@@ -84,8 +84,7 @@ suite(describe => {
 			@Module({
 				controllers: [TestController],
 				imports: [
-					WebServerModule.configure({ 
-						port: nextFreePort++, 
+					WebServerModule.configure({
 						silent: true,
 						middleware: [
 							(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
@@ -96,8 +95,8 @@ suite(describe => {
 			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp);
-			teststrap(app, async (test, done) => {
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
+			await teststrap(app, async (test, done) => {
 				await test.get('/foo').expect(200, <any>{ foo: 123 });
 				app.stop();
 				done();
@@ -116,7 +115,8 @@ suite(describe => {
 			@Module({
 				controllers: [TestController],
 				imports: [
-					WebServerModule.configure({ port: nextFreePort++, silent: true,
+					WebServerModule.configure({ 
+						silent: true,
 						middleware: [
 							(req, res, next) => { 
 								res.header('Content-Type', 'application/json'); 
@@ -129,12 +129,8 @@ suite(describe => {
 			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp);
-			await teststrap(app, async (test, done) => {
-				await test.get('/foo').expect(200, <any>{ foo: "we promised" });
-				app.stop();
-				done();
-			});
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
+			
 		});
 	
 		it('should allow a method to return null as a JSON value', async () => {
@@ -149,7 +145,7 @@ suite(describe => {
 			@Module({
 				controllers: [TestController],
 				imports: [
-					WebServerModule.configure({ port: nextFreePort++, silent: true,
+					WebServerModule.configure({ silent: true,
 						middleware: [
 							(req, res, next) => { 
 								res.header('Content-Type', 'application/json'); 
@@ -162,7 +158,7 @@ suite(describe => {
 			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp);
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				await test.get('/foo').expect(200, <any>null);
 				app.stop();
@@ -196,7 +192,7 @@ suite(describe => {
 			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp);
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				await test.get('/foo').expect(200, <any>{ foo: 123 });
 				app.stop();
@@ -229,7 +225,7 @@ suite(describe => {
 			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp);
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				await test.get('/foo').expect(200, <any>{ foo: "we promised" });
 				app.stop();
@@ -262,7 +258,7 @@ suite(describe => {
 			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp);
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				await test.get('/foo').expect(200, <any>'"token value"');
 				app.stop();
@@ -282,7 +278,8 @@ suite(describe => {
 			@Module({
 				controllers: [TestController],
 				imports: [
-					WebServerModule.configure({ port: nextFreePort++, silent: true,
+					WebServerModule.configure({ 
+						silent: true,
 						middleware: [
 							(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
 						]
@@ -292,7 +289,7 @@ suite(describe => {
 			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp);
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				await test.get('/foo').expect(500);
 				app.stop();
@@ -312,8 +309,7 @@ suite(describe => {
 			@Module({
 				controllers: [TestController],
 				imports: [
-					WebServerModule.configure({ 
-						port: nextFreePort++, 
+					WebServerModule.configure({
 						silent: true,
 						middleware: [
 							(req, res, next) => { 
@@ -327,7 +323,7 @@ suite(describe => {
 			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp);
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				await test
 					.get('/foo')
@@ -356,8 +352,7 @@ suite(describe => {
 			@Module({
 				controllers: [TestController],
 				imports: [
-					WebServerModule.configure({ 
-						port: nextFreePort++, 
+					WebServerModule.configure({
 						silent: true,
 						middleware: [
 							(req, res, next) => { 
@@ -371,7 +366,7 @@ suite(describe => {
 			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp);
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				let result = await test.get('/foo')
 					.expect(500, <any>{
@@ -411,7 +406,7 @@ suite(describe => {
 			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp);
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				let result = await test
 					.get('/foo')
@@ -438,7 +433,7 @@ suite(describe => {
 				controllers: [TestController],
 				imports: [
 					WebServerModule.configure({ 
-						port: nextFreePort++, silent: true,
+						silent: true,
 						hideExceptions: true,
 						middleware: [
 							(req, res, next) => { 
@@ -452,7 +447,7 @@ suite(describe => {
 			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp);
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				let result = await test.get('/foo')
 					.expect(500, <any>{ message: 'An exception occurred while handling this request.' });
@@ -481,8 +476,7 @@ suite(describe => {
 			@Module({
 				controllers: [TestController],
 				imports: [
-					WebServerModule.configure({ 
-						port: nextFreePort++, 
+					WebServerModule.configure({
 						silent: true,
 						middleware: [
 							(req, res, next) => { 
@@ -496,7 +490,7 @@ suite(describe => {
 			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp);
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				let result = await test.get('/foo')
 					.expect(200, <any>'"funfun"');
@@ -520,8 +514,7 @@ suite(describe => {
 			@Module({
 				controllers: [TestController],
 				imports: [
-					WebServerModule.configure({ 
-						port: nextFreePort++, 
+					WebServerModule.configure({
 						silent: true,
 						middleware: [
 							(req, res, next) => { 
@@ -535,7 +528,7 @@ suite(describe => {
 			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp);
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				let result = await test.get('/foo/123/321')
 					.expect(200, <any>{ ok: true });
@@ -560,8 +553,7 @@ suite(describe => {
 			@Module({
 				controllers: [TestController],
 				imports: [
-					WebServerModule.configure({ 
-						port: nextFreePort++, 
+					WebServerModule.configure({
 						silent: true,
 						middleware: [
 							(req, res, next) => { 
@@ -575,7 +567,7 @@ suite(describe => {
 			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp);
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				let result = await test.get('/foo')
 					.expect(200, <any>{
@@ -604,8 +596,7 @@ suite(describe => {
 			@Module({
 				controllers: [TestController],
 				imports: [
-					WebServerModule.configure({ 
-						port: nextFreePort++, 
+					WebServerModule.configure({
 						silent: true,
 						middleware: [
 							bodyParser.json(),
@@ -617,7 +608,7 @@ suite(describe => {
 			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp);
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				let result = await test.post('/foo')
 					.send({ zoom: 123 })
@@ -647,7 +638,6 @@ suite(describe => {
 				controllers: [TestController],
 				imports: [
 					WebServerModule.configure({ 
-						port: nextFreePort++, 
 						silent: true,
 						middleware: [
 							bodyParser.json(),
@@ -662,7 +652,7 @@ suite(describe => {
 			class FakeApp {
 			} 
 
-			let app = await Application.bootstrap(FakeApp);
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				let result = await test.post('/foo')
 					.send({ zoom: 123 })
@@ -674,7 +664,7 @@ suite(describe => {
 		});
 
 		it('should support POST', async () => {
-			let app = await Application.bootstrap(fakeAppVarietyOfMethods());
+			let app = await Application.bootstrap(fakeAppVarietyOfMethods(), { autostart: false });
 			await teststrap(app, async (test, done) => {
 				let result = await test.post('/foo')
 					.expect(200, <any>{ foo: "post" });
@@ -685,7 +675,7 @@ suite(describe => {
 		});
 
 		it('should support PUT', async () => {
-			let app = await Application.bootstrap(fakeAppVarietyOfMethods());
+			let app = await Application.bootstrap(fakeAppVarietyOfMethods(), { autostart: false });
 			await teststrap(app, async (test, done) => {
 				let result = await test.put('/foo')
 					.expect(200, <any>{ foo: "put" });
@@ -696,7 +686,7 @@ suite(describe => {
 		});
 
 		it('should support PATCH', async () => {
-			let app = await Application.bootstrap(fakeAppVarietyOfMethods());
+			let app = await Application.bootstrap(fakeAppVarietyOfMethods(), { autostart: false });
 			await teststrap(app, async (test, done) => {
 				let result = await test.patch('/foo')
 					.expect(200, <any>{ foo: "patch" })
@@ -707,7 +697,7 @@ suite(describe => {
 		});
 
 		it('should support DELETE', async () => {
-			let app = await Application.bootstrap(fakeAppVarietyOfMethods());
+			let app = await Application.bootstrap(fakeAppVarietyOfMethods(), { autostart: false });
 			await teststrap(app, async (test, done) => {
 				let result = await test.delete('/foo')
 					.expect(200, <any>{ foo: "delete" });
@@ -718,7 +708,7 @@ suite(describe => {
 		});
 
 		it('should support OPTIONS', async () => {
-			let app = await Application.bootstrap(fakeAppVarietyOfMethods());
+			let app = await Application.bootstrap(fakeAppVarietyOfMethods(), { autostart: false });
 			await teststrap(app, async (test, done) => {
 				let result = await test
 					.options('/foo')
