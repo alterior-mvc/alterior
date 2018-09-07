@@ -18,8 +18,11 @@ export class InputOptions {
 
 export class InputAnnotation extends Annotation {
 	constructor(options : InputOptions) {
-		super();
+		super(options);
 	}
+
+	type : string;
+	name : string;
 }
 
 export function Query(name : string) {
@@ -346,16 +349,61 @@ export class WebServer {
 					let simpleTypes = [String, Number];
 					let paramDesc : RouteParamDescription = null;
 
-					let bodyAnnotation = paramAnnotations.find(x => x instanceof BodyAnnotation);
+					let inputAnnotation = paramAnnotations[i].find(x => x instanceof InputAnnotation) as InputAnnotation;
 
 					// TODO:
 					// - Require @Param() on path parameters, but inflect 
 					//   missing value from function definition
 					// - Support @Inject() on parameters
 
-					if (paramType === RouteEvent) {
+					if (inputAnnotation) {
+						let inputName = paramName;
+						if (inputAnnotation.name)
+							inputName = inputAnnotation.name;
+
+						if (inputAnnotation.type === 'body') {
+							paramFactories.push((ev : RouteEvent) => ev.request['body']);
+							paramDesc = {
+								name: 'body',
+								type: 'body',
+								description: `An instance of ${paramType}`
+							};
+						} else if (inputAnnotation.type === 'path') {
+							// This is a route parameter binding.
+
+							paramFactories.push((ev : RouteEvent) => ev.request.params[inputName]);
+
+							// Add documentation information via reflection.
+
+							let paramDesc : RouteParamDescription = pathParameterMap[inputName];
+							if (!paramDesc) {
+								pathParameterMap[inputName] = paramDesc = { 
+									name: inputName, type: 'path' 
+								};
+								routeDescription.parameters.push(paramDesc);
+							}
+
+							// Decorate the parameter description with reflection info
+							paramDesc.description = `An instance of ${paramType}`;
+
+						} else if (inputAnnotation.type === 'query') {
+							
+							// This is a query parameter binding.
+
+							paramFactories.push((ev : RouteEvent) => ev.request.query[inputName]);
+
+							// Add documentation information via reflection.
+
+							let paramDesc : RouteParamDescription = pathParameterMap[inputName];
+							if (!paramDesc) {
+								pathParameterMap[inputName] = paramDesc = { 
+									name: inputName, type: 'query' 
+								};
+								routeDescription.parameters.push(paramDesc);
+							}
+						}
+					} else if (paramType === RouteEvent) {
 						paramFactories.push(ev => ev);
-					} else if ()
 					} else if (paramName === "body") {
 						paramFactories.push((ev : RouteEvent) => ev.request['body']);
 						paramDesc = {
