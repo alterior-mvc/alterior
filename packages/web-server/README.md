@@ -153,27 +153,24 @@ For these reasons, if you choose to, you can put your routes directly on a modul
 Alterior web service in one file:
 
 ```typescript
-import { Module } from '@alterior/di';
-import { OnInit } from '@alterior/runtime';
+import { Service } from '@alterior/web-server';
 
-@Module({
-    controllers: [ MyWebService ]
+@Service({
+    providers: []
 })
 export class MyWebService implements OnInit {
-    altOnInit() {
-        // This is run when the module is first initialized.
-        // See "Lifecycle Events" below for more information.
-    }
-
     @Get('/version')
     version() {
         return { version: "1.0.0" };
     }
+
     @Get('/')
     version() {
-        return { page: 'home' };
+        return { hello: 'world' };
     }
 }
+
+Application.bootstrap(MyWebService);
 ```
 
 Finally, you must bootstrap your application. Typically this is done in a `main.ts` entrypoint file, but could be done wherever or however you want to do it:
