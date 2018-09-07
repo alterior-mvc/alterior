@@ -1,10 +1,9 @@
 import 'reflect-metadata';
 
 import { ApplicationOptions, AppOptionsAnnotation } from './app-options';
-import { ReflectiveInjector, Provider, Injector, Injectable } from 'injection-js';
-import { ModuleOptions, ModuleAnnotation } from '@alterior/di';
+import { ReflectiveInjector, Provider, Injectable } from 'injection-js';
+import { ModuleAnnotation } from '@alterior/di';
 import { Runtime } from './modules';
-import { Annotations } from '@alterior/annotations';
 import { ApplicationArgs } from './args';
 
 require('source-map-support').install();

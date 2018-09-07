@@ -1,4 +1,4 @@
-# Alterior
+# @alterior/web-server
 
 [![Build status on Travis CI](https://travis-ci.org/alterior-mvc/alterior.svg?branch=master)](https://travis-ci.org/alterior-mvc/alterior)
 [![Join the chat at https://gitter.im/alterior-mvc/Lobby](https://badges.gitter.im/alterior-core/Lobby.svg)](https://gitter.im/alterior-mvc/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -8,9 +8,6 @@ A framework for building HTTP services in Typescript. Build REST APIs with this.
 
 ## Getting started
 
-Before you begin, make sure to enable `emitDecoratorMetadata` and `experimentalDecorators` in 
-your project's `tsconfig.json`.
-
 Install the Alterior runtime, the DI library, and the web-server module:
 
 ```
@@ -18,7 +15,52 @@ npm install reflect-metadata
 npm install @alterior/runtime @alterior/di @alterior/web-server
 ```
 
-Create a module class:
+## A minimal example
+
+For simple use cases, you can build a web service using Alterior in a single file:
+
+```typescript
+import { WebService } from '@alterior/web-server';
+
+@WebService({
+    providers: []
+})
+export class MyWebService implements OnInit {
+    @Get('/version')
+    version() {
+        return { version: "1.0.0" };
+    }
+
+    @Get('/')
+    version() {
+        return { hello: 'world' };
+    }
+}
+
+Application.bootstrap(MyWebService);
+```
+
+Note that `@WebService()` is a shortcut. It is not required to construct your service. It may be preferrable to avoid it 
+when the web service is not the main focus of your overall application.
+
+Mechanically, it registers your module class itself as a controller class and distributes your provided 
+options to the module definition as well as the web server configuration. 
+
+The following definition is equivalent to using `@WebService(options?)`:
+
+```typescript
+@Module({
+    ...options,
+    controllers: [ MyWebService ],
+    imports: [ WebServerModule.configure(options) ]
+})
+@Controller()
+class MyWebService { /* ... */ }
+```
+
+For a larger application, you may wish to separate your top-level module from your web service implementation,
+especially when your application serves multiple roles. Note however that we need to explicitly include the `WebServerModule`
+since we don't have the package's `@WebService()` to handle this for us.
 
 ```typescript
 // app.module.ts
@@ -37,11 +79,7 @@ export class AppModule {
 }
 ```
 
-In order to implement URL routes, we need at least one controller. In order for a controller's routes to be recognized 
-and included in your application's routes, you must declare a controller in a `@Module()` class, and you must import 
-that module in another module that you want to use it in. Here, the `AppModule` is special in that it will be our _entry module_.
-
-Now, let's create FooController, complete with a number of example routes so you can get an idea of the style:
+Now, let's create `FooController`, complete with a number of example routes so you can get an idea of the style:
 
 ```typescript
 // foo.controller.ts
@@ -131,7 +169,7 @@ export class FooController {
 }
 ```
 
-Finally, make an entrypoint file:
+Finally, we would make a separate entry point ("main") file:
 
 ```typescript
 // main.ts 
@@ -144,51 +182,9 @@ import { AppModule } from './app.module';
 Application.bootstrap(AppModule);
 ```
 
-If you are doing microservices or tests, you may want to avoid having an extra controller class 
-when it's not necessary. Also, there are certain routes (think /, /version, /health) which you may want to 
-respond with some static responses but wouldn't really warrant having it's own controller with separate
-dependencies from your "application", even in larger multi-controller services.
-
-For these reasons, if you choose to, you can put your routes directly on a module class. In fact, here's an entire
-Alterior web service in one file:
-
-```typescript
-import { Service } from '@alterior/web-server';
-
-@Service({
-    providers: []
-})
-export class MyWebService implements OnInit {
-    @Get('/version')
-    version() {
-        return { version: "1.0.0" };
-    }
-
-    @Get('/')
-    version() {
-        return { hello: 'world' };
-    }
-}
-
-Application.bootstrap(MyWebService);
-```
-
-Finally, you must bootstrap your application. Typically this is done in a `main.ts` entrypoint file, but could be done wherever or however you want to do it:
-
-```typescript
-import { Application } from './app';
-import { bootstrap } from '@alterior/core';
-
-bootstrap(Application);
-```
-
-Hint: This is a good place to bare-import your controllers when using automatic controller discovery as described above.
-
 ## Building your app
 
-It is recommended to set your Typescript to target ES5, or do a compiler pass with an ES6 transpiler. Alterior does ship with an ESM build, so you can try it, but your mileage may vary. 
-
-You can use any build system you want, but the standard Typescript compiler (ie `tsc`) is recommended. The NPM scripts used in `@alterior/core` to build and test the core library could easily be used to build and test an Alterior application. 
+Make sure to enable `emitDecoratorMetadata` and `experimentalDecorators` in your project's `tsconfig.json`.
 
 ## Route Parameters
 

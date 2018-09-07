@@ -4,13 +4,13 @@ import { ModuleOptions, Module } from "@alterior/di";
 import { WebServerModule } from "web-server.module";
 import { WebServerOptions } from "web-server";
 
-export interface ServiceOptions extends ModuleOptions, WebServerOptions {
+export interface WebServiceOptions extends ModuleOptions, WebServerOptions {
 
 }
 
 @MetadataName('alterior/web-server:service')
-export class ServiceAnnotation extends Annotation {
-    constructor(options? : ServiceOptions) {
+export class WebServiceAnnotation extends Annotation {
+    constructor(options? : WebServiceOptions) {
         super();
     }
 }
@@ -21,7 +21,7 @@ export class ServiceAnnotation extends Annotation {
  * can both act as the entry module of an Alterior application as well as define
  * REST routes using the @alterior/web-server @Get()/@Post()/etc decorators.
  */
-export const Service = ServiceAnnotation.decorator({
+export const Service = WebServiceAnnotation.decorator({
     validTargets: [ 'class' ],
     factory: (site, options) => {
         options = Object.assign({}, options);
@@ -39,6 +39,6 @@ export const Service = ServiceAnnotation.decorator({
             options.imports.push(WebServerModule.configure(options));
 
         Module(options)(site.target);
-        return new ServiceAnnotation(options);
+        return new WebServiceAnnotation(options);
     }
 });
