@@ -1,0 +1,5 @@
+node_modules/
+npm-debug.log
+*~
+src/**/*.test.js
+src/**/*.test.ts
