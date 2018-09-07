@@ -2,6 +2,13 @@ import { ExpressRef } from "./express-ref";
 import { Application } from "@alterior/runtime";
 import * as supertest from 'supertest';
 
+/**
+ * Create a test setup for the given @alterior/web-server application. You must 
+ * depend on `supertest` to use this.
+ * 
+ * @param app 
+ * @param handler 
+ */
 export async function teststrap(app : Application, handler : (test : supertest.SuperTest<supertest.Test>, done : Function) => void) {
     let expressRef = app.inject(ExpressRef);
     

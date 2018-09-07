@@ -7,3 +7,4 @@ export * from './middleware';
 export * from './route';
 export * from './response';
 export * from './openapi';
+export * from './teststrap';
