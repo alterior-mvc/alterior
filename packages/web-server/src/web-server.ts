@@ -16,6 +16,10 @@ export class InputOptions {
 	name : string;
 }
 
+/**
+ * Should be attached to a parameter to indicate how it should be fulfilled given the current
+ * HTTP request.
+ */
 export class InputAnnotation extends Annotation {
 	constructor(options : InputOptions) {
 		super(options);
@@ -25,6 +29,10 @@ export class InputAnnotation extends Annotation {
 	name : string;
 }
 
+/**
+ * Apply to a parameter to indicate that it represents a query parameter (ie foo in /bar?foo=1)
+ * @param name 
+ */
 export function Query(name : string) {
 	return InputAnnotation.decorator({
 		factory: () => {
@@ -33,6 +41,10 @@ export function Query(name : string) {
 	})();
 }
 
+/**
+ * Apply to a parameter to indicate that it represents a path parameter (ie 'thing' in /hello/:thing)
+ * @param name 
+ */
 export function PathParam(name : string) {
 	return InputAnnotation.decorator({
 		factory: () => {
@@ -41,6 +53,9 @@ export function PathParam(name : string) {
 	})();
 }
 
+/**
+ * Apply to a parameter to indicate that it represents the body of the request. 
+ */
 export function Body() {
 	return InputAnnotation.decorator({
 		factory: () => {
