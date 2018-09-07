@@ -11,7 +11,7 @@
     "url": "https://github.com/alterior-mvc/alterior.git"
   },
   "scripts": {
-    "test": "npm run build && mocha dist/**/*.test.js",
+    "test": "lerna run test",
     "dev-test": "nodemon -e ts --ignore \"*.d.ts\" --exec npm test ",
     "clean": "rimraf dist dist.esm",
     "build": "tsc -p .",
