@@ -24,8 +24,8 @@
   },
   "homepage": "https://github.com/alterior-mvc/alterior#readme",
   "dependencies": {
-    "@alterior/common": "^2.0.0",
-    "@alterior/di": "^2.0.0"
+    "@alterior/common": "^3.0.0-beta.3",
+    "@alterior/di": "^3.0.0-beta.3"
   },
-  "gitHead": "7fa075ff4f8972752242b601e0138783bd6f3a83"
+  "gitHead": "dd889c35cf093b43b0156780f242919f41935b55"
 }
