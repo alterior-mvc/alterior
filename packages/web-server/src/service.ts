@@ -8,7 +8,7 @@ export interface WebServiceOptions extends ModuleOptions, WebServerOptions {
 
 }
 
-@MetadataName('alterior/web-server:service')
+@MetadataName('@alterior/web-server:WebService')
 export class WebServiceAnnotation extends Annotation {
     constructor(options? : WebServiceOptions) {
         super();

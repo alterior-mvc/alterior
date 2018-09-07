@@ -1,7 +1,7 @@
 import { MetadataName, NgMetadataName, Annotation } from "@alterior/annotations";
 
 @NgMetadataName('Inject')
-@MetadataName('alterior:Inject')
+@MetadataName('@alterior/di:Injectable')
 export class InjectableAnnotation extends Annotation {
 }
 
@@ -11,7 +11,7 @@ export const Injectable = InjectableAnnotation.decorator({
 
 
 @NgMetadataName('Optional')
-@MetadataName('alterior:Optional')
+@MetadataName('@alterior/di:Optional')
 export class OptionalAnnotation extends Annotation {
 }
 
@@ -20,7 +20,7 @@ export const Optional = OptionalAnnotation.decorator({
 });
 
 @NgMetadataName('Inject')
-@MetadataName('alterior:Inject')
+@MetadataName('@alterior/di:Inject')
 export class InjectAnnotation extends Annotation {
     constructor(
         readonly token : any

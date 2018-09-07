@@ -15,7 +15,7 @@ export interface ModuleOptions {
 }
 
 @NgMetadataName('NgModule')
-@MetadataName('alterior:Module')
+@MetadataName('@alterior/di:Module')
 export class ModuleAnnotation extends Annotation implements ModuleOptions {
     constructor(moduleOptions? : ModuleOptions) {
         super(moduleOptions);

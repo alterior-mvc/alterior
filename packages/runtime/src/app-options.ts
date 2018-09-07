@@ -51,7 +51,7 @@ export interface ApplicationOptions {
 /**
  * Used to attach an ApplicationOptions object onto a class definition.
  */
-@MetadataName('alterior:Application')
+@MetadataName('@alterior/di:Application')
 export class AppOptionsAnnotation extends Annotation {
 	constructor(readonly options? : ApplicationOptions) {
 		super();
