@@ -9,3 +9,11 @@ export interface OnSanityCheck {
 export interface OnInit {
 	altOnInit(); 
 }
+
+export interface OnStart {
+	altOnStart(); 
+}
+
+export interface OnStop {
+	altOnStop(); 
+}
