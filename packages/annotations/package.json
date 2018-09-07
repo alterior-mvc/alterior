@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsc -p .",
     "clean": "rimraf dist",
-    "prepare": "npm run build",
+    "prepare": "npm run test",
     "test": "npm run build && node dist/test.js"
   },
   "repository": {

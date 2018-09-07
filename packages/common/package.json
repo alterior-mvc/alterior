@@ -10,7 +10,7 @@
   "typings": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p .",
-    "prepare": "npm run build",
+    "prepare": "npm run test",
     "test": "exit 0"
   },
   "repository": {
