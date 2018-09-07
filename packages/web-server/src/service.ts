@@ -4,10 +4,18 @@ import { ModuleOptions, Module } from "@alterior/di";
 import { WebServerModule } from "web-server.module";
 import { WebServerOptions } from "web-server";
 
+/**
+ * Options for the web service. Available options are a superset 
+ * of the options available for @Module() as well as WebServerModule.configure(...).
+ */
 export interface WebServiceOptions extends ModuleOptions, WebServerOptions {
 
 }
 
+/**
+ * Backing annotation for the @WebService() decorator which is a simple API
+ * for constructing a web service using Alterior.
+ */
 @MetadataName('@alterior/web-server:WebService')
 export class WebServiceAnnotation extends Annotation {
     constructor(options? : WebServiceOptions) {
