@@ -4,42 +4,48 @@
 [![Join the chat at https://gitter.im/alterior-mvc/Lobby](https://badges.gitter.im/alterior-core/Lobby.svg)](https://gitter.im/alterior-mvc/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![npm version](https://badge.fury.io/js/%40alterior%2Fcore.svg)](https://www.npmjs.com/package/@alterior/core)
 
-A framework for building Node applications in Typescript. Build REST APIs, websocket servers, bots, tools, or any other kind of application with this. 
+A framework for building HTTP services in Typescript. Build REST APIs with this. 
 
 ## Getting started
 
-Need a sample project? See [Alterior Quickstart](https://github.com/alterior-mvc/quickstart)
+Before you begin, make sure to enable `emitDecoratorMetadata` and `experimentalDecorators` in 
+your project's `tsconfig.json`.
 
-Install the package:
+Install the Alterior runtime, the DI library, and the web-server module:
+
 ```
-npm install @alterior/core
+npm install reflect-metadata
+npm install @alterior/runtime @alterior/di @alterior/web-server
 ```
 
-Create an application class (usually in `app.ts`):
+Create a module class:
 
 ```typescript
-import 'reflect-metadata';
-import { OnSanityCheck, OnInit, AppOptions } from '@alterior/core';
+// app.module.ts
 
-export class Application implements OnSanityCheck, OnInit {
-    public altOnSanityCheck(): Promise<boolean> {
-        // Perform "health" checks like connecting to database, etc
-        // When your app is called with 'test' as first argument,
-        // Alterior will execute this and exit with code 0 on success,
-        // code 1 on error. You could then use this as a prestart check
-        // during deployment
-    	return Promise.resolve(true);
-    }
-    
-    public altOnInit() {
-        console.log('Service is started!');
-    }
+import { AppOptions } from '@alterior/runtime';
+import { Module } from '@alterior/di';
+import { WebServerModule } from '@alterior/web-server';
+import { FooController } from './foo.controller';
+
+@AppOptions({ name: 'My Application' })
+@Module({
+    imports: [ WebServerModule ],
+    controllers: [ FooController ]
+})
+export class AppModule {
 }
 ```
 
-Now, create a controller (let's say `foo.ts`). Note that everything a controller can have, the `Application` class can have as well! You don't need to make a Controller if you don't want to (more details on that later).
+In order to implement URL routes, we need at least one controller. In order for a controller's routes to be recognized 
+and included in your application's routes, you must declare a controller in a `@Module()` class, and you must import 
+that module in another module that you want to use it in. Here, the `AppModule` is special in that it will be our _entry module_.
+
+Now, let's create FooController, complete with a number of example routes so you can get an idea of the style:
 
 ```typescript
+// foo.controller.ts
+
 import { Controller, Get, RouteEvent } from '@alterior/core';
 import * as express from 'express';
 
@@ -125,32 +131,47 @@ export class FooController {
 }
 ```
 
-By default, all classes with the @Controller() decorator declared throughout your application will 
-be automatically registered in your application, but you have to ensure that your class is imported 
-for it to work. You can override this behavior by specifying 
-`autoRegisterControllers: false` in your application's `@AppOptions` decorator. If you do so, only the 
-controllers you specify in the `controllers` array of `@AppOptions` will be included in your application. 
-
-When using automatic discovery, the recommended way to ensure a controller gets loaded is with a bare import, like so:
+Finally, make an entrypoint file:
 
 ```typescript
-import "foo";
+// main.ts 
+
+import 'reflect-metadata';
+
+import { Application } from '@alterior/runtime';
+import { AppModule } from './app.module';
+
+Application.bootstrap(AppModule);
 ```
 
-You could put these into your `main.ts` or wherever you are bootstrapping Alterior.
-
-Note: If you are doing microservices or tests, you might want to avoid having an extra single controller class 
+If you are doing microservices or tests, you may want to avoid having an extra controller class 
 when it's not necessary. Also, there are certain routes (think /, /version, /health) which you may want to 
-respond with some static responses but wouldn't really warrant having an entire controller with separate
+respond with some static responses but wouldn't really warrant having it's own controller with separate
 dependencies from your "application", even in larger multi-controller services.
 
-For these reasons, if you choose to, you can put your routes directly on your application class:  
+For these reasons, if you choose to, you can put your routes directly on a module class. In fact, here's an entire
+Alterior web service in one file:
 
-```
-export class Application {
+```typescript
+import { Module } from '@alterior/di';
+import { OnInit } from '@alterior/runtime';
+
+@Module({
+    controllers: [ MyWebService ]
+})
+export class MyWebService implements OnInit {
+    altOnInit() {
+        // This is run when the module is first initialized.
+        // See "Lifecycle Events" below for more information.
+    }
+
     @Get('/version')
     version() {
         return { version: "1.0.0" };
+    }
+    @Get('/')
+    version() {
+        return { page: 'home' };
     }
 }
 ```
