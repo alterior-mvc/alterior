@@ -1,6 +1,6 @@
 {
   "name": "@alterior/runtime",
-  "version": "3.0.0-beta.1",
+  "version": "3.0.0-beta.2",
   "access": "public",
   "description": "",
   "main": "dist/index.js",
@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/alterior-mvc/alterior#readme",
   "dependencies": {
-    "@alterior/annotations": "^2.0.0",
+    "@alterior/annotations": "^3.0.0-beta.2",
     "@alterior/common": "^2.0.0",
     "@alterior/di": "^2.0.0",
     "@avejidah/get-parameter-names": "^0.3.2",
