@@ -2,6 +2,9 @@
   "name": "@alterior/web-server",
   "version": "3.0.0-beta.2",
   "access": "public",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -47,5 +50,6 @@
     "swagger-editor-dist": "^3.6.9",
     "typescript": "^2.9.2",
     "wtfnode": "^0.7.0"
-  }
+  },
+  "gitHead": "7fa075ff4f8972752242b601e0138783bd6f3a83"
 }

@@ -12,12 +12,8 @@
   },
   "scripts": {
     "test": "lerna run test",
-    "dev-test": "nodemon -e ts --ignore \"*.d.ts\" --exec npm test ",
-    "clean": "rimraf dist dist.esm",
-    "build": "tsc -p .",
-    "build:esm": "tsc -p tsconfig.esm.json",
-    "build:all": "npm run clean && npm run build && npm run build:esm",
-    "prepare": "npm run build:all"
+    "clean": "lerna run clean",
+    "build": "lerna run build"
   },
   "author": "William Lahti <wilahti@gmail.com>",
   "license": "MIT",

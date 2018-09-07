@@ -4,6 +4,10 @@
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "access": "public",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p .",
     "clean": "rimraf dist",
@@ -38,5 +42,6 @@
     "supertest": "^3.1.0",
     "swagger-editor-dist": "^3.6.9",
     "typescript": "^2.9.2"
-  }
+  },
+  "gitHead": "7fa075ff4f8972752242b601e0138783bd6f3a83"
 }

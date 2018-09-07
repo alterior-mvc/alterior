@@ -2,6 +2,9 @@
   "name": "@alterior/runtime",
   "version": "3.0.0-beta.2",
   "access": "public",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -33,5 +36,6 @@
     "@types/node": "^10.9.4",
     "razmin": "^0.1.0",
     "require-glob": "^3.2.0"
-  }
+  },
+  "gitHead": "7fa075ff4f8972752242b601e0138783bd6f3a83"
 }

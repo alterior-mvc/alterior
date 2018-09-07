@@ -2,6 +2,9 @@
   "name": "@alterior/di",
   "version": "3.0.0-beta.2",
   "access": "public",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -24,5 +27,6 @@
     "@alterior/annotations": "^3.0.0-beta.2",
     "@alterior/common": "^2.0.0",
     "injection-js": "^2.2.1"
-  }
+  },
+  "gitHead": "7fa075ff4f8972752242b601e0138783bd6f3a83"
 }
