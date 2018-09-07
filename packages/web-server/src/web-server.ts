@@ -308,6 +308,11 @@ export class WebServer {
 					let simpleTypes = [String, Number];
 					let paramDesc : RouteParamDescription = null;
 
+					// TODO:
+					// - Require @Param() on path parameters, but inflect 
+					//   missing value from function definition
+					// - Support @Inject() on parameters
+
 					if (paramType === RouteEvent) {
 						paramFactories.push(ev => ev);
 					} else if (paramName === "body") {
@@ -325,11 +330,6 @@ export class WebServer {
 							type: 'session',
 							description: `An instance of ${paramType}`
 						};
-
-					} else if (paramName === "req" || paramName === "request") {
-						paramFactories.push((ev : RouteEvent) => ev.request);
-					} else if (paramName === "res" || paramName === "response") {
-						paramFactories.push((ev : RouteEvent) => ev.response);
 					} else if (routeParams.find(x => x == paramName) && simpleTypes.indexOf(paramType) >= 0) {
 
 						// This is a route parameter binding.

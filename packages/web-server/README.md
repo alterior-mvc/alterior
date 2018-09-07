@@ -40,11 +40,29 @@ export class MyWebService implements OnInit {
 Application.bootstrap(MyWebService);
 ```
 
-Note that `@WebService()` is a shortcut. It is not required to construct your service. It may be preferrable to avoid it 
-when the web service is not the main focus of your overall application.
+## Building your app
 
-Mechanically, it registers your module class itself as a controller class and distributes your provided 
-options to the module definition as well as the web server configuration. 
+Make sure to enable `emitDecoratorMetadata` and `experimentalDecorators` in your project's `tsconfig.json`.
+
+You can delegate parts of your web service to dedicated controllers by mounting them within your main service class. Doing so will 
+route specific URLs to specific controllers. Any controller can also `@Mount()`, providing an intuitive way to construct a 
+complete web service.
+
+```typescript
+@WebService(...)
+export class MyWebService implements OnInit {
+    @Mount('/users')
+    usersController : UsersController;
+
+    @Mount('/some-plugin')
+    somePlugin : SomePluginController;
+}
+```
+
+## Mechanics 
+
+Mechanically, `@WebService()` declares the class as a module (`@Module()`), and also registers itself as a controller class within that module. 
+You can pass the same options as `@Module()` as well as the options passed to `WebServerModule.configure(...)`.
 
 The following definition is equivalent to using `@WebService(options?)`:
 
@@ -58,9 +76,8 @@ The following definition is equivalent to using `@WebService(options?)`:
 class MyWebService { /* ... */ }
 ```
 
-For a larger application, you may wish to separate your top-level module from your web service implementation,
-especially when your application serves multiple roles. Note however that we need to explicitly include the `WebServerModule`
-since we don't have the package's `@WebService()` to handle this for us.
+You don't need to use `@WebService()` to construct your service. For a larger application, you may wish to separate your 
+top-level module from your web service implementation, especially when your application serves multiple roles. 
 
 ```typescript
 // app.module.ts
@@ -77,6 +94,13 @@ import { FooController } from './foo.controller';
 })
 export class AppModule {
 }
+```
+
+Note that wew need to explicitly include the `WebServerModule` here. 
+We can also configure that module here if desired:
+
+```typescript 
+    imports: [ WebServerModule.configure({ port: 1234, ... }) ]
 ```
 
 Now, let's create `FooController`, complete with a number of example routes so you can get an idea of the style:
@@ -182,29 +206,16 @@ import { AppModule } from './app.module';
 Application.bootstrap(AppModule);
 ```
 
-## Building your app
-
-Make sure to enable `emitDecoratorMetadata` and `experimentalDecorators` in your project's `tsconfig.json`.
-
 ## Route Parameters
 
-Alterior inspects the parameters of controller methods to determine what values to provide. Firstly, parameters of type `RouteEvent` will be provided with an instance of that class which
-contains the Express request and response objects.
+Alterior inspects the parameters of controller methods to determine what values to provide. 
+First, parameters of type `RouteEvent` are fulfilled with an instance of that class which
+contains the Express request and response objects:
 
 ```typescript
 @Get('/do')
 doThings(ev : RouteEvent) {
 	ev.response.status(404).send("Not found.");
-}
-```
-
-Alternatively, parameters which are named `request` or `req` will also be fulfilled with the Express request. Likewise, `response` or `res` 
-can be used to get the response object. Note that using `RouteEvent` is preferred and recommended since it is a type-based rule. 
-
-```typescript
-@Get('/do')
-doThings(req : express.Request, res : express.Response) {
-	res.status(404).send("Not found.");
 }
 ```
 
