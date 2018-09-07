@@ -9,6 +9,42 @@ import { HttpException } from "@alterior/common";
 import { RouteDefinition } from "./route";
 import { Server } from 'http';
 import { Response } from './response';
+import { Annotations, Annotation } from '@alterior/annotations';
+
+export class InputOptions {
+	type : string;
+	name : string;
+}
+
+export class InputAnnotation extends Annotation {
+	constructor(options : InputOptions) {
+		super();
+	}
+}
+
+export function Query(name : string) {
+	return InputAnnotation.decorator({
+		factory: () => {
+			return new InputAnnotation({ type: 'query', name })
+		}
+	})();
+}
+
+export function PathParam(name : string) {
+	return InputAnnotation.decorator({
+		factory: () => {
+			return new InputAnnotation({ type: 'path', name })
+		}
+	})();
+}
+
+export function Body() {
+	return InputAnnotation.decorator({
+		factory: () => {
+			return new InputAnnotation({ type: 'body', name: '' })
+		}
+	})();
+}
 
 export interface WebServerOptions {
     port? : number;
@@ -302,11 +338,15 @@ export class WebServer {
 			)
 
 			if (paramTypes) {
+				let paramAnnotations = Annotations.getParameterAnnotations(controller, route.method, false);
+
 				for (let i = 0, max = paramNames.length; i < max; ++i) {
 					let paramName = paramNames[i];
 					let paramType = paramTypes[i];
 					let simpleTypes = [String, Number];
 					let paramDesc : RouteParamDescription = null;
+
+					let bodyAnnotation = paramAnnotations.find(x => x instanceof BodyAnnotation);
 
 					// TODO:
 					// - Require @Param() on path parameters, but inflect 
@@ -315,6 +355,7 @@ export class WebServer {
 
 					if (paramType === RouteEvent) {
 						paramFactories.push(ev => ev);
+					} else if ()
 					} else if (paramName === "body") {
 						paramFactories.push((ev : RouteEvent) => ev.request['body']);
 						paramDesc = {
