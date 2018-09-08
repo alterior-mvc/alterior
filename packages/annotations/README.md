@@ -72,7 +72,7 @@ Sometimes you may want to add additional behavior to be run when the decorator i
 
 ```typescript 
 export const Color = ColorAnnotation.decorator({
-    factory: (name : string) => {
+    factory: (site : DecoratorTarget, name : string) => {
         // do special stuff here before 
         // returning the annotation to be attached.
         return new Color(name);
