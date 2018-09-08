@@ -3,12 +3,13 @@ import { MetadataName } from "@alterior/annotations";
 import { ModuleOptions, Module } from "@alterior/di";
 import { WebServerModule } from "web-server.module";
 import { WebServerOptions } from "web-server";
+import { ApplicationOptions, AppOptions } from "@alterior/runtime";
 
 /**
  * Options for the web service. Available options are a superset 
  * of the options available for @Module() as well as WebServerModule.configure(...).
  */
-export interface WebServiceOptions extends ModuleOptions, WebServerOptions {
+export interface WebServiceOptions extends ModuleOptions, WebServerOptions, ApplicationOptions {
 
 }
 
@@ -47,6 +48,8 @@ export const Service = WebServiceAnnotation.decorator({
             options.imports.push(WebServerModule.configure(options));
 
         Module(options)(site.target);
+        AppOptions(options)(site.target);
+        
         return new WebServiceAnnotation(options);
     }
 });
