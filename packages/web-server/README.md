@@ -42,6 +42,8 @@ Application.bootstrap(MyWebService);
 
 Make sure to enable `emitDecoratorMetadata` and `experimentalDecorators` in your project's `tsconfig.json`.
 
+## Delegation via Mounting
+
 You can delegate parts of your web service to dedicated controllers by mounting them within your main service class. Doing so will 
 route specific URLs to specific controllers. Any controller can also `@Mount()`, providing an intuitive way to construct a 
 complete web service.
@@ -59,22 +61,22 @@ export class MyWebService implements OnInit {
 
 ## Mechanics 
 
-Mechanically, `@WebService()` declares the class as a module (`@Module()`), and also registers itself as a controller class within that module. 
-You can pass the same options as `@Module()` as well as the options passed to `WebServerModule.configure(...)`.
+Mechanically, `@WebService()` declares the class as a module (`@Module()`), applies `@AppOptions()`, and registers itself as a controller class within that module. 
+You can pass any of the options for `@Module()`, `@AppOptions()` as well as the options available for `WebServerModule.configure(...)`.
 
 The following definition is equivalent to using `@WebService(options?)`:
 
 ```typescript
+@AppOptions(options)
 @Module({
     ...options,
     controllers: [ MyWebService ],
     imports: [ WebServerModule.configure(options) ]
 })
-@Controller()
-class MyWebService { /* ... */ }
+export class MyWebService { /* ... */ }
 ```
 
-You don't need to use `@WebService()` to construct your service. For a larger application, you may wish to separate your 
+For a larger application, you may wish to separate your 
 top-level module from your web service implementation, especially when your application serves multiple roles. 
 
 ```typescript
@@ -253,40 +255,11 @@ Alterior includes a `Response` class that makes it easy to return any HTTP respo
 
 ## Dependency Injection
 
-Alterior supports dependency injection using the same pattern as with Angular's dependency injection system. Your application is constructed 
-from an "entry module". That module can depend on other modules by 
-adding their module classes to its `imports` list. A module can specify
-a set of dependency injection providers by adding them to its `providers`
-list. All providers specified by imported modules, including the module 
-classes themselves, are collected into a single application-level 
-injector. 
-
-A number of injectable services are in the box- perhaps you need access to the Express application object to do something Alterior doesn't support:
-
-```typescript
-import 
-@Controller()
-export class FooController {
-    constructor(
-        private expressRef : ExpressRef
-    ) {
-        this.expressApp = expressRef.application;
-        this.expressApp.get('/something', (req, res) => {
-            res.status(200).send('/something works!');
-        });
-    }
-    
-    private expressApp : express.Application;
-}
-```
-
-Other builtin injectables include:
- - The Application class. You will be given the singleton instance of your Application class.
- - `ExpressRef`: Provides reference to the `express.Application` instance as configured for your application
- - `Injector` (from `injection-js`): Provides access to the injector which resolved your class's dependencies
+Modules, controllers and services all participate in dependency injection. For more information about how DI works in Alterior apps, see the documentation for [@alterior/di](../di/README.md).
 
 ## Applying Middleware
-Alterior is based on Express (https://expressjs.com/), so naturally it supports any Express or Connect based middleware. Middleware can be used globally, it can be mounted to a specific set of URLs,  or it can be declared as part of a route, just like you can with vanilla Express.
+
+Since Alterior uses Express (https://expressjs.com/), it supports any Express-compatible or Connect based middleware. Middleware can be used globally, it can be mounted to a specific set of URLs,  or it can be declared as part of a route, just like you can with vanilla Express.
 
 To add middleware globally you must use the `@AppOptions` decorator on your app class:
 
@@ -391,9 +364,25 @@ or you can use any Express/Connect middleware that provides `request.session`.
 
 ## Custom services
 
-This is Angular's dependency injector, so you can define your own services just as you would in Angular.
-You can add providers at the bootstrap, or app-class levels.
+To declare a service, simply mark it with `@Injectable()` from `@alterior/di` and then include it in the `providers` list of one of the Alterior module definitions within your application. The service will be made available across your whole application.
 
-## That's great but how do you pronounce this?
+## Accessing the Express instance
 
-Alterior is pronounced like "ulterior" but with an A. We know it's not a proper word :-)
+Perhaps you need access to the Express application object to do something Alterior doesn't support:
+
+```typescript
+import 
+@Controller()
+export class FooController {
+    constructor(
+        private expressRef : ExpressRef
+    ) {
+        this.expressApp = expressRef.application;
+        this.expressApp.get('/something', (req, res) => {
+            res.status(200).send('/something works!');
+        });
+    }
+    
+    private expressApp : express.Application;
+}
+```
