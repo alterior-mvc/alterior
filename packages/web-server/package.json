@@ -9,8 +9,10 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p .",
+    "build": "npm run clean && tsc -p .",
     "prepare": "npm run test",
+    "clean": "rimraf dist",
+    "npm:clean": "rimraf node_modules",
     "test": "npm run build && node --inspect dist/test.js"
   },
   "repository": {

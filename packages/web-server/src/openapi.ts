@@ -94,10 +94,7 @@ export interface OpenApiDefinitionProperty {
     $ref? : string;
 }
 
-@Controller('', {
-    autoRegister: false,
-    group: 'openapi'
-})
+@Controller('', { group: 'openapi' })
 export class OpenApiController {
     constructor(
         private serviceDescriptionRef : ServiceDescriptionRef,

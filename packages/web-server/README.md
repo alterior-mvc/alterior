@@ -220,18 +220,24 @@ doThings(ev : RouteEvent) {
 }
 ```
 
-Parameters named `body` will be filled with the value of `request.body`, which is useful since you can set the type of the parameter to whatever you
-need to, such as an interface describing the expected fields that clients can send (coupled with the appropriate Express body parsing middleware). When combined with value returns, you can achieve a very natural style:  
+Parameters which are named `body` or decorated with `@Body()` will be filled with the value of `request.body`. You must use a body parsing middleware (we recommend `body-parser`) to populate `request.body`.
+
+When combined with value returns, you can achieve a very natural style:  
 
 ```typescript
+import * as bodyParser from 'body-parser';
+
 interface MyRequestType {
 	action : string;
 	foo? : number;
 }
 
-@Get('/do')
-doThings(body : MyRequestType) {
-	return {status: "success"};
+@Controller({ middleware: [ bodyParser.json() ] })
+export class MyController {
+    @Get('/do')
+    doThings(@Body() body : MyRequestType) {
+        return {status: "success"};
+    }
 }
 ```
 

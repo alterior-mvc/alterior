@@ -1,7 +1,7 @@
 require('wtfnode').init();
 
 import { Controller } from './controller';
-import { Get } from './route';
+import { Get, RouteEvent } from './route';
 import { Response as _Response } from './response';
 import * as express from 'express';
 import { HttpException } from '@alterior/common';
@@ -60,7 +60,7 @@ suite(describe => {
 			@Controller()
 			class TestController {
 				@Get('/foo')
-				getX(req : express.Request, res : express.Response) {
+				getX() {
 					return new _Response(201, [['Content-Type', 'text/plain; charset=utf-8']], "token string")
 								.encodeAs('raw');
 				}
@@ -87,7 +87,7 @@ suite(describe => {
 			@Controller()
 			class TestController {
 				@Get('/foo')
-				getX(req : express.Request, res : express.Response) {
+				getX() {
 					return new _Response(201, [], { stuff: 'and things' });
 				}
 			} 

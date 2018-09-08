@@ -11,6 +11,7 @@ import { ExpressRef } from './express-ref';
 import { Module } from '@alterior/di';
 import { WebServerModule } from './web-server.module';
 import { teststrap } from './teststrap';
+import { QueryParam } from './web-server';
 
 let nextFreePort = 10010;
 
@@ -18,33 +19,33 @@ function fakeAppVarietyOfMethods() {
 	@_Controller()
 	class TestController {
 		@Get('/foo')
-		getX(req : express.Request, res : express.Response) {
-			res.status(200).send(JSON.stringify({foo:"get"}));
+		getX(ev : RouteEvent) {
+			ev.response.status(200).send(JSON.stringify({foo:"get"}));
 		}
 
 		@Post('/foo')
-		postX(req : express.Request, res : express.Response) {
-			res.status(200).send(JSON.stringify({foo:"post"}));
+		postX(ev : RouteEvent) {
+			ev.response.status(200).send(JSON.stringify({foo:"post"}));
 		}
 
 		@Put('/foo')
-		putX(req : express.Request, res : express.Response) {
-			res.status(200).send(JSON.stringify({foo:"put"}));
+		putX(ev : RouteEvent) {
+			ev.response.status(200).send(JSON.stringify({foo:"put"}));
 		}
 
 		@Patch('/foo')
-		patchX(req : express.Request, res : express.Response) {
-			res.status(200).send(JSON.stringify({foo:"patch"}));
+		patchX(ev : RouteEvent) {
+			ev.response.status(200).send(JSON.stringify({foo:"patch"}));
 		}
 
 		@Delete('/foo')
-		deleteX(req : express.Request, res : express.Response) {
-			res.status(200).send(JSON.stringify({foo:"delete"}));
+		deleteX(ev : RouteEvent) {
+			ev.response.status(200).send(JSON.stringify({foo:"delete"}));
 		}
 
 		@Options('/foo')
-		optionsX(req : express.Request, res : express.Response) {
-			res.status(200).send(JSON.stringify({foo:"options"}));
+		optionsX(ev : RouteEvent) {
+			ev.response.status(200).send(JSON.stringify({foo:"options"}));
 		}
 	}
 
@@ -76,8 +77,8 @@ suite(describe => {
 			@_Controller()
 			class TestController {
 				@Get('/foo')
-				foo(req : express.Request, res : express.Response) {
-					res.status(200).send(JSON.stringify({foo:123}));
+				foo(ev : RouteEvent) {
+					ev.response.status(200).send(JSON.stringify({foo:123}));
 				}
 			}
 
@@ -107,7 +108,7 @@ suite(describe => {
 			@_Controller()
 			class TestController {
 				@Get('/foo')
-				getX(req : express.Request, res : express.Response) {
+				getX() {
 					return Promise.resolve({foo:"we promised"});
 				}
 			}
@@ -137,7 +138,7 @@ suite(describe => {
 			@_Controller()
 			class TestController {
 				@Get('/foo')
-				getX(req : express.Request, res : express.Response) {
+				getX() {
 					return null;
 				}
 			}
@@ -204,7 +205,7 @@ suite(describe => {
 			@_Controller()
 			class TestController {
 				@Get('/foo')
-				getX(req : express.Request, res : express.Response) {
+				getX(ev : RouteEvent) {
 					return {foo:"we promised"};
 				}
 			}
@@ -237,7 +238,7 @@ suite(describe => {
 			@_Controller()
 			class TestController {
 				@Get('/foo')
-				getX(req : express.Request, res : express.Response) {
+				getX() {
 					return "token value";
 				}
 			}
@@ -270,7 +271,7 @@ suite(describe => {
 			@_Controller()
 			class TestController {
 				@Get('/foo')
-				getX(req : express.Request, res : express.Response) {
+				getX() {
 					return Promise.reject(new Error("All the things went wrong"));
 				}
 			}
@@ -301,7 +302,7 @@ suite(describe => {
 			@_Controller()
 			class TestController {
 				@Get('/foo')
-				getX(req : express.Request, res : express.Response) {
+				getX() {
 					return Promise.reject(new HttpException(300, [['X-Test', 'pass']], {bar:777}));
 				}
 			}
@@ -344,7 +345,7 @@ suite(describe => {
 			@_Controller()
 			class TestController {
 				@Get('/foo')
-				getX(req : express.Request, res : express.Response) {
+				getX() {
 					throw error;
 				}
 			}
@@ -383,7 +384,7 @@ suite(describe => {
 			@_Controller()
 			class TestController {
 				@Get('/foo')
-				getX(req : express.Request, res : express.Response) {
+				getX() {
 					throw { foo: "bar" }
 				}
 			}
@@ -424,7 +425,7 @@ suite(describe => {
 			@_Controller()
 			class TestController {
 				@Get('/foo')
-				getX(req : express.Request, res : express.Response) {
+				getX() {
 					throw { toString: () => "testytest" }
 				}
 			}
@@ -468,8 +469,8 @@ suite(describe => {
 						}
 					]
 				})
-				getX(req : express.Request, res : express.Response) {
-					return req['fun'];
+				getX(ev : RouteEvent) {
+					return ev.request['fun'];
 				}
 			}
 
@@ -542,9 +543,9 @@ suite(describe => {
 			@_Controller()
 			class TestController {
 				@Get('/foo')
-				getX(res : express.Response, req : express.Request) { // note they are swapped
-					assert(res.send);
-					assert(req.path);
+				getX(@QueryParam('q') q : string, ev : RouteEvent) { // note they are swapped
+					assert(ev.response);
+					assert(ev.request);
 
 					return Promise.resolve({ok: true});
 				}
