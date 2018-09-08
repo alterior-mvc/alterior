@@ -2,16 +2,14 @@ import { Controller as _Controller } from './controller';
 import { Get, Post, Put, Patch, Delete, Options, RouteEvent } from './route';
 import { suite } from 'razmin';
 import * as assert from 'assert';
-import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import { HttpException } from '@alterior/common';
-import * as supertest from 'supertest';
 import { Application } from '@alterior/runtime';
-import { ExpressRef } from './express-ref';
 import { Module } from '@alterior/di';
 import { WebServerModule } from './web-server.module';
 import { teststrap } from './teststrap';
 import { QueryParam } from './web-server';
+import { WebService } from './service';
 
 let nextFreePort = 10010;
 
@@ -99,7 +97,6 @@ suite(describe => {
 			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				await test.get('/foo').expect(200, <any>{ foo: 123 });
-				app.stop();
 				done();
 			});
 		});
@@ -162,7 +159,6 @@ suite(describe => {
 			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				await test.get('/foo').expect(200, <any>null);
-				app.stop();
 				done();
 			});
 		});
@@ -196,7 +192,6 @@ suite(describe => {
 			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				await test.get('/foo').expect(200, <any>{ foo: 123 });
-				app.stop();
 				done();
 			});
 		});
@@ -229,7 +224,6 @@ suite(describe => {
 			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				await test.get('/foo').expect(200, <any>{ foo: "we promised" });
-				app.stop();
 				done();
 			});
 		});
@@ -262,7 +256,6 @@ suite(describe => {
 			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				await test.get('/foo').expect(200, <any>'"token value"');
-				app.stop();
 				done();
 			});
 		});
@@ -293,7 +286,6 @@ suite(describe => {
 			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
 				await test.get('/foo').expect(500);
-				app.stop();
 				done();
 			});
 		});
@@ -333,7 +325,6 @@ suite(describe => {
 					})
 					.expect('X-Test', 'pass');
 
-				app.stop();
 				done();
 			});
 		});
@@ -375,7 +366,6 @@ suite(describe => {
 						error: stackText
 					});
 
-				app.stop();
 				done();
 			});
 		});
@@ -416,7 +406,6 @@ suite(describe => {
 						error: {foo: "bar"}
 					});
 
-				app.stop();
 				done();
 			});
 		});
@@ -453,7 +442,6 @@ suite(describe => {
 				let result = await test.get('/foo')
 					.expect(500, <any>{ message: 'An exception occurred while handling this request.' });
 				
-				app.stop();
 				done();
 			});
 		});
@@ -496,7 +484,6 @@ suite(describe => {
 				let result = await test.get('/foo')
 					.expect(200, <any>'"funfun"');
 					
-				app.stop();
 				done();
 			});
 		});
@@ -534,7 +521,6 @@ suite(describe => {
 				let result = await test.get('/foo/123/321')
 					.expect(200, <any>{ ok: true });
 
-				app.stop();
 				done();
 			});
 		});
@@ -546,6 +532,7 @@ suite(describe => {
 				getX(@QueryParam('q') q : string, ev : RouteEvent) { // note they are swapped
 					assert(ev.response);
 					assert(ev.request);
+					assert.equal(q, 'baz');
 
 					return Promise.resolve({ok: true});
 				}
@@ -570,12 +557,50 @@ suite(describe => {
 
 			let app = await Application.bootstrap(FakeApp, { autostart: false });
 			await teststrap(app, async (test, done) => {
-				let result = await test.get('/foo')
+				let result = await test.get('/foo?q=baz')
 					.expect(200, <any>{
 						ok: true 
 					});
 					
-				app.stop();
+				done();
+			});
+		});
+
+		it('should support binding query parameters', async () => {
+			@_Controller()
+			class TestController {
+				@Get('/foo')
+				getX(@QueryParam('q') q : string) {
+					assert.equal(q, 'baz');
+
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			@Module({
+				controllers: [TestController],
+				imports: [
+					WebServerModule.configure({
+						silent: true,
+						middleware: [
+							(req, res, next) => { 
+								res.header('Content-Type', 'application/json'); 
+								next(); 
+							}
+						]
+					})
+				]
+			})
+			class FakeApp {
+			}
+
+			let app = await Application.bootstrap(FakeApp, { autostart: false });
+			await teststrap(app, async (test, done) => {
+				let result = await test.get('/foo?q=baz')
+					.expect(200, <any>{
+						ok: true 
+					});
+					
 				done();
 			});
 		});
@@ -615,7 +640,6 @@ suite(describe => {
 					.send({ zoom: 123 })
 					.expect(200, <any>{ ok: true });
 					
-				app.stop();
 				done();
 			});
 		});
@@ -659,7 +683,6 @@ suite(describe => {
 					.send({ zoom: 123 })
 					.expect(200, <any>{ ok: true });
 
-				app.stop();
 				done();
 			});
 		});
@@ -670,7 +693,6 @@ suite(describe => {
 				let result = await test.post('/foo')
 					.expect(200, <any>{ foo: "post" });
 					
-				app.stop();
 				done();
 			});
 		});
@@ -681,7 +703,6 @@ suite(describe => {
 				let result = await test.put('/foo')
 					.expect(200, <any>{ foo: "put" });
 
-				app.stop();
 				done();
 			});
 		});
@@ -692,7 +713,6 @@ suite(describe => {
 				let result = await test.patch('/foo')
 					.expect(200, <any>{ foo: "patch" })
 					
-				app.stop();
 				done();
 			});
 		});
@@ -703,7 +723,6 @@ suite(describe => {
 				let result = await test.delete('/foo')
 					.expect(200, <any>{ foo: "delete" });
 
-				app.stop();
 				done();
 			});
 		});
@@ -716,9 +735,28 @@ suite(describe => {
 					.expect(200, <any>{ foo: "options" })
 				;
 				
-				app.stop();
 				done();
 			});
 		});
+	});
+	
+	if (0) describe("WebServiceDecorator", it => {
+
+		it('should work for a simple use case', async () => {
+			@WebService()
+			class TestService {
+				@Get('/foo')
+				getX() {
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			let app = await Application.bootstrap(TestService, { autostart: false });
+			await teststrap(app, async (test, done) => {
+				await test.get('/foo').expect(200, {ok: true});
+				done();
+			});
+		});
+
 	});
 })
