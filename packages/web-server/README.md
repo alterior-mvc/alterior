@@ -220,7 +220,11 @@ doThings(ev : RouteEvent) {
 }
 ```
 
-Parameters which are named `body` or decorated with `@Body()` will be filled with the value of `request.body`. You must use a body parsing middleware (we recommend `body-parser`) to populate `request.body`.
+Parameters decorated with `@PathParam('a')` will be fulfilled with the value of path parameter `:a` from the route path. 
+
+Parameters decorated with `@QueryParam('q')` will be fulfilled with the query parameter `q` if provided. 
+
+Parameters which are named `body` or decorated with `@Body()` will be fulfilled with the value of `request.body`. You must use a body parsing middleware (we recommend `body-parser`) to populate `request.body`.
 
 When combined with value returns, you can achieve a very natural style:  
 
@@ -234,8 +238,12 @@ interface MyRequestType {
 
 @Controller({ middleware: [ bodyParser.json() ] })
 export class MyController {
-    @Get('/do')
-    doThings(@Body() body : MyRequestType) {
+    @Get('/do/:action')
+    doThings(
+        @Body() body : MyRequestType, 
+        @PathParam('action') action : string, 
+        @QueryParam('message') message : string
+    ) {
         return {status: "success"};
     }
 }
