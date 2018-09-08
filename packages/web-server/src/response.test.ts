@@ -12,7 +12,7 @@ import { suite } from 'razmin';
 import { ExpressRef } from './express-ref';
 import { Module } from '@alterior/di';
 import { WebServerModule } from './web-server.module';
-import { teststrap } from './teststrap';
+import { runTest } from './teststrap';
 
 suite(describe => {
 	describe("Response", it => {
@@ -74,7 +74,7 @@ suite(describe => {
 			}
 
 			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
+			await runTest(app, async (test, done) => {
 				await test.get('/foo')
 					.expect(201, <any>'token string')
 					.expect('Content-Type', 'text/plain; charset=utf-8');
@@ -105,7 +105,7 @@ suite(describe => {
 			}
 
 			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
+			await runTest(app, async (test, done) => {
 				await test.get('/foo')
 					.expect(201, <any>'{"stuff":"and things"}')
 					.expect('Content-Type', 'application/json; charset=utf-8');

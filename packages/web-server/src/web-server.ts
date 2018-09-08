@@ -37,8 +37,24 @@ export class InputAnnotation extends Annotation {
  */
 export function QueryParam(name : string) {
 	return InputAnnotation.decorator({
+		validTargets: [ 'parameter' ],
+		allowMultiple: false,
 		factory: () => {
 			return new InputAnnotation({ type: 'query', name })
+		}
+	})();
+}
+
+/**
+ * Apply to a parameter to indicate that it represents a query parameter (ie foo in /bar?foo=1)
+ * @param name 
+ */
+export function Session(name? : string) {
+	return InputAnnotation.decorator({
+		validTargets: [ 'parameter' ],
+		allowMultiple: false,
+		factory: () => {
+			return new InputAnnotation({ type: 'session', name })
 		}
 	})();
 }
@@ -49,6 +65,8 @@ export function QueryParam(name : string) {
  */
 export function PathParam(name : string) {
 	return InputAnnotation.decorator({
+		validTargets: [ 'parameter' ],
+		allowMultiple: false,
 		factory: () => {
 			return new InputAnnotation({ type: 'path', name })
 		}
@@ -60,6 +78,8 @@ export function PathParam(name : string) {
  */
 export function Body() {
 	return InputAnnotation.decorator({
+		validTargets: [ 'parameter' ],
+		allowMultiple: false,
 		factory: () => {
 			return new InputAnnotation({ type: 'body', name: '' })
 		}
@@ -238,7 +258,7 @@ export class WebServer {
 		let routes = routeReflector.routes;
 		let controllerInstance = injector.get(controller);
 		let controllerMetadata = ControllerAnnotation.getForClass(controller);
-		let controllerOptions = controllerMetadata.options || {};
+		let controllerOptions = controllerMetadata ? controllerMetadata.options : {} || {};
 
 		this.verboseInfo(` - ${routeReflector.mounts.length} mounts`);
 		this.verboseInfo(` - ${routeReflector.routes.length} routes`);
@@ -433,6 +453,18 @@ export class WebServer {
 							};
 							routeDescription.parameters.push(paramDesc);
 						}
+					} else if (inputAnnotation.type === 'session') {
+
+						if (inputAnnotation.name)
+							paramFactories.push((ev : RouteEvent) => (ev.request['session'] || {})[inputAnnotation.name]);
+						else
+							paramFactories.push((ev : RouteEvent) => ev.request['session']);
+
+						paramDesc = {
+							name: inputAnnotation.name || '',
+							type: 'session',
+							description: `An instance of ${paramType}`
+						};
 					}
 				} else if (paramType === RouteEvent) {
 					paramFactories.push(ev => ev);

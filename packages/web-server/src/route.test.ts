@@ -1,4 +1,4 @@
-import { Controller as _Controller } from './controller';
+import { Controller } from './controller';
 import { Get, Post, Put, Patch, Delete, Options, RouteEvent } from './route';
 import { suite } from 'razmin';
 import * as assert from 'assert';
@@ -7,14 +7,14 @@ import { HttpException } from '@alterior/common';
 import { Application } from '@alterior/runtime';
 import { Module } from '@alterior/di';
 import { WebServerModule } from './web-server.module';
-import { teststrap } from './teststrap';
-import { QueryParam } from './web-server';
+import { runTest, teststrap } from './teststrap';
+import { QueryParam, Body, Session } from './web-server';
 import { WebService } from './service';
 
 let nextFreePort = 10010;
 
 function fakeAppVarietyOfMethods() {
-	@_Controller()
+	@Controller()
 	class TestController {
 		@Get('/foo')
 		getX(ev : RouteEvent) {
@@ -72,7 +72,7 @@ function fakeAppVarietyOfMethods() {
 suite(describe => {
 	describe("RouteDecorator", it => {
 		it('should register routes defined on controllers and respond to them', async () => {
-			@_Controller()
+			@Controller()
 			class TestController {
 				@Get('/foo')
 				foo(ev : RouteEvent) {
@@ -80,29 +80,17 @@ suite(describe => {
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({
-						silent: true,
-						middleware: [
-							(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
-						]
-					})
-				]
-			})
-			class FakeApp {
-			}
+			@Module({ controllers: [TestController] })
+			class TestModule {}
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				await test.get('/foo').expect(200, <any>{ foo: 123 });
-				done();
-			});
+			teststrap(
+				TestModule, 
+				async test => test.get('/foo').expect(200, <any>{ foo: 123 })
+			);
 		});
 
 		it('should allow a method to return a promise', async () => {
-			@_Controller()
+			@Controller()
 			class TestController {
 				@Get('/foo')
 				getX() {
@@ -110,29 +98,17 @@ suite(describe => {
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({ 
-						silent: true,
-						middleware: [
-							(req, res, next) => { 
-								res.header('Content-Type', 'application/json'); 
-								next(); 
-							}
-						]
-					})
-				]
-			})
-			class FakeApp {
-			}
+			@Module({ controllers: [TestController] })
+			class FakeApp {}
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			
+			await teststrap(FakeApp, async test => 
+				await test.get('/foo')
+					.expect(200, { foo: 'we promised' })
+			);
 		});
 	
 		it('should allow a method to return null as a JSON value', async () => {
-			@_Controller()
+			@Controller()
 			class TestController {
 				@Get('/foo')
 				getX() {
@@ -140,64 +116,63 @@ suite(describe => {
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({ silent: true,
-						middleware: [
-							(req, res, next) => { 
-								res.header('Content-Type', 'application/json'); 
-								next(); 
-							}
-						]
-					})
-				]
-			})
-			class FakeApp {
-			}
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				await test.get('/foo').expect(200, <any>null);
-				done();
-			});
+			await teststrap(FakeApp, async test => 
+				await test.get('/foo')
+					.expect(200, <any>null)
+			);
 		});
 
-		it('should bind parameter `session` to `request.session`', async () => {
-			@_Controller()
+		it('should bind @Session() parameter to `request.session`', async () => {
+			@Controller()
 			class TestController {
-				@Get('/foo')
-				getX(session : any) {
-					return Promise.resolve({foo:session.test});
+				@Get('/foo', { 
+					middleware: [ 
+						(req, res, next) => 
+							(req.session = { test: 123 }, next()) 
+					]
+				})
+				getX(@Session() session : any) {
+					return Promise.resolve({foo: session.test});
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({ port: nextFreePort++, silent: true,
-						middleware: [
-							(req, res, next) => {
-								req.session = { test: 123 }; 
-								res.header('Content-Type', 'application/json'); 
-								next(); 
-							}
-						]
-					})
-				]
-			})
-			class FakeApp {
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
+
+			let app = await teststrap(FakeApp, async test => 
+				await test.get('/foo')
+					.expect(200, { foo: 123 })
+			);
+		});
+		
+		it('should bind @Session(\'name\') property to `request.session[\'name\']`', async () => {
+			@Controller()
+			class TestController {
+				@Get('/foo', { 
+					middleware: [ 
+						(req, res, next) => 
+							(req.session = { test: 123 }, next()) 
+					]
+				})
+				getX(@Session('test') test : number) {
+					return Promise.resolve({foo: test});
+				}
 			}
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				await test.get('/foo').expect(200, <any>{ foo: 123 });
-				done();
-			});
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
+
+			let app = await teststrap(FakeApp, async test => 
+				await test.get('/foo')
+					.expect(200, { foo: 123 })
+			);
 		});
 
 		it('should allow a method to return an explicit body value', async () => {
-			@_Controller()
+			@Controller()
 			class TestController {
 				@Get('/foo')
 				getX(ev : RouteEvent) {
@@ -205,31 +180,17 @@ suite(describe => {
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({ port: nextFreePort++, silent: true,
-						middleware: [
-							(req, res, next) => { 
-								res.header('Content-Type', 'application/json'); 
-								next(); 
-							}
-						]
-					})
-				]
-			})
-			class FakeApp {
-			}
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				await test.get('/foo').expect(200, <any>{ foo: "we promised" });
-				done();
-			});
+			let app = await teststrap(FakeApp, async test => 
+				await test.get('/foo')
+					.expect(200, <any>{ foo: "we promised" })
+			);
 		});
 
 		it('should re-encode a string return value as JSON', async () => {
-			@_Controller()
+			@Controller()
 			class TestController {
 				@Get('/foo')
 				getX() {
@@ -237,31 +198,17 @@ suite(describe => {
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({ port: nextFreePort++, silent: true,
-						middleware: [
-							(req, res, next) => { 
-								res.header('Content-Type', 'application/json'); 
-								next(); 
-							}
-						] 
-					})
-				]
-			})
-			class FakeApp {
-			}
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				await test.get('/foo').expect(200, <any>'"token value"');
-				done();
-			});
+			let app = await teststrap(FakeApp, async test => 
+				await test.get('/foo')
+					.expect(200, <any>'"token value"')
+			);
 		});
 
 		it('should 500 when a method returns a promise that rejects', async () => {
-			@_Controller()
+			@Controller()
 			class TestController {
 				@Get('/foo')
 				getX() {
@@ -269,71 +216,43 @@ suite(describe => {
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({ 
-						silent: true,
-						middleware: [
-							(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
-						]
-					})
-				]
-			})
-			class FakeApp {
-			}
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				await test.get('/foo').expect(500);
-				done();
-			});
+			await teststrap(FakeApp, async test =>
+				await test.get('/foo')
+					.expect(500)
+			);
 		});
 
 		it('should act accordingly when a method returns a promise that rejects with an HttpException', async () => {
-			@_Controller()
+			@Controller()
 			class TestController {
 				@Get('/foo')
 				getX() {
-					return Promise.reject(new HttpException(300, [['X-Test', 'pass']], {bar:777}));
+					return Promise.reject(
+						new HttpException(300, [['X-Test', 'pass']], {bar:777})
+					);
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({
-						silent: true,
-						middleware: [
-							(req, res, next) => { 
-								res.header('Content-Type', 'application/json'); 
-								next(); 
-							}
-						]
-					})
-				]
-			})
-			class FakeApp {
-			}
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				await test
-					.get('/foo')
+			let app = await teststrap(FakeApp, async test =>
+				await test.get('/foo')
 					.expect(300, <any>{
 						bar: 777
 					})
-					.expect('X-Test', 'pass');
-
-				done();
-			});
+					.expect('X-Test', 'pass')
+			);
 		});
 
 		it('should include the stack trace of a caught Error in a 500 response', async () => {
 			let error = new Error('testytest');
 			let stackText = error.stack;
 
-			@_Controller()
+			@Controller()
 			class TestController {
 				@Get('/foo')
 				getX() {
@@ -342,36 +261,21 @@ suite(describe => {
 			}
 
 			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({
-						silent: true,
-						middleware: [
-							(req, res, next) => { 
-								res.header('Content-Type', 'application/json'); 
-								next(); 
-							}
-						]
-					})
-				]
+				controllers: [TestController]
 			})
-			class FakeApp {
-			}
+			class FakeApp { }
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				let result = await test.get('/foo')
-					.expect(500, <any>{
+			await teststrap(FakeApp, async test =>
+				await test.get('/foo')
+					.expect(500, {
 						message: 'An exception occurred while handling this request.',
 						error: stackText
-					});
-
-				done();
-			});
+					})
+			);
 		});
 
 		it('should include a caught throwable in a 500 response', async () => {
-			@_Controller()
+			@Controller()
 			class TestController {
 				@Get('/foo')
 				getX() {
@@ -379,39 +283,20 @@ suite(describe => {
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({ 
-						port: nextFreePort++, 
-						silent: true,
-						middleware: [
-							(req, res, next) => { 
-								res.header('Content-Type', 'application/json'); 
-								next(); 
-							}
-						]
-					})
-				]
-			})
-			class FakeApp {
-			}
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				let result = await test
-					.get('/foo')
-					.expect(500, <any>{
+			let app = await teststrap(FakeApp, async test => 
+				await test.get('/foo')
+					.expect(500, {
 						message: 'An exception occurred while handling this request.',
-						error: {foo: "bar"}
-					});
-
-				done();
-			});
+						error: { foo: "bar" }
+					})
+			);
 		});
 
 		it('should exclude exception information when `hideExceptions` is true', async () => {
-			@_Controller()
+			@Controller()
 			class TestController {
 				@Get('/foo')
 				getX() {
@@ -419,35 +304,19 @@ suite(describe => {
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({ 
-						silent: true,
-						hideExceptions: true,
-						middleware: [
-							(req, res, next) => { 
-								res.header('Content-Type', 'application/json'); 
-								next(); 
-							}
-						]
-					})
-				]
-			})
-			class FakeApp {
-			}
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				let result = await test.get('/foo')
-					.expect(500, <any>{ message: 'An exception occurred while handling this request.' });
-				
-				done();
-			});
+			await teststrap(FakeApp, async test => {
+				await test.get('/foo')
+					.expect(500, { 
+						message: 'An exception occurred while handling this request.' 
+					})
+			}, { hideExceptions: true });
 		});
 
 		it('should apply route-specific middleware', async () => {
-			@_Controller()
+			@Controller()
 			class TestController {
 				@Get('/foo', {
 					middleware: [
@@ -462,34 +331,17 @@ suite(describe => {
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({
-						silent: true,
-						middleware: [
-							(req, res, next) => { 
-								res.header('Content-Type', 'application/json'); 
-								next(); 
-							}
-						]
-					})
-				]
-			})
-			class FakeApp {
-			}
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				let result = await test.get('/foo')
-					.expect(200, <any>'"funfun"');
-					
-				done();
-			});
+			await teststrap(FakeApp, async test =>
+				await test.get('/foo')
+					.expect(200, '"funfun"')
+			);
 		});
 
 		it('should be injecting express URL parameters when appropriate', async () => {
-			@_Controller()
+			@Controller()
 			class TestController {
 				@Get('/foo/:bar/:baz')
 				getX(bar : string, baz : string) {
@@ -499,34 +351,17 @@ suite(describe => {
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({
-						silent: true,
-						middleware: [
-							(req, res, next) => { 
-								res.header('Content-Type', 'application/json'); 
-								next(); 
-							}
-						]
-					})
-				]
-			}) 
-			class FakeApp {
-			}
+			@Module({ controllers: [TestController] }) 
+			class FakeApp { }
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				let result = await test.get('/foo/123/321')
-					.expect(200, <any>{ ok: true });
-
-				done();
-			});
+			await teststrap(FakeApp, async test =>
+				await test.get('/foo/123/321')
+					.expect(200, { ok: true })
+			);
 		});
 
 		it('should be reading parameter type metadata to discover how to provide parameters', async () => {
-			@_Controller()
+			@Controller()
 			class TestController {
 				@Get('/foo')
 				getX(@QueryParam('q') q : string, ev : RouteEvent) { // note they are swapped
@@ -538,36 +373,17 @@ suite(describe => {
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({
-						silent: true,
-						middleware: [
-							(req, res, next) => { 
-								res.header('Content-Type', 'application/json'); 
-								next(); 
-							}
-						]
-					})
-				]
-			})
-			class FakeApp {
-			}
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				let result = await test.get('/foo?q=baz')
-					.expect(200, <any>{
-						ok: true 
-					});
-					
-				done();
-			});
+			await teststrap(FakeApp, async test =>
+				await test.get('/foo?q=baz')
+					.expect(200, { ok: true })
+			);
 		});
 
 		it('should support binding query parameters', async () => {
-			@_Controller()
+			@Controller()
 			class TestController {
 				@Get('/foo')
 				getX(@QueryParam('q') q : string) {
@@ -577,32 +393,13 @@ suite(describe => {
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({
-						silent: true,
-						middleware: [
-							(req, res, next) => { 
-								res.header('Content-Type', 'application/json'); 
-								next(); 
-							}
-						]
-					})
-				]
-			})
-			class FakeApp {
-			}
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				let result = await test.get('/foo?q=baz')
-					.expect(200, <any>{
-						ok: true 
-					});
-					
-				done();
-			});
+			await teststrap(FakeApp, async test =>
+				await test.get('/foo?q=baz')
+					.expect(200, { ok: true })
+			);
 		});
 
 		it('should be able to inject body when the body parsing middleware is used', async () => {
@@ -610,38 +407,23 @@ suite(describe => {
 				zoom : number;
 			}
 
-			@_Controller()
+			@Controller()
 			class TestController {
-				@Post('/foo')
-				getX(body : MyRequestType) { 
+				@Post('/foo', { middleware: [ bodyParser.json() ] })
+				getX(@Body() body : MyRequestType) { 
 					assert(body.zoom === 123);
 					return Promise.resolve({ok: true});
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({
-						silent: true,
-						middleware: [
-							bodyParser.json(),
-							(req, res, next) => { res.header('Content-Type', 'application/json'); next(); }
-						]
-					})
-				]
-			})
-			class FakeApp {
-			}
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				let result = await test.post('/foo')
+			await teststrap(FakeApp, async test =>
+				await test.post('/foo')
 					.send({ zoom: 123 })
-					.expect(200, <any>{ ok: true });
-					
-				done();
-			});
+					.expect(200, { ok: true })
+			);
 		});
 
 		it('should be able to inject RouteEvent instead of request/response', async () => {
@@ -649,7 +431,7 @@ suite(describe => {
 				zoom : number;
 			}
 
-			@_Controller()
+			@Controller()
 			class TestController {
 				@Post('/foo')
 				getX(ev : RouteEvent) { 
@@ -659,88 +441,53 @@ suite(describe => {
 				}
 			}
 
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({ 
-						silent: true,
-						middleware: [
-							bodyParser.json(),
-							(req, res, next) => { 
-								res.header('Content-Type', 'application/json'); 
-								next(); 
-							}
-						]
-					})
-				]
-			})
-			class FakeApp {
-			} 
+			@Module({ controllers: [TestController] })
+			class FakeApp { } 
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				let result = await test.post('/foo')
+			await teststrap(FakeApp, async test =>
+				await test.post('/foo')
 					.send({ zoom: 123 })
-					.expect(200, <any>{ ok: true });
-
-				done();
-			});
+					.expect(200, { ok: true })
+			);
 		});
 
 		it('should support POST', async () => {
-			let app = await Application.bootstrap(fakeAppVarietyOfMethods(), { autostart: false });
-			await teststrap(app, async (test, done) => {
-				let result = await test.post('/foo')
-					.expect(200, <any>{ foo: "post" });
-					
-				done();
-			});
+			await teststrap(fakeAppVarietyOfMethods(), async test =>
+				await test.post('/foo')
+					.expect(200, { foo: "post" })
+			);
 		});
 
 		it('should support PUT', async () => {
-			let app = await Application.bootstrap(fakeAppVarietyOfMethods(), { autostart: false });
-			await teststrap(app, async (test, done) => {
-				let result = await test.put('/foo')
-					.expect(200, <any>{ foo: "put" });
-
-				done();
-			});
+			await teststrap(fakeAppVarietyOfMethods(), async test =>
+				await test.put('/foo')
+					.expect(200, { foo: "put" })
+			);
 		});
 
 		it('should support PATCH', async () => {
-			let app = await Application.bootstrap(fakeAppVarietyOfMethods(), { autostart: false });
-			await teststrap(app, async (test, done) => {
-				let result = await test.patch('/foo')
+			await teststrap(fakeAppVarietyOfMethods(), async test => 
+				await test.patch('/foo')
 					.expect(200, <any>{ foo: "patch" })
-					
-				done();
-			});
+			);
 		});
 
 		it('should support DELETE', async () => {
-			let app = await Application.bootstrap(fakeAppVarietyOfMethods(), { autostart: false });
-			await teststrap(app, async (test, done) => {
-				let result = await test.delete('/foo')
-					.expect(200, <any>{ foo: "delete" });
-
-				done();
-			});
+			await teststrap(fakeAppVarietyOfMethods(), async test => 
+				await test.delete('/foo')
+					.expect(200, { foo: "delete" })
+			);
 		});
 
 		it('should support OPTIONS', async () => {
-			let app = await Application.bootstrap(fakeAppVarietyOfMethods(), { autostart: false });
-			await teststrap(app, async (test, done) => {
-				let result = await test
-					.options('/foo')
-					.expect(200, <any>{ foo: "options" })
-				;
-				
-				done();
-			});
+			await teststrap(fakeAppVarietyOfMethods(), async test => 
+				await test.options('/foo')
+					.expect(200, { foo: "options" })
+			);
 		});
 	});
 	
-	if (0) describe("WebServiceDecorator", it => {
+	describe("WebServiceDecorator", it => {
 
 		it('should work for a simple use case', async () => {
 			@WebService()
@@ -751,11 +498,9 @@ suite(describe => {
 				}
 			}
 
-			let app = await Application.bootstrap(TestService, { autostart: false });
-			await teststrap(app, async (test, done) => {
-				await test.get('/foo').expect(200, {ok: true});
-				done();
-			});
+			await teststrap(TestService, async test =>
+				await test.get('/foo').expect(200, {ok: true})
+			);
 		});
 
 	});

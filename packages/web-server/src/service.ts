@@ -4,13 +4,14 @@ import { ModuleOptions, Module } from "@alterior/di";
 import { WebServerModule } from "./web-server.module";
 import { WebServerOptions } from "./web-server";
 import { ApplicationOptions, AppOptions } from "@alterior/runtime";
+import { Controller } from "./controller";
 
 /**
  * Options for the web service. Available options are a superset 
  * of the options available for @Module() as well as WebServerModule.configure(...).
  */
-export interface WebServiceOptions extends ModuleOptions, WebServerOptions, ApplicationOptions {
-
+export interface WebServiceOptions extends ApplicationOptions, ModuleOptions {
+    server : WebServerOptions;
 }
 
 /**
@@ -45,9 +46,10 @@ export const WebService = WebServiceAnnotation.decorator({
         let existingModule = options.imports.find(x => x === WebServerModule || x['$module'] === WebServerModule);
 
         if (!existingModule)
-            options.imports.push(WebServerModule.configure(options));
+            options.imports.push(WebServerModule.configure(options.server));
 
         Module(options)(site.target);
+        Controller('', { group: 'service' })(site.target);
         AppOptions(options)(site.target);
         
         return new WebServiceAnnotation(options);
