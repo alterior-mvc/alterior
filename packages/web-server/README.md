@@ -96,7 +96,7 @@ export class AppModule {
 }
 ```
 
-Note that wew need to explicitly include the `WebServerModule` here. 
+Note that we need to explicitly include the `WebServerModule` here. 
 We can also configure that module here if desired:
 
 ```typescript 
@@ -142,7 +142,8 @@ export class FooController {
      * and the correct value is provided depending on what type (and in some cases what name)
      * your parameter has.
      *
-     * For example, you can get access to the Express request and response by injecting RouteEvent.
+     * For example, you can get access to the Express request and response by injecting 
+     * RouteEvent.
      */
     @Get('/useRouteEvent')
     public canHazRouteEvent(ev : RouteEvent)
@@ -234,18 +235,18 @@ doThings(body : MyRequestType) {
 }
 ```
 
-## HTTP Exceptions
+## `HttpError`
 
-The `HttpException` class is included to signal Alterior to send certain HTTP status codes and responses back to the client when exceptional circumstances occur.
+The `HttpError` class is included to signal Alterior to send certain HTTP status codes and responses back to the client when exceptional circumstances occur.
 
 ```typescript
 	// Perhaps we couldn't contact a microservice needed to fulfill the request.
-	throw new HttpException(502, "Service is not available");
+	throw new HttpError(502, "Service is not available");
 ```
 
-## `Response` class
+## `Response`
 
-Alterior includes a `Response` class that makes it easy to return a rich HTTP response from your method. You can use this instead of HTTP exceptions if you wish, so here's the same example using `Response`:
+Alterior includes a `Response` class that makes it easy to return any HTTP response from your method. You can use this instead of HTTP exceptions if you wish, so here's the same example using `Response`:
 
 ```typescript
 	// Perhaps we couldn't contact a microservice needed to fulfill the request.
@@ -254,7 +255,15 @@ Alterior includes a `Response` class that makes it easy to return a rich HTTP re
 
 ## Dependency Injection
 
-Alterior supports dependency injection using the same pattern as with Angular's dependency injection system (via the excellent `injection-js` spinoff library). A number of injectable services are in the box- perhaps you need access to the Express application object to do something Alterior doesn't support:
+Alterior supports dependency injection using the same pattern as with Angular's dependency injection system. Your application is constructed 
+from an "entry module". That module can depend on other modules by 
+adding their module classes to its `imports` list. A module can specify
+a set of dependency injection providers by adding them to its `providers`
+list. All providers specified by imported modules, including the module 
+classes themselves, are collected into a single application-level 
+injector. 
+
+A number of injectable services are in the box- perhaps you need access to the Express application object to do something Alterior doesn't support:
 
 ```typescript
 import 
@@ -342,10 +351,6 @@ To do so, set `AppOptions.hideExceptions` to `true`. The `error` field will then
 ```
 {"message":"An exception occurred while handling this request."}
 ``` 
-
-## MongoDB integration
-
-MongoDB integration is no longer bundled in. See [@alterior/mongo](https://github.com/alterior-mvc/alterior-mongo)
 
 ## Sessions
 
