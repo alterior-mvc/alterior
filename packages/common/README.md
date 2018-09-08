@@ -1,8 +1,6 @@
 # @alterior/common
 
-[![Build status on Travis CI](https://travis-ci.org/alterior-mvc/alterior.svg?branch=master)](https://travis-ci.org/alterior-mvc/alterior)
-[![Join the chat at https://gitter.im/alterior-mvc/Lobby](https://badges.gitter.im/alterior-core/Lobby.svg)](https://gitter.im/alterior-mvc/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![npm version](https://badge.fury.io/js/%40alterior%2Fcore.svg)](https://www.npmjs.com/package/@alterior/core)
+[![npm version](https://badge.fury.io/js/%40alterior%2Fcommon.svg)](https://www.npmjs.com/package/@alterior/common)
 
 Provides a number of base classes, utilities, and errors which are useful in constructing larger applications.
 

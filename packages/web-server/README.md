@@ -1,8 +1,6 @@
 # @alterior/web-server
 
-[![Build status on Travis CI](https://travis-ci.org/alterior-mvc/alterior.svg?branch=master)](https://travis-ci.org/alterior-mvc/alterior)
-[![Join the chat at https://gitter.im/alterior-mvc/Lobby](https://badges.gitter.im/alterior-core/Lobby.svg)](https://gitter.im/alterior-mvc/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![npm version](https://badge.fury.io/js/%40alterior%2Fcore.svg)](https://www.npmjs.com/package/@alterior/core)
+[![npm version](https://badge.fury.io/js/%40alterior%2Fweb-server.svg)](https://www.npmjs.com/package/@alterior/web-server)
 
 A framework for building HTTP services in Typescript. Build REST APIs with this. 
 
