@@ -1,8 +1,8 @@
-import { Annotation } from "@alterior/annotations/src/annotations";
+import { Annotation } from "@alterior/annotations";
 import { MetadataName } from "@alterior/annotations";
 import { ModuleOptions, Module } from "@alterior/di";
-import { WebServerModule } from "web-server.module";
-import { WebServerOptions } from "web-server";
+import { WebServerModule } from "./web-server.module";
+import { WebServerOptions } from "./web-server";
 import { ApplicationOptions, AppOptions } from "@alterior/runtime";
 
 /**
@@ -30,7 +30,7 @@ export class WebServiceAnnotation extends Annotation {
  * can both act as the entry module of an Alterior application as well as define
  * REST routes using the @alterior/web-server @Get()/@Post()/etc decorators.
  */
-export const Service = WebServiceAnnotation.decorator({
+export const WebService = WebServiceAnnotation.decorator({
     validTargets: [ 'class' ],
     factory: (site, options) => {
         options = Object.assign({}, options);
