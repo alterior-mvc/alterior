@@ -34,9 +34,25 @@ export async function teststrap(module : Function, handler : (test : supertest.S
     class RootModule {
     }
 
-    let app = await Application.bootstrap(RootModule, { autostart: false });
+    let app : Application;
+    
+    try {
+        app = await Application.bootstrap(RootModule, { autostart: false });
+    } catch (e) {
+        console.error(`Caught error while teststrapping: `);
+        console.error(e);
+
+        throw e;
+    }
+
     return await runTest(app, async (test, done) => {
-        await handler(test);
+        try {
+            await handler(test);
+        } catch (e) {
+            console.error(`Caught error while running handler:`);
+            console.error(e);
+            throw e;
+        }
         done();
     });
 }
