@@ -3,13 +3,12 @@ import { Get, Post, Put, Patch, Delete, Options, RouteEvent } from './route';
 import { suite } from 'razmin';
 import * as assert from 'assert';
 import * as bodyParser from 'body-parser';
-import { HttpException } from '@alterior/common';
-import { Application } from '@alterior/runtime';
 import { Module } from '@alterior/di';
 import { WebServerModule } from './web-server.module';
-import { runTest, teststrap } from './teststrap';
-import { QueryParam, Body, Session } from './web-server';
+import { teststrap } from './teststrap';
+import { QueryParam, Body, Session } from './input';
 import { WebService } from './service';
+import { HttpError } from '@alterior/common';
 
 let nextFreePort = 10010;
 
@@ -225,13 +224,13 @@ suite(describe => {
 			);
 		});
 
-		it('should act accordingly when a method returns a promise that rejects with an HttpException', async () => {
+		it('should act accordingly when a method returns a promise that rejects with an HttpError', async () => {
 			@Controller()
 			class TestController {
 				@Get('/foo')
 				getX() {
 					return Promise.reject(
-						new HttpException(300, [['X-Test', 'pass']], {bar:777})
+						new HttpError(300, [['X-Test', 'pass']], {bar:777})
 					);
 				}
 			}

@@ -3,7 +3,8 @@ import { Application } from "@alterior/runtime";
 import * as supertest from 'supertest';
 import { Module } from "@alterior/di";
 import { WebServerModule } from "./web-server.module";
-import { WebServerOptions } from "web-server";
+import { WebServerOptions, RouteInstance } from "web-server";
+import { RouteEvent } from "route";
 
 /**
  * Create a test setup for the given @alterior/web-server application. You must 
@@ -14,11 +15,13 @@ import { WebServerOptions } from "web-server";
  */
 export async function teststrap(module : Function, handler : (test : supertest.SuperTest<supertest.Test>) => Promise<any>, options? : WebServerOptions) {
 
+    let thrownError = null;
+
     @Module({
         imports: [
             module,
             WebServerModule.configure(
-                Object.assign({
+                Object.assign(<WebServerOptions>{
                     silent: true,
                     hideExceptions: false,
                     middleware: [
@@ -26,7 +29,12 @@ export async function teststrap(module : Function, handler : (test : supertest.S
                             res.header('Content-Type', 'application/json'); 
                             next(); 
                         }
-                    ]
+                    ],
+                    onError: (error : any, event : RouteEvent, route : RouteInstance, source : string) => {
+                        if (options && (options.onError || options.onError === null))
+                            return;
+                        thrownError = error;
+                    }
                 }, options)
             )
         ]
@@ -49,8 +57,8 @@ export async function teststrap(module : Function, handler : (test : supertest.S
         try {
             await handler(test);
         } catch (e) {
-            console.error(`Caught error while running handler:`);
-            console.error(e);
+            if (thrownError)
+                throw thrownError;
             throw e;
         }
         done();

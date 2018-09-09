@@ -1,90 +1,18 @@
 import * as getParameterNames from '@avejidah/get-parameter-names';
 import * as express from 'express';
 
-import { ExpressRef } from "./express-ref";
 import { Provider, ReflectiveInjector, Injector } from "injection-js";
 import { prepareMiddleware } from "./middleware";
 import { RouteReflector, MountOptions, RouteEvent } from "./route";
-import { HttpError } from "@alterior/common";
+import { HttpError, BaseErrorT } from "@alterior/common";
 import { RouteDefinition } from "./route";
 import { Server } from 'http';
 import { Response } from './response';
-import { Annotations, Annotation, MetadataName, IAnnotation } from '@alterior/annotations';
+import { Annotations, IAnnotation } from '@alterior/annotations';
 import { ControllerAnnotation, ControllerOptions } from './controller';
-import { ServerOptions } from 'http2';
+import { InputAnnotation } from './input';
 
-export class InputOptions {
-	type : string;
-	name : string;
-}
-
-/**
- * Should be attached to a parameter to indicate how it should be fulfilled given the current
- * HTTP request.
- */
-@MetadataName('@alterior/web-server:Input')
-export class InputAnnotation extends Annotation {
-	constructor(options : InputOptions) {
-		super(options);
-	}
-
-	type : string;
-	name : string;
-}
-
-/**
- * Apply to a parameter to indicate that it represents a query parameter (ie foo in /bar?foo=1)
- * @param name 
- */
-export function QueryParam(name : string) {
-	return InputAnnotation.decorator({
-		validTargets: [ 'parameter' ],
-		allowMultiple: false,
-		factory: () => {
-			return new InputAnnotation({ type: 'query', name })
-		}
-	})();
-}
-
-/**
- * Apply to a parameter to indicate that it represents a query parameter (ie foo in /bar?foo=1)
- * @param name 
- */
-export function Session(name? : string) {
-	return InputAnnotation.decorator({
-		validTargets: [ 'parameter' ],
-		allowMultiple: false,
-		factory: () => {
-			return new InputAnnotation({ type: 'session', name })
-		}
-	})();
-}
-
-/**
- * Apply to a parameter to indicate that it represents a path parameter (ie 'thing' in /hello/:thing)
- * @param name 
- */
-export function PathParam(name : string) {
-	return InputAnnotation.decorator({
-		validTargets: [ 'parameter' ],
-		allowMultiple: false,
-		factory: () => {
-			return new InputAnnotation({ type: 'path', name })
-		}
-	})();
-}
-
-/**
- * Apply to a parameter to indicate that it represents the body of the request. 
- */
-export function Body() {
-	return InputAnnotation.decorator({
-		validTargets: [ 'parameter' ],
-		allowMultiple: false,
-		factory: () => {
-			return new InputAnnotation({ type: 'body', name: '' })
-		}
-	})();
+export class WebServerSetupError extends BaseErrorT {
 }
 
 export interface WebServerOptions {
@@ -92,7 +20,9 @@ export interface WebServerOptions {
     middleware? : Function[];
     hideExceptions? : boolean;
     verbose? : boolean;
-    silent? : boolean;
+	silent? : boolean;
+	onError? : (error : any, event : RouteEvent, route : RouteInstance, source : string) => void;
+	handleError? : (error : any, event : RouteEvent, route : RouteInstance, source : string) => void;
 }
 
 export interface ServiceDescription {
@@ -128,21 +58,6 @@ export class ServiceDescriptionRef {
 	}
 }
 
-export interface ControllerContext {
-	pathPrefix? : string;
-
-	/* PRIVATE */
-
-	visited? : any[];
-}
-
-const EXPRESS_SUPPORTED_METHODS = [ 
-	"checkout", "copy", "delete", "get", "head", "lock", "merge", 
-	"mkactivity", "mkcol", "move", "m-search", "notify", "options", 
-	"patch", "post", "purge", "put", "report", "search", "subscribe", 
-	"trace", "unlock", "unsubscribe",
-];
-
 /**
  * Implements a web server which is comprised of a set of Controllers.
  */
@@ -171,7 +86,17 @@ export class WebServer {
 		this.expressServer.close();
     }
 
-	handleError(error : any, event : RouteEvent, route : Route, source : string) {
+	handleError(error : any, event : RouteEvent, route : RouteInstance, source : string) {
+
+		if (this.options.onError) {
+			this.options.onError(error, event, route, source);
+		}
+
+		if (this.options.handleError) {
+			this.options.handleError(error, event, route, source);
+			return;
+		}
+
 		if (!this.options.silent) {
 			console.error(`Error handling request '${event.request.path}'`);
 			console.error(`Handled by: ${source}`);
@@ -259,412 +184,19 @@ export class WebServer {
 
 		this.controllers.forEach(c => c.mount(this.expressApp));
     }
-    
-	private async initializeController(
-		injector : Injector, 
-		controller : Function, 
-		allRoutes : any[], 
-		context? : ControllerContext
-	) {
-		// Prepare the context for ease of use.
-
-		if (!context)
-			context = {};
-
-		if (!context.pathPrefix)
-			context.pathPrefix = '';
-	
-		if (!context.visited)
-			context.visited = [];
-
-		if (context.visited.includes(controller)) {
-			console.warn(`Controller visited multiple times and skipped. May indicate recursion.`);
-			return;
-		}
-		
-		context.visited.push(controller);
-
-		this.verboseInfo(`Initializing controller ${controller.name || controller} with path prefix '${context.pathPrefix}'`);
-
-		// Reflect upon our routes
-
-		let routeReflector = new RouteReflector(controller, context.pathPrefix);
-		let routes = routeReflector.routes;
-		let controllerInstance = injector.get(controller);
-		let controllerMetadata = ControllerAnnotation.getForClass(controller);
-		let controllerOptions = controllerMetadata ? controllerMetadata.options : {} || {};
-
-		this.verboseInfo(` - ${routeReflector.mounts.length} mounts`);
-		this.verboseInfo(` - ${routeReflector.routes.length} routes`);
-
-		for (let mount of routeReflector.mounts) {
-			let providers : Provider[] = (mount.options || {} as MountOptions).providers || [];
-			let controllers = (mount.controllers || []).slice();
-			let controllerType = Reflect.getMetadata('design:type', controller.prototype, mount.propertyKey);
-			
-			if (typeof controllerType === 'function' && controllerType !== Object)
-				controllers.push(controllerType);
-
-			providers.push(...(controllers as Provider[]));
-
-			this.verboseInfo(` - Setting up mount (base '${mount.path}') with ${controllers.length} controllers...`);
-			let mountInjector : ReflectiveInjector;
-			
-			this.verboseInfo(` - Providers: `);
-			this.verboseDir(providers);
-			try {
-				mountInjector = ReflectiveInjector.resolveAndCreate(providers, injector);
-			} catch (e) {
-				console.error(`Failed to resolve and create dependency injector for mount with path '${mount.path}'`);
-				console.error(e);
-				throw e;
-			}
-
-			for (let controller of controllers) {
-				this.initializeController(mountInjector, controller, allRoutes, {
-					pathPrefix: `${context.pathPrefix.replace(/\/+$/g, '')}/${mount.path.replace(/^\/+/g, '')}`
-				});
-			}
-		}
-
-		// Register all of our routes with Express
-
-		for (let route of routes)
-			this.prepareRoute(injector, controller, controllerOptions, controllerInstance, route, allRoutes);
-	}
-
-	private prepareRoute(
-		injector : Injector, 
-		controller : Function, 
-		controllerOptions : ControllerOptions, 
-		controllerInstance : any, 
-		route : RouteDefinition, 
-		allRoutes : any[]
-	) {
-		// Load up the defined middleware for this route
-
-		let middleware = [].concat(route.options.middleware || []);
-		if (controllerOptions.middleware)
-			middleware = [].concat(controllerOptions.middleware, middleware);
-
-		// Ensure indexes are valid.
-
-		let invalidIndex = middleware.findIndex(x => !x);
-		if (invalidIndex >= 0)
-			throw new Error(`Route '${route.path}' provided null middleware at position ${invalidIndex}`);
-
-		// Procure an injector which can handle injecting the middlewares' providers
-
-		let middlewareProviders : Provider[] = middleware.filter(x => Reflect.getMetadata('alterior:middleware', x));
-		let childInjector = ReflectiveInjector.resolveAndCreate(middlewareProviders, injector);
-
-		// Add it to the global route list
-
-		allRoutes.push({
-			controller,
-			route
-		});
-
-		let args : any[] = [ route.path ];
-
-		// Prepare the middlewares (if they are DI middlewares, they get injected)
-
-		middleware.forEach(x => args.push(prepareMiddleware(childInjector, x)));
-
-		let routeParams = (route.path || "").match(/:([A-Za-z][A-Za-z0-9]*)/g) || [];
-
-		routeParams = routeParams.map(x => x.substr(1));
-
-		// Document the route. We'll add the parameters later.
-
-		let group : string = undefined;
-		let controllerGroup : string = undefined;
-		
-		if (controllerOptions && controllerOptions.group) {
-			controllerGroup = controllerOptions.group;
-		} else {
-			controllerGroup = controller.name.replace(/Controller$/, '');
-			controllerGroup = controllerGroup.charAt(0).toLowerCase()+controllerGroup.slice(1);
-		}
-
-		if (route.options && route.options.group)
-			group = route.options.group;
-		else (controllerOptions && controllerOptions.group)
-			group = controllerGroup;
-		
-		let routeDescription : RouteDescription = {
-			definition: route,
-			httpMethod: route.httpMethod,
-			group,
-			method: route.method,
-			path: route.path,
-			parameters: []
-		};
-		this._serviceDescription.routes.push(routeDescription);
-
-		// Do analysis of the controller method ahead of time so we can 
-		// minimize the amount of overhead of actual web requests
-
-		let returnType = Reflect.getMetadata("design:returntype", controller.prototype, route.method);
-		let paramTypes = Reflect.getMetadata("design:paramtypes", controller.prototype, route.method);
-		let paramNames = getParameterNames(controller.prototype[route.method]);
-		let paramFactories = [];
-		let pathParameterMap : any = {};
-
-		// Construct a set of easily addressable path parameter descriptions (pathParameterMap)
-		// that can be decorated with insights from reflection later.
-
-		let pathParamMatches = route.path.match(/:([A-Za-z0-9]+)/g) || [];
-		let pathParamNames = Object.keys(pathParamMatches.reduce((pv, cv) => (pv[cv] = 1, pv), {}));
-		let simpleTypes = [String, Number];
-
-		routeDescription.parameters.push(
-			...pathParamNames
-				.map(id => <RouteParamDescription>{
-					name: id.replace(/^:/, ''),
-					type: 'path'
-				})
-				.map(desc => pathParameterMap[desc.name] = desc)
-		)
-
-		if (paramTypes) {
-			let paramAnnotations = Annotations.getParameterAnnotations(controller, route.method, false);
-
-			for (let i = 0, max = paramNames.length; i < max; ++i) {
-				let paramName = paramNames[i];
-				let paramType = paramTypes[i];
-				let simpleTypes = [String, Number];
-				let paramDesc : RouteParamDescription = null;
-
-				let inputAnnotation = (paramAnnotations[i] || []).find(x => x instanceof InputAnnotation) as InputAnnotation;
-
-				// TODO:
-				// - Require @Param() on path parameters, but inflect 
-				//   missing value from function definition
-				// - Support @Inject() on parameters
-
-				if (inputAnnotation) {
-					let inputName = paramName;
-					if (inputAnnotation.name)
-						inputName = inputAnnotation.name;
-
-					if (inputAnnotation.type === 'body') {
-						paramFactories.push((ev : RouteEvent) => ev.request['body']);
-						paramDesc = {
-							name: 'body',
-							type: 'body',
-							description: `An instance of ${paramType}`
-						};
-					} else if (inputAnnotation.type === 'path') {
-						// This is a route parameter binding.
-
-						paramFactories.push((ev : RouteEvent) => ev.request.params[inputName]);
-
-						// Add documentation information via reflection.
-
-						let paramDesc : RouteParamDescription = pathParameterMap[inputName];
-						if (!paramDesc) {
-							pathParameterMap[inputName] = paramDesc = { 
-								name: inputName, type: 'path' 
-							};
-							routeDescription.parameters.push(paramDesc);
-						}
-
-						// Decorate the parameter description with reflection info
-						paramDesc.description = `An instance of ${paramType}`;
-
-					} else if (inputAnnotation.type === 'query') {
-						
-						// This is a query parameter binding.
-
-						paramFactories.push((ev : RouteEvent) => ev.request.query[inputName]);
-
-						// Add documentation information via reflection.
-
-						let paramDesc : RouteParamDescription = pathParameterMap[inputName];
-						if (!paramDesc) {
-							pathParameterMap[inputName] = paramDesc = { 
-								name: inputName, type: 'query' 
-							};
-							routeDescription.parameters.push(paramDesc);
-						}
-					} else if (inputAnnotation.type === 'session') {
-
-						if (inputAnnotation.name)
-							paramFactories.push((ev : RouteEvent) => (ev.request['session'] || {})[inputAnnotation.name]);
-						else
-							paramFactories.push((ev : RouteEvent) => ev.request['session']);
-
-						paramDesc = {
-							name: inputAnnotation.name || '',
-							type: 'session',
-							description: `An instance of ${paramType}`
-						};
-					}
-				} else if (paramType === RouteEvent) {
-					paramFactories.push(ev => ev);
-				} else if (paramName === "body") {
-					paramFactories.push((ev : RouteEvent) => ev.request['body']);
-					paramDesc = {
-						name: 'body',
-						type: 'body',
-						description: `An instance of ${paramType}`
-					};
-				} else if (paramName === "session") {
-					paramFactories.push((ev : RouteEvent) => ev.request['session']);
-					
-					paramDesc = {
-						name: 'session',
-						type: 'session',
-						description: `An instance of ${paramType}`
-					};
-				} else if (routeParams.find(x => x == paramName) && simpleTypes.indexOf(paramType) >= 0) {
-
-					// This is a route parameter binding.
-
-					paramFactories.push((ev : RouteEvent) => ev.request.params[paramName]);
-
-					// Add documentation information via reflection.
-
-					let paramDesc : RouteParamDescription = pathParameterMap[paramName];
-					if (!paramDesc) {
-						pathParameterMap[paramName] = paramDesc = { 
-							name: paramName, type: 'path' 
-						};
-						routeDescription.parameters.push(paramDesc);
-					}
-
-					// Decorate the parameter description with reflection info
-
-					
-					paramDesc.description = `An instance of ${paramType}`;
-				} else {
-					let sanitizedType = paramType ? (paramType.name || '<unknown>') : '<undefined>';
-					throw new Error(
-						`Unable to fulfill route method parameter '${paramName}' of type '${sanitizedType}'\r\n`
-						+ `While preparing route ${route.method} ${route.path} with method ${route.method}()`
-					);
-				}
-
-				if (paramDesc) {
-					routeDescription.parameters.push(paramDesc);
-				}
-			}
-		} else {
-			paramFactories = [
-				(ev : RouteEvent) => ev.request, 
-				(ev : RouteEvent) => ev.response
-			];
-		}
-
-		// Append the actual controller method
-
-		args.push(async (req : express.Request, res : express.Response) => {
-			/**
-			 * Handle exception response
-			 */
-			let handleExceptionResponse = (e) => {
-				
-				if (e.constructor === HttpError) {
-					let httpError = <HttpError>e;
-					res.status(httpError.statusCode);
-					
-					httpError.headers
-						.forEach(header => res.header(header[0], header[1]));
-
-					res.send(httpError.body);
-				} else {
-					if (!this.options.silent) {
-						console.error(`Exception while handling route ${route.path} via method ${controller.name}.${route.method}():`);
-						console.error(e);
-					}
-					
-					let response : any = {
-						message: 'An exception occurred while handling this request.'
-					};
-
-					if (!this.options.hideExceptions) {
-						if (e.constructor === Error)
-							response.error = e.stack;
-						else
-							response.error = e;
-					}
-
-					res.status(500).send(JSON.stringify(response));
-				}
-			}
-
-			if (!this.options.silent)
-				console.info(`[${new Date().toLocaleString()}] ${route.path} => ${controller.name}.${route.method}()`);
-
-			// Execute our function by resolving the parameter factories into a set of parameters to provide to the 
-			// function.
-
-			let ev = new RouteEvent(req, res);
-			let result;
-
-			try {
-				result = await controllerInstance[route.method].apply(controllerInstance, paramFactories.map(x => x(ev)));
-			} catch (e) {
-				handleExceptionResponse(e);
-				return;
-			}
-
-			// Return value handling
-
-			let handleResponse = async (result) => {
-				if (result === undefined) {
-					res.end();
-					return;
-				}
-
-				if (result === null) {
-					res	.status(200)
-						.header('Content-Type', 'application/json')
-						.send(JSON.stringify(result))
-					;
-					return;
-				}
-
-				try {
-					if (result.constructor === Response) {
-						let response = <Response>result;
-						res.status(response.status);
-						response.headers.forEach(x => res.header(x[0], x[1]));
-						res.send(response.body); 
-					} else {
-						res	.status(200)
-							.header('Content-Type', 'application/json')
-							.send(JSON.stringify(result))
-						;
-					}
-				} catch (e) {
-					console.error(`Caught exception:`);
-					console.error(e);
-
-					throw e;
-				}
-			};
-
-			await handleResponse(result);
-		});
-
-		// Select the appropriate express "registrar" method (ie get, put, post, delete, patch) 
-
-		let loweredMethod = route.httpMethod.toLowerCase();
-
-		if (!EXPRESS_SUPPORTED_METHODS.includes(loweredMethod))
-			throw new Error(`The requested method '${loweredMethod}' is not supported by Express.`);
-			
-		let registrar : Function = this.expressApp[loweredMethod];
-
-		// Send into express (registrar is one of express.get, express.put, express.post etc)
-
-		this.verboseInfo(`   |- registering route ${loweredMethod.toUpperCase()} ${args[0]}`);
-		registrar.apply(this.expressApp, args);
-	}
 }
 
+export interface ControllerContext {
+	pathPrefix? : string;
+
+	/* PRIVATE */
+
+	visited? : any[];
+}
+
+/**
+ * Represents an instance of a controller, which can be used to handle requests.
+ */
 export class ControllerInstance {
 	constructor(
 		readonly server : WebServer,
@@ -748,10 +280,10 @@ export class ControllerInstance {
 
 		// Register all of our routes with Express
 
-		this._routes = routeDefinitions.map(definition => new Route(this, definition));
+		this._routes = routeDefinitions.map(definition => new RouteInstance(this, definition));
 	}
 
-	private _routes : Route[];
+	private _routes : RouteInstance[];
 
 	get routes() {
 		return this._routes;
@@ -783,7 +315,6 @@ export class ControllerInstance {
 	}
 
 	mount(app : express.Application) {
-		console.log(`Mounting ${this.routes.length} routes in controller...`);
 		this.routes.forEach(r => r.mount(app));
 		this.controllers.forEach(c => c.mount(app));
 	}
@@ -799,7 +330,7 @@ export interface RouteMethodMetadata {
 
 export class RouteMethodParameter<T = any> {
 	constructor(
-		readonly route : Route,
+		readonly route : RouteInstance,
 		readonly target : Function,
 		readonly methodName : string,
 		readonly index : number,
@@ -814,10 +345,13 @@ export class RouteMethodParameter<T = any> {
 		return this.annotations.find(x => x instanceof InputAnnotation) as InputAnnotation;
 	}
 	
-	private factory : (ev : RouteEvent) => Promise<T>;
+	private _factory : (ev : RouteEvent) => Promise<T>;
+	public get factory() {
+		return this._factory;
+	}
 
 	async resolve(ev : RouteEvent) {
-		return await this.factory(ev);
+		return await this._factory(ev);
 	}
 
 	private _description : RouteParamDescription;
@@ -935,12 +469,15 @@ export class RouteMethodParameter<T = any> {
 			);
 		}
 
-		this.factory = factory;
+		this._factory = factory;
 		this._description = paramDesc;
 	}
 }
 
-export class Route {
+/**
+ * Represents a Route instance
+ */
+export class RouteInstance {
 	constructor(
 		readonly controller : ControllerInstance,
 		readonly definition : RouteDefinition) 
@@ -1083,7 +620,7 @@ export class Route {
 	private prepareParameters() {
 		let controller = this.controller.type;
 		let route = this.definition;
-
+		let sourceName = `${controller.name || controller}.${route.method}()`;
 		let { returnType, paramTypes, paramNames, paramAnnotations } = this._methodMetadata;
 		
 		let paramFactories = [];
@@ -1108,6 +645,21 @@ export class Route {
 				paramAnnotations[i] || []
 			));
 		}
+
+		let unresolvedParameters = this._parameters.filter(x => !x.factory);
+
+		if (unresolvedParameters.length > 0) {
+			let details = unresolvedParameters
+				.map(x => `${x.name} : ${x.type || 'any'} (#${x.index + 1})`)
+				.join(', ')
+			;
+
+			throw new WebServerSetupError(
+				`Could not resolve some method parameters on ${sourceName}: ` 
+				+ `${details}`
+			);
+		}
+
 	}
 
 	_parameters : RouteMethodParameter[] = [];
@@ -1135,7 +687,7 @@ export class Route {
 
 		try {
 			result = await this.controller.instance[route.method](
-				...this.parameters.map(x => x.resolve(event))
+				...(await Promise.all(this.parameters.map(x => x.resolve(event))))
 			);
 		} catch (e) {
 			
@@ -1189,9 +741,16 @@ export class Route {
 		}
 	}
 
+	private readonly EXPRESS_SUPPORTED_METHODS = [ 
+		"checkout", "copy", "delete", "get", "head", "lock", "merge", 
+		"mkactivity", "mkcol", "move", "m-search", "notify", "options", 
+		"patch", "post", "purge", "put", "report", "search", "subscribe", 
+		"trace", "unlock", "unsubscribe",
+	];
+	
 	private get expressRegistrarName() {
 		let registrar = this.definition.httpMethod.toLowerCase();
-		if (!EXPRESS_SUPPORTED_METHODS.includes(registrar))
+		if (!this.EXPRESS_SUPPORTED_METHODS.includes(registrar))
 			throw new Error(`The specified method '${this.definition.httpMethod}' is not supported by Express.`);
 			
 		return registrar;
