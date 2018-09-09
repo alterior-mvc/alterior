@@ -3,8 +3,9 @@ import { Application } from "@alterior/runtime";
 import * as supertest from 'supertest';
 import { Module } from "@alterior/di";
 import { WebServerModule } from "./web-server.module";
-import { WebServerOptions, RouteInstance } from "web-server";
-import { RouteEvent } from "route";
+import { WebServerOptions } from "web-server";
+import { RouteEvent } from "./metadata";
+import { RouteInstance } from "./route";
 
 /**
  * Create a test setup for the given @alterior/web-server application. You must 

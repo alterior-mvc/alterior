@@ -1,5 +1,4 @@
-import { Controller } from './controller';
-import { Get, Post, Put, Patch, Delete, Options, RouteEvent } from './route';
+import { Controller, Get, Post, Put, Patch, Delete, Options, RouteEvent } from './metadata';
 import { suite } from 'razmin';
 import * as assert from 'assert';
 import * as bodyParser from 'body-parser';

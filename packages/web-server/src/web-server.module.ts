@@ -2,6 +2,7 @@ import { Module, Injectable, Optional } from "@alterior/di";
 import { OnInit, Application } from "@alterior/runtime";
 import { ExpressRef } from "./express-ref";
 import { WebServer, WebServerOptions } from "./web-server";
+import { ControllerRegistrar } from "./controller";
 
 @Injectable()
 export class WebServerOptionsRef {
@@ -53,11 +54,9 @@ export class WebServerModule implements OnInit {
     }
 
     altOnInit() {
-        this.webserver = new WebServer(
-            this.app.runtime.injector, 
-            this.controllers, 
-            this.options
-        );
+        this.webserver = new WebServer(this.app.runtime.injector, this.options);
+        new ControllerRegistrar(this.webserver).register(this.controllers);
+
         this.expressRef.application = this.webserver.express;
     }
 

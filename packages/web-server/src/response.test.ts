@@ -1,15 +1,11 @@
 require('wtfnode').init();
 
-import { Controller } from './controller';
-import { Get, RouteEvent } from './route';
-import { Response as _Response } from './response';
-import * as express from 'express';
+import { Controller, Get } from './metadata';
+import { Response } from './response';
 import { HttpException } from '@alterior/common';
-import { AppOptions, Application } from '@alterior/runtime';
-import * as supertest from 'supertest';
+import { Application } from '@alterior/runtime';
 import { expect } from 'chai';
 import { suite } from 'razmin';
-import { ExpressRef } from './express-ref';
 import { Module } from '@alterior/di';
 import { WebServerModule } from './web-server.module';
 import { runTest } from './teststrap';
@@ -18,7 +14,7 @@ suite(describe => {
 	describe("Response", it => {
 		it('.created() should produce a 201 Created with response URL', () => {
 			let body = {name: 'Foo'};
-			let response = _Response.created('http://example.com/', body);
+			let response = Response.created('http://example.com/', body);
 
 			expect(response.status).to.equal(201);
 			expect(response.headers[0][0]).to.equal('Location');
@@ -28,20 +24,20 @@ suite(describe => {
 
 		it('string body should be JSON encoded', () => {
 			let body = {name: 'Foo'};
-			let response = new _Response(200, [], "hello");
+			let response = new Response(200, [], "hello");
 			expect(response.body).to.equal(`"hello"`);
 		});
 
 		it('.encodeAs(\'raw\') should cause body to be pass-through encoded', () => {
 			let body = {name: 'Foo'};
-			let response = new _Response(200, [], "hello").encodeAs('raw');
+			let response = new Response(200, [], "hello").encodeAs('raw');
 			expect(response.body).to.equal("hello");
 		});
 
 		it('.throw() should throw an equivalent HttpException', () => {
 			let body = {name: 'Foo'};
 			try {
-				new _Response(123, [['X-Test', 'pass']], "hello").throw();
+				new Response(123, [['X-Test', 'pass']], "hello").throw();
 			} catch (e) {
 				expect(e).to.be.an.instanceof(HttpException);
 				let httpe = <HttpException>e;
@@ -61,7 +57,7 @@ suite(describe => {
 			class TestController {
 				@Get('/foo')
 				getX() {
-					return new _Response(201, [['Content-Type', 'text/plain; charset=utf-8']], "token string")
+					return new Response(201, [['Content-Type', 'text/plain; charset=utf-8']], "token string")
 								.encodeAs('raw');
 				}
 			} 
@@ -88,7 +84,7 @@ suite(describe => {
 			class TestController {
 				@Get('/foo')
 				getX() {
-					return new _Response(201, [], { stuff: 'and things' });
+					return new Response(201, [], { stuff: 'and things' });
 				}
 			} 
 

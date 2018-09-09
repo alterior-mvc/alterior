@@ -1,5 +1,4 @@
-import { Controller } from "./controller";
-import { Get, RouteEvent } from "./route";
+import { Controller, Get, RouteEvent } from "./metadata";
 import { ServiceDescriptionRef } from "./web-server";
 import { ExpressRef } from "./express-ref";
 

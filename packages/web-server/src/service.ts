@@ -4,7 +4,7 @@ import { ModuleOptions, Module } from "@alterior/di";
 import { WebServerModule } from "./web-server.module";
 import { WebServerOptions } from "./web-server";
 import { ApplicationOptions, AppOptions } from "@alterior/runtime";
-import { Controller } from "./controller";
+import { Controller } from "./metadata";
 
 /**
  * Options for the web service. Available options are a superset 
