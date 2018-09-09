@@ -12,7 +12,7 @@
   },
   "scripts": {
     "test": "lerna run test",
-    "clean:npm": "rimraf packages/*/package-lock.json",
+    "clean:npm": "rimraf packages/*/package-lock.json packages/*/node_modules",
     "clean": "lerna run clean",
     "build": "lerna run build"
   },
