@@ -54,7 +54,7 @@ export class WebServerModule implements OnInit {
     }
 
     altOnInit() {
-        this.webserver = new WebServer(this.app.runtime.injector, this.options);
+        this.webserver = new WebServer(this.app.runtime.injector, this.options, this.app.options);
         new ControllerRegistrar(this.webserver).register(this.controllers);
 
         this.expressRef.application = this.webserver.express;

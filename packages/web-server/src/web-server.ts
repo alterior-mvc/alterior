@@ -1,11 +1,12 @@
 import * as express from 'express';
 
-import { Injector } from "injection-js";
+import { Injector, ReflectiveInjector } from "injection-js";
 import { prepareMiddleware } from "./middleware";
 import { RouteEvent } from "./metadata";
 import { BaseErrorT } from "@alterior/common";
 import { RouteDescription, RouteInstance } from './route';
 import { Server } from 'http';
+import { ApplicationOptions } from '@alterior/runtime';
 
 export class WebServerSetupError extends BaseErrorT {
 }
@@ -39,21 +40,59 @@ export class ServiceDescriptionRef {
  */
 export class WebServer {
     constructor(
-        readonly injector : Injector,
-        options : WebServerOptions
+        injector : Injector,
+		options : WebServerOptions,
+		readonly appOptions : ApplicationOptions = {}
     ) {
+		this.setupServiceDescription();
+		this.setupInjector(injector);
         this.options = options || {};
 		this.expressApp = express();
-        this.installGlobalMiddleware();
-    }
-
+		this.installGlobalMiddleware();
+	}
+	
+	private _injector : Injector;
     readonly options : WebServerOptions;
     private expressApp : express.Application;
     private expressServer : Server;
-	private _serviceDescription : ServiceDescription = {
-		routes: [],
-		version: '0.0.0'
-	};
+	private _serviceDescription : ServiceDescription;
+
+	/**
+	 * Setup the service description which provides a view of all the routes 
+	 * registered in this web server.
+	 */
+	private setupServiceDescription() {
+		let version = '0.0.0';
+		if (this.appOptions.version)
+			version = this.appOptions.version;
+
+		this._serviceDescription = {
+			routes: [],
+			version
+		};
+	}
+
+	/**
+	 * Construct an injector suitable for use in this web server component,
+	 * inheriting from the given injector.
+	 * 
+	 * @param injector 
+	 */
+	private setupInjector(injector : Injector) {
+		let providers = [
+			{
+				provide: ServiceDescriptionRef,
+				useValue: new ServiceDescriptionRef(this._serviceDescription)
+			}
+		];
+		
+		let ownInjector = ReflectiveInjector.resolveAndCreate(providers, injector);
+		this._injector = ownInjector;
+	}
+
+	public get injector() {
+		return this._injector;
+	}
 
     public get express() {
         return this.expressApp;
@@ -90,7 +129,7 @@ export class WebServer {
 		if (!this.options.silent)
 			console.info(`[${new Date().toLocaleString()}] ${event.request.path} => ${source}`);
 	}
-	
+
 	handleError(error : any, event : RouteEvent, route : RouteInstance, source : string) {
 
 		if (this.options.onError) {

@@ -11,7 +11,7 @@ import { Controller } from "./metadata";
  * of the options available for @Module() as well as WebServerModule.configure(...).
  */
 export interface WebServiceOptions extends ApplicationOptions, ModuleOptions {
-    server : WebServerOptions;
+    server? : WebServerOptions;
 }
 
 /**
@@ -48,8 +48,8 @@ export const WebService = WebServiceAnnotation.decorator({
         if (!existingModule)
             options.imports.push(WebServerModule.configure(options.server));
 
-        Module(options)(site.target);
         Controller('', { group: 'service' })(site.target);
+        Module(options)(site.target);
         AppOptions(options)(site.target);
         
         return new WebServiceAnnotation(options);

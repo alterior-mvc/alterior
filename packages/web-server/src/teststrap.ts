@@ -6,6 +6,7 @@ import { WebServerModule } from "./web-server.module";
 import { WebServerOptions } from "web-server";
 import { RouteEvent } from "./metadata";
 import { RouteInstance } from "./route";
+import { Annotations } from "@alterior/annotations";
 
 /**
  * Create a test setup for the given @alterior/web-server application. You must 
@@ -42,6 +43,8 @@ export async function teststrap(module : Function, handler : (test : supertest.S
     })
     class RootModule {
     }
+
+    Annotations.copyClassAnnotations(module, RootModule);
 
     let app : Application;
     

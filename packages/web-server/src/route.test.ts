@@ -484,22 +484,4 @@ suite(describe => {
 			);
 		});
 	});
-	
-	describe("WebServiceDecorator", it => {
-
-		it('should work for a simple use case', async () => {
-			@WebService()
-			class TestService {
-				@Get('/foo')
-				getX() {
-					return Promise.resolve({ok: true});
-				}
-			}
-
-			await teststrap(TestService, async test =>
-				await test.get('/foo').expect(200, {ok: true})
-			);
-		});
-
-	});
 })

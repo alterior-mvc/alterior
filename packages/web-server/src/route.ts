@@ -259,6 +259,7 @@ export class RouteInstance {
 		);
 
 		this._description = routeDescription;
+		this.server.serviceDescription.routes.push(this.description);
 	}
 
 	private _description : RouteDescription;
