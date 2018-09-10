@@ -1,7 +1,7 @@
 /// <reference path="../../node_modules/reflect-metadata/index.d.ts" />
 
 import * as express from 'express';
-import { shallowClone, clone } from '@alterior/common';
+import { shallowClone } from '@alterior/common';
 import { Provider } from 'injection-js';
 
 export class RouteReflector {
