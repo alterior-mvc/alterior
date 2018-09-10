@@ -108,7 +108,7 @@ export class OpenApiController {
         let info : OpenApiServiceInfo = {
             title: desc.name,
             description: desc.description,
-            version: this.serviceDescriptionRef.description.version || '0.0.0'
+            version: desc.version || '0.0.0'
         };
         let paths : OpenApiMap<OpenApiMap<OpenApiOperation>> = {};
         let components : OpenApiComponents = {} as any;
