@@ -442,14 +442,16 @@ export class Annotation implements IAnnotation {
 
 export class Annotations {
 
+    public static copyClassAnnotations(from : Function, to : Function) {
+        let annotations = Annotations.getClassAnnotations(from);
+        annotations.forEach(x => Annotations.applyToClass(x, to));
+    }
+
     /**
      * Apply this annotation to a given target. 
      * @param target 
      */
-    public static applyToClass<T extends Annotation>(annotation : T, target : any): T {
-
-        annotation.constructor // TODOO
-
+    public static applyToClass<T extends IAnnotation>(annotation : T, target : any): T {
         let list = this.getOrCreateListForClass(target);
         let clone = this.clone(annotation);
         list.push(clone);
@@ -468,7 +470,7 @@ export class Annotations {
      * @param target 
      * @param name 
      */
-    public static applyToProperty<T extends Annotation>(annotation : T, target : any, name : string): T {
+    public static applyToProperty<T extends IAnnotation>(annotation : T, target : any, name : string): T {
         let list = this.getOrCreateListForProperty(target, name);
         let clone = this.clone(annotation);
         list.push(clone);
@@ -487,7 +489,7 @@ export class Annotations {
      * @param target 
      * @param name 
      */
-    public static applyToMethod<T extends Annotation>(annotation : T, target : any, name : string): T {
+    public static applyToMethod<T extends IAnnotation>(annotation : T, target : any, name : string): T {
         let list = this.getOrCreateListForMethod(target, name);
         let clone = Annotations.clone(annotation);
         list.push(clone);
@@ -508,7 +510,7 @@ export class Annotations {
      * @param name 
      * @param index 
      */
-    public static applyToParameter<T>(annotation : T, target : any, name : string, index : number): T {
+    public static applyToParameter<T extends IAnnotation>(annotation : T, target : any, name : string, index : number): T {
         let list = this.getOrCreateListForMethodParameters(target, name);
         while (list.length < index)
             list.push(null);
@@ -527,7 +529,7 @@ export class Annotations {
      * @param name 
      * @param index 
      */
-    public static applyToConstructorParameter<T>(annotation : T, target : any, index : number): T {
+    public static applyToConstructorParameter<T extends IAnnotation>(annotation : T, target : any, index : number): T {
         let list = this.getOrCreateListForConstructorParameters(target);
         while (list.length < index)
             list.push(null);
