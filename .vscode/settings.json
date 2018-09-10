@@ -6,5 +6,7 @@
 		"**/.hg": true,
 		"**/.DS_Store": true,
 		"*~": true
-	}
+	},
+	"editor.tabSize": 4,
+	"editor.useTabStops": false
 }
