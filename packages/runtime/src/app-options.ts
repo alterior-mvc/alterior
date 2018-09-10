@@ -8,6 +8,11 @@ export interface ApplicationOptions {
 	name? : string;
 
 	/**
+	 * Version of the service
+	 */
+	version? : string;
+	
+	/**
 	 * The computer-readable name for your application. Should match your NPM package name.
 	 */
 	packageName? : string;
