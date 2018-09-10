@@ -2,7 +2,7 @@ require('wtfnode').init();
 
 import { Controller, Get } from './metadata';
 import { Response } from './response';
-import { HttpException } from '@alterior/common';
+import { HttpError } from '@alterior/common';
 import { Application } from '@alterior/runtime';
 import { expect } from 'chai';
 import { suite } from 'razmin';
@@ -34,13 +34,13 @@ suite(describe => {
 			expect(response.body).to.equal("hello");
 		});
 
-		it('.throw() should throw an equivalent HttpException', () => {
+		it('.throw() should throw an equivalent HttpError', () => {
 			let body = {name: 'Foo'};
 			try {
 				new Response(123, [['X-Test', 'pass']], "hello").throw();
 			} catch (e) {
-				expect(e).to.be.an.instanceof(HttpException);
-				let httpe = <HttpException>e;
+				expect(e).to.be.an.instanceof(HttpError);
+				let httpe = <HttpError>e;
 				expect(httpe.body).to.equal(`"hello"`);
 				expect(httpe.statusCode).to.equal(123);
 				expect(httpe.headers.length).to.equal(2);

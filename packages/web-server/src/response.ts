@@ -1,5 +1,5 @@
 export type EncodingType = 'json' | 'raw';
-import { HttpException } from '@alterior/common';
+import { HttpError } from '@alterior/common';
 
 export class Response {
 	/**
@@ -425,10 +425,10 @@ export class Response {
 	}
 	
 	/**
-	 * Throw this response as an `HttpException`
+	 * Throw this response as an `HttpError`
 	 */
 	public throw() {
-		throw new HttpException(this.status, this.headers, this.body);
+		throw new HttpError(this.status, this.headers, this.body);
 	}
 
 	/**
