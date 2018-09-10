@@ -66,6 +66,7 @@ export class Application {
 		
 		return Object.assign(
 			{
+				version: '0.0.0',
 				verbose: false,
 				silent: false,
 				hideExceptions: false,
@@ -102,7 +103,7 @@ export class Application {
 	 */
 	public static async bootstrap(entryModule : Function, options? : ApplicationOptions): Promise<Application> {
 		this.validateEntryModule(entryModule);
-
+		
 		options = this.loadOptions(entryModule, options);
 
 		let runtime = new Runtime(entryModule);
