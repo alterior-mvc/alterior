@@ -27,9 +27,7 @@
     "@alterior/annotations": "^3.0.0-beta.4",
     "@alterior/common": "^3.0.0-beta.4",
     "@alterior/di": "^3.0.0-beta.4",
-    "@avejidah/get-parameter-names": "^0.3.2",
     "injection-js": "^2.2.1",
-    "mkdirp": "^0.5.1",
     "reflect-metadata": "^0.1.12"
   },
   "devDependencies": {
