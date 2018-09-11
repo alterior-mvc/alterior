@@ -118,15 +118,18 @@ export class ControllerInstance {
 
 		// Register all of our routes with Express
 
-		this._routes = routeDefinitions.map(definition => new RouteInstance(
-			this.server, 
-			this.injector, 
-			this.options.middleware || [], 
-			this.group, 
-			this.type, 
-			this.routeTable,
-			definition
-		));
+		this._routes = routeDefinitions.map(
+			definition => new RouteInstance(
+				this.server, 
+				this.instance,
+				this.injector, 
+				this.options.middleware || [], 
+				this.group, 
+				this.type, 
+				this.routeTable,
+				definition
+			)
+		);
 	}
 
 	private _routes : RouteInstance[];
@@ -161,7 +164,7 @@ export class ControllerInstance {
 	}
 
 	mount(app : express.Application) {
-		this.routes.forEach(r => r.mount(this.instance, app));
+		this.routes.forEach(r => r.mount());
 		this.controllers.forEach(c => c.mount(app));
 	}
 }

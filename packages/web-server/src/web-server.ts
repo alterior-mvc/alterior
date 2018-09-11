@@ -130,6 +130,35 @@ export class WebServer {
 			console.info(`[${new Date().toLocaleString()}] ${event.request.path} => ${source}`);
 	}
 
+	private readonly EXPRESS_SUPPORTED_METHODS = [ 
+		"checkout", "copy", "delete", "get", "head", "lock", "merge", 
+		"mkactivity", "mkcol", "move", "m-search", "notify", "options", 
+		"patch", "post", "purge", "put", "report", "search", "subscribe", 
+		"trace", "unlock", "unsubscribe",
+	];
+	
+	private getExpressRegistrarName(method : string) {
+		let registrar = method.toLowerCase();
+		if (!this.EXPRESS_SUPPORTED_METHODS.includes(registrar))
+			throw new Error(`The specified method '${method}' is not supported by Express.`);
+			
+		return registrar;
+	}
+
+	/**
+	 * Installs this route into the given Express application. 
+	 * @param app 
+	 */
+	addRoute(method : string, path : string, handler : (event : RouteEvent) => void, middleware = []) {
+		// calls the express route method (get/put/post, etc)
+		// eg: express.get('/foo/bar', ...middleware, handler)
+		this.expressApp[this.getExpressRegistrarName(method)](
+			path, 
+			...middleware, 
+			(req, res) => handler(new RouteEvent(req, res))
+		);
+	}
+
 	handleError(error : any, event : RouteEvent, route : RouteInstance, source : string) {
 
 		if (this.options.onError) {

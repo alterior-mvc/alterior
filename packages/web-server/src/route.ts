@@ -38,6 +38,9 @@ export interface RouteMethodMetadata {
 	paramAnnotations : IAnnotation[][];
 }
 
+/**
+ * Represents a parameter of a route-handling Typescript method. 
+ */
 export class RouteMethodParameter<T = any> {
 	constructor(
 		readonly route : RouteInstance,
@@ -189,7 +192,8 @@ export class RouteMethodParameter<T = any> {
  */
 export class RouteInstance {
 	constructor(
-        readonly server : WebServer,
+		readonly server : WebServer,
+		readonly controllerInstance : any,
         readonly injector : Injector,
         readonly parentMiddleware: any[],
         readonly parentGroup: string,
@@ -207,7 +211,7 @@ export class RouteInstance {
 	private _params : string[];
 
 	private prepare() {
-		
+
 		// Add it to the global route list
 
 		this.routeTable.push({
@@ -475,11 +479,12 @@ export class RouteInstance {
 	 * Installs this route into the given Express application. 
 	 * @param app 
 	 */
-	mount(controllerInstance : any, app : express.Application) {
-		app[this.expressRegistrarName](
+	mount() {
+		this.server.addRoute(
+			this.definition.httpMethod, 
 			this.definition.path, 
-			...this.resolvedMiddleware, 
-			(req, res) => this.execute(controllerInstance, new RouteEvent(req, res))
+			ev => this.execute(this.controllerInstance, ev), 
+			this.resolvedMiddleware
 		);
 	}
 }
