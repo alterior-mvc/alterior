@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsc -p .",
     "prepare": "npm run test",
-    "test": "exit 0"
+    "test": "npm run build && node dist/test.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,7 @@
   "homepage": "https://github.com/alterior-mvc/alterior#readme",
   "dependencies": {
     "dotenv": "^6.0.0",
+    "razmin": "^0.2.0",
     "rxjs": "^6.3.1"
   },
   "devDependencies": {

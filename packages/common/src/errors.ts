@@ -20,6 +20,33 @@ export class BaseErrorT {
     get innerError(): BaseError {
         return this._innerError;
     }
+
+    static serializer : (instance : any) => any;
+    static setJSONSerializer(serializer : (instance : any) => any) {
+        this.serializer = serializer;
+    }
+
+    asJSON() {
+        if (BaseErrorT.serializer)
+            return BaseErrorT.serializer(this);
+        
+        let ownKeys = Object.getOwnPropertyNames(this);
+        let repr = {
+            $type: this.constructor.name,
+            error: true,
+            message: this.message,
+            stack: this['stack']
+        };
+        
+        let includedData = ownKeys
+            .filter(x => !x.startsWith('_'))
+            .filter(x => typeof this[x] !== 'function')
+            .map(x => [x, this[x]])
+            .reduce((pv, cv) => pv[cv[0]] = cv[1], {})
+        ;
+
+        return Object.assign({}, repr, includedData);
+    }
 }
 
 export class SystemError extends BaseErrorT {
