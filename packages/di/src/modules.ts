@@ -1,11 +1,11 @@
 import { MetadataName, NgMetadataName, Annotation } from "@alterior/annotations";
 import { Provider, Injector } from 'injection-js';
 
-interface ModuleMask extends ModuleOptions {
+export interface ConfiguredModule extends ModuleOptions {
     $module: ModuleLike;
 }
 
-export type ModuleLike = Function | ModuleMask;
+export type ModuleLike = Function | ConfiguredModule;
 
 export interface ModuleOptions {
     declarations?: any[];

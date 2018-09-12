@@ -1,5 +1,4 @@
 import { Injectable } from './decorators';
-import * as process from 'process';
 import * as dotenv from 'dotenv';
 
 /**

@@ -6,6 +6,13 @@
 		"outDir": "./dist",
 		"module": "commonjs",
 		"moduleResolution": "node",
+		"typeRoots": [
+			"./node_modules/@types",
+			"./node_modules"
+		],
+		"types": [
+			"reflect-metadata"
+		],
 		"lib": [
 			"es2016",
 			"dom"
@@ -13,9 +20,6 @@
 		"declaration": true,
 		"emitDecoratorMetadata": true
 	},
-	"include": [
-		"src"
-	],
 	"exclude": [
 		"node_modules",
 		"dist"

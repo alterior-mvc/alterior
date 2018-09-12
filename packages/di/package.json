@@ -28,5 +28,8 @@
     "@alterior/common": "^3.0.0-beta.4",
     "injection-js": "^2.2.1"
   },
+  "devDependencies": {
+    "reflect-metadata": "^0.1.12"
+  },
   "gitHead": "dd889c35cf093b43b0156780f242919f41935b55"
 }
