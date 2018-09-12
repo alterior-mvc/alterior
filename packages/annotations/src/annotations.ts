@@ -1,4 +1,3 @@
-/// <reference path="../node_modules/reflect-metadata/index.d.ts" />
 
 /**
  * @alterior/annotations -- A class library for handling Typescript metadata decorators via "annotation" classes
