@@ -1,3 +1,9 @@
+# 3.0
+- Complete rewrite of Alterior to refocus it as a general-purpose framework
+- Introduced support for modules as a way to organize Alterior apps 
+- Alterior modules are Angular 6+ compatible
+- Added an annotations system
+
 # 2.0
 - Transitioned from `@angular/core` DI to `injection-js`, substantially reducing install times
   and complexity of install (`injection-js` is [5.1KB](https://github.com/mgechev/injection-js))
