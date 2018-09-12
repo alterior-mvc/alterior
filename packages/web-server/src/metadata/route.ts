@@ -1,4 +1,3 @@
-/// <reference path="../../node_modules/reflect-metadata/index.d.ts" />
 
 import * as express from 'express';
 import { shallowClone } from '@alterior/common';
