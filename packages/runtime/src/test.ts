@@ -1,4 +1,8 @@
+import "reflect-metadata";
 import { suite } from 'razmin';
-import * as requireGlob from 'require-glob';
 
-suite(async () => await requireGlob(["./**/*.test.js"]));
+suite()
+    .withTimeout(10 * 1000)
+    .include(['**/*.test.js'])
+    .run()
+;

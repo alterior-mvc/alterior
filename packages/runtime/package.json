@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@types/node": "^10.9.4",
-    "razmin": "^0.1.0",
+    "razmin": "^0.4.0",
     "require-glob": "^3.2.0"
   },
   "gitHead": "dd889c35cf093b43b0156780f242919f41935b55"
