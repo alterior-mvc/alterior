@@ -29,7 +29,7 @@
     "@alterior/runtime": "^3.0.0-beta.5",
     "rxjs": "^6.3.2"
   },
-  "gitHead": "dd889c35cf093b43b0156780f242919f41935b55",
+  "gitHead": "f5cbe578846ed0eb738a8fcc40b7785ac5f144c1",
   "devDependencies": {
     "razmin": "^0.5.0"
   }
