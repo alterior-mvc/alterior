@@ -1,7 +1,7 @@
 
 import * as express from 'express';
 import { shallowClone } from '@alterior/common';
-import { Provider } from 'injection-js';
+import { Provider } from '@alterior/di';
 
 export class RouteReflector {
 	constructor(type : Function, mountPath? : string) {

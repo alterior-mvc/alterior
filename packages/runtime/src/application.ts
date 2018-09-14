@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 
 import { ApplicationOptions, AppOptionsAnnotation } from './app-options';
-import { ReflectiveInjector, Provider, Injectable } from 'injection-js';
-import { ModuleAnnotation } from '@alterior/di';
+import { ReflectiveInjector, Provider, Injectable, 
+		 ModuleAnnotation } from '@alterior/di';
 import { Runtime } from './modules';
 import { ApplicationArgs } from './args';
 
@@ -118,7 +118,17 @@ export class Application {
 		);
 		providers.push(Application);
 
-		let injector = ReflectiveInjector.resolveAndCreate(providers);
+		let injector : ReflectiveInjector;
+		try {
+			injector = ReflectiveInjector.resolveAndCreate(providers);
+		} catch (e) {
+			console.error(`Failed to resolve injector.`);
+			console.error(`Providers:`);
+			console.dir(providers);
+			console.error(`Modules:`);
+			console.dir(runtime.definitions);
+			throw e;
+		}
 
 		runtime.load(injector);
 		runtime.fireEvent('OnInit');

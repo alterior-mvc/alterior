@@ -1,4 +1,4 @@
-import { Injector, ReflectiveInjector } from 'injection-js';
+import { Injector, ReflectiveInjector } from '@alterior/di';
 import { Annotation } from '@alterior/annotations';
 
 export class MiddlewareAnnotation extends Annotation {}

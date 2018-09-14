@@ -4,7 +4,7 @@ import * as express from 'express';
 import { IAnnotation } from "@alterior/annotations";
 import { InputAnnotation } from "./input";
 import { RouteEvent, RouteDefinition } from "./metadata";
-import { ReflectiveInjector, Provider, Injector } from 'injection-js';
+import { ReflectiveInjector, Provider, Injector } from '@alterior/di';
 import { prepareMiddleware } from "./middleware";
 import { Annotations } from "@alterior/annotations";
 import { WebServerSetupError, WebServer } from "./web-server";

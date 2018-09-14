@@ -1,5 +1,4 @@
 import { bootstrap, Get, OpenApiController, Mount, Controller, AppOptions } from '../../dist';
-import { Injectable } from 'injection-js';
 
 @Controller('', {
     group: 'test'

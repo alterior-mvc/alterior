@@ -1,5 +1,5 @@
 import { WebServer } from "./web-server";
-import { Provider, ReflectiveInjector, Injector } from "injection-js";
+import { Provider, ReflectiveInjector, Injector } from "@alterior/di";
 import { RouteInstance } from './route';
 import { ControllerAnnotation, ControllerOptions, MountOptions, RouteReflector } from "./metadata";
 import * as express from 'express';

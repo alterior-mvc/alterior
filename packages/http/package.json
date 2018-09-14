@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsc -p .",
     "prepare": "npm run test",
-    "test": "exit 0"
+    "test": "npm run build && node dist/test/test.js"
   },
   "repository": {
     "type": "git",
@@ -25,10 +25,12 @@
   "homepage": "https://github.com/alterior-mvc/alterior#readme",
   "dependencies": {
     "@alterior/common": "^3.0.0-beta.4",
-    "@alterior/di": "^3.0.0-beta.4"
+    "@alterior/di": "^3.0.0-beta.4",
+    "@alterior/runtime": "^3.0.0-beta.4",
+    "rxjs": "^6.3.2"
   },
   "gitHead": "dd889c35cf093b43b0156780f242919f41935b55",
   "devDependencies": {
-    "razmin": "^0.4.0"
+    "razmin": "^0.5.0"
   }
 }

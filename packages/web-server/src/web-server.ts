@@ -1,6 +1,6 @@
 import * as express from 'express';
 
-import { Injector, ReflectiveInjector } from "injection-js";
+import { Injector, ReflectiveInjector } from "@alterior/di";
 import { prepareMiddleware } from "./middleware";
 import { RouteEvent } from "./metadata";
 import { BaseErrorT } from "@alterior/common";

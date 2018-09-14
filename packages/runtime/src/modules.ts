@@ -1,5 +1,5 @@
 import { ModuleAnnotation, ModuleOptions, Module, ModuleLike } from "@alterior/di";
-import { Injector, Provider, ReflectiveInjector } from "injection-js";
+import { Injector, Provider, ReflectiveInjector } from "@alterior/di";
 import { timeout } from "@alterior/common";
 
 /**
@@ -95,10 +95,23 @@ export class Runtime {
             return;
 
         this._injector = injector;
-        let ownInjector = ReflectiveInjector.resolveAndCreate(
-            this.definitions.map(x => x.target), 
-            injector
-        );
+        let ownInjector : ReflectiveInjector;
+        
+        let providers = this.definitions.map(x => x.target);
+
+        try {
+            ownInjector = ReflectiveInjector.resolveAndCreate(
+                providers, 
+                injector
+            );
+        } catch (e) {
+            console.error(`Failed to construct injector:`);
+            console.error(`Providers:`);
+            console.dir(providers);
+            console.error(`Definitions:`);
+            console.dir(this.definitions);
+            throw e;
+        }
 
         let moduleInstances = this.definitions.map (defn => new ModuleInstance(defn, ownInjector.get(defn.target)));
         this.instances = moduleInstances;
@@ -165,9 +178,12 @@ export class Runtime {
             this.visited.push(module);
 
         // Construct this compilation unit
+        let isExtension = false;
 
         if (module['$module']) {
+            isExtension = true;
             // This is a mask
+            module = Object.assign({}, module);
             let parentModule = module['$module'];
             let options : ModuleOptions = Object.assign({}, module as any);
             delete module['$module'];
@@ -179,15 +195,18 @@ export class Runtime {
 
             @Module(options) class subModule {};
             module = subModule;
+            
+            let metadata = this.getMetadataForModule(module);
         }
 
         let metadata = this.getMetadataForModule(module);
+        
         this.definitions.push({ 
             target: module,
             metadata,
         });
 
-        if (metadata.imports) {
+        if (metadata && metadata.imports) {
             for (let importedModule of metadata.imports) {
                 this.resolveModule(importedModule);
             }
