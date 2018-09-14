@@ -27,7 +27,8 @@
     "@alterior/common": "^3.0.0-beta.7",
     "@alterior/di": "^3.0.0-beta.7",
     "@alterior/runtime": "^3.0.0-beta.7",
-    "rxjs": "^6.3.2"
+    "rxjs": "^6.3.2",
+    "xhr2": "^0.1.4"
   },
   "gitHead": "d458ff6edca72bbc82f9a38d082b033658b30f21",
   "devDependencies": {

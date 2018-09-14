@@ -16,6 +16,7 @@ import {HttpRequest} from './request';
 import {HttpEvent} from './response';
 import {BrowserXhr, HttpXhrBackend, XhrFactory} from './xhr';
 import {HttpXsrfInterceptor, HttpXsrfTokenExtractor, XSRF_COOKIE_NAME, XSRF_HEADER_NAME} from './xsrf';
+import { ServerXhr, zoneWrappedInterceptingHandler } from './server';
 
 /**
  * An injectable `HttpHandler` that applies multiple interceptors
@@ -161,4 +162,47 @@ export class HttpClientXsrfModule {
   ],
 })
 export class HttpClientModule {
+
+  public static forRoot(config? : HttpClientConfig) {
+    let providers = [];
+
+    if (!config)
+      config = {};
+    
+    if (!config.platform) {
+      // Autodetect the backend
+
+      if (typeof document !== 'undefined') 
+        config.platform = 'browser';
+      else 
+        config.platform = 'server';
+    }
+
+    if (config.platform === 'server') {
+      providers.push(
+        {provide: XhrFactory, useClass: ServerXhr}, 
+        {
+          provide: HttpHandler,
+          useFactory: zoneWrappedInterceptingHandler,
+          deps: [HttpBackend, Injector]
+        }
+      );
+    } else if (config.platform === 'browser') {
+      // Default configuration is browser.
+    }
+
+    return { $module: HttpClientModule, providers };
+  }
+
+}
+
+export interface HttpClientConfig {
+  /**
+   * Which HTTP client implementation should be used? 
+   * Use 'server' to use the `xhr2` NPM module. Use `browser` to 
+   * use the browser-side `XMLHttpRequest`, and set to `null` 
+   * to disable loading a built-in implementation (so you can 
+   * provide your own).
+   */
+  platform? : 'server' | 'browser' | null;
 }

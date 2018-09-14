@@ -16,3 +16,4 @@ export {HttpRequest} from './request';
 export {HttpDownloadProgressEvent, HttpErrorResponse, HttpEvent, HttpEventType, HttpHeaderResponse, HttpProgressEvent, HttpResponse, HttpResponseBase, HttpSentEvent, HttpUserEvent} from './response';
 export {HttpXhrBackend, XhrFactory} from './xhr';
 export {HttpXsrfTokenExtractor} from './xsrf';
+export {ServerXhr, zoneWrappedInterceptingHandler} from './server';
