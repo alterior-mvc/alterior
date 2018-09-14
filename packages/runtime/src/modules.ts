@@ -201,15 +201,16 @@ export class Runtime {
 
         let metadata = this.getMetadataForModule(module);
         
-        this.definitions.push({ 
-            target: module,
-            metadata,
-        });
-
         if (metadata && metadata.imports) {
             for (let importedModule of metadata.imports) {
                 this.resolveModule(importedModule);
             }
         }
+        
+        this.definitions.push({ 
+            target: module,
+            metadata,
+        });
+
     }
 }
