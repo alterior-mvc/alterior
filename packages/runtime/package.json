@@ -1,6 +1,6 @@
 {
   "name": "@alterior/runtime",
-  "version": "3.0.0-beta.4",
+  "version": "3.0.0-beta.5",
   "access": "public",
   "publishConfig": {
     "access": "public"
@@ -24,9 +24,9 @@
   },
   "homepage": "https://github.com/alterior-mvc/alterior#readme",
   "dependencies": {
-    "@alterior/annotations": "^3.0.0-beta.4",
-    "@alterior/common": "^3.0.0-beta.4",
-    "@alterior/di": "^3.0.0-beta.4",
+    "@alterior/annotations": "^3.0.0-beta.5",
+    "@alterior/common": "^3.0.0-beta.5",
+    "@alterior/di": "^3.0.0-beta.5",
     "injection-js": "^2.2.1",
     "reflect-metadata": "^0.1.12"
   },
