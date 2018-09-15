@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsc -p .",
     "prepare": "npm run test",
-    "test": "exit 0"
+    "test": "npm run build && exit 0"
   },
   "repository": {
     "type": "git",
