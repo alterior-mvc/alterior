@@ -29,7 +29,8 @@
     "injection-js": "^2.2.1"
   },
   "devDependencies": {
-    "reflect-metadata": "^0.1.12"
+    "reflect-metadata": "^0.1.12",
+    "typescript": "^3.0.3"
   },
   "gitHead": "d458ff6edca72bbc82f9a38d082b033658b30f21"
 }
