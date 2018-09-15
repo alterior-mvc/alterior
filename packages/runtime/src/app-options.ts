@@ -1,4 +1,4 @@
-import { Annotation, MetadataName } from '@alterior/annotations';
+import { Annotation, AnnotationDecorator, MetadataName } from '@alterior/annotations';
 
 export interface ApplicationOptions {
 	

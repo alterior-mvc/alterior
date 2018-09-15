@@ -1,5 +1,4 @@
-import { Mutator } from "./annotations";
-
+import { Mutator, AnnotationDecorator } from "./annotations";
 /**
  * Seal a class and its instances.
  */

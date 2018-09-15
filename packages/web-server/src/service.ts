@@ -5,6 +5,7 @@ import { WebServerModule } from "./web-server.module";
 import { WebServerOptions } from "./web-server";
 import { ApplicationOptions, AppOptions } from "@alterior/runtime";
 import { Controller } from "./metadata";
+import { AnnotationDecorator } from '@alterior/annotations';
 
 /**
  * Options for the web service. Available options are a superset 

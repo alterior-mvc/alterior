@@ -1,4 +1,4 @@
-import { Annotation } from "./annotations";
+import { Annotation, AnnotationDecorator } from "./annotations";
 
 /**
  * Represents whether an element should be treated visible or not.

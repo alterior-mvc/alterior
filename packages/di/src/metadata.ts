@@ -1,4 +1,4 @@
-import { MetadataName, NgMetadataName, Annotation } from "@alterior/annotations";
+import { MetadataName, NgMetadataName, Annotation, AnnotationDecorator } from "@alterior/annotations";
 
 @NgMetadataName('Inject')
 @MetadataName('@alterior/di:Injectable')

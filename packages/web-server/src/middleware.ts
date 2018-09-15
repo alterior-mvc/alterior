@@ -1,5 +1,5 @@
 import { Injector, ReflectiveInjector } from '@alterior/di';
-import { Annotation } from '@alterior/annotations';
+import { Annotation, AnnotationDecorator } from '@alterior/annotations';
 
 export class MiddlewareAnnotation extends Annotation {}
 export const Middleware = MiddlewareAnnotation.decorator();

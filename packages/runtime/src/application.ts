@@ -2,7 +2,7 @@ import 'reflect-metadata';
 
 import { ApplicationOptions, AppOptionsAnnotation } from './app-options';
 import { ReflectiveInjector, Provider, Injectable, 
-		 ModuleAnnotation } from '@alterior/di';
+		 ModuleAnnotation, Injector } from '@alterior/di';
 import { Runtime } from './modules';
 import { ApplicationArgs } from './args';
 
