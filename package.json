@@ -14,7 +14,8 @@
     "test": "lerna run test",
     "clean:npm": "rimraf packages/*/package-lock.json packages/*/node_modules",
     "clean:lerna": "rimraf **/*.tgz",
-    "clean": "lerna run clean",
+    "clean:dist": "rimraf packages/*/dist",
+    "clean": "npm run clean:dist && lerna run clean",
     "build": "lerna run build"
   },
   "author": "William Lahti <wilahti@gmail.com>",
