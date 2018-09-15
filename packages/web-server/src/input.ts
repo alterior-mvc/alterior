@@ -26,11 +26,11 @@ export class InputAnnotation extends Annotation {
 export function QueryParam(name : string) {
 	return InputAnnotation.decorator({
 		validTargets: [ 'parameter' ],
-		allowMultiple: false,
-		factory: () => {
-			return new InputAnnotation({ type: 'query', name })
-		}
-	})();
+		allowMultiple: false
+	})({ 
+		type: 'query', 
+		name 
+	});
 }
 
 /**
@@ -40,11 +40,11 @@ export function QueryParam(name : string) {
 export function Session(name? : string) {
 	return InputAnnotation.decorator({
 		validTargets: [ 'parameter' ],
-		allowMultiple: false,
-		factory: () => {
-			return new InputAnnotation({ type: 'session', name })
-		}
-	})();
+		allowMultiple: false
+	})({ 
+		type: 'session', 
+		name 
+	});
 }
 
 /**
@@ -54,11 +54,11 @@ export function Session(name? : string) {
 export function PathParam(name : string) {
 	return InputAnnotation.decorator({
 		validTargets: [ 'parameter' ],
-		allowMultiple: false,
-		factory: () => {
-			return new InputAnnotation({ type: 'path', name })
-		}
-	})();
+		allowMultiple: false
+	})({ 
+		type: 'path', 
+		name 
+	});
 }
 
 /**
@@ -67,9 +67,9 @@ export function PathParam(name : string) {
 export function Body() {
 	return InputAnnotation.decorator({
 		validTargets: [ 'parameter' ],
-		allowMultiple: false,
-		factory: () => {
-			return new InputAnnotation({ type: 'body', name: '' })
-		}
-	})();
+		allowMultiple: false
+	})({ 
+		type: 'body', 
+		name: '' 
+	});
 }

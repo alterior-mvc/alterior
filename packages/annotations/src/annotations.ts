@@ -54,8 +54,8 @@ interface DecoratorTarget {
     index? : number;
 }
 
-interface AnnotationDecoratorOptions<AnnoT, OptionsT = any> {
-    factory? : (target : DecoratorTarget, options? : OptionsT) => AnnoT | void;
+interface AnnotationDecoratorOptions<AnnoT, TS extends any[] = []> {
+    factory? : (target : DecoratorTarget, ...args : TS) => AnnoT | void;
     validTargets? : ('class' | 'property' | 'method' | 'parameter')[];
     allowMultiple? : boolean;
 }
