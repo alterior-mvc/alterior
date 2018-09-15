@@ -30,21 +30,20 @@ export const METHOD_PARAMETER_ANNOTATIONS_KEY = '__parameter__metadata__';
  * Represents an Annotation subclass from the perspective of using it to 
  * construct itself by passing an options object.
  */
-interface AnnotationConstructor<AnnoT extends Annotation, OptionsT> {
-    new (options : OptionsT) : AnnoT;
+interface AnnotationConstructor<AnnoT extends Annotation, TS extends any[]> {
+    new (...args : TS) : AnnoT;
     getMetadataName();
 }
 
 /**
  * Represents a decorator which accepts an Annotation's options object.
  */
-export interface AnnotationDecorator<OptionsT> {
-    (options? : OptionsT) : (target, ...args) => void;
-
-    (options? : OptionsT) : (target) => void;
-    (options? : OptionsT) : (target, propertyKey : string) => void;
-    (options? : OptionsT) : (target, propertyKey : string, descriptor : PropertyDescriptor) => void;
-    (options? : OptionsT) : (target, propertyKey : string, index : number) => void;
+export interface AnnotationDecorator<TS extends any[]> {
+    (...args : TS) : (target, ...args) => void;
+    (...args : TS) : (target) => void;
+    (...args : TS) : (target, propertyKey : string) => void;
+    (...args : TS) : (target, propertyKey : string, descriptor : PropertyDescriptor) => void;
+    (...args : TS) : (target, propertyKey : string, index : number) => void;
 }
 
 interface DecoratorTarget {
@@ -98,12 +97,12 @@ export class AnnotationTargetError extends NotSupportedError {
  * @param ctor 
  * @param options 
  */
-function makeDecorator<AnnoT extends Annotation, OptionsT>(
-    ctor : AnnotationConstructor<AnnoT, OptionsT>, 
-    options? : AnnotationDecoratorOptions<AnnoT, OptionsT>
-): AnnotationDecorator<OptionsT> 
+function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
+    ctor : AnnotationConstructor<AnnoT, TS>, 
+    options? : AnnotationDecoratorOptions<AnnoT, TS>
+): AnnotationDecorator<TS> 
 {
-    let factory : (target : DecoratorTarget, options : OptionsT, ...args) => AnnoT | void = null;
+    let factory : (target : DecoratorTarget, ...args : TS) => AnnoT | void = null;
     let validTargets : string[] = null;
     let allowMultiple = false;
 
@@ -117,12 +116,12 @@ function makeDecorator<AnnoT extends Annotation, OptionsT>(
     }
 
     if (!factory)
-        factory = (target, options) => new ctor(options);
+        factory = (target, ...args) => new ctor(...args);
     
     if (!validTargets)
         validTargets = ['class', 'method', 'property', 'parameter'];
     
-    return (options : OptionsT, ...args) => {
+    return (...decoratorArgs : TS) => {
         return (target, ...args) => {
 
             if (args.length === 2) {
@@ -147,7 +146,7 @@ function makeDecorator<AnnoT extends Annotation, OptionsT>(
                             target, 
                             propertyKey: methodName,
                             index
-                        }, options, ...args);
+                        }, ...decoratorArgs);
 
                         if (!annotation)
                             return;
@@ -158,7 +157,7 @@ function makeDecorator<AnnoT extends Annotation, OptionsT>(
                             type: 'parameter',
                             target,
                             index
-                        }, options, ...args);
+                        }, ...decoratorArgs);
 
                         if (!annotation)
                             return;
@@ -184,7 +183,7 @@ function makeDecorator<AnnoT extends Annotation, OptionsT>(
                         target,
                         propertyKey: methodName,
                         propertyDescriptor: descriptor
-                    }, options, ...args);
+                    }, ...decoratorArgs);
 
                     if (!annotation)
                         return;
@@ -208,7 +207,7 @@ function makeDecorator<AnnoT extends Annotation, OptionsT>(
                     type: 'property',
                     target,
                     propertyKey
-                }, options, ...args);
+                }, ...decoratorArgs);
 
                 if (!annotation)
                     return;
@@ -230,7 +229,7 @@ function makeDecorator<AnnoT extends Annotation, OptionsT>(
                 let annotation = factory({
                     type: 'class',
                     target
-                }, options, ...args);
+                }, ...decoratorArgs);
 
                 if (!annotation)
                     return;
@@ -302,9 +301,9 @@ export class Annotation implements IAnnotation {
      * @param options Allows for specifying options which will modify the behavior of the decorator. 
      *  See the DecoratorOptions documentation for more information.
      */
-    public static decorator<T extends Annotation, OptionsT>(
-        this: AnnotationConstructor<T, OptionsT>, 
-        options? : AnnotationDecoratorOptions<T, OptionsT>
+    public static decorator<T extends Annotation, TS extends any[]>(
+        this: AnnotationConstructor<T, TS>, 
+        options? : AnnotationDecoratorOptions<T, TS>
     ) {
         if ((this as any) === Annotation) {
             if (!options || !options.factory) {
@@ -367,8 +366,8 @@ export class Annotation implements IAnnotation {
         return Annotations.applyToConstructorParameter(this, target, index);
     }
 
-    public static getAllForClass<T extends Annotation, OptionsT>(
-        this : AnnotationConstructor<T, OptionsT>, 
+    public static getAllForClass<T extends Annotation, TS extends any[]>(
+        this : AnnotationConstructor<T, TS>, 
         type : any
     ): T[] {
         return (Annotations.getClassAnnotations(type) as T[])
@@ -376,15 +375,15 @@ export class Annotation implements IAnnotation {
         ;
     }
 
-    public static getForClass<T extends Annotation, OptionsT>(
-        this : AnnotationConstructor<T, OptionsT>, 
+    public static getForClass<T extends Annotation, TS extends any[]>(
+        this : AnnotationConstructor<T, TS>, 
         type : any
     ): T {
         return (this as any).getAllForClass(type)[0];
     }
 
-    public static getAllForMethod<T extends Annotation, OptionsT>(
-        this : AnnotationConstructor<T, OptionsT>, 
+    public static getAllForMethod<T extends Annotation, TS extends any[]>(
+        this : AnnotationConstructor<T, TS>, 
         type : any, 
         methodName : string
     ): T[] {
@@ -393,16 +392,16 @@ export class Annotation implements IAnnotation {
         ;
     }
 
-    public static getForMethod<T extends Annotation, OptionsT>(
-        this : AnnotationConstructor<T, OptionsT>, 
+    public static getForMethod<T extends Annotation, TS extends any[]>(
+        this : AnnotationConstructor<T, TS>, 
         type : any,
         methodName : string
     ): T {
         return (this as any).getAllForMethod(type, methodName)[0];
     }
     
-    public static getAllForProperty<T extends Annotation, OptionsT>(
-        this : AnnotationConstructor<T, OptionsT>, 
+    public static getAllForProperty<T extends Annotation, TS extends any[]>(
+        this : AnnotationConstructor<T, TS>, 
         type : any, 
         propertyName : string
     ): T[] {
@@ -411,16 +410,16 @@ export class Annotation implements IAnnotation {
         ;
     }
 
-    public static getForProperty<T extends Annotation, OptionsT>(
-        this : AnnotationConstructor<T, OptionsT>, 
+    public static getForProperty<T extends Annotation, TS extends any[]>(
+        this : AnnotationConstructor<T, TS>, 
         type : any,
         propertyName : string
     ): T {
         return (this as any).getAllForProperty(type, propertyName)[0];
     }
     
-    public static getAllForParameters<T extends Annotation, OptionsT>(
-        this : AnnotationConstructor<T, OptionsT>, 
+    public static getAllForParameters<T extends Annotation, TS extends any[]>(
+        this : AnnotationConstructor<T, TS>, 
         type : any, 
         methodName : string
     ): T[][] {
@@ -429,8 +428,8 @@ export class Annotation implements IAnnotation {
         ;
     }
 
-    public static getAllForConstructorParameters<T extends Annotation, OptionsT>(
-        this : AnnotationConstructor<T, OptionsT>, 
+    public static getAllForConstructorParameters<T extends Annotation, TS extends any[]>(
+        this : AnnotationConstructor<T, TS>, 
         type : any
     ): T[][] {
         return (Annotations.getConstructorParameterAnnotations(type) as T[][])
