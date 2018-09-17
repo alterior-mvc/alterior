@@ -3,7 +3,7 @@ import { Application } from "@alterior/runtime";
 import * as supertest from 'supertest';
 import { Module } from "@alterior/di";
 import { WebServerModule } from "./web-server.module";
-import { WebServerOptions } from "web-server";
+import { WebServerOptions } from "./web-server";
 import { RouteEvent } from "./metadata";
 import { RouteInstance } from "./route";
 import { Annotations } from "@alterior/annotations";
