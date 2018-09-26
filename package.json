@@ -1,5 +1,5 @@
 {
-  "name": "@alterior/core",
+  "name": "@alterior/root-package",
   "version": "3.0.0-beta.1",
   "private": false,
   "description": "An Express-based Typescript MVC framework with decorators and dependency injection.",
@@ -12,6 +12,7 @@
   },
   "scripts": {
     "test": "lerna run test",
+    "publish:all": "npm run test && lerna publish",
     "clean:npm": "rimraf packages/*/package-lock.json packages/*/node_modules",
     "clean:lerna": "rimraf **/*.tgz",
     "clean:dist": "rimraf packages/*/dist",
