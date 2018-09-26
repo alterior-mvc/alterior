@@ -3,7 +3,7 @@ import * as express from 'express';
 
 import { IAnnotation } from "@alterior/annotations";
 import { InputAnnotation } from "./input";
-import { RouteEvent, RouteDefinition } from "./metadata";
+import { RouteEvent, RouteDefinition, RouteOptions } from "./metadata";
 import { ReflectiveInjector, Provider, Injector } from '@alterior/di';
 import { prepareMiddleware } from "./middleware";
 import { Annotations } from "@alterior/annotations";
@@ -228,7 +228,7 @@ export class RouteInstance {
 		this.prepareMetadata();
 	}
 
-	get options() {
+	get options(): RouteOptions {
 		return this.definition.options || {};
 	}
 
