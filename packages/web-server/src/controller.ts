@@ -134,6 +134,10 @@ export class ControllerInstance {
 
 	private _routes : RouteInstance[];
 
+	get pathPrefix() {
+		return this._options.basePath;
+	}
+	
 	get routes() {
 		return this._routes;
 	}
@@ -164,7 +168,7 @@ export class ControllerInstance {
 	}
 
 	mount(app : express.Application) {
-		this.routes.forEach(r => r.mount());
+		this.routes.forEach(r => r.mount(this.pathPrefix));
 		this.controllers.forEach(c => c.mount(app));
 	}
 }

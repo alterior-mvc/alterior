@@ -479,10 +479,10 @@ export class RouteInstance {
 	 * Installs this route into the given Express application. 
 	 * @param app 
 	 */
-	mount() {
+	mount(pathPrefix : string) {
 		this.server.addRoute(
 			this.definition.httpMethod, 
-			this.definition.path, 
+			`${pathPrefix}${this.definition.path}`,
 			ev => this.execute(this.controllerInstance, ev), 
 			this.resolvedMiddleware
 		);

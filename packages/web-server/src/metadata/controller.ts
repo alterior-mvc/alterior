@@ -21,12 +21,13 @@ export interface ControllerOptions {
 
 @MetadataName('@alterior/web-server:Controller')
 export class ControllerAnnotation extends Annotation {
-	constructor(readonly options : ControllerOptions) {
+	constructor(basePath? : string, readonly options? : ControllerOptions) {
 		super();
+
+		this.options = options || {};
+		this.options.basePath = basePath || this.options.basePath;
 	}
 }
-
-const _decorateController = ControllerAnnotation.decorator();
 
 /**
  * Mark a class as representing an Alterior controller.
@@ -35,5 +36,4 @@ const _decorateController = ControllerAnnotation.decorator();
  * 	controller will fall within.
  * @param options 
  */
-export const Controller = (basePath? : string, options? : ControllerOptions) => 
-	_decorateController(Object.assign({}, options || {}, { basePath }));
+export const Controller = ControllerAnnotation.decorator();
