@@ -482,7 +482,7 @@ export class RouteInstance {
 	mount(pathPrefix : string) {
 		this.server.addRoute(
 			this.definition.httpMethod, 
-			`${pathPrefix}${this.definition.path}`,
+			`${pathPrefix || ''}${this.definition.path}`,
 			ev => this.execute(this.controllerInstance, ev), 
 			this.resolvedMiddleware
 		);

@@ -81,7 +81,7 @@ suite(describe => {
 			@Module({ controllers: [TestController] })
 			class TestModule {}
 
-			teststrap(
+			await teststrap(
 				TestModule, 
 				async test => test.get('/foo').expect(200, <any>{ foo: 123 })
 			);
