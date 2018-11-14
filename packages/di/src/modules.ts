@@ -33,9 +33,14 @@ export class ModuleAnnotation extends Annotation implements ModuleOptions {
     exports : any[];
 
     /**
-     * Alterior's declarations
+     * Controllers which are part of this module
      */
     controllers : any[];
+
+    /**
+     * Task classes which are part of this module
+     */
+    tasks : any[];
 
     /**
      * Alterior or Angular modules
