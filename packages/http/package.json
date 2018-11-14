@@ -30,7 +30,7 @@
     "rxjs": "^6.3.2",
     "xhr2": "^0.1.4"
   },
-  "gitHead": "33593f4ef5366e4eaba82a53c88d3ed7f1597141",
+  "gitHead": "128cce4ca1738ca3cad7149646f26db693b0bde3",
   "devDependencies": {
     "razmin": "^0.5.0",
     "typescript": "^3.0.3"
