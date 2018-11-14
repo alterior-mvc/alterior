@@ -1,6 +1,6 @@
 {
   "name": "@alterior/di",
-  "version": "3.0.0-beta.14",
+  "version": "3.0.0-beta.15",
   "access": "public",
   "publishConfig": {
     "access": "public"
@@ -24,8 +24,8 @@
   },
   "homepage": "https://github.com/alterior-mvc/alterior#readme",
   "dependencies": {
-    "@alterior/annotations": "^3.0.0-beta.14",
-    "@alterior/common": "^3.0.0-beta.14",
+    "@alterior/annotations": "^3.0.0-beta.15",
+    "@alterior/common": "^3.0.0-beta.15",
     "injection-js": "^2.2.1"
   },
   "devDependencies": {
