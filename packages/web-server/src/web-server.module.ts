@@ -15,11 +15,10 @@ export class WebServerOptionsRef {
 
 /**
  * Import this into your application module to serve a REST service.
- * You must then specify controllers in the `controllers` field of one or 
- * more modules.
+ * You must then specify controllers in the `controllers` field of 
+ * one or more modules.
  */
 @Module({
-    providers: [ ExpressRef ]
 })
 export class WebServerModule implements OnInit {
     constructor(
@@ -30,14 +29,26 @@ export class WebServerModule implements OnInit {
     }
 
     /**
-     * Create a configured version of the WebServerModule that can be then 
-     * be imported into an entry module (or feature module).
+     * Used when importing this module from the root (app) module
+     * using the default configuration.
+     * Should be called only once in the application.
+     */
+    public static forRoot() {
+        return this.configure({});
+    }
+
+    /**
+     * Create a configured version of the WebServerModule that can 
+     * be then be imported into a root module. Should be called only
+     * once in the application.
+     * 
      * @param options The options to use for the web server
      */
     public static configure(options : WebServerOptions) {
         return {
             $module: WebServerModule,
             providers: [
+                ExpressRef,
                 { provide: WebServerOptionsRef, useValue: new WebServerOptionsRef(options) }
             ]
         }
