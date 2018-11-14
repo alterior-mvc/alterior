@@ -366,6 +366,15 @@ export class Annotation implements IAnnotation {
         return Annotations.applyToConstructorParameter(this, target, index);
     }
 
+    public static filter<T extends Annotation, TS extends any[]>(
+        this : AnnotationConstructor<T, TS>,
+        annotations : IAnnotation[]
+    ) : T[] {
+        return annotations.filter(
+            x => x.$metadataName === this.getMetadataName()
+        ) as T[];
+    }
+
     public static getAllForClass<T extends Annotation, TS extends any[]>(
         this : AnnotationConstructor<T, TS>, 
         type : any
