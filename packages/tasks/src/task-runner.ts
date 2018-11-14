@@ -2,7 +2,6 @@ import { Injectable, Inject } from "@alterior/di";
 import * as Queue from "bull";
 import { QUEUE_OPTIONS, TaskJob, TaskAnnotation } from "./tasks";
 import { Optional } from "injection-js";
-import { TranscodeTask } from "../../../test";
 import { InvalidOperationError } from "@alterior/common";
 
 interface Constructor<T> {
