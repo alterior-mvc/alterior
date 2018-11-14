@@ -1,0 +1,59 @@
+{
+  "name": "@alterior/tasks",
+  "version": "3.0.0-beta.14",
+  "access": "public",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "npm run clean && tsc -p .",
+    "prepare": "npm run test",
+    "clean": "rimraf dist",
+    "npm:clean": "rimraf node_modules",
+    "test": "npm run build && node --inspect dist/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alterior-mvc/alterior.git"
+  },
+  "author": "William Lahti",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alterior-mvc/alterior/issues"
+  },
+  "homepage": "https://github.com/alterior-mvc/alterior#readme",
+  "dependencies": {
+    "@alterior/annotations": "^3.0.0-beta.14",
+    "@alterior/common": "^3.0.0-beta.14",
+    "@alterior/di": "^3.0.0-beta.14",
+    "@alterior/runtime": "^3.0.0-beta.14",
+    "@avejidah/get-parameter-names": "^0.3.2",
+    "@types/bull": "^3.4.0",
+    "@types/ejs": "^2.6.0",
+    "bull": "^3.4.8",
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "injection-js": "^2.2.1",
+    "reflect-metadata": "^0.1.12"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/express": "^4.16.0",
+    "@types/node": "^10.9.4",
+    "@types/supertest": "^2.0.5",
+    "chai": "^3.5.0",
+    "lerna": "^3.2.1",
+    "nodemon": "^1.17.4",
+    "razmin": "^0.5.0",
+    "require-glob": "^3.2.0",
+    "rimraf": "^2.6.2",
+    "supertest": "^3.1.0",
+    "swagger-editor-dist": "^3.6.9",
+    "typescript": "^3.0.3",
+    "wtfnode": "^0.7.0"
+  },
+  "gitHead": "33593f4ef5366e4eaba82a53c88d3ed7f1597141"
+}

@@ -1,0 +1,15 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": "./src",
+        "outDir": "./dist",
+        "typeRoots": [
+            "./node_modules/@types",
+            "./node_modules"
+        ],
+        "types": [
+            "reflect-metadata"
+        ]
+    },
+    "include": [ "./src/**/*.ts" ]
+}
