@@ -3,3 +3,4 @@ export * from './lifecycle';
 export * from './args';
 export * from './application';
 export * from './modules';
+export * from './reflector';
