@@ -19,7 +19,8 @@
 			"dom"
 		],
 		"declaration": true,
-		"emitDecoratorMetadata": true
+		"emitDecoratorMetadata": true,
+		"downlevelIteration": true
 	},
 	"exclude": [
 		"node_modules",
