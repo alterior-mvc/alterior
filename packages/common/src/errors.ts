@@ -132,6 +132,18 @@ export class FormatError extends SystemError {
     }
 }
 
+export class InvalidOperationError extends SystemError {
+    constructor(message? : string) {
+        super(message || `Invalid format.`);
+    }
+}
+
+export class AccessDeniedError extends SystemError {
+    constructor(message? : string) {
+        super(message || `Invalid format.`);
+    }
+}
+
 export class HttpError {
 	constructor(public statusCode : number, public headers : string[][], public body : any) {
 	}
