@@ -1,6 +1,7 @@
 import { ModuleAnnotation, ModuleOptions, Module, ModuleLike } from "@alterior/di";
 import { Injector, Provider, ReflectiveInjector } from "@alterior/di";
 import { timeout } from "@alterior/common";
+import { RolesService } from "roles.service";
 
 /**
  * Combines a module annotation and a target class into a single 
@@ -97,7 +98,11 @@ export class Runtime {
         this._injector = injector;
         let ownInjector : ReflectiveInjector;
         
-        let providers = this.definitions.map(x => x.target);
+        let providers = [
+            RolesService
+        ];
+
+        providers = providers.concat(this.definitions.map(x => x.target));
 
         try {
             ownInjector = ReflectiveInjector.resolveAndCreate(
@@ -124,23 +129,31 @@ export class Runtime {
      * from @alterior/web-server, calling this will instruct the module to stop serving on the configured port. 
      * Also builds in a timeout to allow for all services and operations to stop before resolving.
      * 
-     * Fundamentally, this sends the `OnStop` lifecycle event, triggering the `altOnStop()` method of any module 
-     * which implements it.
+     * This will send the `OnStop` lifecycle event to all modules, which triggers the `altOnStop()` method of any module 
+     * which implements it to be called. It also instructs the RolesService to stop any roles which are currently running.
+     * For more information about Roles, see the documentation for RolesService.
      */
     async stop() {
         this.fireEvent('OnStop');
         await timeout(1000);
+
+        let rolesService = this.injector.get(RolesService);
+        rolesService.stopAll();
     }
 
     /**
      * Start any services, as defined by modules. For instance, if you import WebServerModule from @alterior/web-server,
      * calling this will instruct the module to begin serving on the configured port. 
      * 
-     * Fundamentally, this sends the `OnStart` lifecycle event, triggering the `altOnStart()` method of any module 
-     * which implements it.
+     * This will send the `OnStart` lifecycle event to all modules, which triggers the `altOnStart()` method of any module 
+     * which implements it to be called. It also instructs the RolesService to start roles as per it's configuration. 
+     * For more information about Roles, see the documentation for RolesService.
      */
     start() {
         this.fireEvent('OnStart');
+
+        let rolesService = this.injector.get(RolesService);
+        rolesService.startAll();
     }
 
     /**
