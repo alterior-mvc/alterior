@@ -1,5 +1,5 @@
 import { Module, Injectable, Optional } from "@alterior/di";
-import { OnInit, Application } from "@alterior/runtime";
+import { OnInit, Application, RolesService } from "@alterior/runtime";
 import * as Queue from "bull";
 import { TaskWorkerOptions, TaskWorkerOptionsRef, TaskClientOptions, TaskClientOptionsRef } from "./tasks";
 import { TaskRunner } from "task-runner";
@@ -38,6 +38,7 @@ export class TasksModule {
 export class TaskWorkerModule implements OnInit {
     constructor(
         private app : Application,
+        private rolesService : RolesService,
         @Optional() private _options : TaskWorkerOptionsRef
     ) {
 
@@ -80,13 +81,26 @@ export class TaskWorkerModule implements OnInit {
     altOnInit() {
         this.worker = new TaskWorker(this.app.runtime.injector, this.options, this.app.options);
         this.worker.registerClasses(this.tasks);
+
+        this.rolesService.registerRole({
+            identifier: 'task-worker',
+            instance: this,
+            name: 'Task Worker',
+            summary: 'Pulls from the task queue and executes them using task classes registered in the module tree',
+            async start() {
+                this.worker.start();
+            },
+
+            async stop() {
+                this.worker.stop();
+            }
+        })
+
     }
 
     altOnStart() {
-        this.worker.start();
     }
 
     altOnStop() {
-        this.worker.stop();
     }
 }
