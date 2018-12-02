@@ -1,5 +1,5 @@
 import { Module, Injectable, Optional } from "@alterior/di";
-import { OnInit, Application } from "@alterior/runtime";
+import { OnInit, Application, RolesService } from "@alterior/runtime";
 import { ExpressRef } from "./express-ref";
 import { WebServer, WebServerOptions } from "./web-server";
 import { ControllerRegistrar } from "./controller";
@@ -23,6 +23,7 @@ export class WebServerOptionsRef {
 export class WebServerModule implements OnInit {
     constructor(
         private app : Application,
+        private rolesService : RolesService,
         @Optional() private _options : WebServerOptionsRef,
         private expressRef : ExpressRef
     ) {
@@ -69,13 +70,26 @@ export class WebServerModule implements OnInit {
         new ControllerRegistrar(this.webserver).register(this.controllers);
 
         this.expressRef.application = this.webserver.express;
+
+        this.rolesService.registerRole({
+            identifier: 'web-server',
+            instance: this,
+            name: 'Web Server',
+            summary: 'Starts a web server backed by the controllers configured in the module tree',
+            async start() {
+                this.webserver.start();
+            },
+
+            async stop() {
+                this.webserver.stop();
+            }
+        })
+
     }
 
     altOnStart() {
-        this.webserver.start();
     }
 
     altOnStop() {
-        this.webserver.stop();
     }
 }
