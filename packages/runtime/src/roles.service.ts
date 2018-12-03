@@ -87,6 +87,10 @@ export class RolesService {
         this._roles.push(roleState);
     }
 
+    get roles(): RoleState[] {
+        return this._roles;
+    }
+
     /**
      * Calculate the exact list of roles the configuration currently applies to.
      */
@@ -139,6 +143,8 @@ export class RolesService {
     }
 
     async startAll() {
+        this.effectiveRoles.forEach(x => console.log(`** [${x.identifier}] Starting`));
+
         await Promise.all(
             this.effectiveRoles
                 .filter(x => !x.running)
@@ -147,6 +153,8 @@ export class RolesService {
     }
 
     async stopAll() {
+        this.effectiveRoles.forEach(x => console.log(`** [${x.identifier}] Stopping`));
+
         await Promise.all(
             this.activeRoles
                 .map(x => x.stop())

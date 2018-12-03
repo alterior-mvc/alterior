@@ -71,17 +71,19 @@ export class WebServerModule implements OnInit {
 
         this.expressRef.application = this.webserver.express;
 
+        let self = this;
+
         this.rolesService.registerRole({
             identifier: 'web-server',
             instance: this,
             name: 'Web Server',
             summary: 'Starts a web server backed by the controllers configured in the module tree',
             async start() {
-                this.webserver.start();
+                self.webserver.start();
             },
 
             async stop() {
-                this.webserver.stop();
+                self.webserver.stop();
             }
         })
 

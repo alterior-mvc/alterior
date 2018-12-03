@@ -1,8 +1,7 @@
 import { ModuleAnnotation, ModuleOptions, Module, ModuleLike } from "@alterior/di";
 import { Injector, Provider, ReflectiveInjector } from "@alterior/di";
-import { timeout } from "@alterior/common";
-import { RolesService } from "roles.service";
-
+import { timeout, Environment } from "@alterior/common";
+import { RolesService } from "./roles.service";
 /**
  * Combines a module annotation and a target class into a single 
  * object for storage purposes in Runtime and related objects.
@@ -63,6 +62,85 @@ export class Runtime {
     }
 
     /**
+     * Perform runtime configuration steps
+     */
+    configure() {
+
+        let environment = this.injector.get(Environment);
+        let rolesService = this.injector.get(RolesService);
+        let allRoles = rolesService.roles;
+
+        if (environment.get<any>().ALT_ROLES_ONLY) {
+            let value = environment.get<any>().ALT_ROLES_ONLY;
+            let roles = value.split(',')
+                .map(x => allRoles.find(y => y.identifier == x))
+                .map(x => x.class)
+            ;
+
+            rolesService.configure({ mode: 'only', roles });
+        } else if (environment.get<any>().ALT_ROLES_ALL_EXCEPT) {
+            let value = environment.get<any>().ALT_ROLES_ALL_EXCEPT;
+            let roles = value.split(',')
+                .map(x => allRoles.find(y => y.identifier == x))
+                .map(x => x.class)
+            ;
+
+            rolesService.configure({ mode: 'all-except', roles });
+        } 
+
+        if (typeof process !== 'undefined' && process.argv) {
+            this.processCommandLine(process.argv.splice(2));
+        }
+    }
+
+    processCommandLine(args : string[]) {
+        let rolesService = this.injector.get(RolesService);
+        let argIndex = 0;
+
+        let getArgumentValue = () => {
+            let arg = args[argIndex];
+            if (argIndex + 1 >= args.length)
+                throw new Error(`You must specify a value for option ${arg}`);
+            
+
+            let value = args[++argIndex];
+
+            if (value.startsWith('-')) {
+                throw new Error(`You must specify a value for option ${arg} (encountered option '${value}' instead)`);
+            }
+
+            return value;
+        };
+
+        let allRoles = rolesService.roles;
+        for (; argIndex < args.length; ++argIndex) {
+            let arg = args[argIndex];
+
+            if (arg == '-r' || arg == '--roles-only') {
+                let value = getArgumentValue();
+
+                let roles = value.split(',')
+                    .map(x => allRoles.find(y => y.identifier == x))
+                    .filter(x => x)
+                    .map(x => x.class)
+                ;
+
+                rolesService.configure({ mode: 'only', roles });
+            } else if (arg == '-R' || arg == '--roles-all-except') {
+                let value = getArgumentValue();
+
+                let roles = value.split(',')
+                    .map(x => allRoles.find(y => y.identifier == x))
+                    .filter(x => x)
+                    .map(x => x.class)
+                ;
+
+                rolesService.configure({ mode: 'all-except', roles });
+            }
+        }
+    }
+
+    /**
      * Fire an event to all modules which understand it. Should be upper-camel-case, meaning
      * to fire the altOnStart() method, send "OnStart". 
      * @param eventName 
@@ -97,12 +175,7 @@ export class Runtime {
 
         this._injector = injector;
         let ownInjector : ReflectiveInjector;
-        
-        let providers = [
-            RolesService
-        ];
-
-        providers = providers.concat(this.definitions.map(x => x.target));
+        let providers = this.definitions.map(x => x.target);
 
         try {
             ownInjector = ReflectiveInjector.resolveAndCreate(

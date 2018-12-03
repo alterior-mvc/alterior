@@ -5,6 +5,8 @@ import { ReflectiveInjector, Provider, Injectable,
 		 ModuleAnnotation, Injector } from '@alterior/di';
 import { Runtime } from './modules';
 import { ApplicationArgs } from './args';
+import { RolesService } from './roles.service';
+import { Environment } from '@alterior/common';
 
 require('source-map-support').install();
 
@@ -108,7 +110,12 @@ export class Application {
 
 		let runtime = new Runtime(entryModule);
 
-		let providers : Provider[] = [ApplicationArgs];
+		let providers : Provider[] = [
+			ApplicationArgs,
+			RolesService,
+			Environment
+		];
+
 		runtime.contributeProviders(providers);
 		providers.push(
 			{
@@ -132,6 +139,8 @@ export class Application {
 
 		runtime.load(injector);
 		runtime.fireEvent('OnInit');
+		runtime.configure();
+
 		if (options.autostart)
 			runtime.start();
 

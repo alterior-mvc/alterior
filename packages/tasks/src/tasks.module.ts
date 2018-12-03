@@ -82,17 +82,19 @@ export class TaskWorkerModule implements OnInit {
         this.worker = new TaskWorker(this.app.runtime.injector, this.options, this.app.options);
         this.worker.registerClasses(this.tasks);
 
+        let self = this;
+
         this.rolesService.registerRole({
             identifier: 'task-worker',
             instance: this,
             name: 'Task Worker',
             summary: 'Pulls from the task queue and executes them using task classes registered in the module tree',
             async start() {
-                this.worker.start();
+                self.worker.start();
             },
 
             async stop() {
-                this.worker.stop();
+                self.worker.stop();
             }
         })
 

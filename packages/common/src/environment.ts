@@ -28,8 +28,9 @@ export class Environment {
         this.defaults = defaults;
     }
 
-    get<T>() : T {
+    get<T = any>() : T {
         return Object.assign(
+            {},
             this.defaults,
             (typeof process !== 'undefined' ? process.env as any : null) || {}
         );
