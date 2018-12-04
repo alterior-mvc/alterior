@@ -10,3 +10,4 @@ export * from './response';
 export * from './openapi';
 export * from './service';
 export * from './input';
+export * from './web-server';

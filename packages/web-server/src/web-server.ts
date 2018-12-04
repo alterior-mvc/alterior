@@ -6,7 +6,8 @@ import { RouteEvent } from "./metadata";
 import { BaseErrorT } from "@alterior/common";
 import { RouteDescription, RouteInstance } from './route';
 import { Server } from 'http';
-import { ApplicationOptions } from '@alterior/runtime';
+import { ApplicationOptions, Application } from '@alterior/runtime';
+import { ExpressRef } from './express-ref';
 
 export class WebServerSetupError extends BaseErrorT {
 }
@@ -57,6 +58,23 @@ export class WebServer {
     private expressServer : Server;
 	private _serviceDescription : ServiceDescription;
 
+	public static bootstrapCloudFunction(entryModule : any, options? : ApplicationOptions) {
+		let appReady : Promise<Application>;
+		let expressRef : ExpressRef = null;
+
+		return async (req, res) => {
+			if (!appReady)
+				appReady = Application.bootstrap(entryModule, options);
+
+			if (!expressRef) {
+				let app = await appReady;
+				expressRef = app.injector.get(ExpressRef);
+			}
+			
+		    expressRef.application(req, res);
+		}
+	}
+	
 	/**
 	 * Setup the service description which provides a view of all the routes 
 	 * registered in this web server.
