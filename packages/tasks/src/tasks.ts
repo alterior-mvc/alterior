@@ -12,6 +12,7 @@ export interface TaskWorkerOptions extends TaskClientOptions {
 export interface TaskClientOptions {
     queueOptions? : Queue.QueueOptions;
     queueName? : string;
+    enableProcessors? : boolean;
 }
 
 
