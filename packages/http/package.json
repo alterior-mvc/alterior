@@ -32,7 +32,7 @@
   },
   "gitHead": "128cce4ca1738ca3cad7149646f26db693b0bde3",
   "devDependencies": {
-    "razmin": "^0.5.0",
+    "razmin": "^0.5.5",
     "typescript": "^3.0.3"
   }
 }

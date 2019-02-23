@@ -35,7 +35,7 @@
   "devDependencies": {
     "@types/node": "^10.9.4",
     "chai": "^4.1.2",
-    "razmin": "^0.5.0",
+    "razmin": "^0.5.5",
     "require-glob": "^3.2.0",
     "typescript": "^3.0.3"
   },
