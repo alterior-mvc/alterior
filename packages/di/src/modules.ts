@@ -10,6 +10,7 @@ export type ModuleLike = Function | ConfiguredModule;
 export interface ModuleOptions {
     declarations?: any[];
     controllers?: any[];
+    tasks? : any[];
     imports?: ModuleLike[];
     providers?: Provider[];
 }
