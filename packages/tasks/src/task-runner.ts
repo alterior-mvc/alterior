@@ -139,6 +139,7 @@ export class TaskWorkerRegistry {
 @Injectable()
 export class TaskQueueClient {
     constructor(
+        @Optional()
         private optionsRef : TaskModuleOptionsRef
     ) {
         this._queue = new BullQueue(this.queueName, this.queueOptions);
@@ -154,7 +155,7 @@ export class TaskQueueClient {
      * Get the task client options. See 
      */
     get options(): TaskModuleOptions {
-        return this.optionsRef.options || {};
+        return (this.optionsRef ? this.optionsRef.options : undefined) || {};
     }
 
     get queueName(): string {
