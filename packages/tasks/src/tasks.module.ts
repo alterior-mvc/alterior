@@ -1,31 +1,9 @@
 import { Module, Injectable, Optional } from "@alterior/di";
-import { OnInit, Application, RolesService } from "@alterior/runtime";
+import { OnInit, Application, RolesService, Constructor } from "@alterior/runtime";
 import * as Queue from "bull";
-import { TaskWorkerOptions, TaskWorkerOptionsRef, TaskClientOptions, TaskClientOptionsRef } from "./tasks";
-import { TaskRunner } from "task-runner";
+import { TaskModuleOptions, TaskModuleOptionsRef } from "./tasks";
+import { TaskRunner, TaskQueueClient, TaskWorkerRegistry } from "task-runner";
 import { TaskWorker } from "task-worker";
-
-@Module({
-
-})
-export class TasksModule {
-    constructor() {
-    }
-
-    static forRoot() {
-        return this.configure({});
-    }
-
-    static configure(options : TaskClientOptions) {
-        return {
-            $module: TasksModule,
-            providers: [
-                TaskRunner,
-                { provide: TaskClientOptionsRef, useValue: new TaskClientOptionsRef(options) }
-            ]
-        };
-    }
-}
 
 /**
  * Import this into your application module to run tasks enqueued by other 
@@ -33,13 +11,16 @@ export class TasksModule {
  * in the `tasks` field of one or more modules.
  */
 @Module({
-    providers: []
+    providers: [
+        TaskRunner, TaskQueueClient
+    ]
 })
-export class TaskWorkerModule implements OnInit {
+export class TasksModule implements OnInit {
     constructor(
         private app : Application,
         private rolesService : RolesService,
-        @Optional() private _options : TaskWorkerOptionsRef
+        private workerRegistry : TaskWorkerRegistry,
+        @Optional() private _options : TaskModuleOptionsRef
     ) {
 
     }
@@ -58,19 +39,18 @@ export class TaskWorkerModule implements OnInit {
      * be imported into an entry module (or feature module).
      * @param options The options to use for the web server
      */
-    public static configure(options : TaskWorkerOptions) {
+    public static configure(options : TaskModuleOptions) {
         return {
-            $module: TaskWorkerModule,
+            $module: TasksModule,
             providers: [
-                { provide: TaskWorkerOptionsRef, useValue: new TaskWorkerOptionsRef(options) },
-                { provide: TaskClientOptionsRef, useValue: new TaskClientOptionsRef(options) }
+                { provide: TaskModuleOptionsRef, useValue: new TaskModuleOptionsRef(options) }
             ]
         }
     }
 
     worker : TaskWorker;
 
-    get options(): TaskWorkerOptions {
+    get options(): TaskModuleOptions {
         return this._options ? this._options.options : {} || {};
     }
 
@@ -79,6 +59,9 @@ export class TaskWorkerModule implements OnInit {
     }
 
     altOnInit() {
+
+        this.workerRegistry.registerClasses(this.tasks);
+
         this.worker = new TaskWorker(this.app.runtime.injector, this.options, this.app.options);
         this.worker.registerClasses(this.tasks);
 

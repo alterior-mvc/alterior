@@ -1,52 +1,14 @@
 import { Injectable, Inject } from "@alterior/di";
 import * as BullQueue from "bull";
-import { QUEUE_OPTIONS, TaskJob, TaskAnnotation, TaskClientOptionsRef, TaskClientOptions } from "./tasks";
-import { Optional } from "injection-js";
+import { QUEUE_OPTIONS, TaskJob, TaskAnnotation, TaskModuleOptionsRef, TaskModuleOptions } from "./tasks";
+import { Optional, Injector, Provider, ReflectiveInjector } from "injection-js";
 import { InvalidOperationError, ArgumentError } from "@alterior/common";
 
-export interface WorkerJobData {
-    method : string;
-    arguments : any[];
-}
-
 export abstract class Worker {
-    constructor(
-        private taskRunner : TaskRunner
-    ) {
-        this.construct();
-    }
-
     abstract get name() : string;
 
-    protected get currentJob() : QueueJob<WorkerJobData> {
+    protected get currentJob() : QueueJob<TaskJob> {
         return Zone.current.get('workerStateJob');
-    }
-
-    private construct() {
-        this.taskRunner.client.process(`worker-${this.name}`, async (job : QueueJob<WorkerJobData>) => {
-
-            let zone = Zone.current.fork({
-                name: `worker-state-${this.name}`,
-                properties: {
-                    workerStateJob: job
-                }
-            });
-
-            let result = await zone.run(async () => await this[job.data.method](...job.data.arguments));
-
-            // WORKAROUND:
-            // @types/bull declares the callback function return value as Promise<void>, but bull supports 
-            // returning data from the job by returning a value, thus the real return value declaration should 
-            // be Promise<any>.
-            // https://github.com/OptimalBits/bull/pull/209/files
-
-            return <any> result;
-        });
-
-        this.initialize();
-    }
-
-    initialize() {
     }
 }
 
@@ -67,7 +29,7 @@ export type RemoteWorker<T> = {
     [P in keyof T]: 
         T[P] extends (...args: any[]) => any ? 
             // methods
-            (...args : Parameters<T[P]>) => Promise<QueueJob<WorkerJobData>>
+            (...args : Parameters<T[P]>) => Promise<QueueJob<TaskJob>>
             
             // fields
             : never
@@ -79,48 +41,104 @@ export type JobOptions = BullQueue.JobOptions;
 export type QueueJob<T> = BullQueue.Job<T>;
 export type Queue<T> = BullQueue.Queue<T>;
 
-interface Constructor<T> {
+export interface Constructor<T> {
     new (...args) : T;
 }
 
 export type PromiseWrap<T> = T extends PromiseLike<any> ? T : Promise<T>;
 
 export class TaskWorkerProxy {
-    private static create<T extends Worker>(taskRunner : TaskRunner, target : T, handler : (key, ...args) => any): any {
+    private static create<T extends Worker>(handler : (key, ...args) => any): any {
         return <RemoteWorker<T>> new Proxy({}, {
             get(t, key : string, receiver) {
-                if (typeof target[key] !== 'function')
-                    return undefined;
-
                 return (...args) => handler(key, ...args);
             }
         })
     }
 
-    static createAsync<T extends Worker>(taskRunner : TaskRunner, target : T): RemoteWorker<T> {
-        return this.create(taskRunner, target, 
-            (key, ...args) => taskRunner.client.enqueue<WorkerJobData>(
-                target.name, 
-                `Job:${target.constructor.name}`,
+    static createAsync<T extends Worker>(queueClient : TaskQueueClient, id : string): RemoteWorker<T> {
+        return this.create(
+            (key, ...args) => queueClient.enqueue<TaskJob>(
+                'alteriorTasks', 
+                undefined,
                 {
+                    id,
                     method: key,
-                    arguments: args
+                    args
                 }
             )
         );
     }
     
-    static createSync<T extends Worker>(taskRunner : TaskRunner, target : T): RemoteService<T> {
-        return this.create(taskRunner, target, 
-            async (key, ...args) => (await taskRunner.client.enqueue<WorkerJobData>(
-                target.name, 
-                `Job:${target.constructor.name}`,
+    static createSync<T extends Worker>(queueClient : TaskQueueClient, id : string): RemoteService<T> {
+        return this.create( 
+            async (key, ...args) => (await queueClient.enqueue<TaskJob>(
+                `alteriorTasks`, 
+                undefined,
                 {
+                    id,
                     method: key,
-                    arguments: args
+                    args
                 }
             )).finished
         );
+    }
+}
+
+interface TaskWorkerEntry<T extends Worker = any> {
+    type : Constructor<T>;
+    local : T;
+    async : RemoteWorker<T>;
+    sync : RemoteService<T>;
+}
+
+@Injectable()
+export class TaskWorkerRegistry {
+    constructor(
+        private injector : Injector,
+        private client : TaskQueueClient
+    ) {
+
+    }
+
+    private _entries : { [name : string] : TaskWorkerEntry } = {};
+
+    private registerClass(injector : Injector, taskClass : Constructor<Worker>) {
+        let instance = <Worker> injector.get(taskClass);
+        let id = instance.name;
+        
+        if (this._entries[id])
+            throw new Error(`Another worker is already registered with name '${id}'`);
+
+        this._entries[id] = {
+            type: <any> taskClass,
+            local: instance,
+            sync: TaskWorkerProxy.createSync(this.client, id),
+            async: TaskWorkerProxy.createAsync(this.client, id)
+        };
+    }
+
+    get all() : TaskWorkerEntry[] {
+        return Object.values(this._entries);
+    }
+
+    get<T extends Worker>(cls : Constructor<T>): TaskWorkerEntry<T> {
+        let entry = this.all.find(x => x.constructor === cls);
+
+        if (!entry)
+            throw new Error(`Worker class ${cls.name} is not registered. Use TaskRunner.register(${cls.name})`);
+        
+        return <TaskWorkerEntry<T>> entry;
+    }
+
+    getByName(name : string) {
+        return this._entries[name];
+    }
+
+    registerClasses(classes : Function[]) {
+        let taskClasses : Constructor<Worker>[] = classes as any;
+        let ownInjector = ReflectiveInjector.resolveAndCreate(taskClasses as Provider[], this.injector);
+        taskClasses.forEach(taskClass => this.registerClass(ownInjector, taskClass));
     }
 }
 
@@ -129,14 +147,14 @@ export class TaskQueueClient {
     constructor(
         @Inject(QUEUE_OPTIONS)
         @Optional()
-        private taskClientOptionsRef : TaskClientOptionsRef
+        private taskClientOptionsRef : TaskModuleOptionsRef
     ) {
     }
 
     /**
      * Get the task client options. See 
      */
-    get options(): TaskClientOptions {
+    get options(): TaskModuleOptions {
         return this.taskClientOptionsRef.options || {};
     }
 
@@ -215,57 +233,20 @@ export class TaskQueueClient {
     }
 }
 
-interface TaskWorkerEntry<T extends Worker = any> {
-    type : Constructor<T>;
-    local : T;
-    remoteWorker : RemoteWorker<T>;
-    remoteService : RemoteService<T>;
-}
-
 @Injectable()
 export class TaskRunner {
     constructor(
-        private _client : TaskQueueClient
+        private _client : TaskQueueClient,
+        private _registry : TaskWorkerRegistry
     ) {
-        this.init();
+    }
+
+    get registry() {
+        return this._registry;
     }
 
     get client() {
         return this._client;
-    }
-
-    init() {
-    }
-
-    private _entries : { [name : string] : TaskWorkerEntry } = {};
-
-    register(worker : Worker) {
-        if (this._entries[worker.name])
-            throw new Error(`Another worker is already registered with name '${worker.name}'`);
-        
-        this._entries[worker.name] = {
-            type: <any> worker.constructor,
-            local: worker,
-            remoteService: TaskWorkerProxy.createSync(this, worker),
-            remoteWorker: TaskWorkerProxy.createAsync(this, worker)
-        };
-    }
-
-    get all() : TaskWorkerEntry[] {
-        return Object.values(this._entries);
-    }
-
-    get<T extends Worker>(cls : Constructor<T>): TaskWorkerEntry<T> {
-        let entry = this.all.find(x => x.constructor === cls);
-
-        if (!entry)
-            throw new Error(`Worker class ${cls.name} is not registered. Use TaskRunner.register(${cls.name})`);
-        
-        return <TaskWorkerEntry<T>> entry;
-    }
-
-    getByName(name : string) {
-        return this._entries[name];
     }
 
     /**
@@ -274,7 +255,7 @@ export class TaskRunner {
      * resolve once the item has been successfully delivered to the event queue.
      */
     worker<T extends Worker>(workerClass : Constructor<T>): RemoteWorker<T> {
-        return this.get<T>(workerClass).remoteWorker;
+        return this.registry.get<T>(workerClass).async;
     }
 
     /**
@@ -283,6 +264,6 @@ export class TaskRunner {
      * remote function. If you only want to enqueue a task, use `worker()` instead.
      */
     service<T extends Worker>(workerClass : Constructor<T>): RemoteService<T> {
-        return this.get<T>(workerClass).remoteService;
+        return this.registry.get<T>(workerClass).sync;
     }
 }

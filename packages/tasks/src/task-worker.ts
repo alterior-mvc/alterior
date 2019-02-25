@@ -1,7 +1,7 @@
 import { Injectable } from "@alterior/di";
 import { InvalidOperationError, ArgumentError, ArgumentNullError } from "@alterior/common";
 import { Injector, Provider, ReflectiveInjector } from "injection-js";
-import { TaskWorkerOptions, TaskAnnotation, TaskJob } from "./tasks";
+import { TaskAnnotation, TaskJob, TaskModuleOptions } from "./tasks";
 import { ApplicationOptions } from "@alterior/runtime";
 import { Type } from "@alterior/runtime";
 import * as Queue from "bull";
@@ -13,7 +13,7 @@ export interface TaskHandler {
 export class TaskWorker {
     constructor(
         private _injector : Injector,
-        private _options : TaskWorkerOptions,
+        private _options : TaskModuleOptions,
         private _appOptions : ApplicationOptions
     ) {
 		if (!_injector)
@@ -56,7 +56,7 @@ export class TaskWorker {
 		this._queue.process(async (job : Queue.Job<TaskJob>, done) => {
 			let task = job.data;
 
-			if (!job.data || !job.data.id) {
+			if (!task || !task.id) {
 				await job.discard();
 				done(new Error(`Invalid job task`));
 			}

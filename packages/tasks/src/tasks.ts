@@ -4,12 +4,9 @@ import { Module } from "@alterior/di";
 import * as Queue from "bull";
 import { Inject } from "injection-js";
 
-export interface TaskWorkerOptions extends TaskClientOptions {
+export interface TaskModuleOptions {
     verbose? : boolean;
 	silent? : boolean;
-}
-
-export interface TaskClientOptions {
     queueOptions? : Queue.QueueOptions;
     queueName? : string;
     enableProcessors? : boolean;
@@ -25,21 +22,12 @@ export interface TaskClientOptions {
  * 
  */
 @Injectable()
-export class TaskClientOptionsRef {
-    constructor(options : TaskClientOptions) {
+export class TaskModuleOptionsRef {
+    constructor(options : TaskModuleOptions) {
         this.options = options;
     }
 
-    public options : TaskClientOptions;
-}
-
-@Injectable()
-export class TaskWorkerOptionsRef {
-    constructor(options : TaskWorkerOptions) {
-        this.options = options;
-    }
-
-    public options : TaskWorkerOptions;
+    public options : TaskModuleOptions;
 }
 
 export interface TaskJob {
