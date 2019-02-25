@@ -5,7 +5,7 @@ import { TaskAnnotation, TaskJob, TaskModuleOptions } from "./tasks";
 import { ApplicationOptions } from "@alterior/runtime";
 import { Type } from "@alterior/runtime";
 import * as Queue from "bull";
-import { TaskQueueClient } from "task-runner";
+import { TaskQueueClient } from "./task-runner";
 
 export interface TaskHandler {
     (methodName : string, args : any[]) : Promise<any>;
