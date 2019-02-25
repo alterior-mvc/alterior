@@ -58,9 +58,7 @@ export class TaskWorkerProxy {
 
     static createAsync<T extends Worker>(queueClient : TaskQueueClient, id : string): RemoteWorker<T> {
         return this.create(
-            (key, ...args) => queueClient.enqueue<TaskJob>(
-                'alteriorTasks', 
-                undefined,
+            (key, ...args) => queueClient.enqueue(
                 {
                     id,
                     method: key,
@@ -72,15 +70,11 @@ export class TaskWorkerProxy {
     
     static createSync<T extends Worker>(queueClient : TaskQueueClient, id : string): RemoteService<T> {
         return this.create( 
-            async (key, ...args) => (await queueClient.enqueue<TaskJob>(
-                `alteriorTasks`, 
-                undefined,
-                {
-                    id,
-                    method: key,
-                    args
-                }
-            )).finished
+            async (key, ...args) => (await queueClient.enqueue({
+                id,
+                method: key,
+                args
+            })).finished
         );
     }
 }
@@ -145,17 +139,26 @@ export class TaskWorkerRegistry {
 @Injectable()
 export class TaskQueueClient {
     constructor(
-        @Inject(QUEUE_OPTIONS)
-        @Optional()
-        private taskClientOptionsRef : TaskModuleOptionsRef
+        private optionsRef : TaskModuleOptionsRef
     ) {
+        this._queue = new BullQueue(this.queueName, this.queueOptions);
     }
 
+    _queue : BullQueue.Queue;
+
+    get queue(): Queue<TaskJob> {
+        return this._queue;
+    }
+    
     /**
      * Get the task client options. See 
      */
     get options(): TaskModuleOptions {
-        return this.taskClientOptionsRef.options || {};
+        return this.optionsRef.options || {};
+    }
+
+    get queueName(): string {
+        return this.options.queueName || 'alteriorTasks';
     }
 
     get queueOptions() {
@@ -173,80 +176,23 @@ export class TaskQueueClient {
     }
 
     /**
-     * If processors are not enabled, `.process()` will be a no-op.
-     * See `TaskClientOptionsRef` for how to configure.
-     */
-    get enableProcessors() {
-        if (this.options.enableProcessors === undefined)
-            return true;
-           
-        return this.options.enableProcessors;
-    }
-
-    /**
      * Enqueue a new task. To handle the task on the worker side, register for it with `.process()`
      */
-    async enqueue<DataT>(queueName : string, jobName : string, data : DataT, opts? : JobOptions): Promise<QueueJob<DataT>> {
-        let queue = new BullQueue(queueName, this.queueOptions);
-        let job = await queue.add(jobName, data, opts);
+    async enqueue(data : TaskJob, opts? : JobOptions): Promise<QueueJob<TaskJob>> {
+        let job = await this._queue.add(undefined, data, opts);
         return job;
-    }
-
-    /**
-     * Register to process queued tasks from the given queue. The given callback is called with 
-     * each job to be processed. To enqueue a task see `.enqueue()`
-     */
-    process<T>(queueName : string, callback : (job : QueueJob<T>) => Promise<void>, concurrency : number = 1) {
-        if (!this.enableProcessors)
-            return;
-        
-        let queue = new BullQueue(queueName, this.queueOptions);
-        queue.process(callback);
-    }
-
-    queues : Map<string,Queue<any>> = new Map<string,Queue<any>>();
-
-    /**
-     * Construct a new Queue, specifying a name and options. 
-     */
-    defineQueue<T = any>(queueName : string, opts : QueueOptions) : Queue<T> {
-        let queue = this.queues.get(queueName);
-        if (queue)
-            throw new InvalidOperationError(`Queue named '${queueName}' is already defined.`);
-
-        queue = new BullQueue(queueName, opts);
-
-        if (!this.enableProcessors)
-            (queue as any).process = () => {};
-
-        this.queues.set(queueName, queue);
-
-        return queue;
-    }
-
-    getQueue<T = any>(queueName : string) : Queue<T> {
-        let queue = this.queues.get(queueName);
-        if (!queue)
-            throw new ArgumentError(`Queue named '${queueName}' is already defined.`);
-
-        return queue;
     }
 }
 
 @Injectable()
 export class TaskRunner {
     constructor(
-        private _client : TaskQueueClient,
         private _registry : TaskWorkerRegistry
     ) {
     }
 
     get registry() {
         return this._registry;
-    }
-
-    get client() {
-        return this._client;
     }
 
     /**

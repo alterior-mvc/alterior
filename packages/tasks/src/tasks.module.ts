@@ -19,6 +19,7 @@ export class TasksModule implements OnInit {
     constructor(
         private app : Application,
         private rolesService : RolesService,
+        private client : TaskQueueClient,
         private workerRegistry : TaskWorkerRegistry,
         @Optional() private _options : TaskModuleOptionsRef
     ) {
@@ -62,7 +63,7 @@ export class TasksModule implements OnInit {
 
         this.workerRegistry.registerClasses(this.tasks);
 
-        this.worker = new TaskWorker(this.app.runtime.injector, this.options, this.app.options);
+        this.worker = new TaskWorker(this.app.runtime.injector, this.client, this.options, this.app.options);
         this.worker.registerClasses(this.tasks);
 
         let self = this;

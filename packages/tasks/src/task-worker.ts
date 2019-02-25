@@ -5,6 +5,7 @@ import { TaskAnnotation, TaskJob, TaskModuleOptions } from "./tasks";
 import { ApplicationOptions } from "@alterior/runtime";
 import { Type } from "@alterior/runtime";
 import * as Queue from "bull";
+import { TaskQueueClient } from "task-runner";
 
 export interface TaskHandler {
     (methodName : string, args : any[]) : Promise<any>;
@@ -12,7 +13,8 @@ export interface TaskHandler {
 
 export class TaskWorker {
     constructor(
-        private _injector : Injector,
+		private _injector : Injector,
+		private _client : TaskQueueClient,
         private _options : TaskModuleOptions,
         private _appOptions : ApplicationOptions
     ) {
@@ -26,8 +28,6 @@ export class TaskWorker {
 			throw new ArgumentNullError(`appOptions`);
 
     }
-
-	_queue : Queue.Queue;
 
     public get injector() {
         return this._injector;
@@ -43,17 +43,16 @@ export class TaskWorker {
 
     private _taskHandlers = {};
 
+	get queue() {
+		return this._client.queue;
+	}
+
 	stop() {
-		this._queue.close();
+		this.queue.close();
 	}
 
 	start() {
-		this._queue = Queue(
-			this.options.queueName || 'alteriorTasks', 
-			Object.assign({}, this.options.queueOptions)
-		);
-
-		this._queue.process(async (job : Queue.Job<TaskJob>, done) => {
+		this.queue.process(async (job : Queue.Job<TaskJob>, done) => {
 			let task = job.data;
 
 			if (!task || !task.id) {

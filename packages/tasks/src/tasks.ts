@@ -5,11 +5,8 @@ import * as Queue from "bull";
 import { Inject } from "injection-js";
 
 export interface TaskModuleOptions {
-    verbose? : boolean;
-	silent? : boolean;
-    queueOptions? : Queue.QueueOptions;
     queueName? : string;
-    enableProcessors? : boolean;
+    queueOptions? : Queue.QueueOptions;
 }
 
 
