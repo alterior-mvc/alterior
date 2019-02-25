@@ -2,8 +2,8 @@ import { Module, Injectable, Optional } from "@alterior/di";
 import { OnInit, Application, RolesService, Constructor } from "@alterior/runtime";
 import * as Queue from "bull";
 import { TaskModuleOptions, TaskModuleOptionsRef } from "./tasks";
-import { TaskRunner, TaskQueueClient, TaskWorkerRegistry } from "task-runner";
-import { TaskWorker } from "task-worker";
+import { TaskRunner, TaskQueueClient, TaskWorkerRegistry } from "./task-runner";
+import { TaskWorker } from "./task-worker";
 
 /**
  * Import this into your application module to run tasks enqueued by other 
