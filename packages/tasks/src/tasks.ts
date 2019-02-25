@@ -16,6 +16,14 @@ export interface TaskClientOptions {
 }
 
 
+/**
+ * This injectable allows configuration of the task system. 
+ * Include a provider for the injection token `QUEUE_OPTIONS`
+ * which provides an instance of this class. 
+ * 
+ * For instance: `[ provide: QUEUE_OPTIONS, useValue: new TaskClientOptionsRef({ optionsHere }) ]`
+ * 
+ */
 @Injectable()
 export class TaskClientOptionsRef {
     constructor(options : TaskClientOptions) {

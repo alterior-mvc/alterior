@@ -1,121 +1,288 @@
 import { Injectable, Inject } from "@alterior/di";
-import * as Queue from "bull";
-import { QUEUE_OPTIONS, TaskJob, TaskAnnotation } from "./tasks";
+import * as BullQueue from "bull";
+import { QUEUE_OPTIONS, TaskJob, TaskAnnotation, TaskClientOptionsRef, TaskClientOptions } from "./tasks";
 import { Optional } from "injection-js";
-import { InvalidOperationError } from "@alterior/common";
+import { InvalidOperationError, ArgumentError } from "@alterior/common";
+
+export interface WorkerJobData {
+    method : string;
+    arguments : any[];
+}
+
+export abstract class Worker {
+    constructor(
+        private taskRunner : TaskRunner
+    ) {
+        this.construct();
+    }
+
+    abstract get name() : string;
+
+    protected get currentJob() : QueueJob<WorkerJobData> {
+        return Zone.current.get('workerStateJob');
+    }
+
+    private construct() {
+        this.taskRunner.client.process(`worker-${this.name}`, async (job : QueueJob<WorkerJobData>) => {
+
+            let zone = Zone.current.fork({
+                name: `worker-state-${this.name}`,
+                properties: {
+                    workerStateJob: job
+                }
+            });
+
+            let result = await zone.run(async () => await this[job.data.method](...job.data.arguments));
+
+            // WORKAROUND:
+            // @types/bull declares the callback function return value as Promise<void>, but bull supports 
+            // returning data from the job by returning a value, thus the real return value declaration should 
+            // be Promise<any>.
+            // https://github.com/OptimalBits/bull/pull/209/files
+
+            return <any> result;
+        });
+
+        this.initialize();
+    }
+
+    initialize() {
+    }
+}
+
+export type RemoteService<T> = {
+    [P in keyof T]: 
+        T[P] extends (...args: any[]) => any ? 
+            // methods
+            (ReturnType<T[P]> extends Promise<any> ?
+                T[P] // dont modify methods that are already promises
+                : (...args : Parameters<T[P]>) => Promise<ReturnType<T[P]>>
+            )
+            // fields
+            : never
+    ;
+}
+
+export type RemoteWorker<T> = {
+    [P in keyof T]: 
+        T[P] extends (...args: any[]) => any ? 
+            // methods
+            (...args : Parameters<T[P]>) => Promise<QueueJob<WorkerJobData>>
+            
+            // fields
+            : never
+    ;
+};
+
+export type QueueOptions = BullQueue.QueueOptions;
+export type JobOptions = BullQueue.JobOptions;
+export type QueueJob<T> = BullQueue.Job<T>;
+export type Queue<T> = BullQueue.Queue<T>;
 
 interface Constructor<T> {
     new (...args) : T;
 }
 
-interface TaskProxyOptions {
+export type PromiseWrap<T> = T extends PromiseLike<any> ? T : Promise<T>;
+
+export class TaskWorkerProxy {
+    private static create<T extends Worker>(taskRunner : TaskRunner, target : T, handler : (key, ...args) => any): any {
+        return <RemoteWorker<T>> new Proxy({}, {
+            get(t, key : string, receiver) {
+                if (typeof target[key] !== 'function')
+                    return undefined;
+
+                return (...args) => handler(key, ...args);
+            }
+        })
+    }
+
+    static createAsync<T extends Worker>(taskRunner : TaskRunner, target : T): RemoteWorker<T> {
+        return this.create(taskRunner, target, 
+            (key, ...args) => taskRunner.client.enqueue<WorkerJobData>(
+                target.name, 
+                `Job:${target.constructor.name}`,
+                {
+                    method: key,
+                    arguments: args
+                }
+            )
+        );
+    }
+    
+    static createSync<T extends Worker>(taskRunner : TaskRunner, target : T): RemoteService<T> {
+        return this.create(taskRunner, target, 
+            async (key, ...args) => (await taskRunner.client.enqueue<WorkerJobData>(
+                target.name, 
+                `Job:${target.constructor.name}`,
+                {
+                    method: key,
+                    arguments: args
+                }
+            )).finished
+        );
+    }
+}
+
+@Injectable()
+export class TaskQueueClient {
+    constructor(
+        @Inject(QUEUE_OPTIONS)
+        @Optional()
+        private taskClientOptionsRef : TaskClientOptionsRef
+    ) {
+    }
+
     /**
-     * Specify what behavior promises returned by 
-     * queued functions should have. The default is 
-     * 'queued' which resolves when the task is successfully
-     * added to the queue. If you want to know when the task 
-     * has finished processing or obtain the return value,
-     * use 'finished' instead. 
-     * 
-     * The meaning of the values are:
-     * 
-     * - 'queued': Promise completes when the item is 
-     *   successfully queued with the task coordinator 
-     *   (usually Redis). Value of resolved promise is 
-     *   always `undefined`. If an error occurs while 
-     *   queuing the job, the promise rejects with that 
-     *   error. This is the default because it is assumed
-     *   that the caller does not intend to wait for the 
-     *   background task to complete inline using await.
-     * 
-     * - 'finished': Promise completes when the item is 
-     *   successfully processed and has completed.
-     *   Value of resolved promises is the value returned
-     *   by the task (running remotely, so the value has 
-     *   been serialized and deserialized). If an error occurs
-     *   while queuing the job, or if an error is thrown while
-     *   the job is executing, that error (after serialization)
-     *   is used to reject the promise.
+     * Get the task client options. See 
      */
-    await? : 'error' | 'queued' | 'finished'
+    get options(): TaskClientOptions {
+        return this.taskClientOptionsRef.options || {};
+    }
+
+    get queueOptions() {
+        let queueOptions = Object.assign({}, this.options.queueOptions);
+
+        if (!queueOptions.redis) {
+            queueOptions.redis = {
+                port: 6379,
+                host: '127.0.0.1',
+                db: 6
+            }
+        }
+
+        return queueOptions;
+    }
+
+    /**
+     * If processors are not enabled, `.process()` will be a no-op.
+     * See `TaskClientOptionsRef` for how to configure.
+     */
+    get enableProcessors() {
+        if (this.options.enableProcessors === undefined)
+            return true;
+           
+        return this.options.enableProcessors;
+    }
+
+    /**
+     * Enqueue a new task. To handle the task on the worker side, register for it with `.process()`
+     */
+    async enqueue<DataT>(queueName : string, jobName : string, data : DataT, opts? : JobOptions): Promise<QueueJob<DataT>> {
+        let queue = new BullQueue(queueName, this.queueOptions);
+        let job = await queue.add(jobName, data, opts);
+        return job;
+    }
+
+    /**
+     * Register to process queued tasks from the given queue. The given callback is called with 
+     * each job to be processed. To enqueue a task see `.enqueue()`
+     */
+    process<T>(queueName : string, callback : (job : QueueJob<T>) => Promise<void>, concurrency : number = 1) {
+        if (!this.enableProcessors)
+            return;
+        
+        let queue = new BullQueue(queueName, this.queueOptions);
+        queue.process(callback);
+    }
+
+    queues : Map<string,Queue<any>> = new Map<string,Queue<any>>();
+
+    /**
+     * Construct a new Queue, specifying a name and options. 
+     */
+    defineQueue<T = any>(queueName : string, opts : QueueOptions) : Queue<T> {
+        let queue = this.queues.get(queueName);
+        if (queue)
+            throw new InvalidOperationError(`Queue named '${queueName}' is already defined.`);
+
+        queue = new BullQueue(queueName, opts);
+
+        if (!this.enableProcessors)
+            (queue as any).process = () => {};
+
+        this.queues.set(queueName, queue);
+
+        return queue;
+    }
+
+    getQueue<T = any>(queueName : string) : Queue<T> {
+        let queue = this.queues.get(queueName);
+        if (!queue)
+            throw new ArgumentError(`Queue named '${queueName}' is already defined.`);
+
+        return queue;
+    }
+}
+
+interface TaskWorkerEntry<T extends Worker = any> {
+    type : Constructor<T>;
+    local : T;
+    remoteWorker : RemoteWorker<T>;
+    remoteService : RemoteService<T>;
 }
 
 @Injectable()
 export class TaskRunner {
     constructor(
-        @Inject(QUEUE_OPTIONS)
-        @Optional()
-        private queueOptions : Queue.QueueOptions
+        private _client : TaskQueueClient
     ) {
-        this._queue = new Queue('tasks', queueOptions || {
-            redis: {
-                port: 6379,
-                host: '127.0.0.1',
-                db: 6
-            }
-        });
+        this.init();
     }
 
-    private _queue : Queue.Queue<TaskJob>;
-    
-    /**
-     * Enqueue a low-level task job description and directly interact with the resulting queue job.
-     * Consider using task proxies (via get()) instead. 
-     * @param task 
-     */
-    async enqueue(task : TaskJob): Promise<Queue.Job<TaskJob>> {
-        return await this._queue.add(task);
+    get client() {
+        return this._client;
+    }
+
+    init() {
+    }
+
+    private _entries : { [name : string] : TaskWorkerEntry } = {};
+
+    register(worker : Worker) {
+        if (this._entries[worker.name])
+            throw new Error(`Another worker is already registered with name '${worker.name}'`);
+        
+        this._entries[worker.name] = {
+            type: <any> worker.constructor,
+            local: worker,
+            remoteService: TaskWorkerProxy.createSync(this, worker),
+            remoteWorker: TaskWorkerProxy.createAsync(this, worker)
+        };
+    }
+
+    get all() : TaskWorkerEntry[] {
+        return Object.values(this._entries);
+    }
+
+    get<T extends Worker>(cls : Constructor<T>): TaskWorkerEntry<T> {
+        let entry = this.all.find(x => x.constructor === cls);
+
+        if (!entry)
+            throw new Error(`Worker class ${cls.name} is not registered. Use TaskRunner.register(${cls.name})`);
+        
+        return <TaskWorkerEntry<T>> entry;
+    }
+
+    getByName(name : string) {
+        return this._entries[name];
     }
 
     /**
-     * Retrieve a proxy for the given task class. Calling the methods of the 
-     * returned proxy will be added to the task queue to be executed by any 
-     * subscribed workers. The meaning of promise resolution on called methods 
-     * is configurable using the `await` option.
-     * 
-     * Limitations: 
-     * 
-     * - Calling synchronous methods on the proxy is not supported and will 
-     *   result in a Promise instead of the expected return value of the 
-     *   original (remote) synchronous method. Avoid this pattern: all methods 
-     *   on Task classes should be async.
-     * 
-     * @param ctor 
-     * @param options 
+     * Acquire a Remote for the given service where any calls to the remote will 
+     * resolve to a QueueJob which can be further interacted with. Promise will 
+     * resolve once the item has been successfully delivered to the event queue.
      */
-    get<T extends Object>(ctor : Constructor<T>, options? : TaskProxyOptions) : T {
+    worker<T extends Worker>(workerClass : Constructor<T>): RemoteWorker<T> {
+        return this.get<T>(workerClass).remoteWorker;
+    }
 
-        let instance = Object.create(ctor.prototype);
-        let taskAnnotation = TaskAnnotation.getForClass(ctor);
-
-        options = Object.assign({
-            await: 'queued'
-        }, options || {});
-
-        if (!taskAnnotation) 
-            throw new Error(`No @Task() annotation on class ${ctor.name}`);
-
-        return <T> new Proxy<T>(instance, {
-            get: (target, prop) => {
-                if (typeof prop === 'string' && typeof instance[prop] === 'function') {
-                    if (prop.startsWith('_'))
-                        throw new InvalidOperationError(`Cannot call potentially private method (${prop} starts with _)`);
-
-                    return async (...args) => {
-                        let job = await this.enqueue({
-                            id: taskAnnotation.id || ctor.name, 
-                            method: prop.toString(), 
-                            args
-                        });
-                        
-                        if (options.await === 'finished') 
-                            return await job.finished();
-                    };
-                } 
-                
-                // Unhandled path, do simple lookup
-                return target[prop];
-            }
-        });
+    /**
+     * Acquire a Remote for the given service where any calls to the remote will await 
+     * the full completion of the remote call and resolve to the return value of the 
+     * remote function. If you only want to enqueue a task, use `worker()` instead.
+     */
+    service<T extends Worker>(workerClass : Constructor<T>): RemoteService<T> {
+        return this.get<T>(workerClass).remoteService;
     }
 }
