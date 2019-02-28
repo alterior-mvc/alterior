@@ -111,7 +111,6 @@ suite(describe => {
             if (fs.existsSync(filename))
                 fs.unlinkSync(filename);
 
-            console.log(filename);
             let logger = new FileLogger('%severity%|%message%', filename);
 
             await logger.open();
