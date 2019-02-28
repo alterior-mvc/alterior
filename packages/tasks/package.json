@@ -29,6 +29,7 @@
     "@alterior/annotations": "^3.0.0-beta.22",
     "@alterior/common": "^3.0.0-beta.22",
     "@alterior/di": "^3.0.0-beta.22",
+    "@alterior/logging": "^3.0.0-beta.22",
     "@alterior/runtime": "^3.0.0-beta.22",
     "@avejidah/get-parameter-names": "^0.3.2",
     "@types/bull": "^3.4.0",

@@ -4,6 +4,7 @@ import * as Queue from "bull";
 import { TaskModuleOptions, TaskModuleOptionsRef } from "./tasks";
 import { TaskRunner, TaskQueueClient, TaskWorkerRegistry } from "./task-runner";
 import { TaskWorker } from "./task-worker";
+import { Logger, LoggingModule } from "@alterior/logging";
 
 /**
  * Import this into your application module to run tasks enqueued by other 
@@ -13,6 +14,9 @@ import { TaskWorker } from "./task-worker";
 @Module({
     providers: [
         TaskRunner, TaskQueueClient
+    ],
+    imports: [
+        LoggingModule
     ]
 })
 export class TasksModule implements OnInit {
@@ -21,6 +25,7 @@ export class TasksModule implements OnInit {
         private rolesService : RolesService,
         private client : TaskQueueClient,
         private workerRegistry : TaskWorkerRegistry,
+        private logger : Logger,
         @Optional() private _options : TaskModuleOptionsRef
     ) {
 
@@ -63,7 +68,13 @@ export class TasksModule implements OnInit {
 
         this.workerRegistry.registerClasses(this.tasks);
 
-        this.worker = new TaskWorker(this.app.runtime.injector, this.client, this.options, this.app.options);
+        this.worker = new TaskWorker(
+            this.app.runtime.injector, 
+            this.client, 
+            this.options, 
+            this.app.options,
+            this.logger
+        );
         this.worker.registerClasses(this.tasks);
 
         let self = this;

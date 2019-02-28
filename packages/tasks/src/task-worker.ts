@@ -6,9 +6,11 @@ import { ApplicationOptions } from "@alterior/runtime";
 import { Type } from "@alterior/runtime";
 import * as Queue from "bull";
 import { TaskQueueClient } from "./task-runner";
+import { Logger } from "@alterior/logging";
 
 export interface TaskHandler {
-    (methodName : string, args : any[]) : Promise<any>;
+	worker : Worker;
+    handler : (methodName : string, args : any[]) => Promise<any>;
 }
 
 export class TaskWorker {
@@ -16,7 +18,8 @@ export class TaskWorker {
 		private _injector : Injector,
 		private _client : TaskQueueClient,
         private _options : TaskModuleOptions,
-        private _appOptions : ApplicationOptions
+		private _appOptions : ApplicationOptions,
+		private _logger : Logger
     ) {
 		if (!_injector)
 			throw new ArgumentNullError(`injector`);
@@ -61,15 +64,19 @@ export class TaskWorker {
 			}
 
 			let handler : TaskHandler = this._taskHandlers[task.id];
-			try {
-				let result = await handler(task.method, task.args);
-				done(undefined, result);
-			} catch (e) {
-				console.error(`Caught error while running task ${job.data.id}.${job.data.method || 'execute'}():`);
-				console.error(e);
-				
-				done(e);
-			}
+
+			await this._logger.withContext({ host: 'tasks', worker: handler.worker }, `Task ${handler.worker.constructor.name}`, async () => {
+				try {
+					let result = await handler.handler(task.method, task.args);
+					done(undefined, result);
+				} catch (e) {
+					console.error(`Caught error while running task ${job.data.id}.${job.data.method || 'execute'}():`);
+					console.error(e);
+					
+					done(e);
+				}
+			});
+
 		});
 	}
 
@@ -87,18 +94,21 @@ export class TaskWorker {
 
 			let id = taskClass.name;
 			let annotation = TaskAnnotation.getForClass(taskClass);
-			let instance = ownInjector.get(taskClass);
+			let instance : Worker = ownInjector.get(taskClass);
 
 			if (annotation && annotation.id)
 				id = annotation.id;
 
-			this.registerHandler(id, async (methodName, args) => {
-				let impl = instance.constructor.prototype[methodName];
+			this.registerHandler(id, {
+				worker: instance,
+				handler: async (methodName, args) => {
+					let impl = instance.constructor.prototype[methodName];
 
-				if (typeof impl !== 'function' || methodName.startsWith('_'))
-					throw new InvalidOperationError(`Invalid task method ${methodName}`);
-				
-				return await instance[methodName](...args);
+					if (typeof impl !== 'function' || methodName.startsWith('_'))
+						throw new InvalidOperationError(`Invalid task method ${methodName}`);
+					
+					return await instance[methodName](...args);
+				}
 			});
 		});
 	}
