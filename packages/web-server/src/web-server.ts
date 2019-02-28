@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as uuid from 'uuid';
 
 import { Injector, ReflectiveInjector } from "@alterior/di";
 import { prepareMiddleware } from "./middleware";
@@ -8,6 +9,7 @@ import { RouteDescription, RouteInstance } from './route';
 import { Server } from 'http';
 import { ApplicationOptions, Application } from '@alterior/runtime';
 import { ExpressRef } from './express-ref';
+import { Logger } from '@alterior/logging';
 
 export class WebServerSetupError extends BaseErrorT {
 }
@@ -43,6 +45,7 @@ export class WebServer {
     constructor(
         injector : Injector,
 		options : WebServerOptions,
+		private logger : Logger,
 		readonly appOptions : ApplicationOptions = {}
     ) {
 		this.setupServiceDescription();
@@ -173,7 +176,12 @@ export class WebServer {
 		this.expressApp[this.getExpressRegistrarName(method)](
 			path, 
 			...middleware, 
-			(req, res) => handler(new RouteEvent(req, res))
+			(req, res) => {
+				let requestId = uuid.v4();
+				return this.logger.withContext({ host: 'web-server', requestId }, `${method.toUpperCase()} ${path} | ${requestId}`, () => {
+					return handler(new RouteEvent(req, res));
+				});
+			}
 		);
 	}
 

@@ -3,6 +3,7 @@ import { OnInit, Application, RolesService } from "@alterior/runtime";
 import { ExpressRef } from "./express-ref";
 import { WebServer, WebServerOptions } from "./web-server";
 import { ControllerRegistrar } from "./controller";
+import { LoggingModule } from "@alterior/logging";
 
 @Injectable()
 export class WebServerOptionsRef {
@@ -19,6 +20,9 @@ export class WebServerOptionsRef {
  * one or more modules.
  */
 @Module({
+    imports: [
+        LoggingModule
+    ]
 })
 export class WebServerModule implements OnInit {
     constructor(
