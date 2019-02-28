@@ -1,4 +1,4 @@
-import { Injectable } from '@alterior/di';
+import { Injectable, Optional } from '@alterior/di';
 
 export type LogSeverity = 'debug' | 'info' | 'warning' | 'error' | 'fatal';
 
@@ -152,7 +152,10 @@ export interface LoggingOptions {
 
 @Injectable()
 export class Logger {
-    constructor(private optionsRef : LoggingOptionsRef) {
+    constructor(
+        @Optional()
+        private optionsRef : LoggingOptionsRef
+    ) {
         if (optionsRef && optionsRef.options) {
             if (optionsRef.options.listeners)
                 this._listeners = optionsRef.options.listeners;
