@@ -187,7 +187,7 @@ export class Logger {
         return logger;
     }
 
-    withContext(context : any, label : string, callback : Function) {
+    async withContext<T = any>(context : any, label : string, callback : () => T): Promise<T> {
         let zone = Zone.current.fork({
             name: `LogContextZone: ${label}`,
             properties: {
@@ -196,7 +196,7 @@ export class Logger {
             }
         });
 
-        zone.run(() => callback());
+        return await zone.run<T>(() => callback());
     }
 
     get context() {
