@@ -1,0 +1,41 @@
+{
+  "name": "@alterior/logging",
+  "version": "3.0.0-beta.22",
+  "access": "public",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p .",
+    "prepare": "npm run test",
+    "test": "npm run build && node dist/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alterior-mvc/alterior.git"
+  },
+  "author": "William Lahti",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alterior-mvc/alterior/issues"
+  },
+  "homepage": "https://github.com/alterior-mvc/alterior#readme",
+  "dependencies": {
+    "@alterior/common": "^3.0.0-beta.22",
+    "@alterior/di": "^3.0.0-beta.22",
+    "dotenv": "^6.0.0",
+    "rxjs": "^6.3.1",
+    "zone.js": "^0.8.29"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/node": "^10.12.27",
+    "chai": "^4.2.0",
+    "razmin": "^0.6.5",
+    "typescript": "^3.0.3"
+  },
+  "gitHead": "128cce4ca1738ca3cad7149646f26db693b0bde3"
+}

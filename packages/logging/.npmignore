@@ -1,0 +1,7 @@
+node_modules/
+npm-debug.log
+*~
+dist/**/*.test.js
+dist/test.js
+src/**/*.ts
+**/*.tgz
