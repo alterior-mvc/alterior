@@ -286,7 +286,7 @@ export class Annotation implements IAnnotation {
 
     static getMetadataName(): string {
         if (!this['$metadataName'])
-            throw new Error(`You must decorate your Annotation subclass with @MetadataName()`);
+            throw new Error(`Annotation subclass ${this.constructor.name} must have @MetadataName()`);
 
         return this['$metadataName'];
     }
