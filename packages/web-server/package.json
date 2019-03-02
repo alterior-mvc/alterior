@@ -48,7 +48,7 @@
     "chai": "^3.5.0",
     "lerna": "^3.2.1",
     "nodemon": "^1.17.4",
-    "razmin": "^0.6.6",
+    "razmin": "^0.6.7",
     "require-glob": "^3.2.0",
     "rimraf": "^2.6.2",
     "supertest": "^3.1.0",
