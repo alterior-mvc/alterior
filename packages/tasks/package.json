@@ -1,6 +1,6 @@
 {
   "name": "@alterior/tasks",
-  "version": "3.0.0-beta.29",
+  "version": "3.0.0-beta.30",
   "access": "public",
   "publishConfig": {
     "access": "public"
@@ -57,5 +57,5 @@
     "typescript": "^3.0.3",
     "wtfnode": "^0.7.0"
   },
-  "gitHead": "128cce4ca1738ca3cad7149646f26db693b0bde3"
+  "gitHead": "54aede0183e34ca02b53e4591126c70078f4e29d"
 }
