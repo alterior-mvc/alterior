@@ -1,4 +1,4 @@
-import { Annotation } from "@alterior/annotations";
+import { Annotation, MetadataName } from "@alterior/annotations";
 import { Injectable, InjectionToken, Optional, Injector, Provider, ReflectiveInjector } from "@alterior/di";
 import * as BullQueue from "bull";
 
@@ -33,6 +33,7 @@ export interface TaskJob {
 
 export const QUEUE_OPTIONS = new InjectionToken<BullQueue.QueueOptions>('QueueOptions');
 
+@MetadataName('@alterior/tasks:Task')
 export class TaskAnnotation extends Annotation {
     constructor(readonly id? : string) {
         super();
