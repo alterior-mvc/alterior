@@ -1,11 +1,9 @@
-import { Injectable } from "@alterior/di";
 import { InvalidOperationError, ArgumentError, ArgumentNullError } from "@alterior/common";
 import { Injector, Provider, ReflectiveInjector } from "injection-js";
-import { TaskAnnotation, TaskJob, TaskModuleOptions } from "./tasks";
+import { TaskAnnotation, TaskJob, TaskModuleOptions, TaskQueueClient } from "./tasks";
 import { ApplicationOptions } from "@alterior/runtime";
 import { Type } from "@alterior/runtime";
 import * as Queue from "bull";
-import { TaskQueueClient } from "./task-runner";
 import { Logger } from "@alterior/logging";
 
 export interface TaskHandler {

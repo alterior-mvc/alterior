@@ -1,8 +1,8 @@
 import { Module, Injectable, Optional } from "@alterior/di";
 import { OnInit, Application, RolesService, Constructor } from "@alterior/runtime";
 import * as Queue from "bull";
-import { TaskModuleOptions, TaskModuleOptionsRef } from "./tasks";
-import { TaskRunner, TaskQueueClient, TaskWorkerRegistry } from "./task-runner";
+import { TaskModuleOptions, TaskModuleOptionsRef, TaskQueueClient, TaskWorkerRegistry } from "./tasks";
+import { TaskRunner } from "./task-runner";
 import { TaskWorker } from "./task-worker";
 import { Logger, LoggingModule } from "@alterior/logging";
 
