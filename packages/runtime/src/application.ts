@@ -129,7 +129,8 @@ export class Application {
 		try {
 			injector = ReflectiveInjector.resolveAndCreate(providers);
 		} catch (e) {
-			console.error(`Failed to resolve injector.`);
+			console.error(`Failed to resolve injector:`);
+			console.error(e);
 			console.error(`Providers:`);
 			console.dir(providers);
 			console.error(`Modules:`);
