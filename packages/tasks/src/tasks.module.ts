@@ -13,7 +13,9 @@ import { Logger, LoggingModule } from "@alterior/logging";
  */
 @Module({
     providers: [
-        TaskRunner, TaskQueueClient
+        TaskQueueClient, 
+        TaskWorkerRegistry, 
+        TaskRunner
     ],
     imports: [
         LoggingModule
