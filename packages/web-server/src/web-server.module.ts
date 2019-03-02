@@ -22,6 +22,9 @@ export class WebServerOptionsRef {
 @Module({
     imports: [
         LoggingModule
+    ],
+    providers: [
+        ExpressRef
     ]
 })
 export class WebServerModule implements OnInit {
@@ -29,7 +32,7 @@ export class WebServerModule implements OnInit {
         private app : Application,
         private rolesService : RolesService,
         private logger : Logger,
-        
+
         @Optional() private _options : WebServerOptionsRef,
         private expressRef : ExpressRef
     ) {
@@ -55,7 +58,6 @@ export class WebServerModule implements OnInit {
         return {
             $module: WebServerModule,
             providers: [
-                ExpressRef,
                 { provide: WebServerOptionsRef, useValue: new WebServerOptionsRef(options) }
             ]
         }
