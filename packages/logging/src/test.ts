@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { suite } from 'razmin';
 import { Logger, LoggingOptionsRef, ConsoleLogger, FileLogger, LogFormatter, LogMessage } from './logger';
 import { expect } from 'chai';
