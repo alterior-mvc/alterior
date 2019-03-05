@@ -169,8 +169,7 @@ export class TaskQueueClient {
      * Enqueue a new task. To handle the task on the worker side, register for it with `.process()`
      */
     async enqueue(data : TaskJob, opts? : JobOptions): Promise<QueueJob<TaskJob>> {
-        let job = await this._queue.add(undefined, data, opts);
-        return job;
+        return await this._queue.add(data, opts);
     }
 }
 
