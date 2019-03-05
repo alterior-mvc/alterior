@@ -170,4 +170,60 @@ describe("Modules", () => {
         expect(sawFoo).to.eq('abcdef');
         expect(sawBar).to.eq(999);
     });
+    it('runs the constructors of all modules in dependency-order', async () => {
+        let log = '';
+
+        @Module()
+        class DependencyModule {
+            constructor() { log += 'dependency;' }
+        }
+
+        @Module({
+            imports: [ DependencyModule ]
+        })
+        class SubModule {
+            constructor() { log += 'sub;' }
+        }
+
+        @Module({
+            imports: [ SubModule, DependencyModule ]
+        })
+        class TestModule {
+            constructor() { log += 'test;' }
+        }
+
+        let application = await Application.bootstrap(TestModule);
+
+        expect(application.runtime).to.exist;
+        expect(application.runtime.instances.filter(x => x.definition.target === SubModule).length).to.eq(1);
+        expect(log).to.eq('dependency;sub;test;');
+    });
+    it('runs the altOnInit of all modules in dependency-order', async () => {
+        let log = '';
+
+        @Module()
+        class DependencyModule {
+            altOnInit() { log += 'dependency;' }
+        }
+
+        @Module({
+            imports: [ DependencyModule ]
+        })
+        class SubModule {
+            altOnInit() { log += 'sub;' }
+        }
+
+        @Module({
+            imports: [ SubModule, DependencyModule ]
+        })
+        class TestModule {
+            altOnInit() { log += 'test;' }
+        }
+
+        let application = await Application.bootstrap(TestModule);
+
+        expect(application.runtime).to.exist;
+        expect(application.runtime.instances.filter(x => x.definition.target === SubModule).length).to.eq(1);
+        expect(log).to.eq('dependency;sub;test;');
+    });
 })
