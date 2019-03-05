@@ -1,6 +1,6 @@
 import { InvalidOperationError, ArgumentError, ArgumentNullError } from "@alterior/common";
 import { Injector, Provider, ReflectiveInjector } from "injection-js";
-import { TaskAnnotation, TaskJob, TaskModuleOptions, TaskQueueClient } from "./tasks";
+import { TaskAnnotation, TaskJob, TaskModuleOptions, TaskQueueClient, Worker } from "./tasks";
 import { ApplicationOptions } from "@alterior/runtime";
 import { Type } from "@alterior/runtime";
 import * as Queue from "bull";
@@ -57,13 +57,29 @@ export class TaskWorker {
 			let task = job.data;
 
 			if (!task || !task.id) {
+				console.log(`TaskWorker: Could not process invalid task:`);
+				console.dir(task, { depth: 3 });
+				console.log(`Associated job data:`);
+				console.dir(job, { depth: 3 });
+
 				await job.discard();
-				done(new Error(`Invalid job task`));
+
+				done(new Error(`Invalid job task`), null);
 			}
 
 			let handler : TaskHandler = this._taskHandlers[task.id];
 
+			if (!handler) {
+				console.error(`No handler for task ID '${task.id}'! Check that your worker class declares this task ID!`);
+				
+				console.info(`Task was: `);
+				console.dir(task, { depth: 3 });
+
+				console.info(`Registered worker IDs: ${Object.keys(this._taskHandlers).join(', ')}`);
+			}
+
 			await this._logger.withContext({ host: 'tasks', worker: handler.worker }, `Task ${handler.worker.constructor.name}`, async () => {
+				this._logger.info(`TaskWorker: ${task.method}() of worker ${handler.worker.constructor.name} (ID '${task.id}')`);
 				try {
 					let result = await handler.handler(task.method, task.args);
 					done(undefined, result);
