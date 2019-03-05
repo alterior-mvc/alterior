@@ -94,6 +94,9 @@ export class TaskWorker {
 			let annotation = TaskAnnotation.getForClass(taskClass);
 			let instance : Worker = ownInjector.get(taskClass);
 
+			if (instance.name)
+				id = instance.name;
+
 			if (annotation && annotation.id)
 				id = annotation.id;
 
