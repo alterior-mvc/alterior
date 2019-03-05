@@ -148,7 +148,7 @@ export class WebServer {
 
 	reportRequest(event : RouteEvent, source : string) {
 		if (!this.options.silent)
-			console.info(`[${new Date().toLocaleString()}] ${event.request.path} => ${source}`);
+			this.logger.info(`${event.request.method.toUpperCase()} ${event.request.path} => ${source}`);
 	}
 
 	private readonly EXPRESS_SUPPORTED_METHODS = [ 
