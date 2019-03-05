@@ -205,10 +205,10 @@ export class TaskWorkerRegistry {
     }
 
     get<T extends Worker>(cls : Constructor<T>): TaskWorkerEntry<T> {
-        let entry = this.all.find(x => x.type.constructor === cls);
+        let entry = this.all.find(x => x.type === cls);
 
         if (!entry)
-            throw new Error(`Worker class ${cls.name} is not registered. Use TaskRunner.register(${cls.name})`);
+            throw new Error(`Worker class ${cls.name} is not registered. Add it to the 'tasks' property of a module or call TaskWorkerRegistry.register(${cls.name})`);
         
         return <TaskWorkerEntry<T>> entry;
     }
