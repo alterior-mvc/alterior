@@ -5,6 +5,7 @@ import { ApplicationOptions } from "@alterior/runtime";
 import { Type } from "@alterior/runtime";
 import * as Queue from "bull";
 import { Logger } from "@alterior/logging";
+import * as util from 'util';
 
 export interface TaskHandler {
 	worker : Worker;
@@ -78,19 +79,22 @@ export class TaskWorker {
 				console.info(`Registered worker IDs: ${Object.keys(this._taskHandlers).join(', ')}`);
 			}
 
-			await this._logger.withContext({ host: 'tasks', worker: handler.worker }, `Task ${handler.worker.constructor.name}`, async () => {
-				this._logger.info(`TaskWorker: ${task.method}() of worker ${handler.worker.constructor.name} (ID '${task.id}')`);
-				try {
-					let result = await handler.handler(task.method, task.args);
-					done(undefined, result);
-				} catch (e) {
-					console.error(`Caught error while running task ${job.data.id}.${job.data.method || 'execute'}():`);
-					console.error(e);
-					
-					done(e);
+			await this._logger.withContext(
+				{ host: 'tasks', worker: handler.worker }, 
+				`TaskWorker | ${handler.worker.constructor.name}.${task.method}(${task.args.map(x => util.inspect(x, false, 2)).join(', ')})`, 
+				async () => {
+					this._logger.info(`TaskWorker: ${task.method}() of worker ${handler.worker.constructor.name} (ID '${task.id}')`);
+					try {
+						let result = await handler.handler(task.method, task.args);
+						done(undefined, result);
+					} catch (e) {
+						console.error(`Caught error while running task ${job.data.id}.${job.data.method || 'execute'}():`);
+						console.error(e);
+						
+						done(e);
+					}
 				}
-			});
-
+			);
 		});
 	}
 
