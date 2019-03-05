@@ -26,7 +26,7 @@ export interface LogListener {
     log(message : LogMessage) : Promise<void>;
 }
 
-export const DEFAULT_FORMAT = '';
+export const DEFAULT_FORMAT = '%date% [source="%sourceLabel%" context="%contextLabel%"] %severity%: %message%';
 
 export interface FormatSegment {
     type : "raw" | "parameter";
@@ -77,8 +77,21 @@ export class LogFormatter {
 
     segments : FormatSegment[] = [];
 
+    private formatParameter(name : string, value : Object) {
+        if (value === true || value === false)
+            return value ? '«true»' : '«false»';
+        
+        if (value === null)
+            return '«null»';
+
+        if (value instanceof Date)
+            return value.toISOString();
+
+        return value.toString();
+    }
+
     public format(message : LogMessage) : string {
-        return this.segments.map(x => x.type == 'parameter' ? message[x.value] : x.value).join('');
+        return this.segments.map(x => x.type == 'parameter' ? this.formatParameter(x.value, message[x.value]) : x.value).join('');
     }
 }
 
