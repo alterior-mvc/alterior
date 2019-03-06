@@ -50,3 +50,12 @@ jobs:
     steps:
       - run_tests:
         version: "7.10"
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - node-11
+      - node-10
+      - node-8
+      - node-7
