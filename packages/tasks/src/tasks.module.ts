@@ -96,10 +96,4 @@ export class TasksModule implements OnInit {
         })
 
     }
-
-    altOnStart() {
-    }
-
-    altOnStop() {
-    }
 }

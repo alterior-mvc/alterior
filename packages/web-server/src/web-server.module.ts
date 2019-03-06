@@ -96,10 +96,4 @@ export class WebServerModule implements OnInit {
         })
 
     }
-
-    altOnStart() {
-    }
-
-    altOnStop() {
-    }
 }
