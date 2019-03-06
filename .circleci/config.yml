@@ -28,28 +28,28 @@ jobs:
     working_directory: ~/repo
     steps:
       - run_tests:
-        version: "11"
+          version: "11"
   node-10:
     docker:
       - image: circleci/node:10
     working_directory: ~/repo
     steps:
       - run_tests:
-        version: "10"
+          version: "10"
   node-8:
     docker:
       - image: circleci/node:8
     working_directory: ~/repo
     steps:
       - run_tests:
-        version: "8"
+          version: "8"
   node-7:
     docker:
       - image: circleci/node:7
     working_directory: ~/repo
     steps:
       - run_tests:
-        version: "7.10"
+          version: "7.10"
 
 workflows:
   version: 2
