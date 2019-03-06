@@ -3,7 +3,9 @@ node_js:
   - "10"
   - "8"
   - "6.1"
-
+after_install:
+  - npm install lerna -g
+  - lerna run install
 notifications:
   webhooks:
     urls:
