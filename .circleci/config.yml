@@ -1,0 +1,57 @@
+version: 2.1
+
+commands:
+  run_tests:
+    description: "Build Alterior and run the test suite"
+    parameters:
+      version:
+        type: string
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-<< parameters.version >>-{{ checksum "package.json" }}
+          - v1-dependencies-<< parameters.version >>-
+      - run: npm install
+      - run: ./node_modules/bin/lerna run install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-<< parameters.version >>-{{ checksum "package.json" }}
+      - run: npm test
+jobs:
+  node-11:
+    docker:
+      - image: circleci/node:11
+    working_directory: ~/repo
+    steps:
+      - run_tests:
+        version: "11"
+  node-10:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+      - run_tests:
+        version: "10"
+  node-8:
+    docker:
+      - image: circleci/node:8
+    working_directory: ~/repo
+    steps:
+      - run_tests:
+        version: "8"
+  node-7.10:
+    docker:
+      - image: circleci/node:7.10
+    working_directory: ~/repo
+    steps:
+      - run_tests:
+        version: "7.10"
+  node-6.1:
+    docker:
+      - image: circleci/node:6.1
+    working_directory: ~/repo
+    steps:
+      - run_tests:
+        version: "6.1"
