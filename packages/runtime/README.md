@@ -35,10 +35,10 @@ export class AppModule {
 A separate entrypoint file (`main.ts`) should handle bootstrapping the entry module.
 
 ```typescript
-import { bootstrap } from '@alterior/runtime';
+import { Application } from '@alterior/runtime';
 import { AppModule } from './app.module';
 
-bootstrap(AppModule);
+Application.bootstrap(AppModule);
 ```
 
 ## Module Lifecycle Events (altOnInit)
