@@ -111,3 +111,37 @@ export class MyEntryModule { }
 
 "Listeners" are responsible for reporting logs in one way or another. By default a sensibly-configured `ConsoleLogger` is used. If you wish to customize the format, you'll need to specify your own instance of `ConsoleLogger`. If an empty set of listeners is specified, logs will effectively be dropped, and the logger itself becomes a no-op.
 
+## Log Objects
+
+Log messages are passed to listeners as objects conforming to the `LogMessage` interface:
+
+```typescript
+export interface LogMessage {
+    message : string;
+    context : any;
+    contextLabel : string;
+    sourceLabel : string;
+    severity : LogSeverity;
+    date : Date;
+}
+```
+
+It is the responsibility of the listener to decide how to format these log message objects. Some listeners may not format the object at all (for instance: recording logs to a collection in an object store like MongoDB).
+
+## Log Formatting
+
+Some built-in loggers use `LogFormatter` to handle transforming a log object into a string suitable for use on a screen, log file, etc. `LogFormatter` accepts a format string to determine how to transform the log message object into a string. Bare text is treated literally, and the fields of the `LogMessage` can be referenced by surrounding the name of the field with '%'. The default format for builtin listeners is:
+
+```
+%date% [source="%sourceLabel%" context="%contextLabel%"] %severity%: %message%
+```
+
+## Available Listeners
+
+### `new ConsoleLogger(formatString)`
+
+Outputs the log to the console using `console.log()` and friends. Accepts a format string suitable for use with `LogFormatter`.
+
+### `new FileLogger(formatString, filename)`
+
+Writes logs to the specified file. Accepts a format string suitable for use with `LogFormatter`.
