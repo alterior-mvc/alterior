@@ -1,6 +1,8 @@
 # Alterior
 [![CircleCI](https://circleci.com/gh/alterior-mvc/alterior/tree/experimental.svg?style=shield)](https://circleci.com/gh/alterior-mvc/alterior/tree/experimental)
 [![Join the chat at https://gitter.im/alterior-mvc/Lobby](https://badges.gitter.im/alterior-core/Lobby.svg)](https://gitter.im/alterior-mvc/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+![License](https://img.shields.io/npm/l/@alterior/runtime.svg)
+
 
 A framework for building Node applications in Typescript. Build all of 
 your Typescript applications with this. 
