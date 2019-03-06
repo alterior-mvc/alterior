@@ -7,9 +7,11 @@
 A framework for building Node applications in Typescript. Build all of 
 your Typescript applications with this. 
 
-Pronounced: "alt-ee-ree-or"
+## Usage
 
-## Simple Example 
+```
+npm install @alterior/runtime
+```
 
 Here's a minimal single file example:
 
