@@ -1,6 +1,6 @@
 # @alterior/web-server
 
-[![npm version](https://badge.fury.io/js/%40alterior%2Fweb-server.svg)](https://www.npmjs.com/package/@alterior/web-server)
+[![Version](https://img.shields.io/npm/v/@alterior/web-server.svg)](https://www.npmjs.com/package/@alterior/web-server)
 
 A framework for building HTTP services in Typescript. Build REST APIs with this. 
 

@@ -1,6 +1,6 @@
 # @alterior/annotations
 
-[![npm version](https://badge.fury.io/js/%40alterior%2Fannotations.svg)](https://www.npmjs.com/package/@alterior/annotations)
+[![Version](https://img.shields.io/npm/v/@alterior/annotations.svg)](https://www.npmjs.com/package/@alterior/annotations)
 
 Provides a standardized way to define metadata on programmatic elements of a Typescript application by using classes and decorators. The data being attached is called an "annotation" and is represented as an instance of an Annotation class, and the functions which attach the metadata are called "decorators".
 

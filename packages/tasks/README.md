@@ -1,6 +1,5 @@
 # @alterior/tasks
-
-[![npm version](https://badge.fury.io/js/%40alterior%2Ftasks.svg)](https://www.npmjs.com/package/@alterior/tasks)
+[![Version](https://img.shields.io/npm/v/@alterior/tasks.svg)](https://www.npmjs.com/package/@alterior/tasks)
 
 A framework for enqueuing and processing jobs from Redis queues in Typescript. Build background task runners with this. 
 

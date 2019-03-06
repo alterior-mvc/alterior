@@ -1,6 +1,6 @@
 # @alterior/common
 
-[![npm version](https://badge.fury.io/js/%40alterior%2Fcommon.svg)](https://www.npmjs.com/package/@alterior/common)
+[![Version](https://img.shields.io/npm/v/@alterior/common.svg)](https://www.npmjs.com/package/@alterior/common)
 
 Provides a number of base classes, utilities, and errors which are useful in constructing larger applications.
 
