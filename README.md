@@ -48,12 +48,45 @@ use as a primary vehicle for top-level general purpose code.
 
 ## Packages
 
-- [@alterior/annotations](packages/annotations/README.md)
-- [@alterior/common](packages/common/README.md)
-- [@alterior/di](packages/di/README.md)
-- [@alterior/http](packages/http/README.md)
-- [@alterior/runtime](packages/runtime/README.md)
-- [@alterior/web-server](packages/web-server/README.md)
+- **[@alterior/annotations](packages/annotations/README.md)**  
+  A system for decorating and introspecting standardized metadata on programmatic elements in Typescript  
+  [![Version](https://img.shields.io/npm/v/@alterior/annotations.svg)](https://www.npmjs.com/package/@alterior/annotations)
+  ![Size](https://img.shields.io/bundlephobia/min/@alterior/annotations.svg)
+  
+- **[@alterior/common](packages/common/README.md)**  
+  Provides a number of utilities useful to any Typescript application  
+  [![Version](https://img.shields.io/npm/v/@alterior/common.svg)](https://www.npmjs.com/package/@alterior/common)
+  ![Size](https://img.shields.io/bundlephobia/min/@alterior/common.svg)
+
+- **[@alterior/di](packages/di/README.md)**  
+  Provides a flexible Angular-style dependency injection framework based on `injection-js`  
+  [![Version](https://img.shields.io/npm/v/@alterior/di.svg)](https://www.npmjs.com/package/@alterior/di)
+  ![Size](https://img.shields.io/bundlephobia/min/@alterior/di.svg)
+
+- **[@alterior/http](packages/http/README.md)**  
+  HTTP client library as an Alterior module (ported from `@angular/http`)  
+  [![Version](https://img.shields.io/npm/v/@alterior/http.svg)](https://www.npmjs.com/package/@alterior/http)
+  ![Size](https://img.shields.io/bundlephobia/min/@alterior/http.svg)
+  
+- **[@alterior/logging](packages/logging/README.md)**  
+  A logging library which supports pluggable listeners and context-tracked logging using `Zone.js`  
+  [![Version](https://img.shields.io/npm/v/@alterior/logging.svg)](https://www.npmjs.com/package/@alterior/logging)
+  ![Size](https://img.shields.io/bundlephobia/min/@alterior/logging.svg)
+
+- **[@alterior/runtime](packages/runtime/README.md)**  
+  An Angular-compatible module system suitable for use in Typescript-on-Node.js applications  
+  [![Version](https://img.shields.io/npm/v/@alterior/runtime.svg)](https://www.npmjs.com/package/@alterior/runtime)
+  ![Size](https://img.shields.io/bundlephobia/min/@alterior/runtime.svg)
+
+- **[@alterior/tasks](packages/tasks/README.md)**  
+  A system for enqueuing and processing tasks using Redis as it's backing store (based on `bull` queue)  
+  [![Version](https://img.shields.io/npm/v/@alterior/tasks.svg)](https://www.npmjs.com/package/@alterior/tasks)
+  ![Size](https://img.shields.io/bundlephobia/min/@alterior/tasks.svg)
+
+- **[@alterior/web-server](packages/web-server/README.md)**  
+  A system for building RESTful web services declaratively using classes & decorators  
+  [![Version](https://img.shields.io/npm/v/@alterior/web-server.svg)](https://www.npmjs.com/package/@alterior/web-server)
+  ![Size](https://img.shields.io/bundlephobia/min/@alterior/web-server.svg)
 
 ## Class Libraries
 
