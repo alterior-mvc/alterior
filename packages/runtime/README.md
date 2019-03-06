@@ -41,13 +41,13 @@ import { AppModule } from './app.module';
 Application.bootstrap(AppModule);
 ```
 
-## Module Lifecycle Events (altOnInit)
+## Module Lifecycle Events
 
 Each Alterior module is the coupling of a unit of execution (the Module class) and a set of services used by the unit and/or made available to other modules which depend on it. 
 
 Modules can optionally define lifecycle methods which are invoked by the runtime. When a module is first bootstrapped, `altOnInit()` is run. A simple one-shot execution module should implement its business logic in `altOnInit()`.
 
-`altOnStart()` is called when the application starts, and `altOnStop()` is called before the application is terminated, to give the module an opportunity to gracefully shut down.
+`altOnStart()` is called once when the application starts, and `altOnStop()` is called before the application is terminated, so as to give the module an opportunity to gracefully shut down. If you want the ability to dynamically control the start/stop status of your module, you should use Roles.
 
 ## Roles
 
