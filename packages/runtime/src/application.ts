@@ -67,17 +67,12 @@ export class Application {
 		let appProvidedOptions : ApplicationOptions = appOptionsAnnotation ? appOptionsAnnotation.options : {} || {};
 		
 		return Object.assign(
-			{
+			<ApplicationOptions>{
 				version: '0.0.0',
 				verbose: false,
 				silent: false,
-				hideExceptions: false,
-				port: 3000,
 				autostart: true,
-				providers: [],
-				middleware: [],
-				controllers: [],
-				autoRegisterControllers: true
+				providers: []
 			}, 
 			appProvidedOptions, 
 			bootstrapOptions
