@@ -15,7 +15,7 @@ commands:
           - v1-dependencies-<< parameters.version >>-{{ checksum "package.json" }}
           - v1-dependencies-<< parameters.version >>-
       - run: npm install
-      - run: ./node_modules/bin/lerna run install
+      - run: ./node_modules/.bin/lerna exec npm install
       - save_cache:
           paths:
             - node_modules
