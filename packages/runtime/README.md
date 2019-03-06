@@ -55,4 +55,31 @@ Many execution modules represent a service which can be turned on and off. Alter
 
 To register a role, use `RolesService.registerRole(roleRegistration)`. You will need to provide `start()` and `stop()` methods which will be executed when the roles service decides to start/stop your role. You will also need to specify an `identifier` which is used when referring to the role in configuration and the environment.
 
+## Configuring enabled roles
+
 When an Alterior app is bootstrapped, the `ALT_ROLES_ONLY`/`ALT_ROLES_ALL_EXCEPT` environment variables are inspected to determine which roles should be started when the application starts. The variables are comma-delimited lists of role `identifiers` that should be started or ignored. By default all registered roles are started. If both variables are specified, `ALT_ROLES_ONLY` takes precedence.
+
+Alternatively you can specify roles via the command line when the application is started using one of the following options:
+
+```
+--roles-only,   -r [role,...]  Enable only the specified roles
+--roles-except, -R [role,...]  Enable all roles except the specified roles
+```
+
+For example, to enable only the `web-server` and `tasks` roles:
+
+```
+node dist/main.js -r web-server,tasks
+```
+
+## Stopping the application
+
+The application can be explicitly stopped by injecting `Runtime` and calling the `shutdown()` method. This causes the `altOnStop()` lifecycle event to be run for all loaded modules, and execution to be stopped with `process.exit()`. If you wish to stop all modules of the application without exiting the process, use `Runtime.stop()` instead. 
+
+## Custom Lifecycle Events
+
+You can programmatically trigger custom lifecycle events by calling `Runtime.fireEvent(eventName)`. 
+
+`eventName` should be an UpperCamelCase string. The method executed on modules will be `alt${eventName}`, so if you specify `DoSomething`, then the method `altDoSomething()` will be executed on each module which implements it.
+
+## 
