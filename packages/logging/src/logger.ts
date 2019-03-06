@@ -196,9 +196,16 @@ export class Logger {
         return logger;
     }
 
-    withSource(sourceLabel : string) {
+    withSource(sourceLabel : string | Object) {
         let logger = this.clone();
-        logger._sourceLabel = sourceLabel;
+
+        if (typeof sourceLabel === 'string') {
+            logger._sourceLabel = sourceLabel;    
+        } else if (typeof sourceLabel === 'object') {
+            logger._sourceLabel = sourceLabel.constructor.name;
+        } else {
+            logger._sourceLabel = `${sourceLabel}`;
+        }
 
         return logger;
     }
