@@ -11,7 +11,7 @@ import { Type } from './facade/type';
 
 import { resolveForwardRef } from './forward_ref';
 import { InjectionToken } from './injection_token';
-import { Inject, Optional, SkipSelfAnnotation, SelfAnnotation, InjectAnnotation, OptionalAnnotation } from './metadata';
+import { SkipSelfAnnotation, SelfAnnotation, InjectAnnotation, OptionalAnnotation } from './metadata';
 import { ClassProvider, ExistingProvider, FactoryProvider, Provider, TypeProvider, ValueProvider } from './provider';
 import { invalidProviderError, mixingMultiProvidersWithRegularProvidersError, noAnnotationError } from './reflective_errors';
 import { ReflectiveKey } from './reflective_key';
@@ -233,15 +233,15 @@ function _extractToken(typeOrFunc: any, metadata: any[] | any, params: any[][]):
   for (let i = 0; i < metadata.length; ++i) {
     const paramMetadata = metadata[i];
 
-    if (paramMetadata instanceof Type) {
-      token = paramMetadata;
-    } else if (paramMetadata instanceof InjectAnnotation) {
+    if (paramMetadata instanceof InjectAnnotation) {
       token = paramMetadata['token'];
     } else if (paramMetadata instanceof OptionalAnnotation) {
       optional = true;
     } else if (paramMetadata instanceof SelfAnnotation || paramMetadata instanceof SkipSelfAnnotation) {
       visibility = paramMetadata;
     } else if (paramMetadata instanceof InjectionToken) {
+      token = paramMetadata;
+    } else if (paramMetadata instanceof Type) {
       token = paramMetadata;
     }
   }
