@@ -102,6 +102,9 @@ function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
     options? : AnnotationDecoratorOptions<AnnoT, TS>
 ): AnnotationDecorator<TS> 
 {
+    if (!ctor)
+        throw new Error(`Cannot create decorator: Passed class reference was undefined/null: This can happen due to circular dependencies.`);
+
     let factory : (target : DecoratorTarget, ...args : TS) => AnnoT | void = null;
     let validTargets : string[] = null;
     let allowMultiple = false;
@@ -447,6 +450,10 @@ export class Annotation implements IAnnotation {
     }
 }
 
+export interface ObjectMap<T> {
+    [key : string]: T;
+}
+
 export class Annotations {
 
     public static copyClassAnnotations(from : Function, to : Function) {
@@ -569,6 +576,9 @@ export class Annotations {
      * @param annotation 
      */
     public static clone<T extends IAnnotation>(annotation : T): T {
+        if (!annotation)
+            return annotation;
+        
         return Object.assign(Object.create(Object.getPrototypeOf(annotation)), annotation);
     }
 
@@ -631,22 +641,47 @@ export class Annotations {
             .map(set => set ? set.map(anno => this.clone(anno)) : []);
     }
 
-    private static getListForClass(target : any): IAnnotation[] {
-        return target[ANNOTATIONS_KEY];
+    private static getListForClass(target : Object): IAnnotation[] {
+        if (!target)
+            return [];
+        
+        let combinedSet = [];
+
+        let superclass = Object.getPrototypeOf(target);
+
+        if (superclass && superclass !== Function)
+            combinedSet = combinedSet.concat(this.getListForClass(superclass));
+
+        if (target.hasOwnProperty(ANNOTATIONS_KEY))
+            combinedSet = combinedSet.concat(target[ANNOTATIONS_KEY] || []);
+
+        return combinedSet;
     }
 
-    private static getOrCreateListForClass(target : any): IAnnotation[] {
-        if (!target[ANNOTATIONS_KEY])
+    private static getOrCreateListForClass(target : Object): IAnnotation[] {
+        if (!target.hasOwnProperty(ANNOTATIONS_KEY))
             Object.defineProperty(target, ANNOTATIONS_KEY, { value: [] });
         return target[ANNOTATIONS_KEY];
     }
 
-    private static getMapForClassProperties(target : any): IAnnotation[] {
-        return target[PROPERTY_ANNOTATIONS_KEY];
+    private static getMapForClassProperties(target : Object, mapToPopulate? : ObjectMap<IAnnotation[]>): ObjectMap<IAnnotation[]> {
+        let combinedSet = mapToPopulate || {};
+        if (!target || target === Function)
+            return combinedSet;
+
+        this.getMapForClassProperties(Object.getPrototypeOf(target), combinedSet);
+
+        if (target.hasOwnProperty(PROPERTY_ANNOTATIONS_KEY)) {
+            let ownMap : ObjectMap<IAnnotation[]> = target[PROPERTY_ANNOTATIONS_KEY] || {};
+            for (let key of Object.keys(ownMap))
+                combinedSet[key] = (combinedSet[key] || []).concat(ownMap[key]);
+        }
+
+        return combinedSet;
     }
 
-    private static getOrCreateMapForClassProperties(target : any): IAnnotation[] {
-        if (!target[PROPERTY_ANNOTATIONS_KEY])
+    private static getOrCreateMapForClassProperties(target : Object): ObjectMap<IAnnotation[]> {
+        if (!target.hasOwnProperty(PROPERTY_ANNOTATIONS_KEY))
             Object.defineProperty(target, PROPERTY_ANNOTATIONS_KEY, { value: [] });
         return target[PROPERTY_ANNOTATIONS_KEY];
     }
@@ -659,6 +694,7 @@ export class Annotations {
         
         return map[propertyKey];
     }
+
     private static getOrCreateListForProperty(target : any, propertyKey : string): IAnnotation[] {
         let map = this.getOrCreateMapForClassProperties(target);
         if (!map[propertyKey])
@@ -675,12 +711,35 @@ export class Annotations {
         return this.getListForProperty(target, methodName);
     }
 
-    private static getMapForMethodParameters(target : any): IAnnotation[] {
-        return target[METHOD_PARAMETER_ANNOTATIONS_KEY];
+    private static getMapForMethodParameters(target : Object, mapToPopulate? : ObjectMap<IAnnotation[][]>): ObjectMap<IAnnotation[][]> {
+        let combinedMap = mapToPopulate || {};
+
+        if (!target || target === Function)
+            return combinedMap;
+
+        // superclass/prototype
+        this.getMapForMethodParameters(Object.getPrototypeOf(target), combinedMap);
+        
+        if (target.hasOwnProperty(METHOD_PARAMETER_ANNOTATIONS_KEY)) {
+            let ownMap : ObjectMap<IAnnotation[][]> = target[METHOD_PARAMETER_ANNOTATIONS_KEY] || {};
+
+            for (let methodName of Object.keys(ownMap)) {
+                let parameters = ownMap[methodName];
+                let combinedMethodMap = combinedMap[methodName] || [];
+
+                for (let i = 0, max = parameters.length; i < max; ++i) {
+                    combinedMethodMap[i] = (combinedMethodMap[i] || []).concat(parameters[i] || []);
+                }
+
+                combinedMap[methodName] = combinedMethodMap;
+            }
+        }
+
+        return combinedMap;
     }
 
-    private static getOrCreateMapForMethodParameters(target : any): IAnnotation[] {
-        if (!target[METHOD_PARAMETER_ANNOTATIONS_KEY])
+    private static getOrCreateMapForMethodParameters(target : Object): IAnnotation[] {
+        if (!target.hasOwnProperty(METHOD_PARAMETER_ANNOTATIONS_KEY))
             Object.defineProperty(target, METHOD_PARAMETER_ANNOTATIONS_KEY, { value: [] });
         return target[METHOD_PARAMETER_ANNOTATIONS_KEY];
     }
