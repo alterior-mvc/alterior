@@ -86,6 +86,20 @@ suite(describe => {
             assert(matchingAnnotations.find((x : any) => x.text === LABEL));
         });
 
+        it("should pass an instanceof check", () => {
+            let MultiLabel = LabelAnnotation.decorator({ allowMultiple: true });
+            @MultiLabel(LABEL)
+            class TestSubject {
+            }
+
+            let annotations = Annotations.getClassAnnotations(TestSubject);
+            expect(annotations.filter(x => x instanceof LabelAnnotation).length).to.equal(1);
+
+            let annotation = annotations.find(x => x instanceof LabelAnnotation);
+
+            expect((<LabelAnnotation>annotation).text).to.equal(LABEL);
+        });
+
         it("should be able to list method annotations", () => {
             let MultiLabel = LabelAnnotation.decorator({ allowMultiple: true });
     
