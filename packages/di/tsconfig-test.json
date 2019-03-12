@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "./dist-test"
+  },
+  "include": [
+    "./lib/index.ts",
+    "./test/*.ts"
+  ],
+  "angularCompilerOptions": {
+    "skipTemplateCodegen": true
+  }
+}

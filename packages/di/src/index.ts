@@ -10,4 +10,4 @@ export {
     FactoryProvider,
     TypeProvider,
     ValueProvider
-} from 'injection-js';
+} from './injection';

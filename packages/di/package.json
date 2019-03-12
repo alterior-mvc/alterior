@@ -9,16 +9,26 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p .",
-    "prepare": "npm run test",
-    "test": "npm run build && exit 0"
+    "build": "rimraf dist && tsc -p .",
+    "prepare": "npm test",
+    "test": "npm run build && node dist/test.js"
+  },
+  "engines": {
+    "node": ">=8.5"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alterior-mvc/alterior.git"
   },
-  "author": "William Lahti",
+  "author": "William Lahti <wilahti@gmail.com>, Minko Gechev <mgechev@gmail.com>",
   "license": "MIT",
+  "keywords": [
+    "DI",
+    "dependency",
+    "injection",
+    "dependency injection",
+    "injector"
+  ],
   "bugs": {
     "url": "https://github.com/alterior-mvc/alterior/issues"
   },
@@ -29,8 +39,19 @@
     "injection-js": "^2.2.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/jasmine": "^2.5.41",
+    "@types/node": "^8.5.0",
+    "chai": "^4.2.0",
+    "prettier": "1.13.7",
+    "razmin": "^0.6.7",
     "reflect-metadata": "^0.1.12",
-    "typescript": "^3.0.3"
+    "rimraf": "^2.6.3",
+    "rollup": "^0.41.4",
+    "tslib": "1.9.3",
+    "tslint": "5.11.0",
+    "tslint-config-prettier": "1.17.0",
+    "typescript": "3.1.6"
   },
   "gitHead": "54aede0183e34ca02b53e4591126c70078f4e29d"
 }

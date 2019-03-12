@@ -2,7 +2,19 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "baseUrl": "./src",
-        "outDir": "./dist"
+        "outDir": "./dist",
+        
+        "target": "es5",
+        "module": "commonjs",
+        "sourceMap": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "stripInternal": true,
+        "declaration": true,
+        "moduleResolution": "node",
+        "lib": ["es2015", "dom"],
+        "esModuleInterop": true,
+        "importHelpers": true
     },
     "include": [ "./src/**/*.ts" ]
 }
