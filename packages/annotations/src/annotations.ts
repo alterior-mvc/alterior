@@ -287,9 +287,13 @@ export class Annotation implements IAnnotation {
     readonly $metadataName : string;
     readonly ngMetadataName : string = undefined;
 
+    toString() {
+        return `@${this.constructor.name}`;
+    }
+
     static getMetadataName(): string {
         if (!this['$metadataName'])
-            throw new Error(`Annotation subclass ${this.constructor.name} must have @MetadataName()`);
+            throw new Error(`Annotation subclass ${this.name} must have @MetadataName()`);
 
         return this['$metadataName'];
     }
@@ -436,7 +440,7 @@ export class Annotation implements IAnnotation {
         methodName : string
     ): T[][] {
         return (Annotations.getParameterAnnotations(type, methodName) as T[][])
-            .map(set => (set || []).filter(x => x.$metadataName === this.getMetadataName()))
+            .map(set => (set || []).filter(x => (this as any) === Annotation ? true : (x.$metadataName === this.getMetadataName())))
         ;
     }
 
@@ -444,9 +448,16 @@ export class Annotation implements IAnnotation {
         this : AnnotationConstructor<T, TS>, 
         type : any
     ): T[][] {
-        return (Annotations.getConstructorParameterAnnotations(type) as T[][])
-            .map(set => (set || []).filter(x => x.$metadataName === this.getMetadataName()))
+        
+        let finalSet = new Array(<any>type.length).fill(undefined);
+        let annotations = (Annotations.getConstructorParameterAnnotations(type) as T[][])
+            .map(set => (set || []).filter(x => (this as any) === Annotation ? true : (x.$metadataName === this.getMetadataName())))
         ;
+
+        for (let i = 0, max = annotations.length; i < max; ++i)
+            finalSet[i] = annotations[i];
+
+        return finalSet;
     }
 }
 
@@ -664,7 +675,11 @@ export class Annotations {
         return target[ANNOTATIONS_KEY];
     }
 
-    private static getMapForClassProperties(target : Object, mapToPopulate? : ObjectMap<IAnnotation[]>): ObjectMap<IAnnotation[]> {
+    /**
+     * Gets a map of the annotations defined on all properties of the given class/function. To get the annotations of instance fields,
+     * make sure to use `Class.prototype`, otherwise static annotations are returned.
+     */
+    public static getMapForClassProperties(target : Object, mapToPopulate? : ObjectMap<IAnnotation[]>): ObjectMap<IAnnotation[]> {
         let combinedSet = mapToPopulate || {};
         if (!target || target === Function)
             return combinedSet;
@@ -711,7 +726,11 @@ export class Annotations {
         return this.getListForProperty(target, methodName);
     }
 
-    private static getMapForMethodParameters(target : Object, mapToPopulate? : ObjectMap<IAnnotation[][]>): ObjectMap<IAnnotation[][]> {
+    /**
+     * Get a map of the annotations defined on all parameters of all methods of the given class/function.
+     * To get instance methods, make sure to pass `Class.prototype`, otherwise the results are for static fields.
+     */
+    public static getMapForMethodParameters(target : Object, mapToPopulate? : ObjectMap<IAnnotation[][]>): ObjectMap<IAnnotation[][]> {
         let combinedMap = mapToPopulate || {};
 
         if (!target || target === Function)

@@ -337,6 +337,22 @@ suite(describe => {
             assertClone(annotation1, annotation2);
         });
     
+        it.skip("should not complain when an ApplyOnce decorator is applied to both superclass and subclass", () => {
+            @Label('foo')
+            class Superclass {
+
+            }
+
+            @Label('foo2')
+            class Subclass {
+
+            }
+
+            let annotations = Annotations.getClassAnnotations(Subclass);
+
+            expect(annotations.length).to.equal(1); // ???
+        });
+
         it("should apply to classes", () => {
             class TestSubject {}
     
