@@ -1,4 +1,4 @@
-export * from './metadata';
+export * from './injection/metadata';
 export * from './modules';
 export { 
     Injector, 
