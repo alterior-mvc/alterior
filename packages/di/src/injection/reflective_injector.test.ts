@@ -133,7 +133,6 @@ suite(describe => {
     });
 
     it('should throw when no type and not @Inject (class case)', () => {
-      console.log("=================");
       expect(() => createInjector([NoAnnotations])).to.throw(
         "Cannot resolve all parameters for 'NoAnnotations'(?). " +
           'Make sure that all the parameters are decorated with Inject or have valid type annotations ' +
