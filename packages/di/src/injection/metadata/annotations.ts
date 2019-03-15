@@ -14,7 +14,7 @@ export class OptionalAnnotation extends Annotation {
 @NgMetadataName('Inject')
 @MetadataName('@alterior/di:Inject')
 export class InjectAnnotation extends Annotation {
-    constructor(token) {
+    constructor(token?) {
         super({ token });
     }
 

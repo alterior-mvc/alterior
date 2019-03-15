@@ -1,11 +1,11 @@
-
 /**
- * @alterior/annotations -- A class library for handling Typescript metadata decorators via "annotation" classes
+ * @alterior/annotations
+ * A class library for handling Typescript metadata decorators via "annotation" classes
  * 
- * TODO: Need Alterior-specific @Inject/@Injectable so that we can support 
- * both Injection-JS and Angular with one set of injection decorators
+ * (C) 2017-2019 William Lahti
  * 
  */
+
 import { NotSupportedError } from '@alterior/common';
 
 /**
@@ -46,7 +46,7 @@ export interface AnnotationDecorator<TS extends any[]> {
     (...args : TS) : (target, propertyKey : string, index : number) => void;
 }
 
-interface DecoratorTarget {
+export interface DecoratorSite {
     type : 'class' | 'method' | 'property' | 'parameter';
     target : any;
     propertyKey? : string;
@@ -54,8 +54,8 @@ interface DecoratorTarget {
     index? : number;
 }
 
-interface AnnotationDecoratorOptions<AnnoT, TS extends any[] = []> {
-    factory? : (target : DecoratorTarget, ...args : TS) => AnnoT | void;
+export interface AnnotationDecoratorOptions<AnnoT, TS extends any[] = []> {
+    factory? : (target : DecoratorSite, ...args : TS) => AnnoT | void;
     validTargets? : ('class' | 'property' | 'method' | 'parameter')[];
     allowMultiple? : boolean;
 }
@@ -105,7 +105,7 @@ function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
     if (!ctor)
         throw new Error(`Cannot create decorator: Passed class reference was undefined/null: This can happen due to circular dependencies.`);
 
-    let factory : (target : DecoratorTarget, ...args : TS) => AnnoT | void = null;
+    let factory : (target : DecoratorSite, ...args : TS) => AnnoT | void = null;
     let validTargets : string[] = null;
     let allowMultiple = false;
 
@@ -127,7 +127,11 @@ function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
     return (...decoratorArgs : TS) => {
         return (target, ...args) => {
 
-            if (args.length === 2) {
+            // Note that checking the length is not enough, because for properties
+            // two arguments are passed, but the property descriptor is `undefined`.
+            // So we make sure that we have a valid property descriptor (args[1]) 
+
+            if (args.length === 2 && args[1] !== undefined) {
                 if (typeof args[1] === 'number') {
                     // Parameter decorator on a method or a constructor (methodName will be undefined)
                     let methodName : string = args[0];
@@ -193,7 +197,7 @@ function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
 
                     annotation.applyToMethod(target, methodName);
                 }
-            } else if (args.length === 1) {
+            } else if (args.length >= 1) { 
                 // Property decorator
                 let propertyKey : string = args[0];
                 
@@ -250,13 +254,70 @@ export function MetadataName(name : string) {
     return target => Object.defineProperty(target, '$metadataName', { value: name });
 }
 
+export interface MutatorDefinition {
+    invoke: (site : DecoratorSite) => void;
+    options?: AnnotationDecoratorOptions<void>;
+}
+
+/**
+ * Mutators are a way to define "mutation decorators" which in some way change the value 
+ * of the elements they are applied to, as opposed to "annotation decorators", which primarily 
+ * attach metadata.
+ * 
+ * Create a mutator with Mutator.create(). 
+ */
 export class Mutator {
-    public static create(mutator : (target : DecoratorTarget, ...args) => void, options? : AnnotationDecoratorOptions<void>) {
+    /** 
+     * Low-level method to ceate a new mutation decorator (mutator) based on the given function.
+     * Use `Mutator.define()` instead.
+     */
+    public static create(mutator : (target : DecoratorSite, ...args) => void, options? : AnnotationDecoratorOptions<void>) {
         return Annotation.decorator(Object.assign({}, options || {}, {
             factory: (target, ...args) => {
                 mutator(target, ...args);
             }
         }));
+    }
+
+    /**
+     * Define a new mutation decorator (mutator).
+     * This should be called and returned from a
+     * function definition. For example:
+     * 
+```
+function Name() {
+    return Mutator.define({
+        invoke(site) {
+            // ...
+        }
+    })
+}
+```
+     * 
+     * The `invoke()` function takes a DecoratorSite object which describes the particular
+     * invocation that is being run, and importantly, access to the property descriptor
+     * for the property being defined. If you wish to completely replace (or wrap) the 
+     * default value of the property or method you are replacing, set the `value` 
+     * property of the property descriptor with `site.propertyDescriptor.value`
+     * 
+     * For example:
+     * ```
+export function RunTwice() {
+  return Mutator.create(
+    site => {
+      let prop = site.propertyDescriptor;
+      let original = prop.value;
+      let replacement = function(...args) {
+        original.apply(this, args);
+        original.apply(this, args);
+      }
+      prop.value = replacement;
+    }
+)
+     * ```
+     */
+    public static define(definition : MutatorDefinition) {
+        return this.create(definition.invoke, definition.options)();
     }
 }
 
@@ -265,8 +326,47 @@ export class Mutator {
  * constructor parameters, methods, properties, or method parameters 
  * via decorators. 
  * 
- * To create a custom Annotation, specify an Options type, subclass Annotation
- * with a constructor that takes 
+ * Custom annotations are defined as subclasses of this class. 
+ * By convention, all custom annotation classes should have a name 
+ * which ends in "Annotation" such as "NameAnnotation". 
+ * 
+ * To create a new annotation create a subclass of `Annotation` 
+ * with a constructor that takes the parameters you are interested in
+ * storing, and save the appropriate information onto fields of the 
+ * new instance. For your convenience, Annotation provides a default 
+ * constructor which takes a map object and applies its properties onto
+ * the current instance, but you may replace it with a constructor that
+ * takes any arguments you wish.
+ * 
+ * You may wish to add type safety to the default constructor parameter.
+ * To do so, override the constructor and define it:
+ * 
+```
+class XYZ extends Annotation {
+    constructor(
+        options : MyOptions
+    ) {
+        super(options);
+    }
+}
+```
+ *
+ * Annotations are applied by using decorators. 
+ * When you define a custom annotation, you must also define a 
+ * custom decorator:
+ * 
+```
+const Name = 
+    NameAnnotation.decorator();
+```
+ * You can then use that decorator:
+```
+@Name()
+class ABC {
+    // ...
+}
+```
+ * 
  */
 export class Annotation implements IAnnotation {
     constructor(

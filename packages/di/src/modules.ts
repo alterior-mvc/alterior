@@ -1,4 +1,8 @@
-import { MetadataName, NgMetadataName, Annotation, AnnotationDecorator } from "@alterior/annotations";
+/**
+ * (C) 2017-2019 William Lahti
+ */
+
+ import { MetadataName, NgMetadataName, Annotation, AnnotationDecorator } from "@alterior/annotations";
 import { Provider, Injector } from 'injection-js';
 
 export interface ConfiguredModule extends ModuleOptions {

@@ -48,6 +48,11 @@ export abstract class Worker {
     protected get currentJob() : QueueJob<TaskJob> {
         return Zone.current.get('workerStateJob');
     }
+
+    protected remote() {
+        return TaskWorkerProxy.createAsync(this.constructor)
+    }
+
 }
 
 export type RemoteService<T> = {
@@ -96,23 +101,13 @@ export class TaskWorkerProxy {
 
     static createAsync<T extends Worker>(queueClient : TaskQueueClient, id : string): RemoteWorker<T> {
         return this.create(
-            (key, ...args) => queueClient.enqueue(
-                {
-                    id,
-                    method: key,
-                    args
-                }
-            )
+            (method, ...args) => queueClient.enqueue({ id, method, args })
         );
     }
     
     static createSync<T extends Worker>(queueClient : TaskQueueClient, id : string): RemoteService<T> {
         return this.create( 
-            async (key, ...args) => (await queueClient.enqueue({
-                id,
-                method: key,
-                args
-            })).finished
+            async (method, ...args) => (await queueClient.enqueue({ id, method, args })).finished
         );
     }
 }

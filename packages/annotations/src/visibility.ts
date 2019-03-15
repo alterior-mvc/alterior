@@ -1,4 +1,8 @@
-import { Annotation, AnnotationDecorator } from "./annotations";
+/**
+ * (C) 2017-2019 William Lahti
+ */
+
+ import { Annotation, AnnotationDecorator } from "./annotations";
 
 /**
  * Represents whether an element should be treated visible or not.

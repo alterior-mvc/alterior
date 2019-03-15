@@ -1,0 +1,204 @@
+/**
+ * (C) 2017-2019 William Lahti
+ */
+
+import { Mutator, AnnotationDecorator, Annotation } from "./annotations";
+import { ConsoleColors, indentConsole } from '@alterior/common';
+
+/**
+ * Prints messages related to the execution of the decorated method
+ * to the console. 
+ * 
+ * - When multiple traced functions are involved, the output is indented 
+ *   appropriately. 
+ * - Intercepts console messages from within the function to add 
+ *   appropriate indentation.
+ * - Records (and rethrows) exceptions thrown from within the function.
+ * - For methods returning promises, the promise itself is traced,
+ *   printing a "Resolved" message upon completion or a "Rejected"
+ *   message upon rejection.
+ * 
+ * For example, given a class:
+ * 
+```
+class Thing {
+    @ConsoleTrace()
+    static doSomething(data : any, stuff : number) {
+        console.log("ALMOST...");
+        try {
+            this.anotherSomething(stuff);
+        } catch (e) {
+
+        }
+    }
+    @ConsoleTrace()
+    static anotherSomething(stuff : number) {
+        console.log("NAH...");
+        throw new Error('Uh oh');
+    }
+}
+```
+ * When executed, one may see:
+```sh
+Thing#doSomething({"stuff":321,"other":"nice"}, 12333) {
+ALMOST...
+Thing#anotherSomething(12333) {
+   NAH...
+   (!!) Exception:
+        Error: Uh oh
+} // [Exception] Thing#anotherSomething(12333)
+} // [Done, 6ms] Thing#doSomething({"stuff":321,"other":"nice"}, 12333)
+ * ```
+ */
+export function ConsoleTrace() {
+    return Mutator.define({
+        options: { 
+            validTargets: ['method'] 
+        },
+
+        invoke(site) {
+            let originalMethod : Function = site.propertyDescriptor.value;
+            site.propertyDescriptor.value = function (...args) {
+                let type : Function;
+                let isStatic : boolean = false;
+
+                if (typeof site.target === 'function') {
+                    type = site.target;
+                    isStatic = true;
+                } else {
+                    type = site.target.constructor;
+                    isStatic = false;
+                }
+                
+                let typeName : string;
+                let sep : string = '.';
+
+                if (isStatic)
+                    sep = '#';
+
+                typeName = type.name;
+
+                let startedAt = Date.now();
+
+                let argStrings = [];
+
+                for (let arg of args) {
+                    if (arg === null)
+                        argStrings.push('null');
+                    else if (arg === undefined)
+                        argStrings.push('undefined');
+                    else if (arg === true)
+                        argStrings.push('true');
+                    else if (arg === false)
+                        argStrings.push('false');
+                    else if (typeof arg === 'string') 
+                        argStrings.push(JSON.stringify(arg));
+                    else if (typeof arg === 'function')
+                        argStrings.push(arg.name);
+                    else if (typeof arg === 'object')
+                        argStrings.push(JSON.stringify(arg))
+                    else 
+                        argStrings.push(''+arg);
+                }
+
+                let methodSpec = `${ConsoleColors.cyan(`${typeName}${sep}${site.propertyKey}`)}(${argStrings.join(', ')})`;
+                console.log(`${methodSpec} {`);
+                let value;
+
+                let finish = (message?) => {
+                    let time = Date.now() - startedAt;
+                    let components = [message || ConsoleColors.green(`Done`)];
+                    let timingColor = m => m;
+                    let showTiming = time > 3;
+
+                    if (time > 20) {
+                        timingColor = ConsoleColors.red;
+                    } else if (time > 5) {
+                        timingColor = ConsoleColors.yellow;
+                    }
+                    
+                    if (showTiming) {
+                        components.push(timingColor(`${time}ms`));
+                    }
+
+                    console.log(`} // [${components.join(', ')}] ${methodSpec}`);
+                };
+
+                let status = undefined;
+
+                try {
+                    indentConsole(4, () => {
+                        try {
+                            value = originalMethod.apply(this, args); 
+                        } catch (e) {
+                            console.error(`${ConsoleColors.red(`(!!)`)} Exception:`);
+                            indentConsole(6, () => console.error(e));
+                            
+                            throw e;
+                        }
+                    });
+                } catch (e) {
+                    finish(ConsoleColors.red(`Exception`));
+                    throw e;
+                }
+                
+                if (value && value.then) {
+                    let promise : Promise<any> = value;
+                    value = promise.then(() => {
+                        finish(ConsoleColors.green(`Resolved`));
+                    }).catch(e => {
+                        finish(ConsoleColors.red(`Rejected (${e})`));
+                        throw e;
+                    });
+                } else {
+                    finish();
+                }
+
+                return value;
+            };
+        }
+    });
+}
+
+/**
+ * If an exception occurs within the target method, report that exception to the console and rethrow.
+ */
+export function ReportExceptionsToConsole() {
+    return Mutator.define({
+        options: { 
+            validTargets: ['method'] 
+        },
+
+        invoke(site) {
+            let originalMethod : Function = site.propertyDescriptor.value;
+            site.propertyDescriptor.value = function (...args) {
+                let type : Function;
+                let isStatic : boolean = false;
+
+                if (typeof site.target === 'function') {
+                    type = site.target;
+                    isStatic = true;
+                } else {
+                    type = site.target.constructor;
+                    isStatic = false;
+                }
+                
+                let typeName : string;
+                let sep : string = '.';
+
+                if (isStatic)
+                    sep = '#';
+
+                typeName = type.name;
+
+                try {
+                    return originalMethod.apply(this, args);
+                } catch (e) {
+                    console.error(`Error occurred during ${typeName}${sep}${site.propertyKey}():`);
+                    console.error(e);
+                    throw e;
+                }
+            };
+        }
+    });
+);

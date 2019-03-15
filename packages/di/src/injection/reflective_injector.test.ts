@@ -116,12 +116,31 @@ suite(describe => {
       expect(engine instanceof Engine).to.be.ok;
     });
 
+    it.skip('should instantiate a class with a parameter dependency', () => {
+      class Dependency {
+        readonly foo = 123;
+      }
+
+      class Sample {
+        constructor() {
+        }
+
+        @Inject()
+        foo : Dependency;
+      }
+
+      const injector = createInjector([Sample]);
+      const sample = injector.get(Sample);
+
+      expect(sample.foo).to.be.an.instanceOf(Dependency);
+    });
+
     it('should resolve dependencies based on type information', () => {
       const injector = createInjector([Engine, Car]);
       const car = injector.get(Car);
 
       expect(car).to.be.instanceOf(Car);
-      expect(car.engine).to.be.instanceOf(Engine);
+      expect(car.engine).to.be.an.instanceOf(Engine);
     });
 
     it('should resolve dependencies based on @Inject annotation', () => {

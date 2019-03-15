@@ -92,7 +92,7 @@ export const Optional = OptionalAnnotation.decorator({
  * @stable
  */
 export const Inject = InjectAnnotation.decorator({
-  validTargets: ['parameter']
+  validTargets: ['parameter', 'property']
 });
 
 /**
