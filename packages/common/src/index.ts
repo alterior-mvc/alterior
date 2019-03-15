@@ -1,4 +1,6 @@
 export * from './clone';
+export * from './colors';
+export * from './console';
 export * from './environment';
 export * from './errors';
 export * from './timeout';
