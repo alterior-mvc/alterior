@@ -1,0 +1,83 @@
+
+export interface Console {
+    log(...args : any[]);
+    info(...args : any[]);
+    warn(...args : any[]);
+    error(...args : any[]);
+    debug(...args : any[]);
+    dir(...args : any[]);
+}
+
+/**
+ * Intercept console messages emitted within the given function, allowing you to programmatically call the underlying raw console implementation (or not).
+ * 
+ * @param handler 
+ * @param callback 
+ */
+export function interceptConsole(handler : (method : string, originalImpl : Function, console : Console, args : any[]) => void, callback : Function) {
+    let methods = [ 'log', 'info', 'warn', 'error', 'debug', 'dir' ];
+
+    let rawConsole : Console = {} as any;
+    let origConsole = {};
+    
+    for (let method of methods) {
+        origConsole[method] = console[method];
+        rawConsole[method] = (console[method] || console.log).bind(console);
+        console[method] = function() {
+            handler(method, rawConsole[method], rawConsole, Array.from(arguments));
+        };
+    }
+
+    try {
+        callback();
+    } finally {
+        for (let method of methods)
+            console[method] = origConsole[method];
+    }
+}
+
+/**
+ * Intercept all console messages emitted within the given function and indent them with 
+ * the given number of spaces before printing them out.
+ * 
+ * @param spaces 
+ * @param callback 
+ */
+export function indentConsole(spaces : number, callback : Function) {
+    let indent = Array(spaces).join(' ');
+
+    return interceptConsole((method, original, console, args) => {
+        if (method == 'dir') {
+            if (typeof require !== 'undefined') {
+                const util = require('util');
+                console.log(`${indent}${util.inspect(args[0])}`)
+            } else {
+                original(...args);
+            }
+        } else {
+            original(`${indent}${args.join(' ')}`);
+        }
+    }, callback);
+}
+
+/**
+ * Intercept all console messages emitted within the given function and format them using the given formatter before 
+ * printing them.
+ * 
+ * @param formatter 
+ * @param callback 
+ */
+export function formatConsole(formatter : (message : string) => string, callback : Function) {
+    return interceptConsole((method, original, console, args) => {
+        if (method == 'dir') {
+            if (typeof require !== 'undefined') {
+                const util = require('util');
+                console.log(`${formatter(util.inspect(args[0]))}`)
+            } else {
+                original(...args);
+            }
+        } else {
+            original(`${formatter(args.join(' '))}`);
+        }
+    }, callback);
+}
