@@ -14,25 +14,35 @@ npm install @alterior/runtime @alterior/di @alterior/tasks
 
 ## A minimal example
 
-For simple use cases, you can build a task runner using Alterior in a single file:
+First, build a task worker:
 
 ```typescript
-import { TaskHost } from '@alterior/web-server';
+import { Worker } from '@alterior/tasks';
+import { Logger } from '@alterior/logger';
 
-@TaskHost()
-export class MyTaskHost implements OnInit {
-    @Task()
+export class MyTaskHost extends Worker {
+    constructor(
+        private logger : Logger,
+        private taskRunner : TaskRunner
+    ) {
+
+    }
+    get name() { return '@myorg/mypackage:MyTask'; }
+    
     async transcodeToFormat({ videoId : string, format : string }) {
+        this.logger.info('Transcoding to format...');
         run(`ffmpeg /storage/${video}.mp4`);
     }
 
-    @Task()
     async transcode({ videoId : string }) {
+        this.logger.info('Queuing transcoding tasks...');
+
+        this.taskRunner.worker()
+
         await this.enqueue('transcodeToFormat', { videoId: 'abcdef', format: '1080p' });
+        await this.enqueue('transcodeToFormat', { videoId: 'abcdef', format: '720p' });
     }
 }
-
-Application.bootstrap(MyTaskHost);
 ```
 
 However, it is more scalable and type-safe to specify a task per class:
