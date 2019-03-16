@@ -4,8 +4,8 @@ import { interceptConsole } from "@alterior/common";
 import { expect } from 'chai';
 
 suite(describe => {
-    describe('Trace', it => {
-        it('prints a trace message', () => {
+    describe('ConsoleTrace', it => {
+        it('reasonably traces a program', () => {
             let log = [];
 
             interceptConsole((method, original, console, args) => {
@@ -35,10 +35,14 @@ suite(describe => {
 
             expect(log.length).to.eq(8);
 
+            expect(log[0].args[0]).to.contain('Thing#doSomething');
             expect(log[0].args[0]).to.contain('{');
+
             expect(log[1].args[0]).to.contain('Doing something...');
 
+            expect(log[2].args[0]).to.contain('Thing#doAnotherThing');
             expect(log[2].args[0]).to.contain('{');
+
             expect(log[3].args[0]).to.contain('Doing another thing...');
             expect(log[4].args[0]).to.contain('Exception');
             expect(log[5].args[0]).to.contain('Error: Uh oh');
