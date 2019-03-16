@@ -1,4 +1,4 @@
-import { Annotation, MetadataName } from "@alterior/annotations";
+import { Annotation, MetadataName, AnnotationDecorator } from "@alterior/annotations";
 import { Injectable, InjectionToken, Optional, Injector, Provider, ReflectiveInjector } from "@alterior/di";
 import * as BullQueue from "bull";
 
@@ -48,11 +48,6 @@ export abstract class Worker {
     protected get currentJob() : QueueJob<TaskJob> {
         return Zone.current.get('workerStateJob');
     }
-
-    protected remote() {
-        return TaskWorkerProxy.createAsync(this.constructor)
-    }
-
 }
 
 export type RemoteService<T> = {
