@@ -1,0 +1,19 @@
+{
+  "name": "@alterior/diagnostics",
+  "version": "3.0.0-beta.34",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rimraf dist && tsc -p .",
+    "prepare": "npm test",
+    "test": "npm run build && exit 0"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@alterior/logging": "^3.0.0-beta.34"
+  },
+  "devDependencies": {
+    "rimraf": "^2.6.3"
+  }
+}

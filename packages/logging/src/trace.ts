@@ -2,8 +2,14 @@
  * (C) 2017-2019 William Lahti
  */
 
-import { Mutator, AnnotationDecorator, Annotation } from "./annotations";
+import { Mutator } from "@alterior/annotations";
 import { ConsoleColors, indentConsole } from '@alterior/common';
+
+let ENABLED : boolean = false;
+
+export function setTracingEnabled(enabled : boolean) {
+    ENABLED = enabled;
+}
 
 /**
  * Prints messages related to the execution of the decorated method
@@ -57,6 +63,9 @@ export function ConsoleTrace() {
         },
 
         invoke(site) {
+            if (!ENABLED)
+                return;
+            
             let originalMethod : Function = site.propertyDescriptor.value;
             site.propertyDescriptor.value = function (...args) {
                 let type : Function;
