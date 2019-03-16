@@ -13,7 +13,6 @@
   "scripts": {
     "test": "lerna run test",
     "publish:all": "npm run test && lerna publish",
-    "prepare": "lerna bootstrap",
     "clean:npm:lock": "rimraf packages/*/package-lock.json",
     "clean:npm:modules": "rimraf packages/*/node_modules",
     "clean:npm": "npm run clean:npm:lock && npm run clean:npm:modules",
