@@ -7,6 +7,10 @@ import { ConsoleColors, indentConsole } from '@alterior/common';
 
 let ENABLED : boolean = false;
 
+export function getTracingEnabled() {
+    return ENABLED;
+}
+
 export function setTracingEnabled(enabled : boolean) {
     ENABLED = enabled;
 }
