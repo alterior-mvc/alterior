@@ -4,7 +4,7 @@
 ![License](https://img.shields.io/npm/l/@alterior/runtime.svg)
 
 
-A framework for building Node applications in Typescript. Build all of 
+A framework for building Node applications in Typescript. Build 
 your Typescript applications with this. 
 
 ## Usage
