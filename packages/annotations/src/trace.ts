@@ -201,4 +201,4 @@ export function ReportExceptionsToConsole() {
             };
         }
     });
-);
+}
