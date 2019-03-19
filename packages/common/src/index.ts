@@ -1,4 +1,5 @@
 export * from './clone';
+export * from './coalesce';
 export * from './colors';
 export * from './console';
 export * from './environment';
