@@ -23,6 +23,43 @@ export class ApplicationOptionsRef {
 }
 
 /**
+ * Represents the current runtime execution context.
+ * This is exposed via a zone-local variable, and the Runtime
+ * populates it with useful information as it becomes available.
+ */
+export class ExecutionContext {
+	/**
+	 * Retrieve the Alterior application which is currently being executed.
+	 * If an application has not been bootstrapped yet, the value is null.
+	 */
+	public application : Application = null;
+
+	static readonly ZONE_LOCAL_NAME  = '@alterior/runtime:ExecutionContext';
+
+	/**
+	 * Get the current execution context, if any.
+	 */
+	public static get current(): ExecutionContext {
+		return Zone.current.get(ExecutionContext.ZONE_LOCAL_NAME);
+	}
+
+	/**
+	 * Execute the given function in a new zone which has
+	 * this ExecutionContext instance as the current execution context.
+	 */
+	public async run<T>(callback : () => Promise<T>): Promise<T> {
+		let zone = Zone.current.fork({
+			name: `AlteriorExecutionContext`,
+			properties: {
+				[ExecutionContext.ZONE_LOCAL_NAME]: this
+			}
+		});
+
+		return await zone.run(() => callback());
+	}
+}
+
+/**
  * Handles bootstrapping the application.
  */
 @Injectable()
@@ -47,7 +84,7 @@ export class Application {
 		return this.runtime.injector;
 	}
 
-	inject<T>(ctor : { new() : T }): T {
+	inject<T>(ctor : { new(...args) : T }): T {
 		return this.injector.get(ctor);
 	}
 
@@ -99,48 +136,51 @@ export class Application {
 	 * Bootstrap an Alterior application.
 	 */
 	public static async bootstrap(entryModule : Function, options? : ApplicationOptions): Promise<Application> {
-		this.validateEntryModule(entryModule);
-		
-		options = this.loadOptions(entryModule, options);
+		let executionContext = new ExecutionContext();
+		return await executionContext.run(async () => {
+			this.validateEntryModule(entryModule);
 
-		let runtime = new Runtime(entryModule);
+			options = this.loadOptions(entryModule, options);
+	
+			let runtime = new Runtime(entryModule);
 
-		let providers : Provider[] = [
-			ApplicationArgs,
-			RolesService,
-			Environment
-		];
-
-		runtime.contributeProviders(providers);
-		providers.push(
-			{
-				provide: ApplicationOptionsRef,
-				useValue: new ApplicationOptionsRef(options)
+			let providers : Provider[] = [
+				ApplicationArgs,
+				RolesService,
+				Environment
+			];
+	
+			runtime.contributeProviders(providers);
+			providers.push(
+				{
+					provide: ApplicationOptionsRef,
+					useValue: new ApplicationOptionsRef(options)
+				}
+			);
+			providers.push(Application);
+	
+			let injector : ReflectiveInjector;
+			try {
+				injector = ReflectiveInjector.resolveAndCreate(providers);
+			} catch (e) {
+				console.error(`Failed to resolve injector:`);
+				console.error(e);
+				console.error(`Providers:`);
+				console.dir(providers);
+				console.error(`Modules:`);
+				console.dir(runtime.definitions);
+				throw e;
 			}
-		);
-		providers.push(Application);
 
-		let injector : ReflectiveInjector;
-		try {
-			injector = ReflectiveInjector.resolveAndCreate(providers);
-		} catch (e) {
-			console.error(`Failed to resolve injector:`);
-			console.error(e);
-			console.error(`Providers:`);
-			console.dir(providers);
-			console.error(`Modules:`);
-			console.dir(runtime.definitions);
-			throw e;
-		}
-
-		runtime.load(injector);
-		runtime.fireEvent('OnInit');
-		runtime.configure();
-
-		if (options.autostart)
-			runtime.start();
-
-		return runtime.getService(Application);
+			runtime.load(injector);
+			runtime.fireEvent('OnInit');
+			runtime.configure();
+	
+			if (options.autostart)
+				runtime.start();
+	
+			return executionContext.application = runtime.getService(Application);
+		});
 	}
 	
 }
