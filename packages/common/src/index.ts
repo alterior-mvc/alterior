@@ -1,3 +1,4 @@
+export * from './zones';
 export * from './clone';
 export * from './coalesce';
 export * from './colors';
