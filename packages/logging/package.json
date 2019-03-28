@@ -27,6 +27,7 @@
     "@alterior/common": "^3.0.0-beta.34",
     "@alterior/di": "^3.0.0-beta.34",
     "@alterior/annotations": "^3.0.0-beta.34",
+    "@alterior/runtime": "^3.0.0-beta.34",
     "dotenv": "^6.0.0",
     "rxjs": "^6.3.1",
     "zone.js": "^0.8.29"

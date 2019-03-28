@@ -1,14 +1,15 @@
 import { suite } from "razmin";
-import { ConsoleTrace, setTracingEnabled, getTracingEnabled } from "./trace";
+import { Trace, setTracingEnabled, getTracingEnabled } from "./trace";
 import { interceptConsole } from "@alterior/common";
 import { expect } from 'chai';
+import { inspect } from "./inspect";
 
 suite(describe => {
-    describe('ConsoleTrace', it => {
+    describe('Trace', it => {
         it('reasonably traces a program', () => {
             let wasTracingEnabled = getTracingEnabled();
             setTracingEnabled(true);
-            
+
             try {
                 let log = [];
 
@@ -16,7 +17,7 @@ suite(describe => {
                     log.push({ method, original, console, args });
                 }, () => {
                     class Thing {
-                        @ConsoleTrace()
+                        @Trace()
                         static doSomething(data : any, stuff : number) {
                             console.log("Doing something...");
                             try {
@@ -26,7 +27,7 @@ suite(describe => {
                             }
                         }
         
-                        @ConsoleTrace()
+                        @Trace()
                         static doAnotherThing(stuff : number) {
                             console.log("Doing another thing...");
                             throw new Error('Uh oh');
@@ -37,7 +38,7 @@ suite(describe => {
                     Thing.doSomething({ stuff: 321, other: "nice" }, 12333); 
                 });
 
-                expect(log.length).to.eq(8);
+                expect(log.length, `Content was: '${log.map(x => x.args.join(' ')).join("\n")}`).to.eq(8);
 
                 expect(log[0].args[0]).to.contain('Thing#doSomething');
                 expect(log[0].args[0]).to.contain('{');

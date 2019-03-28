@@ -1,16 +1,17 @@
 import { suite } from 'razmin';
-import { Logger, LoggingOptionsRef, ConsoleLogger, FileLogger, LogFormatter, LogMessage } from './logger';
+import { Logger, LoggingOptionsRef, ConsoleLogger, FileLogger, LogFormatter, LogEvent } from './logger';
 import { expect } from 'chai';
 import * as os from 'os';
 import * as path from 'path';
 import * as fs from 'fs';
 
-const SAMPLE_LOG_MESSAGE_1 : LogMessage = { message: 'ABCDEF', date: new Date(), severity: 'info', context: null, contextLabel: null, sourceLabel: null };
-const SAMPLE_LOG_MESSAGE_2 : LogMessage = { message: '123456', date: new Date(), severity: 'info', context: null, contextLabel: null, sourceLabel: null };
-const SAMPLE_LOG_MESSAGE_3 : LogMessage = { message: 'TUVXYZ', date: new Date(), severity: 'info', context: null, contextLabel: null, sourceLabel: null };
+const SAMPLE_LOG_MESSAGE_1 : LogEvent = { type: 'message', message: 'ABCDEF', date: new Date(), severity: 'info', context: null, contextLabel: null, sourceLabel: null };
+const SAMPLE_LOG_MESSAGE_2 : LogEvent = { type: 'message', message: '123456', date: new Date(), severity: 'info', context: null, contextLabel: null, sourceLabel: null };
+const SAMPLE_LOG_MESSAGE_3 : LogEvent = { type: 'message', message: 'TUVXYZ', date: new Date(), severity: 'info', context: null, contextLabel: null, sourceLabel: null };
 
-function SAMPLE_LOG_MESSAGE(message) : LogMessage {
+function SAMPLE_LOG_MESSAGE(message) : LogEvent {
     return { 
+        type: 'message',
         message, 
         date: new Date(), 
         severity: 'info', 
@@ -20,8 +21,9 @@ function SAMPLE_LOG_MESSAGE(message) : LogMessage {
     };
 }
 
-function SAMPLE_LOG_MESSAGE_FATAL(message) : LogMessage {
+function SAMPLE_LOG_MESSAGE_FATAL(message) : LogEvent {
     return { 
+        type: 'message',
         message, 
         date: new Date(), 
         severity: 'fatal', 
@@ -115,11 +117,21 @@ suite(describe => {
 
             await logger.open();
 
-            await logger.log({ message: 'TUVXYZ', date: new Date(), severity: 'info', context: null, contextLabel: null, sourceLabel: null });
+            await logger.log({ 
+                type: 'message', 
+                message: 'TUVXYZ', 
+                date: new Date(), 
+                severity: 'info'
+            });
             
             let contents2 = fs.readFileSync(filename).toString().split(/\n/g);
 
-            await logger.log({ message: '123456', date: new Date(), severity: 'info', context: null, contextLabel: null, sourceLabel: null });
+            await logger.log({ 
+                type: 'message',
+                message: '123456', 
+                date: new Date(), 
+                severity: 'info'
+            });
             
             let contents3 = fs.readFileSync(filename).toString().split(/\n/g);
 

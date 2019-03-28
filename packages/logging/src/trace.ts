@@ -3,7 +3,8 @@
  */
 
 import { Mutator } from "@alterior/annotations";
-import { ConsoleColors, indentConsole } from '@alterior/common';
+import { ConsoleColors, indentConsole, coalesce } from '@alterior/common';
+import { LoggingOptionsRef, DEFAULT_LISTENERS, Logger } from "./logger";
 
 let ENABLED : boolean = false;
 
@@ -27,6 +28,11 @@ export function setTracingEnabled(enabled : boolean) {
  * - For methods returning promises, the promise itself is traced,
  *   printing a "Resolved" message upon completion or a "Rejected"
  *   message upon rejection.
+ * 
+ * Note that this functionality can be enabled and disabled by configuring
+ * the `tracing` option when configuring this module for your application. 
+ * When @Trace() is used outside of an Alterior execution context, the trace 
+ * logs are always enabled, and the default log listeners are used.
  * 
  * For example, given a class:
  * 
@@ -60,13 +66,26 @@ Thing#anotherSomething(12333) {
 } // [Done, 6ms] Thing#doSomething({"stuff":321,"other":"nice"}, 12333)
  * ```
  */
-export function ConsoleTrace() {
+export function Trace() {
     return Mutator.define({
         options: { 
             validTargets: ['method'] 
         },
 
         invoke(site) {
+
+            // - When used outside of Alterior, we will *always trace*.
+            // - When used inside an Alterior app, we will not trace by default.
+            // - If optionsRef.options.tracing is set to true, we trace.
+
+            let optionsRef = LoggingOptionsRef.currentRef;
+            let options = optionsRef ? (optionsRef.options || {}) : null;
+            let enabled = options ? coalesce(options.tracing, false) : true;
+            let logger = Logger.current;
+
+            if (!enabled)
+                return;
+
             if (!ENABLED)
                 return;
             
@@ -115,7 +134,7 @@ export function ConsoleTrace() {
                 }
 
                 let methodSpec = `${ConsoleColors.cyan(`${typeName}${sep}${site.propertyKey}`)}(${argStrings.join(', ')})`;
-                console.log(`${methodSpec} {`);
+                logger.debug(`${methodSpec} {`);
                 let value;
 
                 let finish = (message?) => {
@@ -134,7 +153,7 @@ export function ConsoleTrace() {
                         components.push(timingColor(`${time}ms`));
                     }
 
-                    console.log(`} // [${components.join(', ')}] ${methodSpec}`);
+                    logger.debug(`} // [${components.join(', ')}] ${methodSpec}`);
                 };
 
                 let status = undefined;

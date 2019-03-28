@@ -1,11 +1,25 @@
 import { Injectable, Optional } from '@alterior/di';
+import { ExecutionContext } from '@alterior/runtime';
 
 export type LogSeverity = 'debug' | 'info' | 'warning' | 'error' | 'fatal';
 
 import * as fs from 'fs';
+import { inspect, stylizeWithConsoleColors } from './inspect';
 
 export class LoggingOptionsRef {
     constructor(readonly options : LoggingOptions) {
+    }
+
+    public static get currentRef(): LoggingOptionsRef {
+        if (!ExecutionContext.current || !ExecutionContext.current.application)
+           return null;
+
+        return ExecutionContext.current.application.inject(LoggingOptionsRef);
+    }
+
+    public static get current(): LoggingOptions {
+        let ref = this.currentRef;
+        return ref ? ref.options : {};
     }
 }
 
@@ -13,20 +27,45 @@ export interface LogOptions {
     severity : LogSeverity;
 }
 
-export interface LogMessage {
+export interface LogEvent {
+    type : 'message' | 'inspect';
     message : string;
-    context : any;
-    contextLabel : string;
-    sourceLabel : string;
+
+    /**
+     * Subject being inspected. Defined
+     * only for `type == 'inspect'`
+     */
+    subject? : any;
+
+    /**
+     * Context data, if any
+     */
+    context? : any;
+
+    /**
+     * Context label, if set
+     */
+    contextLabel? : string;
+
+    /**
+     * Source label, if set.
+     */
+    sourceLabel? : string;
+
+    /**
+     * Severity of the log event.
+     */
     severity : LogSeverity;
+
+    /**
+     * The date when the log event was recorded.
+     */
     date : Date;
 }
 
 export interface LogListener {
-    log(message : LogMessage) : Promise<void>;
+    log(message : LogEvent) : Promise<void>;
 }
-
-export const DEFAULT_FORMAT = '%date% [source="%sourceLabel%" context="%contextLabel%"] %severity%: %message%';
 
 export interface FormatSegment {
     type : "raw" | "parameter";
@@ -83,6 +122,9 @@ export class LogFormatter {
         
         if (value === null)
             return '«null»';
+            
+        if (value === undefined)
+            return '«undefined»';
 
         if (value instanceof Date)
             return value.toISOString();
@@ -90,7 +132,7 @@ export class LogFormatter {
         return value.toString();
     }
 
-    public format(message : LogMessage) : string {
+    public format(message : LogEvent) : string {
         return this.segments.map(x => x.type == 'parameter' ? this.formatParameter(x.value, message[x.value]) : x.value).join('');
     }
 }
@@ -104,8 +146,29 @@ export class ConsoleLogger implements LogListener {
 
     private formatter : LogFormatter;
 
-    async log(message : LogMessage) {
-        console.log(this.formatter.format(message));
+    async log(message : LogEvent) {
+        let messageText = message.message;
+
+        if (message.type === 'inspect') {
+
+            // On the web, take advantage of the interactive
+            // inspection facilities
+
+            if (typeof document !== 'undefined') {
+                console.dir(message.subject);
+                return;
+            } 
+
+            // Inspect
+
+            messageText = inspect(message.subject, {
+                stylize: stylizeWithConsoleColors
+            });
+        }
+
+        let finalMessage = Object.assign({}, message, { message: messageText });
+        let finalMessageStr = this.formatter.format(finalMessage);
+        console.log(finalMessageStr);
     }
 }
 
@@ -153,41 +216,155 @@ export class FileLogger implements LogListener {
         });
     }
 
-    async log(message : LogMessage) {
+    async log(message : LogEvent) {
         let formattedMessage = this.formatter.format(message);
         await this.write(`${formattedMessage}\n`);
     }
 }
 
 export interface LoggingOptions {
+    /**
+     * Specify functions which listen to and in some way handle
+     * emitted log messages.
+     */
     listeners? : LogListener[];
+
+    /**
+     * Whether to enable tracing as provided by @ConsoleTrace.
+     */
+    tracing?: boolean;
 }
 
-@Injectable()
-export class Logger {
+export class ZonedLogger {
     constructor(
-        @Optional()
-        private optionsRef : LoggingOptionsRef
+        protected optionsRef : LoggingOptionsRef,
+        sourceLabel? : string
     ) {
+        this._sourceLabel = sourceLabel;
+        
         if (optionsRef && optionsRef.options) {
             if (optionsRef.options.listeners)
                 this._listeners = optionsRef.options.listeners;
         }
 
         if (!this._listeners) {
-            this._listeners = [ new ConsoleLogger(DEFAULT_FORMAT) ];
+            this._listeners = DEFAULT_LISTENERS;
         }
     }
+    
+    clone() {
+        let logger = new ZonedLogger(this.optionsRef, this._sourceLabel);
+        Object.keys(this).filter(x => typeof this[x] !== 'function').forEach(key => logger[key] = this[key]);
+        return logger;
+    }
 
-    private _listeners : LogListener[];
-    private _sourceLabel : string = undefined;
+    protected _sourceLabel : string = undefined;
 
     get sourceLabel() {
         return this._sourceLabel;
     }
 
+    private _listeners : LogListener[];
+
+    static readonly ZONE_LOCAL_NAME = '@alterior/logger:Logger.current';
+
+    public static get current(): ZonedLogger {
+        return Zone.current.get(Logger.ZONE_LOCAL_NAME) || new ZonedLogger(null);
+    }
+
     get listeners() {
         return this._listeners || [];
+    }
+
+    /**
+     * Run the given function with this logger as the current logger. 
+     * Calls to Logger.current will yield the logger for this execution
+     * context.
+     */
+    run(func : Function): any {
+        return Zone.current.fork({
+            name: `LoggerContext`,
+            properties: {
+                [Logger.ZONE_LOCAL_NAME]: this
+            }
+        }).run(func);
+    }
+
+    protected createMessage(message : Partial<LogEvent>): LogEvent {
+        return <LogEvent>Object.assign(<Partial<LogEvent>>{
+            type: 'message',
+            context: this.context,
+            contextLabel: this.contextLabel,
+            date: new Date(),
+            message,
+            sourceLabel: this._sourceLabel
+        }, message);
+    }
+    
+    log(message : string, options? : LogOptions) {
+        this.emitLog(this.createMessage({
+            message,
+            severity: (options ? options.severity : undefined) || 'info'
+        }));
+    }
+
+    info(message : string, options? : LogOptions) {
+        this.log(message, Object.assign({}, options, { severity: 'info' }));
+    }
+
+    debug(message : string, options? : LogOptions) {
+        this.log(message, Object.assign({}, options, { severity: 'debug' }));
+    }
+    
+    warning(message : string, options? : LogOptions) {
+        this.log(message, Object.assign({}, options, { severity: 'warning' }));
+    }
+    
+    error(message : string, options? : LogOptions) {
+        this.log(message, Object.assign({}, options, { severity: 'error' }));
+    }
+
+    inspect(object : any, options? : LogOptions) {
+        this.emitLog(this.createMessage({
+            type: 'inspect',
+            severity: (options ? options.severity : undefined) || 'info',
+            subject: object,
+            message: '' + object
+        }))
+    }
+
+    private emitLog(message : LogEvent) {
+        this.listeners.forEach(listener => listener.log(message));
+    }
+
+    get context() {
+        return Zone.current.get('logContext');
+    }
+
+    get contextLabel() {
+        return Zone.current.get('logContextLabel');
+    }
+
+    async withContext<T = any>(context : any, label : string, callback : () => T): Promise<T> {
+        let zone = Zone.current.fork({
+            name: `LogContextZone: ${label}`,
+            properties: {
+                logContext: context,
+                logContextLabel: label
+            }
+        });
+
+        return await zone.run<T>(() => callback());
+    }
+}
+
+@Injectable()
+export class Logger extends ZonedLogger {
+    constructor(
+        @Optional()
+        optionsRef : LoggingOptionsRef
+    ) {
+        super(optionsRef);
     }
     
     clone() {
@@ -209,55 +386,7 @@ export class Logger {
 
         return logger;
     }
-
-    async withContext<T = any>(context : any, label : string, callback : () => T): Promise<T> {
-        let zone = Zone.current.fork({
-            name: `LogContextZone: ${label}`,
-            properties: {
-                logContext: context,
-                logContextLabel: label
-            }
-        });
-
-        return await zone.run<T>(() => callback());
-    }
-
-    get context() {
-        return Zone.current.get('logContext');
-    }
-
-    get contextLabel() {
-        return Zone.current.get('logContextLabel');
-    }
-
-    log(message : string, options? : LogOptions) {
-        this.emitLog({
-            context: this.context,
-            contextLabel: this.contextLabel,
-            date: new Date(),
-            message,
-            severity: (options ? options.severity : undefined) || 'info',
-            sourceLabel: this._sourceLabel
-        });
-    }
-
-    info(message : string, options? : LogOptions) {
-        this.log(message, Object.assign({}, options, { severity: 'info' }));
-    }
-
-    debug(message : string, options? : LogOptions) {
-        this.log(message, Object.assign({}, options, { severity: 'debug' }));
-    }
-    
-    warning(message : string, options? : LogOptions) {
-        this.log(message, Object.assign({}, options, { severity: 'warning' }));
-    }
-    
-    error(message : string, options? : LogOptions) {
-        this.log(message, Object.assign({}, options, { severity: 'error' }));
-    }
-
-    private emitLog(message : LogMessage) {
-        this.listeners.forEach(listener => listener.log(message));
-    }
 }
+
+export const DEFAULT_FORMAT = '%date% [source="%sourceLabel%" context="%contextLabel%"] %severity%: %message%';
+export const DEFAULT_LISTENERS : LogListener[] = [ new ConsoleLogger(DEFAULT_FORMAT) ];
