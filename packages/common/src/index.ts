@@ -10,3 +10,4 @@ export * from './base64';
 export * from './cache';
 export * from './serializer';
 export * from './lazy-promise';
+export * from './locks';
