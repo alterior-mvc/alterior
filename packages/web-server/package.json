@@ -1,6 +1,6 @@
 {
   "name": "@alterior/web-server",
-  "version": "3.0.0-beta.34",
+  "version": "3.0.0-beta.35",
   "access": "public",
   "publishConfig": {
     "access": "public"
@@ -26,11 +26,11 @@
   },
   "homepage": "https://github.com/alterior-mvc/alterior#readme",
   "dependencies": {
-    "@alterior/annotations": "^3.0.0-beta.34",
-    "@alterior/common": "^3.0.0-beta.34",
-    "@alterior/di": "^3.0.0-beta.34",
-    "@alterior/logging": "^3.0.0-beta.34",
-    "@alterior/runtime": "^3.0.0-beta.34",
+    "@alterior/annotations": "^3.0.0-beta.35",
+    "@alterior/common": "^3.0.0-beta.35",
+    "@alterior/di": "^3.0.0-beta.35",
+    "@alterior/logging": "^3.0.0-beta.35",
+    "@alterior/runtime": "^3.0.0-beta.35",
     "@avejidah/get-parameter-names": "^0.3.2",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
