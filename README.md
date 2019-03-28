@@ -74,12 +74,6 @@ time while you build your applications.
   [![Version](https://img.shields.io/npm/v/@alterior/di.svg)](https://www.npmjs.com/package/@alterior/di)
   ![Size](https://img.shields.io/bundlephobia/min/@alterior/di.svg)
 
-
-- **[@alterior/diagnostics](packages/diagnostics/README.md)**  
-  Enables debugging features of Alterior, including declarative tracing from `@alterior/logging`.
-  [![Version](https://img.shields.io/npm/v/@alterior/diagnostics.svg)](https://www.npmjs.com/package/@alterior/diagnostics)
-  ![Size](https://img.shields.io/bundlephobia/min/@alterior/diagnostics.svg)
-
 - **[@alterior/http](packages/http/README.md)**  
   HTTP client library as an Alterior module (ported from `@angular/http`)  
   [![Version](https://img.shields.io/npm/v/@alterior/http.svg)](https://www.npmjs.com/package/@alterior/http)
