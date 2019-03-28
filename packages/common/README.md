@@ -84,6 +84,64 @@ Provides an injectable service which provides environment variables to your appl
 This package provides many fundamental error types that are intended for you to use to simplify development. The rest of 
 Alterior also relies upon these.
 
+### `class SystemError`
+
+Base class for errors thrown by the system or framework
+
+### `class ApplicationError`
+
+Base class for errors thrown by your application
+
+### `class ArgumentError<ValueT>`
+
+An argument to a method or function was invalid. The argument name can be obtained with `argumentName`. THe invalid value can be obtained with `value`
+
+### `class ArgumentNullError`
+
+The given argument was null and this is not allowed in this context.
+
+### `class ArgumentOutOfRangeError`
+
+The given argument is out of the expected range.
+
+
+### `class NotSupportedError`
+
+The current system, framework version, application, or configuration does not support the attempted operation.
+
+### `class NotImplementedError`
+
+The attempted operation is not implemented in this context.
+
+### `class OperationCanceledError`
+
+The operation was cancelled.
+
+### `class TimeoutError`
+
+The operation was interrupted due to a timeout. 
+
+### `class IOError`
+
+An error occurred while performing an IO operation
+
+### `class FormatError`
+
+An error occurred while formatting a provided value
+
+### `class InvalidOperationError`
+
+The attempted operation is invalid in the current state
+
+### `class AccessDeniedError`
+
+The attempted operation cannot be called given the current 
+authorization and authentication state.
+
+### `HttpError`
+
+An HTTP operation failed with a non-successful response.
+
 ## `class LazyPromise<T>`
 
 Create a promise which only starts doing work if an observer calls `.then()` or `.catch()`.

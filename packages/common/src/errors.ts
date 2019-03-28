@@ -49,9 +49,15 @@ export class BaseErrorT {
     }
 }
 
+/**
+ * Base class for errors thrown by the system or framework
+ */
 export class SystemError extends BaseErrorT {
 }
 
+/**
+ * Base class for errors thrown by your application
+ */
 export class ApplicationError extends BaseErrorT {
 }
 
@@ -102,13 +108,13 @@ export class NotSupportedError extends SystemError {
     }
 }
 
-export class NotImplementedException extends SystemError {
+export class NotImplementedError extends SystemError {
     constructor(message? : string) {
         super(message || `The requested operation is not implemented.`);
     }
 }
 
-export class OperationCanceledException extends SystemError {
+export class OperationCanceledError extends SystemError {
     constructor(message? : string) {
         super(message || `The requested operation is not implemented.`);
     }
