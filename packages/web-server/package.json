@@ -54,7 +54,7 @@
     "supertest": "^3.1.0",
     "swagger-editor-dist": "^3.6.9",
     "typescript": "^3.0.3",
-    "wtfnode": "^0.7.0"
+    "wtfnode": "^0.8.0"
   },
   "gitHead": "54aede0183e34ca02b53e4591126c70078f4e29d"
 }
