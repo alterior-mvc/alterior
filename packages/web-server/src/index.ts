@@ -11,3 +11,5 @@ export * from './openapi';
 export * from './service';
 export * from './input';
 export * from './web-server';
+
+export * from './web-server.module';
