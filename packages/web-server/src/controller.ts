@@ -88,6 +88,23 @@ export class ControllerInstance {
 		return middleware;
 	}
 
+	combinePaths(...paths) {
+		let finalPath = '';
+
+		for (let path of paths) {
+			let segment = path ? path.replace(/^\/|\/$/g, '') : undefined;
+			if (segment)
+				finalPath += `/${segment}`;
+		}
+
+		finalPath = finalPath.replace(/^\/|\/$/g, '');
+
+		if (!finalPath || finalPath === '/')
+			return '';
+		
+		return '/' + finalPath;
+	}
+
 	private prepare() {
 		this._instance = this.injector.get(this.type);
 
@@ -121,8 +138,11 @@ export class ControllerInstance {
 			}
 
 			for (let controller of controllers) {
-				let subPrefix = `${this.context.pathPrefix.replace(/\/+$/g, '')}/${(this._options.basePath || '').replace(/\/+$/g, '')}/${mount.path.replace(/^\/+/g, '')}`;
-				subPrefix = subPrefix.replace(/^\/+/, '/');
+				let subPrefix = this.combinePaths(
+					this.context.pathPrefix, 
+					this._options.basePath,
+					mount.path
+				);
 				this.controllers.push(new ControllerInstance(
 					this.server, 
 					controller, 
@@ -155,14 +175,7 @@ export class ControllerInstance {
 	private _routes : RouteInstance[];
 
 	get pathPrefix() {
-		let basePath = (this._options.basePath || '').replace(/^\/|\/$/g, '');
-
-		if (this._context.pathPrefix) {
-			let pathPrefix = this._context.pathPrefix.replace(/^\/|\/$/g, '');
-			basePath = `/${pathPrefix}/${basePath}`.replace(/\/+^/g, '');
-		}
-		
-		return basePath.replace(/\/+$/g, '');
+		return this.combinePaths(this._context.pathPrefix, this._options.basePath);
 	}
 	
 	get routes() {

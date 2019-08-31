@@ -497,6 +497,99 @@ suite(describe => {
 			expect(counter).to.equal(1);
 		});
 
+		it('mounted controllers should properly construct paths when some lead with slash', async () => {
+			interface MyRequestType {
+				zoom : number;
+			}
+			@Controller('')
+			class SubController {
+				@Post('/ghi', { middleware: [ bodyParser.json() ] })
+				getX(@Body() body : MyRequestType) { 
+					assert(body.zoom === 123);
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			let counter = 0;
+			function counterMiddleware(req, res, next) {
+				++counter;
+				next();
+			}
+
+			@Controller('/abc', { middleware: [counterMiddleware] })
+			class TestController {
+				@Get('/wat')
+				wat() {}
+
+				@Mount('/def')
+				subcontroller : SubController;
+			}
+
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
+
+			await teststrap(FakeApp, async test =>
+				await test.post('/abc/def/ghi')
+					.send({ zoom: 123 })
+					.expect(200, { ok: true })
+			);
+
+			expect(counter).to.equal(1);
+		});
+
+		it('mounted controllers should properly construct paths on multiple levels', async () => {
+			interface MyRequestType {
+				zoom : number;
+			}
+			
+			@Controller('', { middleware: [ counterMiddleware ]})
+			class ApiController {
+				@Post('/info', { middleware: [ bodyParser.json() ] })
+				getX(@Body() body : MyRequestType) { 
+					assert(body.zoom === 123);
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			@Controller()
+			class FeatureController {
+				@Mount('/api')
+				api : ApiController
+			}
+
+			let counter = 0;
+			function counterMiddleware(req, res, next) {
+				++counter;
+				next();
+			}
+
+			@Controller()
+			class TestController {
+				@Get('') 
+				get() {
+					return { stuff: 123 };
+				}
+
+				@Mount('feature')
+				subcontroller : FeatureController;
+			}
+
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
+
+			await teststrap(FakeApp, async test => {
+				await test.get('/')
+					.expect(200);
+
+				await test.post('/feature/api/info')
+					.send({ zoom: 123 })
+					.expect(200, { ok: true });
+			}
+			);
+
+			expect(counter).to.equal(1);
+		});
+
 		it('should be able to inject RouteEvent instead of request/response', async () => {
 			interface MyRequestType {
 				zoom : number;
