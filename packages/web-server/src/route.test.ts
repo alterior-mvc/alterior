@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Patch, Delete, Options, RouteEvent } from './metadata';
+import { Controller, Get, Post, Put, Patch, Delete, Options, RouteEvent, Mount } from './metadata';
 import { suite } from 'razmin';
 import * as assert from 'assert';
 import * as bodyParser from 'body-parser';
@@ -419,6 +419,38 @@ suite(describe => {
 
 			await teststrap(FakeApp, async test =>
 				await test.post('/foo')
+					.send({ zoom: 123 })
+					.expect(200, { ok: true })
+			);
+		});
+
+		it('should follow parent controller\'s path prefix while dealing with mounted controllers', async () => {
+			interface MyRequestType {
+				zoom : number;
+			}
+			@Controller('/ghi')
+			class SubController {
+				@Post('/jkl', { middleware: [ bodyParser.json() ] })
+				getX(@Body() body : MyRequestType) { 
+					assert(body.zoom === 123);
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			@Controller('/abc')
+			class TestController {
+				@Get('wat')
+				wat() {}
+
+				@Mount('def')
+				subcontroller : SubController;
+			}
+
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
+
+			await teststrap(FakeApp, async test =>
+				await test.post('/abc/def/ghi/jkl')
 					.send({ zoom: 123 })
 					.expect(200, { ok: true })
 			);

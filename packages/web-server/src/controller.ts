@@ -83,7 +83,7 @@ export class ControllerInstance {
 		// Reflect upon our routes
 
 
-		let routeReflector = new RouteReflector(this.type, this.context.pathPrefix);
+		let routeReflector = new RouteReflector(this.type);
 		let routeDefinitions = routeReflector.routes;
 		let controllerMetadata = ControllerAnnotation.getForClass(this.type);
 		let controllerOptions = controllerMetadata ? controllerMetadata.options : {} || {};
@@ -110,9 +110,17 @@ export class ControllerInstance {
 			}
 
 			for (let controller of controllers) {
-				this.controllers.push(new ControllerInstance(this.server, controller, mountInjector, this.routeTable, {
-					pathPrefix: `${this.context.pathPrefix.replace(/\/+$/g, '')}/${mount.path.replace(/^\/+/g, '')}`
-				}));
+				let subPrefix = `${this.context.pathPrefix.replace(/\/+$/g, '')}/${(this._options.basePath || '').replace(/\/+$/g, '')}/${mount.path.replace(/^\/+/g, '')}`;
+				subPrefix = subPrefix.replace(/^\/+/, '/');
+				this.controllers.push(new ControllerInstance(
+					this.server, 
+					controller, 
+					mountInjector, 
+					this.routeTable, 
+					{
+						pathPrefix: subPrefix
+					}
+				));
 			}
 		}
 
@@ -135,7 +143,14 @@ export class ControllerInstance {
 	private _routes : RouteInstance[];
 
 	get pathPrefix() {
-		return this._options.basePath;
+		let basePath = (this._options.basePath || '').replace(/^\/|\/$/g, '');
+
+		if (this._context.pathPrefix) {
+			let pathPrefix = this._context.pathPrefix.replace(/^\/|\/$/g, '');
+			basePath = `/${pathPrefix}/${basePath}`.replace(/\/+^/g, '');
+		}
+		
+		return basePath.replace(/\/+$/g, '');
 	}
 	
 	get routes() {
