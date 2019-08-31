@@ -44,9 +44,7 @@ Make sure to enable `emitDecoratorMetadata` and `experimentalDecorators` in your
 
 ## Delegation via Mounting
 
-You can delegate parts of your web service to dedicated controllers by mounting them within your main service class. Doing so will 
-route specific URLs to specific controllers. Any controller can also `@Mount()`, providing an intuitive way to construct a 
-complete web service.
+You can delegate parts of your web service to dedicated controllers by mounting them within your main service class. Doing so will route specific URLs to specific controllers. Any controller can `@Mount()`, providing an intuitive way to construct a complete web service from a tree of controllers:
 
 ```typescript
 @WebService(...)
@@ -58,6 +56,38 @@ export class MyWebService implements OnInit {
     somePlugin : SomePluginController;
 }
 ```
+
+When you nest controllers using `@Mount()`, each subcontroller inherits the path prefix defined by all parents:
+
+```typescript
+
+@Controller('/f')
+class SubSubController {
+    @Get('/g')
+    get() {
+        return { message: 'you requested: GET /a/b/c/d/e/f/g' };
+    }
+}
+
+@Controller('/c')
+class SubController {
+    @Get('/d')
+    get() {
+        return { message: 'you requested: GET /a/b/c/d' };
+    }
+
+    @Mount('/e')
+    subsub : SubSubController;
+}
+
+@Controller('/a')
+class MainController {
+    @Mount('/b')
+    sub : SubController;
+}
+```
+
+Note: You do not always have to specify a path for `@Controller()`, `@Mount()` or `@Get()`, we have done so here for to keep the example clear. If you omit a path or set it to `''`, the element will not contribute any path segments to the final path registered for your routes.
 
 ## Mechanics 
 
@@ -305,9 +335,38 @@ export class Application {
 To add route-specific middleware:
 
 ```typescript
-    @Get('/foo', { middleware: [bodyParser.json()] })
-    public foo(req : express.Request, res : express.Response) {
-        // todo
+@Get('/foo', { middleware: [bodyParser.json()] })
+public foo(req : express.Request, res : express.Response) {
+    // todo
+}
+```
+
+Middleware is inherited from parent controllers when using `@Mount()`, 
+you can use this to avoid repeating yoruself when building more complex
+services:
+
+```typescript
+    @Controller()
+    class FeatureController {
+        @Get() 
+        get() {
+            // corsExampleMiddleware runs for this and all requests on this
+            // controller 
+
+            return {
+                service: 'feature'
+            }
+        }
+    }
+
+    @Controller('', { 
+        middleware: [ 
+            corsExampleMiddleware({ allowOrigin: '*' }) 
+        ]
+    })
+    class ApiController {
+        @Mount('/feature')
+        feature : FeatureController;
     }
 ```
 
