@@ -89,9 +89,9 @@ class MainController {
 
 Note: You do not always have to specify a path for `@Controller()`, `@Mount()` or `@Get()`, we have done so here for to keep the example clear. If you omit a path or set it to `''`, the element will not contribute any path segments to the final path registered for your routes.
 
-## Mechanics 
+## Mechanics of `@WebService`
 
-Mechanically, `@WebService()` declares the class as a module (`@Module()`), applies `@AppOptions()`, and registers itself as a controller class within that module. 
+`@WebService()` declares the class as a module (`@Module()`), applies `@AppOptions()`, and registers itself as a controller class within that module. 
 You can pass any of the options for `@Module()`, `@AppOptions()` as well as the options available for `WebServerModule.configure(...)`.
 
 The following definition is equivalent to using `@WebService(options?)`:
