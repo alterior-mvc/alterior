@@ -1,6 +1,7 @@
 import { Injector, ReflectiveInjector } from '@alterior/di';
-import { Annotation, AnnotationDecorator } from '@alterior/annotations';
+import { Annotation, AnnotationDecorator, MetadataName } from '@alterior/annotations';
 
+@MetadataName('@alterior/web-server:Middleware')
 export class MiddlewareAnnotation extends Annotation {}
 export const Middleware = MiddlewareAnnotation.decorator();
 
