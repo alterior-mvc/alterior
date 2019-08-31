@@ -277,8 +277,6 @@ export class RouteInstance {
 		// Load up the defined middleware for this route
 		let route = this.definition;
 		let middleware = [].concat(route.options.middleware || []);
-		if (this.parentMiddleware)
-			middleware = [].concat(this.parentMiddleware, middleware);
 
 		// Ensure indexes are valid.
 

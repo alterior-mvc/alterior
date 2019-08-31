@@ -497,6 +497,37 @@ suite(describe => {
 			expect(counter).to.equal(1);
 		});
 
+		it('all paths under a controller should execute middleware', async () => {
+			interface MyRequestType {
+				zoom : number;
+			}
+
+			let counter = 0;
+			function counterMiddleware(req, res, next) {
+				++counter;
+				next();
+			}
+
+			@Controller('/abc', { middleware: [counterMiddleware] })
+			class TestController {
+				@Get('wat')
+				wat() {
+					return { ok: true };
+				}
+			}
+
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
+
+			await teststrap(FakeApp, async test =>
+				await test.get('/abc/other')
+					.send({ zoom: 123 })
+					.expect(404)
+			);
+
+			expect(counter).to.equal(1);
+		});
+
 		it('mounted controllers should properly construct paths when some lead with slash', async () => {
 			interface MyRequestType {
 				zoom : number;

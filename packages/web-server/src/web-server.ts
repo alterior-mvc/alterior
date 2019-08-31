@@ -173,6 +173,9 @@ export class WebServer {
 	addRoute(method : string, path : string, handler : (event : RouteEvent) => void, middleware = []) {
 		// calls the express route method (get/put/post, etc)
 		// eg: express.get('/foo/bar', ...middleware, handler)
+		
+		//console.log(`ADDROUTE ${method} ${path}`);
+
 		this.expressApp[this.getExpressRegistrarName(method)](
 			path, 
 			...middleware, 

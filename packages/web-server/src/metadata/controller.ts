@@ -1,6 +1,9 @@
 import { Annotation, AnnotationDecorator, MetadataName } from "@alterior/annotations";
+import * as express from 'express';
 
 export let CONTROLLER_CLASSES = [];
+
+export type MiddlewareDefinition = express.RequestHandler | [ string, express.RequestHandler ];
 
 export interface ControllerOptions {
 	/**
@@ -16,7 +19,7 @@ export interface ControllerOptions {
 	/**
 	 * Middleware to be applied to all route methods for this controller.
 	 */
-	middleware? : Function[];
+	middleware? : MiddlewareDefinition[];
 }
 
 @MetadataName('@alterior/web-server:Controller')

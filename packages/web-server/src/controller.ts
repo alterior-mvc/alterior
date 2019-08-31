@@ -1,8 +1,9 @@
 import { WebServer } from "./web-server";
 import { Provider, ReflectiveInjector, Injector } from "@alterior/di";
 import { RouteInstance } from './route';
-import { ControllerAnnotation, ControllerOptions, MountOptions, RouteReflector } from "./metadata";
+import { ControllerAnnotation, ControllerOptions, MountOptions, RouteReflector, MiddlewareDefinition } from "./metadata";
 import * as express from 'express';
+import { prepareMiddleware } from "./middleware";
 
 export class ControllerRegistrar {
 	constructor(readonly server : WebServer) {
@@ -26,7 +27,6 @@ export class ControllerRegistrar {
 
 export interface ControllerContext {
 	pathPrefix? : string;
-	middleware? : Function[];
 
 	/* PRIVATE */
 
@@ -79,9 +79,7 @@ export class ControllerInstance {
 	}
 
 	get middleware() {
-		let middleware = [];
-		if (this.context.middleware)
-			middleware = middleware.concat(this.context.middleware);
+		let middleware : MiddlewareDefinition[] = [];
 		if (this.options.middleware)
 			middleware = middleware.concat(this.options.middleware);
 
@@ -149,8 +147,7 @@ export class ControllerInstance {
 					mountInjector, 
 					this.routeTable, 
 					{
-						pathPrefix: subPrefix,
-						middleware: this.middleware
+						pathPrefix: subPrefix
 					}
 				));
 			}
@@ -207,7 +204,35 @@ export class ControllerInstance {
 		return controllerGroup;
 	}
 
+	private prepareMiddleware() {
+		
+		// Load up the defined middleware for this route
+		let middleware = this.middleware;
+
+		// Ensure indexes are valid.
+
+		let invalidIndex = middleware.findIndex(x => !x);
+		if (invalidIndex >= 0)
+			throw new Error(`Controller '${this.type}' provided null middleware at position ${invalidIndex}`);
+
+		// Procure an injector which can handle injecting the middlewares' providers
+
+		let middlewareProviders : Provider[] = <any[]>middleware.filter(x => Reflect.getMetadata('alterior:middleware', x));
+
+		let childInjector = ReflectiveInjector.resolveAndCreate(middlewareProviders, this.injector);
+
+		// Prepare the middlewares (if they are DI middlewares, they get injected)
+
+		this.resolvedMiddleware = middleware.map(x => prepareMiddleware(childInjector, x));
+	}
+
+	resolvedMiddleware : express.RequestHandler[];
+
 	mount(app : express.Application) {
+		this.prepareMiddleware();
+		for (let middleware of this.resolvedMiddleware)
+			app.use(this.pathPrefix, middleware);
+		
 		this.routes.forEach(r => r.mount(this.pathPrefix));
 		this.controllers.forEach(c => c.mount(app));
 	}
