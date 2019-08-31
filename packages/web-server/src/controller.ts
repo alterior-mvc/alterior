@@ -26,6 +26,7 @@ export class ControllerRegistrar {
 
 export interface ControllerContext {
 	pathPrefix? : string;
+	middleware? : Function[];
 
 	/* PRIVATE */
 
@@ -77,6 +78,16 @@ export class ControllerInstance {
 		return this._context;
 	}
 
+	get middleware() {
+		let middleware = [];
+		if (this.context.middleware)
+			middleware = middleware.concat(this.context.middleware);
+		if (this.options.middleware)
+			middleware = middleware.concat(this.options.middleware);
+
+		return middleware;
+	}
+
 	private prepare() {
 		this._instance = this.injector.get(this.type);
 
@@ -118,7 +129,8 @@ export class ControllerInstance {
 					mountInjector, 
 					this.routeTable, 
 					{
-						pathPrefix: subPrefix
+						pathPrefix: subPrefix,
+						middleware: this.middleware
 					}
 				));
 			}
@@ -131,7 +143,7 @@ export class ControllerInstance {
 				this.server, 
 				this.instance,
 				this.injector, 
-				this.options.middleware || [], 
+				this.middleware, 
 				this.group, 
 				this.type, 
 				this.routeTable,
