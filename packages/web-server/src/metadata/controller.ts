@@ -3,7 +3,7 @@ import * as express from 'express';
 
 export let CONTROLLER_CLASSES = [];
 
-export type MiddlewareDefinition = express.RequestHandler | [ string, express.RequestHandler ];
+export type MiddlewareDefinition = Function | express.RequestHandler | [ string, express.RequestHandler ];
 
 export interface ControllerOptions {
 	/**
