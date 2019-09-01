@@ -528,6 +528,52 @@ suite(describe => {
 			expect(counter).to.equal(1);
 		});
 
+		it('paths outside of a controller should not execute middleware from that controller', async () => {
+			interface MyRequestType {
+				zoom : number;
+			}
+
+			let counter = 0;
+			function counterMiddleware(req, res, next) {
+				++counter;
+				next();
+			}
+			@Controller('', { middleware: [counterMiddleware] })
+			class FeatureController {
+				@Get('wat')
+				get() {
+					return { ok: '123' }
+				}
+			}
+
+			@Controller('/abc')
+			class TestController {
+				@Get('wat')
+				wat() {
+					return { ok: '321' };
+				}
+
+				@Mount('/feature')
+				feature : FeatureController;
+			}
+
+			@Module({ controllers: [TestController] })
+			class FakeApp { }
+
+			await teststrap(FakeApp, async test => {
+				await test.get('/abc/feature/wat')
+					.expect(200, { ok: '123' });
+
+				await test.get('/abc/wat')
+					.expect(200, { ok: '321' });
+					
+				await test.get('/abc/feature/wat')
+					.expect(200, { ok: '123' });
+			});
+
+			expect(counter).to.equal(2);
+		});
+
 		it('mounted controllers should properly construct paths when some lead with slash', async () => {
 			interface MyRequestType {
 				zoom : number;
