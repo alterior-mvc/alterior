@@ -31,7 +31,9 @@ export class RouteReflector {
 
 		this.mounts = (type.prototype['alterior:mounts'] || []).map(x => shallowClone(x));
 		this.mounts.forEach(mount => {
-			mount.path = `${basePath}/${mount.path.replace(/^\/*/, '')}`
+			let definedMountPath = mount.path || '';
+			mount.path = `${basePath}/${definedMountPath.replace(/^\/*/, '')}`
+			
 			if (!mount.controllers)
 				mount.controllers = [];
 
