@@ -459,3 +459,18 @@ export class FooController {
     private expressApp : express.Application;
 }
 ```
+
+## Deploying to a Cloud Function
+
+You can deploy an Alterior web service as a Cloud Function (Google Cloud Functions, AWS Lambda, or other Function-as-a-Service (FaaS) providers) using `WebServer.bootstrapCloudFunction()`:
+
+```typescript
+// main.ts
+
+import { MyWebService } from './my-web-service';
+import { WebServer } from '@alterior/web-server';
+
+export const cloudFunction = WebServer.bootstrapCloudFunction(MyWebService);
+```
+
+`bootstrapCloudFunction()` will handle constructing a function which takes an Express `request` and `response` and routes the given `request` through the given Alterior web service module and populating data into `response`. This is suitable for exporting into a general cloud function environment like GCF or Lambda.
