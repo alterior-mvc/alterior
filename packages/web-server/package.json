@@ -1,6 +1,6 @@
 {
   "name": "@alterior/web-server",
-  "version": "3.0.0-beta.46",
+  "version": "3.0.0-beta.47",
   "access": "public",
   "publishConfig": {
     "access": "public"
@@ -29,7 +29,7 @@
     "@alterior/annotations": "^3.0.0-beta.40",
     "@alterior/common": "^3.0.0-beta.40",
     "@alterior/di": "^3.0.0-beta.40",
-    "@alterior/logging": "^3.0.0-beta.40",
+    "@alterior/logging": "^3.0.0-beta.47",
     "@alterior/runtime": "^3.0.0-beta.40",
     "@avejidah/get-parameter-names": "^0.3.2",
     "ejs": "^2.6.1",
