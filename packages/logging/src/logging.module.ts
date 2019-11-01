@@ -7,7 +7,7 @@ import { Logger, LoggingOptions, LoggingOptionsRef } from "./logger";
     ]
 })
 export class LoggingModule {
-    configure(options : LoggingOptions) {
+    static configure(options : LoggingOptions) {
         return { 
             $module: LoggingModule, 
             providers: [
