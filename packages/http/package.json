@@ -1,6 +1,6 @@
 {
   "name": "@alterior/http",
-  "version": "3.0.0-beta.40",
+  "version": "3.0.0-beta.48",
   "access": "public",
   "publishConfig": {
     "access": "public"
@@ -25,8 +25,8 @@
   "homepage": "https://github.com/alterior-mvc/alterior#readme",
   "dependencies": {
     "@alterior/common": "^3.0.0-beta.40",
-    "@alterior/di": "^3.0.0-beta.40",
-    "@alterior/runtime": "^3.0.0-beta.40",
+    "@alterior/di": "^3.0.0-beta.48",
+    "@alterior/runtime": "^3.0.0-beta.48",
     "rxjs": "^6.3.2",
     "xhr2": "^0.1.4"
   },
