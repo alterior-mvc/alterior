@@ -601,7 +601,7 @@ export class Annotations {
         list.push(clone);
         
         if (Reflect.getOwnMetadata) {
-            let reflectedAnnotations = Reflect.getOwnMetadata('propMetadata', target, name);
+            let reflectedAnnotations = Reflect.getOwnMetadata('propMetadata', target, name) || [];
             reflectedAnnotations.push({ toString() { return `${clone.$metadataName}`; }, annotation: clone });
             Reflect.defineMetadata('propMetadata', reflectedAnnotations, target, name);
         }
