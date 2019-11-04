@@ -63,6 +63,11 @@ export class Presentation<T> {
             prototype = Object.getPrototypeOf(prototype);
         }
 
+        // Reverse the order so that the super-most properties appear first,
+        // followed by the subproperties.
+        
+        exposureSets = exposureSets.reverse();
+
         let exposures : PresentedProperty[] = exposureSets.reduce((pv, cv) => (pv.push(...cv), pv), []);
 
         type.prototype[EXPOSE_PROTOTYPE_STORAGE_KEY] || []
