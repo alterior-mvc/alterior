@@ -272,3 +272,113 @@ zone.onStable.subscribe(() => console.log('Code has finished executing!'))
 zone.onError.subscribe(err => console.log(`Error thrown while executing code: ${err}`));
 zone.invoke(() => myCode());
 ```
+
+## `class Presentation<T>`
+
+Allows for transforming data from one form to another using declarative rules.
+To use, you must declare a subclass which has one or more properties annotated
+with the `@Expose()` decorator. When the presentation is converted to JSON,
+the property values from the `instance` given during instantiation will be used
+within the JSON. If any property declaration within the `Presentation<T>` subclass
+has a property type annotation for a type that extends `Presentation<T>`, a 
+new instance of that type will be constructed and passed the property value from
+the given `instance`. This allows you to control the presentation of subobjects.
+
+For example:
+
+```typescript
+export class ApiUser extends Presentation<User> {
+     @Expose() username : string;
+     @Expose() profile : ApiProfile;
+     // other properties of `User`, such as `hashedPassword`, will be
+     // omitted in the final JSON.
+}
+
+export class ApiProfile extends Presentation<Profile> {
+     @Expose() displayName : string;
+     @Expose() firstName : string;
+     // ...
+}
+```
+
+To define a "virtual" value or override the value of the underlying `instance`,
+use a standard getter (`get()`):
+
+```typescript
+export class ExampleOfVirtualProperties extends Presentation<Profile> {
+     @Expose() get myProperty() {
+         return 'look ma, virtual!'
+     }
+}
+```
+
+You can "augment" a value as well by accessing the underlying property with
+`this.instance`:
+
+```typescript
+export class ExampleOfTransformedProperties extends Presentation<Profile> {
+     @Expose() get myProperty() {
+         return `The underlying value was: ${this.instance.myProperty}`;
+     }
+}
+```
+
+You may wish to pass additional objects into the presentation so they
+can be used to compose the result. Simply override the base constructor 
+to do so:
+
+```typescript
+export class ApiMedia extends Presentation<MediaSnippet> {
+     constructor(
+         instance : MediaSnippet, 
+         readonly details : MediaDetails
+     ) {
+         super(instance)
+     }
+
+     @Expose() get assetUrl() {
+         return this.details.assetUrl;
+     }
+}
+```
+
+If you need to use such a presentation within another presentation, you would
+need to specify the value to use. A simple example might look like:
+
+```typescript
+export class ApiArtist extends Presentation<Artist> {
+     constructor(
+         instance : Artist, 
+         readonly featuredMediaSnippet : MediaSnippet,
+         readonly featuredMediaDetails : MediaDetails
+     ) {
+     }
+
+     @Expose() get featuredMedia() : ApiMedia {
+         return new ApiMedia(this.featuredMediaSnippet, this.featuredMediaDetails);
+     }
+}
+```
+
+You can also expose a property using the value of a different property on the 
+underlying `instance`:
+
+```typescript
+export interface Movie {
+     theTitle : string;
+     // ...
+}
+
+export class ApiMovie extends Presentation<Movie> {
+     @Expose({ useProperty: 'theTitle' }) title : string;
+}
+```
+
+You can also specify a default value. It will be used when the 
+value provided by the `instance` is `null` or `undefined`. 
+
+```typescript
+export class ApiMovie extends Presentation<Movie> {
+     @Expose({ defaultValue: '(Not available)' }) audienceRating : string;
+}
+```

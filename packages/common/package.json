@@ -28,8 +28,12 @@
     "rxjs": "^6.3.1",
     "zones": "0.0.1"
   },
+  "peerDependencies": {
+    "reflect-metadata": "^0.1.13"
+  },
   "devDependencies": {
     "@types/node": "^10.9.4",
+    "@types/reflect-metadata": "^0.1.0",
     "razmin": "^0.5.5",
     "typescript": "^3.0.3"
   },
