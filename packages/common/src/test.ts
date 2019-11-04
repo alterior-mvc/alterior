@@ -1,4 +1,4 @@
-
+import "reflect-metadata";
 import { suite } from 'razmin';
 
 suite()

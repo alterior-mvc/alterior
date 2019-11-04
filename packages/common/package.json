@@ -32,6 +32,7 @@
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
+    "reflect-metadata": "^0.1.13",
     "@types/node": "^10.9.4",
     "@types/reflect-metadata": "^0.1.0",
     "razmin": "^0.5.5",

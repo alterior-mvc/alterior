@@ -53,8 +53,19 @@ export class Presentation<T> {
         let properties = {};
 
         let type = this.constructor;
-        let exposures : PresentedProperty[] = type.prototype[EXPOSE_PROTOTYPE_STORAGE_KEY] || [];
+        let exposureSets : PresentedProperty[][] = [];
 
+        let prototype = type.prototype;
+        while (prototype) {
+            let value = prototype[EXPOSE_PROTOTYPE_STORAGE_KEY];
+            if (value)
+                exposureSets.push(value);
+            prototype = Object.getPrototypeOf(prototype);
+        }
+
+        let exposures : PresentedProperty[] = exposureSets.reduce((pv, cv) => (pv.push(...cv), pv), []);
+
+        type.prototype[EXPOSE_PROTOTYPE_STORAGE_KEY] || []
         for (let exposure of exposures) {
             let key = exposure.propertyKey;
             let options = exposure.options;
@@ -101,14 +112,20 @@ export class Presentation<T> {
  * @see Presentation<T>
  */
 export function Expose(options : PresentedPropertyOptions = {}) {
-    return function (target: any, propertyKey: string, descriptor?: PropertyDescriptor) {
-		let exposures = target[EXPOSE_PROTOTYPE_STORAGE_KEY] || [];
+    return function (target: Object, propertyKey: string, descriptor?: PropertyDescriptor) {
+
+        if (!target.hasOwnProperty(EXPOSE_PROTOTYPE_STORAGE_KEY)) {
+            Object.defineProperty(target, EXPOSE_PROTOTYPE_STORAGE_KEY, {
+                enumerable: false,
+                value: []
+            });
+        }
+
+        let exposures : PresentedProperty[] = target[EXPOSE_PROTOTYPE_STORAGE_KEY];
 
 		exposures.push(<PresentedProperty>{
 			propertyKey: propertyKey,
 			options
-		});
-
-		target[EXPOSE_PROTOTYPE_STORAGE_KEY] = exposures;
+        });
 	};
 }
