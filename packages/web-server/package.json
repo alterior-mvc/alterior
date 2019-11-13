@@ -38,6 +38,9 @@
     "reflect-metadata": "^0.1.12",
     "uuid": "^3.3.2"
   },
+  "peerDependencies": {
+    "zone.js": "^0.10.2"
+  },
   "devDependencies": {
     "@types/chai": "^4.1.4",
     "@types/ejs": "^2.6.0",
@@ -45,6 +48,7 @@
     "@types/node": "^10.9.4",
     "@types/supertest": "^2.0.5",
     "@types/uuid": "^3.4.4",
+    "@types/zone.js": "^0.5.12",
     "chai": "^3.5.0",
     "lerna": "^3.2.1",
     "nodemon": "^1.17.4",
