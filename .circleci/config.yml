@@ -22,6 +22,13 @@ commands:
           key: v1-dependencies-<< parameters.version >>-{{ checksum "package.json" }}
       - run: npm test
 jobs:
+  node-12:
+    docker:
+      - image: circleci/node:12
+    working_directory: ~/repo
+    steps:
+      - run_tests:
+          version: "12"
   node-11:
     docker:
       - image: circleci/node:11
@@ -43,13 +50,6 @@ jobs:
     steps:
       - run_tests:
           version: "8"
-  node-7:
-    docker:
-      - image: circleci/node:7
-    working_directory: ~/repo
-    steps:
-      - run_tests:
-          version: "7.10"
 
 workflows:
   version: 2
