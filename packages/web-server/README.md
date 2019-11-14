@@ -439,6 +439,13 @@ or you can use any Express/Connect middleware that provides `request.session`.
 
 To declare a service, simply mark it with `@Injectable()` from `@alterior/di` and then include it in the `providers` list of one of the Alterior module definitions within your application. The service will be made available across your whole application.
 
+## Testing
+
+Use `teststrap()` to test your web service. 
+
+
+
+
 ## Accessing the Express instance
 
 Perhaps you need access to the Express application object to do something Alterior doesn't support:
