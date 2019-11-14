@@ -21,11 +21,13 @@ suite(describe => {
             let appOptionsAnnotation = AppOptionsAnnotation.getForClass(TestApp);
             expect(appOptionsAnnotation.options.version).to.eq('1.2.3');
 
-            await teststrap(TestApp, async test => {
-                let response = await test.get('/openapi').expect(200);
-                expect(response.body.openapi).to.eq('3.0.0');
-                expect(response.body.info.version).to.eq('1.2.3');
-            });
+            let response = await teststrap(TestApp)
+                .get('/openapi')
+                .expect(200);
+
+            expect(response.body).to.contain({ openapi: '3.0.0' });
+            expect(response.body.info).to.contain({ version: '1.2.3' });
+            
         });
     });
 });

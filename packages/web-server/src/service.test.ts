@@ -16,11 +16,12 @@ describe("WebServiceDecorator", () => {
 			getX() {
 				return Promise.resolve({ok: true});
 			}
-		}
-
-		await teststrap(TestService, async test =>
-			await test.get('/foo').expect(200, {ok: true})
-		);
+        }
+        
+        await teststrap(TestService)
+            .get('/foo')
+            .expect(200, {ok: true});
+            
 	});
 
     it('should attach the correct metadata', async () => {

@@ -218,7 +218,7 @@ export class WebServer {
 
 		event.response
 			.status(500)
-			.send(JSON.stringify(response))
+			.send(response)
 		;
 	}
 }

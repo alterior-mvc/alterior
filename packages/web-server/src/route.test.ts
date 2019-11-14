@@ -71,62 +71,53 @@ function fakeAppVarietyOfMethods() {
 suite(describe => {
 	describe("RouteDecorator", it => {
 		it('should register routes defined on controllers and respond to them', async () => {
-			@Controller()
-			class TestController {
+			@WebService()
+			class TestModule {
 				@Get('/foo')
 				foo(ev : RouteEvent) {
-					ev.response.status(200).send(JSON.stringify({foo:123}));
+					ev.response.status(200).send({foo:123});
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class TestModule {}
-
-			await teststrap(
-				TestModule, 
-				async test => test.get('/foo').expect(200, <any>{ foo: 123 })
-			);
+			await teststrap(TestModule)
+				.get('/foo')
+				.expect(200, { foo: 123 })
+			;
 		});
 
 		it('should allow a method to return a promise', async () => {
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp {
 				@Get('/foo')
 				getX() {
 					return Promise.resolve({foo:"we promised"});
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class FakeApp {}
-
-			await teststrap(FakeApp, async test => 
-				await test.get('/foo')
-					.expect(200, { foo: 'we promised' })
-			);
+			await teststrap(FakeApp)
+				.get('/foo')
+				.expect(200, { foo: 'we promised' })
+			;
 		});
 	
 		it('should allow a method to return null as a JSON value', async () => {
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp {
 				@Get('/foo')
 				getX() {
 					return null;
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class FakeApp { }
-
-			await teststrap(FakeApp, async test => 
-				await test.get('/foo')
-					.expect(200, <any>null)
-			);
+			await teststrap(FakeApp)
+				.get('/foo')
+				.expect(200, null)
+			;
 		});
 
 		it('should bind @Session() parameter to `request.session`', async () => {
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp {
 				@Get('/foo', { 
 					middleware: [ 
 						(req, res, next) => 
@@ -138,18 +129,15 @@ suite(describe => {
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class FakeApp { }
-
-			let app = await teststrap(FakeApp, async test => 
-				await test.get('/foo')
-					.expect(200, { foo: 123 })
-			);
+			let app = await teststrap(FakeApp)
+				.get('/foo')
+				.expect(200, { foo: 123 })
+			;
 		});
 		
 		it('should bind @Session(\'name\') property to `request.session[\'name\']`', async () => {
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp {
 				@Get('/foo', { 
 					middleware: [ 
 						(req, res, next) => 
@@ -161,72 +149,60 @@ suite(describe => {
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class FakeApp { }
-
-			let app = await teststrap(FakeApp, async test => 
-				await test.get('/foo')
-					.expect(200, { foo: 123 })
-			);
+			await teststrap(FakeApp)
+				.get('/foo')
+				.expect(200, { foo: 123 })
+			;
 		});
 
 		it('should allow a method to return an explicit body value', async () => {
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp {
 				@Get('/foo')
 				getX(ev : RouteEvent) {
 					return {foo:"we promised"};
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class FakeApp { }
-
-			let app = await teststrap(FakeApp, async test => 
-				await test.get('/foo')
-					.expect(200, <any>{ foo: "we promised" })
-			);
+			await teststrap(FakeApp)
+				.get('/foo')
+				.expect(200, <any>{ foo: "we promised" })
+			;
 		});
 
 		it('should re-encode a string return value as JSON', async () => {
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp {
 				@Get('/foo')
 				getX() {
 					return "token value";
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class FakeApp { }
-
-			let app = await teststrap(FakeApp, async test => 
-				await test.get('/foo')
-					.expect(200, <any>'"token value"')
-			);
+			await teststrap(FakeApp)
+				.get('/foo')
+				.expect(200, <any>'"token value"')
+			;
 		});
 
 		it('should 500 when a method returns a promise that rejects', async () => {
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp {
 				@Get('/foo')
 				getX() {
 					return Promise.reject(new Error("All the things went wrong"));
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class FakeApp { }
-
-			await teststrap(FakeApp, async test =>
-				await test.get('/foo')
-					.expect(500)
-			);
+			await teststrap(FakeApp)
+				.get('/foo')
+				.expect(500)
+			;
 		});
 
 		it('should act accordingly when a method returns a promise that rejects with an HttpError', async () => {
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp {
 				@Get('/foo')
 				getX() {
 					return Promise.reject(
@@ -235,88 +211,76 @@ suite(describe => {
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class FakeApp { }
-
-			let app = await teststrap(FakeApp, async test =>
-				await test.get('/foo')
-					.expect(300, <any>{
-						bar: 777
-					})
-					.expect('X-Test', 'pass')
-			);
+			await teststrap(FakeApp)
+				.get('/foo')
+				.expect(300, { bar: 777 })
+				.expect('X-Test', 'pass')
+			;
 		});
 
 		it('should include the stack trace of a caught Error in a 500 response', async () => {
 			let error = new Error('testytest');
 			let stackText = error.stack;
 
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp {
 				@Get('/foo')
 				getX() {
 					throw error;
 				}
 			}
 
-			@Module({
-				controllers: [TestController]
-			})
-			class FakeApp { }
-
-			await teststrap(FakeApp, async test =>
-				await test.get('/foo')
-					.expect(500, {
-						message: 'An exception occurred while handling this request.',
-						error: stackText
-					})
-			);
+			await teststrap(FakeApp)
+				.get('/foo')
+				.expect(500, {
+					message: 'An exception occurred while handling this request.',
+					error: stackText
+				})
+			;
 		});
 
 		it('should include a caught throwable in a 500 response', async () => {
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp {
 				@Get('/foo')
 				getX() {
 					throw { foo: "bar" }
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class FakeApp { }
-
-			let app = await teststrap(FakeApp, async test => 
-				await test.get('/foo')
-					.expect(500, {
-						message: 'An exception occurred while handling this request.',
-						error: { foo: "bar" }
-					})
-			);
+			await teststrap(FakeApp)
+				.get('/foo')
+				.expect(500, {
+					message: 'An exception occurred while handling this request.',
+					error: { foo: "bar" }
+				})
+			;
 		});
 
 		it('should exclude exception information when `hideExceptions` is true', async () => {
-			@Controller()
-			class TestController {
+			@WebService({
+				server: {
+					hideExceptions: true
+				}
+			})
+			class FakeApp {
 				@Get('/foo')
 				getX() {
 					throw { toString: () => "testytest" }
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class FakeApp { }
-
-			await teststrap(FakeApp, async test => {
-				await test.get('/foo')
-					.expect(500, { 
-						message: 'An exception occurred while handling this request.' 
-					})
-			}, { hideExceptions: true });
+			await teststrap(FakeApp)
+				.get('/foo')
+				.expect(500, { 
+					message: 'An exception occurred while handling this request.' 
+				})
+			;
 		});
 
 		it('should apply route-specific middleware', async () => {
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp {
 				@Get('/foo', {
 					middleware: [
 						(req, res, next) => {
@@ -330,18 +294,15 @@ suite(describe => {
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class FakeApp { }
-
-			await teststrap(FakeApp, async test =>
-				await test.get('/foo')
-					.expect(200, '"funfun"')
-			);
+			await teststrap(FakeApp)
+				.get('/foo')
+				.expect(200, '"funfun"')
+			;
 		});
 
 		it('should be injecting express URL parameters when appropriate', async () => {
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp {
 				@Get('/foo/:bar/:baz')
 				getX(bar : string, baz : string) {
 					assert(bar == '123');
@@ -350,18 +311,15 @@ suite(describe => {
 				}
 			}
 
-			@Module({ controllers: [TestController] }) 
-			class FakeApp { }
-
-			await teststrap(FakeApp, async test =>
-				await test.get('/foo/123/321')
-					.expect(200, { ok: true })
-			);
+			await teststrap(FakeApp)
+				.get('/foo/123/321')
+				.expect(200, { ok: true })
+			;
 		});
 
 		it('should be reading parameter type metadata to discover how to provide parameters', async () => {
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp {
 				@Get('/foo')
 				getX(@QueryParam('q') q : string, ev : RouteEvent) { // note they are swapped
 					assert(ev.response);
@@ -372,18 +330,15 @@ suite(describe => {
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class FakeApp { }
-
-			await teststrap(FakeApp, async test =>
-				await test.get('/foo?q=baz')
-					.expect(200, { ok: true })
-			);
+			await teststrap(FakeApp)
+				.get('/foo?q=baz')
+				.expect(200, { ok: true })
+			;
 		});
 
 		it('should support binding query parameters', async () => {
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp {
 				@Get('/foo')
 				getX(@QueryParam('q') q : string) {
 					assert.equal(q, 'baz');
@@ -392,13 +347,10 @@ suite(describe => {
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class FakeApp { }
-
-			await teststrap(FakeApp, async test =>
-				await test.get('/foo?q=baz')
-					.expect(200, { ok: true })
-			);
+			await teststrap(FakeApp)
+				.get('/foo?q=baz')
+				.expect(200, { ok: true })
+			;
 		});
 
 		it('should be able to inject body when the body parsing middleware is used', async () => {
@@ -406,8 +358,8 @@ suite(describe => {
 				zoom : number;
 			}
 
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp {
 				@Post('/foo', { middleware: [ bodyParser.json() ] })
 				getX(@Body() body : MyRequestType) { 
 					assert(body.zoom === 123);
@@ -415,14 +367,11 @@ suite(describe => {
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class FakeApp { }
-
-			await teststrap(FakeApp, async test =>
-				await test.post('/foo')
-					.send({ zoom: 123 })
-					.expect(200, { ok: true })
-			);
+			await teststrap(FakeApp)
+				.post('/foo')
+				.send({ zoom: 123 })
+				.expect(200, { ok: true })
+			;
 		});
 
 		it('should follow parent controller\'s path prefix while dealing with mounted controllers', async () => {
@@ -447,14 +396,14 @@ suite(describe => {
 				subcontroller : SubController;
 			}
 
-			@Module({ controllers: [TestController] })
+			@WebService({ controllers: [TestController] })
 			class FakeApp { }
 
-			await teststrap(FakeApp, async test =>
-				await test.post('/abc/def/ghi/jkl')
-					.send({ zoom: 123 })
-					.expect(200, { ok: true })
-			);
+			await teststrap(FakeApp)
+				.post('/abc/def/ghi/jkl')
+				.send({ zoom: 123 })
+				.expect(200, { ok: true })
+			;
 		});
 
 		it('mounted controllers should inherit middleware from parent controller', async () => {
@@ -485,14 +434,14 @@ suite(describe => {
 				subcontroller : SubController;
 			}
 
-			@Module({ controllers: [TestController] })
+			@WebService({ controllers: [TestController] })
 			class FakeApp { }
 
-			await teststrap(FakeApp, async test =>
-				await test.post('/abc/def/ghi/jkl')
-					.send({ zoom: 123 })
-					.expect(200, { ok: true })
-			);
+			await teststrap(FakeApp)
+				.post('/abc/def/ghi/jkl')
+				.send({ zoom: 123 })
+				.expect(200, { ok: true })
+			;
 
 			expect(counter).to.equal(1);
 		});
@@ -516,14 +465,14 @@ suite(describe => {
 				}
 			}
 
-			@Module({ controllers: [TestController] })
+			@WebService({ controllers: [TestController] })
 			class FakeApp { }
 
-			await teststrap(FakeApp, async test =>
-				await test.get('/abc/other')
-					.send({ zoom: 123 })
-					.expect(404)
-			);
+			await teststrap(FakeApp)
+				.get('/abc/other')
+				.send({ zoom: 123 })
+				.expect(404)
+			;
 
 			expect(counter).to.equal(1);
 		});
@@ -557,19 +506,25 @@ suite(describe => {
 				feature : FeatureController;
 			}
 
-			@Module({ controllers: [TestController] })
+			@WebService({ controllers: [TestController] })
 			class FakeApp { }
 
-			await teststrap(FakeApp, async test => {
-				await test.get('/abc/feature/wat')
-					.expect(200, { ok: '123' });
+			let test = teststrap(FakeApp)
+			
+			await test
+				.get('/abc/feature/wat')
+				.expect(200, { ok: '123' })
+			;
 
-				await test.get('/abc/wat')
-					.expect(200, { ok: '321' });
+			await test
+				.get('/abc/wat')
+				.expect(200, { ok: '321' })
+			;
 					
-				await test.get('/abc/feature/wat')
-					.expect(200, { ok: '123' });
-			});
+			await test
+				.get('/abc/feature/wat')
+				.expect(200, { ok: '123' })
+			;
 
 			expect(counter).to.equal(2);
 		});
@@ -602,14 +557,14 @@ suite(describe => {
 				subcontroller : SubController;
 			}
 
-			@Module({ controllers: [TestController] })
+			@WebService({ controllers: [TestController] })
 			class FakeApp { }
 
-			await teststrap(FakeApp, async test =>
-				await test.post('/abc/def/ghi')
-					.send({ zoom: 123 })
-					.expect(200, { ok: true })
-			);
+			await teststrap(FakeApp)
+				.post('/abc/def/ghi')
+				.send({ zoom: 123 })
+				.expect(200, { ok: true })
+			;
 
 			expect(counter).to.equal(1);
 		});
@@ -651,29 +606,28 @@ suite(describe => {
 				subcontroller : FeatureController;
 			}
 
-			@Module({ controllers: [TestController] })
+			@WebService({ controllers: [TestController] })
 			class FakeApp { }
 
-			await teststrap(FakeApp, async test => {
-				await test.get('/')
-					.expect(200);
+			let test = teststrap(FakeApp);
 
-				await test.post('/feature/api/info')
-					.send({ zoom: 123 })
-					.expect(200, { ok: true });
-			}
-			);
+			await test
+				.get('/')
+				.expect(200)
+			;
+
+			await test
+				.post('/feature/api/info')
+				.send({ zoom: 123 })
+				.expect(200, { ok: true })
+			;
 
 			expect(counter).to.equal(1);
 		});
 
 		it('should be able to inject RouteEvent instead of request/response', async () => {
-			interface MyRequestType {
-				zoom : number;
-			}
-
-			@Controller()
-			class TestController {
+			@WebService()
+			class FakeApp { 
 				@Post('/foo')
 				getX(ev : RouteEvent) { 
 					assert(ev.request.path);
@@ -682,49 +636,46 @@ suite(describe => {
 				}
 			}
 
-			@Module({ controllers: [TestController] })
-			class FakeApp { } 
-
-			await teststrap(FakeApp, async test =>
-				await test.post('/foo')
-					.send({ zoom: 123 })
-					.expect(200, { ok: true })
-			);
+			await teststrap(FakeApp)
+				.post('/foo')
+				.send({ zoom: 123 })
+				.expect(200, { ok: true })
+			;
 		});
 
 		it('should support POST', async () => {
-			await teststrap(fakeAppVarietyOfMethods(), async test =>
-				await test.post('/foo')
-					.expect(200, { foo: "post" })
-			);
+			await teststrap(fakeAppVarietyOfMethods())
+				.post('/foo')
+				.expect(200, { foo: "post" })
+			;
 		});
 
 		it('should support PUT', async () => {
-			await teststrap(fakeAppVarietyOfMethods(), async test =>
-				await test.put('/foo')
-					.expect(200, { foo: "put" })
-			);
+			await teststrap(fakeAppVarietyOfMethods())
+				.put('/foo')
+				.expect(200, { foo: "put" })
+			;
 		});
 
 		it('should support PATCH', async () => {
-			await teststrap(fakeAppVarietyOfMethods(), async test => 
-				await test.patch('/foo')
-					.expect(200, <any>{ foo: "patch" })
-			);
+			await teststrap(fakeAppVarietyOfMethods())
+				.patch('/foo')
+				.expect(200, <any>{ foo: "patch" })
+			;
 		});
 
 		it('should support DELETE', async () => {
-			await teststrap(fakeAppVarietyOfMethods(), async test => 
-				await test.delete('/foo')
-					.expect(200, { foo: "delete" })
-			);
+			await teststrap(fakeAppVarietyOfMethods())
+				.delete('/foo')
+				.expect(200, { foo: "delete" })
+			;
 		});
 
 		it('should support OPTIONS', async () => {
-			await teststrap(fakeAppVarietyOfMethods(), async test => 
-				await test.options('/foo')
-					.expect(200, { foo: "options" })
-			);
+			await teststrap(fakeAppVarietyOfMethods())
+				.options('/foo')
+				.expect(200, { foo: "options" })
+			;
 		});
 	});
 })

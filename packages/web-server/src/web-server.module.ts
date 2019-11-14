@@ -4,6 +4,7 @@ import { ExpressRef } from "./express-ref";
 import { WebServer, WebServerOptions } from "./web-server";
 import { ControllerRegistrar } from "./controller";
 import { LoggingModule, Logger } from "@alterior/logging";
+import { WebServerRef } from "./web-server-ref";
 
 @Injectable()
 export class WebServerOptionsRef {
@@ -24,7 +25,7 @@ export class WebServerOptionsRef {
         LoggingModule
     ],
     providers: [
-        ExpressRef
+        ExpressRef, WebServerRef
     ]
 })
 export class WebServerModule implements OnInit {
@@ -34,7 +35,8 @@ export class WebServerModule implements OnInit {
         private logger : Logger,
 
         @Optional() private _options : WebServerOptionsRef,
-        private expressRef : ExpressRef
+        private expressRef : ExpressRef,
+        private webServerRef : WebServerRef
     ) {
     }
 
@@ -75,6 +77,8 @@ export class WebServerModule implements OnInit {
 
     altOnInit() {
         this.webserver = new WebServer(this.app.runtime.injector, this.options, this.logger, this.app.options);
+        this.webServerRef.server = this.webserver;
+
         new ControllerRegistrar(this.webserver).register(this.controllers);
 
         this.expressRef.application = this.webserver.express;

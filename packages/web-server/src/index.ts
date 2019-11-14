@@ -4,6 +4,7 @@ export * from './route';
 export * from './controller';
 export * from './upload';
 export * from './express-ref';
+export * from './web-server-ref';
 export * from './middleware';
 export * from './metadata';
 export * from './response';
