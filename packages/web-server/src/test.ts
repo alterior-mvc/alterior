@@ -1,3 +1,5 @@
+//require('wtfnode').init();
+
 import "reflect-metadata";
 import { suite } from 'razmin';
 
