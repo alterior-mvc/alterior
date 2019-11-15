@@ -1,6 +1,6 @@
 {
   "name": "@alterior/web-server",
-  "version": "3.0.0-beta.55",
+  "version": "3.0.0-beta.56",
   "access": "public",
   "publishConfig": {
     "access": "public"
@@ -32,11 +32,11 @@
     "@alterior/logging": "^3.0.0-beta.55",
     "@alterior/runtime": "^3.0.0-beta.55",
     "@avejidah/get-parameter-names": "^0.3.2",
+    "@types/supertest": "^2.0.8",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
     "injection-js": "^2.2.1",
     "reflect-metadata": "^0.1.12",
-    "@types/supertest": "^2.0.8",
     "supertest": "^4.0.2",
     "uuid": "^3.3.2"
   },
