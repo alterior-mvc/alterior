@@ -441,11 +441,62 @@ To declare a service, simply mark it with `@Injectable()` from `@alterior/di` an
 
 ## Testing
 
-Use `teststrap()` to test your web service. 
+Use `teststrap()` to test endpoints in your web service. Since the caller and the server are in the same process, the actual HTTP server is skipped, with requests passed directly from the `teststrap()` test to an instance of your web service.
 
+`teststrap()` uses [supertest](https://github.com/visionmedia/supertest) as its core testing mechanism. The type of values returned by `teststrap()` is `supertest.Supertest<supertest.Test>`.
 
+```typescript
+@WebService()
+class ExampleService { 
+    @Get('/')
+    info() {
+        return { name: 'example', version: '1.0' };
+    }
+}
 
+// suite/it/describe are from razmin (https://github.com/rezonant/razmin)
+// you could use any test framework to encapsulate the 
+// teststrap() assertions.
 
+suite(describe => {
+    describe('ExampleService', it => {
+        it('returns its name', async () => {
+            await teststrap(ExampleService)
+                .get('/')
+                .expect(200, { name: 'example', version: '1.0' })
+        });
+    });
+});
+```
+
+You can reuse a `teststrap()` test should you need to perform multiple requests in your tests:
+
+```typescript
+let test = teststrap(ExampleService);
+
+await test.get('/')
+    .expect(200, { name: 'example', version: '1.0' })
+;
+
+await test.get('/foo')
+    .expect(200, { other: 123 })
+;
+```
+
+`supertest` offers a number of convenient expectations, but sometimes you need to do something more complex:
+
+```typescript
+    import { expect } from 'chai';
+
+    let res : express.Response = await teststrap(ExampleService)
+        .get('/')
+        .expect(200)
+    ;
+
+    expect(res.body).to.contain({ name: })
+```
+
+For more information about the capabilities of `teststrap()`, consult the [supertest documentation](https://github.com/visionmedia/supertest).
 ## Accessing the Express instance
 
 Perhaps you need access to the Express application object to do something Alterior doesn't support:
