@@ -208,8 +208,6 @@ export class Runtime {
      */
     async stop() {
         this.fireEvent('OnStop');
-        await timeout(1000);
-
         let rolesService = this.injector.get(RolesService);
         rolesService.stopAll();
     }
