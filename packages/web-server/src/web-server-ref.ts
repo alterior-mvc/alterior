@@ -1,4 +1,4 @@
-import { WebServer } from "web-server";
+import { WebServer } from "./web-server";
 import { Injectable } from "@alterior/di";
 
 @Injectable()
