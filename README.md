@@ -13,7 +13,11 @@ your Typescript applications with this.
 npm install @alterior/runtime
 ```
 
-Here's a minimal single file example:
+Here's a minimal single file example. While it doesn't take 
+advantage of many of the benefits of Alterior (which become more apparent as 
+your application grows and adds richer functionality), it does succinctly 
+convey the structural aspects, and underscores the
+fact that there is no unseen magic that makes Alterior apps possible:
 
 ```typescript
 import 'reflect-metadata';
@@ -27,14 +31,11 @@ export class AppModule implements OnInit {
 }
 
 Application.bootstrap(AppModule);
-```
+``` 
 
 ## Starting a project with Alterior?
 
-For more than demonstrative applications, we have recommended idioms and 
-best practices that can be seen in our Quickstart repository.
-
-See [Alterior Quickstart](https://github.com/alterior-mvc/quickstart)
+For more than demonstrative applications, the [Alterior Quickstart](https://github.com/alterior-mvc/quickstart) repository conveys an application structure using recommended idioms and best practices.
 
 ## Overview
 
