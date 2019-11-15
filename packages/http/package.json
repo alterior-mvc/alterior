@@ -1,6 +1,6 @@
 {
   "name": "@alterior/http",
-  "version": "3.0.0-beta.53",
+  "version": "3.0.0-beta.54",
   "access": "public",
   "publishConfig": {
     "access": "public"
@@ -26,7 +26,7 @@
   "dependencies": {
     "@alterior/common": "^3.0.0-beta.53",
     "@alterior/di": "^3.0.0-beta.53",
-    "@alterior/runtime": "^3.0.0-beta.53",
+    "@alterior/runtime": "^3.0.0-beta.54",
     "rxjs": "^6.3.2",
     "xhr2": "^0.1.4"
   },
