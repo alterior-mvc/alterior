@@ -3,5 +3,6 @@ npm-debug.log
 *~
 dist/**/*.test.js
 dist/test.js
+dist/test/
 src/**/*.ts
 **/*.tgz
