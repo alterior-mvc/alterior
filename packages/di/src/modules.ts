@@ -3,7 +3,7 @@
  */
 
  import { MetadataName, NgMetadataName, Annotation, AnnotationDecorator } from "@alterior/annotations";
-import { Provider, Injector } from 'injection-js';
+import { Provider } from './injection';
 
 export interface ConfiguredModule extends ModuleOptions {
     $module: ModuleLike;
