@@ -35,8 +35,7 @@
   "homepage": "https://github.com/alterior-mvc/alterior#readme",
   "dependencies": {
     "@alterior/annotations": "^3.0.0-beta.53",
-    "@alterior/common": "^3.0.0-beta.53",
-    "injection-js": "^2.2.1"
+    "@alterior/common": "^3.0.0-beta.53"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
