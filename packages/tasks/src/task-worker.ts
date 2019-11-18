@@ -1,5 +1,5 @@
 import { InvalidOperationError, ArgumentError, ArgumentNullError } from "@alterior/common";
-import { Injector, Provider, ReflectiveInjector } from "injection-js";
+import { Injector, Provider, ReflectiveInjector } from "@alterior/di";
 import { TaskAnnotation, TaskJob, TaskModuleOptions, TaskQueueClient, Worker } from "./tasks";
 import { ApplicationOptions } from "@alterior/runtime";
 import { Type } from "@alterior/runtime";
