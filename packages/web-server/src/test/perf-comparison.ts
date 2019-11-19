@@ -72,7 +72,6 @@ export class PerfComparison {
             }
             endedAt = Date.now();
         } finally {
-            console.log('Killing the process...');
             try {
                 await fetch(`http://localhost:3000/exit`, { method: 'POST' });
             } catch (e) {
