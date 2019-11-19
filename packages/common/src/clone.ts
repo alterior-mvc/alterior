@@ -8,7 +8,7 @@ export function shallowClone(obj : Object) {
 	return clone;
 }
 
-export function clone(obj) {
+export function clone<T = any>(obj : T): T {
 	return cloneBySerialization(obj);
 }
 
