@@ -35,7 +35,7 @@ export class Response {
 	/**
 	 * Body of the response.
 	 */
-	public body : string;
+	public body : string | Buffer;
 
 	/**
 	 * Stores the raw, unencoded body in case the user calls encodeAs()
@@ -431,17 +431,29 @@ export class Response {
 		throw new HttpError(this.status, this.headers, this.body);
 	}
 
+	private _encoding : 'raw' | 'json';
+
+	get encoding() {
+		return this._encoding;
+	}
+
 	/**
 	 * Change the encoding of the body in the response. By default, Response will encode the body contents as 
 	 * JSON, even if the type of the value is a string. To send a body which is not JSON, you must call 
 	 * encodeAs('raw').
 	 */
 	public encodeAs(encoding : EncodingType) {
+		
+		if (!['raw', 'json'].includes(encoding))
+			throw new Error(`Unknown encoding '${encoding}'`);
+
+		this._encoding = encoding;
+
 		if (encoding === 'raw') {
 			this.body = this.unencodedBody;
 		} else if (encoding === 'json') {
 			this.body = JSON.stringify(this.unencodedBody);
-
+			
 			if (!this.headers.find(x => x[0].toLowerCase() == 'content-type')) {
 				this.headers.push([ 'Content-Type', 'application/json; charset=utf-8' ]);
 			}

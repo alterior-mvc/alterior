@@ -21,7 +21,7 @@ export class ControllerRegistrar {
 		let allRoutes = [];
 
 		this._controllers = controllers.map(type => new ControllerInstance(this.server, type, ownInjector, allRoutes));
-		this._controllers.forEach(c => c.mount(this.server.express));
+		this._controllers.forEach(c => c.mount(this.server));
 	}
 }
 
@@ -228,12 +228,12 @@ export class ControllerInstance {
 
 	resolvedMiddleware : express.RequestHandler[];
 
-	mount(app : express.Application) {
+	mount(webServer : WebServer) {
 		this.prepareMiddleware();
 		for (let middleware of this.resolvedMiddleware)
-			app.use(this.pathPrefix, middleware);
+			webServer.engine.addConnectMiddleware(this.pathPrefix, middleware);
 		
 		this.routes.forEach(r => r.mount(this.pathPrefix));
-		this.controllers.forEach(c => c.mount(app));
+		this.controllers.forEach(c => c.mount(webServer));
 	}
 }

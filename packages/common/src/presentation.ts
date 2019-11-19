@@ -1,6 +1,7 @@
 /// <reference types="reflect-metadata" />
 
 import { Constructor } from "./constructor";
+import { clone } from "./clone";
 
 export const EXPOSE_PROTOTYPE_STORAGE_KEY = '@sliptap/backend:Expose';
 
@@ -13,6 +14,51 @@ export interface PresentedPropertyOptions {
 export interface PresentedProperty {
     propertyKey : string;
     options : PresentedPropertyOptions;
+    constructor? : any;
+}
+
+export class PresentationSchema<T> {
+    constructor(readonly type : Constructor<Presentation<T>>) {
+        this.populate();        
+    }
+
+    private populate() {
+        let exposureSets : PresentedProperty[][] = [];
+
+        let prototype = this.type.prototype;
+        while (prototype) {
+            let value = prototype[EXPOSE_PROTOTYPE_STORAGE_KEY];
+            if (value)
+                exposureSets.push(value);
+            prototype = Object.getPrototypeOf(prototype);
+        }
+
+        // Reverse the order so that the super-most properties appear first,
+        // followed by the subproperties.
+        
+        exposureSets = exposureSets.reverse();
+
+        let exposures = exposureSets
+            .reduce((pv, cv) => (pv.push(...cv), pv), [])
+            .map(x => clone(x))
+        ;
+
+        for (let exposure of exposures) {
+            let key = exposure.propertyKey;
+
+            if (exposure.options && exposure.options.useProperty) {
+                key = exposure.options.useProperty;
+            }
+
+            let propertyType = Reflect.getMetadata('design:type', this.constructor.prototype, key);
+            if (!exposure.constructor)
+                exposure.constructor = propertyType;
+        }
+
+        return exposures;
+    }
+
+    properties : PresentedProperty[];
 }
 
 /**
@@ -43,7 +89,7 @@ export class Presentation<T> {
     }
 
     public static get properties() : PresentedProperty[] {
-        return this.prototype[EXPOSE_PROTOTYPE_STORAGE_KEY] || [];
+        return new PresentationSchema(this).properties;
     }
 
     public toJSON() {
@@ -51,26 +97,8 @@ export class Presentation<T> {
             return null;
         
         let properties = {};
+        let exposures : PresentedProperty[] = (this.constructor as any).properties;
 
-        let type = this.constructor;
-        let exposureSets : PresentedProperty[][] = [];
-
-        let prototype = type.prototype;
-        while (prototype) {
-            let value = prototype[EXPOSE_PROTOTYPE_STORAGE_KEY];
-            if (value)
-                exposureSets.push(value);
-            prototype = Object.getPrototypeOf(prototype);
-        }
-
-        // Reverse the order so that the super-most properties appear first,
-        // followed by the subproperties.
-        
-        exposureSets = exposureSets.reverse();
-
-        let exposures : PresentedProperty[] = exposureSets.reduce((pv, cv) => (pv.push(...cv), pv), []);
-
-        type.prototype[EXPOSE_PROTOTYPE_STORAGE_KEY] || []
         for (let exposure of exposures) {
             let key = exposure.propertyKey;
             let options = exposure.options;

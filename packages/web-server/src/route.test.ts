@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Put, Patch, Delete, Options, RouteEvent, Mount } from './metadata';
 import { suite } from 'razmin';
 import { expect } from 'chai';
-import * as assert from 'assert';
 import * as bodyParser from 'body-parser';
 import { Module } from '@alterior/di';
 import { WebServerModule } from './web-server.module';
@@ -121,7 +120,7 @@ suite(describe => {
 				@Get('/foo', { 
 					middleware: [ 
 						(req, res, next) => 
-							(req.session = { test: 123 }, next()) 
+							(req.session = { test: 'session-value' }, next()) 
 					]
 				})
 				getX(@Session() session : any) {
@@ -129,9 +128,9 @@ suite(describe => {
 				}
 			}
 
-			let app = await teststrap(FakeApp)
+			await teststrap(FakeApp)
 				.get('/foo')
-				.expect(200, { foo: 123 })
+				.expect(200, { foo: 'session-value' })
 			;
 		});
 		
@@ -186,7 +185,7 @@ suite(describe => {
 		});
 
 		it('should 500 when a method returns a promise that rejects', async () => {
-			@WebService()
+			@WebService({ server: { silentErrors: true } })
 			class FakeApp {
 				@Get('/foo')
 				getX() {
@@ -222,7 +221,7 @@ suite(describe => {
 			let error = new Error('testytest');
 			let stackText = error.stack;
 
-			@WebService()
+			@WebService({ server: { silentErrors: true }})
 			class FakeApp {
 				@Get('/foo')
 				getX() {
@@ -230,7 +229,7 @@ suite(describe => {
 				}
 			}
 
-			await teststrap(FakeApp)
+			await teststrap(FakeApp, { silentErrors: true })
 				.get('/foo')
 				.expect(500, {
 					message: 'An exception occurred while handling this request.',
@@ -240,7 +239,7 @@ suite(describe => {
 		});
 
 		it('should include a caught throwable in a 500 response', async () => {
-			@WebService()
+			@WebService({ server: { silentErrors: true }})
 			class FakeApp {
 				@Get('/foo')
 				getX() {
@@ -248,7 +247,7 @@ suite(describe => {
 				}
 			}
 
-			await teststrap(FakeApp)
+			await teststrap(FakeApp, { silentErrors: true })
 				.get('/foo')
 				.expect(500, {
 					message: 'An exception occurred while handling this request.',
@@ -260,7 +259,8 @@ suite(describe => {
 		it('should exclude exception information when `hideExceptions` is true', async () => {
 			@WebService({
 				server: {
-					hideExceptions: true
+					hideExceptions: true,
+					silentErrors: true
 				}
 			})
 			class FakeApp {
@@ -270,7 +270,7 @@ suite(describe => {
 				}
 			}
 
-			await teststrap(FakeApp)
+			await teststrap(FakeApp, { silentErrors: true })
 				.get('/foo')
 				.expect(500, { 
 					message: 'An exception occurred while handling this request.' 
@@ -301,12 +301,16 @@ suite(describe => {
 		});
 
 		it('should be injecting express URL parameters when appropriate', async () => {
+
+			let observedBar;
+			let observedBaz;
+
 			@WebService()
 			class FakeApp {
 				@Get('/foo/:bar/:baz')
 				getX(bar : string, baz : string) {
-					assert(bar == '123');
-					assert(baz == '321');
+					observedBar = bar;
+					observedBaz = baz;
 					return Promise.resolve({ok: true});
 				}
 			}
@@ -315,16 +319,22 @@ suite(describe => {
 				.get('/foo/123/321')
 				.expect(200, { ok: true })
 			;
+			
+			expect(observedBar).to.equal('123');
+			expect(observedBaz).to.equal('321');
 		});
 
 		it('should be reading parameter type metadata to discover how to provide parameters', async () => {
+
+			let observedEvent;
+			let observedQ;
+
 			@WebService()
 			class FakeApp {
 				@Get('/foo')
 				getX(@QueryParam('q') q : string, ev : RouteEvent) { // note they are swapped
-					assert(ev.response);
-					assert(ev.request);
-					assert.equal(q, 'baz');
+					observedEvent = ev;
+					observedQ = q;
 
 					return Promise.resolve({ok: true});
 				}
@@ -334,14 +344,72 @@ suite(describe => {
 				.get('/foo?q=baz')
 				.expect(200, { ok: true })
 			;
+			
+			expect(observedEvent.response).to.not.be.undefined;
+			expect(observedEvent.request).to.not.be.undefined;
+
+			expect(observedQ).to.equal('baz');
+		});
+
+		it('should automatically parse numbers', async () => {
+
+			let observedEvent;
+			let observedQ;
+
+			@WebService()
+			class FakeApp {
+				@Get('/foo')
+				getX(@QueryParam('q') q : number, ev : RouteEvent) { // note they are swapped
+					observedEvent = ev;
+					observedQ = q;
+
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			await teststrap(FakeApp)
+				.get('/foo?q=123')
+				.expect(200, { ok: true })
+			;
+			
+			expect(observedEvent.response).to.not.be.undefined;
+			expect(observedEvent.request).to.not.be.undefined;
+
+			expect(observedQ).to.equal(123);
+		});
+
+		it('should return 400 when string is passed for number', async () => {
+
+			let observedEvent;
+			let observedQ;
+
+			@WebService()
+			class FakeApp {
+				@Get('/foo')
+				getX(@QueryParam('q') q : number, ev : RouteEvent) { // note they are swapped
+					observedEvent = ev;
+					observedQ = q;
+
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			await teststrap(FakeApp)
+				.get('/foo?q=baz')
+				.expect(400)
+			;
+			
+			expect(observedEvent).to.be.undefined;
+			expect(observedQ).to.be.undefined;
 		});
 
 		it('should support binding query parameters', async () => {
+			let observedQ;
 			@WebService()
 			class FakeApp {
 				@Get('/foo')
 				getX(@QueryParam('q') q : string) {
-					assert.equal(q, 'baz');
+					observedQ = q;
 
 					return Promise.resolve({ok: true});
 				}
@@ -351,6 +419,8 @@ suite(describe => {
 				.get('/foo?q=baz')
 				.expect(200, { ok: true })
 			;
+			
+			expect(observedQ).to.equal('baz');
 		});
 
 		it('should be able to inject body when the body parsing middleware is used', async () => {
@@ -358,11 +428,13 @@ suite(describe => {
 				zoom : number;
 			}
 
+			let observedZoom = null;
+
 			@WebService()
 			class FakeApp {
 				@Post('/foo', { middleware: [ bodyParser.json() ] })
 				getX(@Body() body : MyRequestType) { 
-					assert(body.zoom === 123);
+					observedZoom = body.zoom;
 					return Promise.resolve({ok: true});
 				}
 			}
@@ -372,9 +444,13 @@ suite(describe => {
 				.send({ zoom: 123 })
 				.expect(200, { ok: true })
 			;
+
+			expect(observedZoom).to.equal(123);
 		});
 
 		it('should follow parent controller\'s path prefix while dealing with mounted controllers', async () => {
+			let observedZoom;
+
 			interface MyRequestType {
 				zoom : number;
 			}
@@ -382,7 +458,7 @@ suite(describe => {
 			class SubController {
 				@Post('/jkl', { middleware: [ bodyParser.json() ] })
 				getX(@Body() body : MyRequestType) { 
-					assert(body.zoom === 123);
+					observedZoom = body.zoom;
 					return Promise.resolve({ok: true});
 				}
 			}
@@ -404,9 +480,13 @@ suite(describe => {
 				.send({ zoom: 123 })
 				.expect(200, { ok: true })
 			;
+
+			expect(observedZoom).to.equal(123);
 		});
 
 		it('mounted controllers should inherit middleware from parent controller', async () => {
+			let observedZoom;
+
 			interface MyRequestType {
 				zoom : number;
 			}
@@ -414,7 +494,7 @@ suite(describe => {
 			class SubController {
 				@Post('/jkl', { middleware: [ bodyParser.json() ] })
 				getX(@Body() body : MyRequestType) { 
-					assert(body.zoom === 123);
+					observedZoom = body.zoom;
 					return Promise.resolve({ok: true});
 				}
 			}
@@ -444,6 +524,7 @@ suite(describe => {
 			;
 
 			expect(counter).to.equal(1);
+			expect(observedZoom).to.equal(123);
 		});
 
 		it('all paths under a controller should execute middleware', async () => {
@@ -530,6 +611,8 @@ suite(describe => {
 		});
 
 		it('mounted controllers should properly construct paths when some lead with slash', async () => {
+			let observedZoom;
+
 			interface MyRequestType {
 				zoom : number;
 			}
@@ -537,7 +620,7 @@ suite(describe => {
 			class SubController {
 				@Post('/ghi', { middleware: [ bodyParser.json() ] })
 				getX(@Body() body : MyRequestType) { 
-					assert(body.zoom === 123);
+					observedZoom = 123;
 					return Promise.resolve({ok: true});
 				}
 			}
@@ -567,9 +650,12 @@ suite(describe => {
 			;
 
 			expect(counter).to.equal(1);
+			expect(observedZoom).to.equal(123);
 		});
 
 		it('mounted controllers should properly construct paths on multiple levels', async () => {
+			let observedZoom;
+
 			interface MyRequestType {
 				zoom : number;
 			}
@@ -578,7 +664,7 @@ suite(describe => {
 			class ApiController {
 				@Post('/info', { middleware: [ bodyParser.json() ] })
 				getX(@Body() body : MyRequestType) { 
-					assert(body.zoom === 123);
+					observedZoom = body.zoom;
 					return Promise.resolve({ok: true});
 				}
 			}
@@ -622,16 +708,18 @@ suite(describe => {
 				.expect(200, { ok: true })
 			;
 
+			expect(observedZoom).to.equal(123);
 			expect(counter).to.equal(1);
 		});
 
 		it('should be able to inject RouteEvent instead of request/response', async () => {
+			let observedEvent;
+
 			@WebService()
 			class FakeApp { 
 				@Post('/foo')
 				getX(ev : RouteEvent) { 
-					assert(ev.request.path);
-					assert(ev.response.send);
+					observedEvent = ev;
 					return Promise.resolve({ok: true});
 				}
 			}
@@ -641,6 +729,9 @@ suite(describe => {
 				.send({ zoom: 123 })
 				.expect(200, { ok: true })
 			;
+
+			expect(observedEvent.request.path).to.not.be.undefined;
+			expect(observedEvent.response.send).to.not.be.undefined;
 		});
 
 		it('should support POST', async () => {

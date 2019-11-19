@@ -9,6 +9,8 @@ import { WebServerModule } from './web-server.module';
 import { ExpressRef } from './express-ref';
 
 import * as supertest from 'supertest';
+import { WebService } from './service';
+import { teststrap } from './teststrap';
 
 /**
  * Create a test setup for the given @alterior/web-server application. You must 
@@ -83,60 +85,46 @@ suite(describe => {
 		
 		it('should be accepted and used when given as return value of a controller route method', async () => {
     
-			@Controller()
-			class TestController {
-				@Get('/foo')
-				getX() {
-					return new Response(201, [['Content-Type', 'text/plain; charset=utf-8']], "token string")
-								.encodeAs('raw');
-				}
-			} 
-
-			@Module({
-				controllers: [TestController],
-				imports: [ WebServerModule.configure({ silent: true }) ]
+			@WebService({
+				server: { silent: true }
 			})
 			class FakeApp {
+				@Get('/foo')
+				getX() {
+					return new Response(
+						201, 
+						{
+							'Content-Type': 'text/plain; charset=utf-8'
+						},
+						"token string"
+					).encodeAs('raw');
+				}
 			}
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await runTest(app, async (test, done) => {
-				await test.get('/foo')
-					.expect(201, <any>'token string')
-					.expect('Content-Type', 'text/plain; charset=utf-8');
-				done();
-			});
+			await teststrap(FakeApp)
+				.get('/foo')
+				.expect(201, <any>'token string')
+				.expect('Content-Type', 'text/plain; charset=utf-8')
+			;
 		});
 
 		it('should cause Content-Type: application/json when response is JSON', async () => {
     
-			@Controller()
-			class TestController {
+			@WebService({
+				server: { silent: true }
+			})
+			class FakeApp {
 				@Get('/foo')
 				getX() {
 					return new Response(201, [], { stuff: 'and things' });
 				}
-			} 
-
-			@Module({
-				controllers: [TestController],
-				imports: [
-					WebServerModule.configure({ 
-						port: 10009, 
-						silent: true
-					})
-				]
-			})
-			class FakeApp {
 			}
 
-			let app = await Application.bootstrap(FakeApp, { autostart: false });
-			await runTest(app, async (test, done) => {
-				await test.get('/foo')
-					.expect(201, <any>'{"stuff":"and things"}')
-					.expect('Content-Type', 'application/json; charset=utf-8');
-				done();
-			});
+			teststrap(FakeApp)
+				.get('/foo')
+				.expect(201, <any>'{"stuff":"and things"}')
+				.expect('Content-Type', 'application/json; charset=utf-8')
+			;
 		});
 	});
 });

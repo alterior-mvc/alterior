@@ -1,7 +1,7 @@
 import { Module, Injectable, Optional } from "@alterior/di";
 import { OnInit, Application, RolesService } from "@alterior/runtime";
 import { ExpressRef } from "./express-ref";
-import { WebServer, WebServerOptions } from "./web-server";
+import { WebServer, WebServerOptions, WebServerEngine, ExpressEngine, FastifyEngine } from "./web-server";
 import { ControllerRegistrar } from "./controller";
 import { LoggingModule, Logger } from "@alterior/logging";
 import { WebServerRef } from "./web-server-ref";
@@ -60,7 +60,11 @@ export class WebServerModule implements OnInit {
         return {
             $module: WebServerModule,
             providers: [
-                { provide: WebServerOptionsRef, useValue: new WebServerOptionsRef(options) }
+                { provide: WebServerOptionsRef, useValue: new WebServerOptionsRef(options) },
+                { 
+                    provide: WebServerEngine, 
+                    useClass: options.engine || ExpressEngine
+                }
             ]
         }
     }
@@ -81,7 +85,7 @@ export class WebServerModule implements OnInit {
 
         new ControllerRegistrar(this.webserver).register(this.controllers);
 
-        this.expressRef.application = this.webserver.express;
+        this.expressRef.application = this.webserver.engine.app;
 
         let self = this;
 

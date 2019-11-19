@@ -1,5 +1,6 @@
 const getParameterNames = require('@avejidah/get-parameter-names');
 import * as express from 'express';
+import * as uuid from 'uuid';
 
 import { IAnnotation } from "@alterior/annotations";
 import { InputAnnotation } from "./input";
@@ -76,110 +77,100 @@ export class RouteMethodParameter<T = any> {
 	prepare() {
 		let inputAnnotation = this.inputAnnotation;
 		let paramName = this.name;
-		let factory = null;
+		let factory : (ev : RouteEvent) => any = null;
 		let paramDesc = null;
 		let paramType = this.type;
 		let route = this.route;
 		let simpleTypes = [String, Number];
 
+		paramDesc = { 
+			name: paramName, 
+			type: null,
+			description: `An instance of ${paramType}`
+		};
+
 		if (inputAnnotation) {
-			let inputName = paramName;
-			if (inputAnnotation.name)
-				inputName = inputAnnotation.name;
+			paramDesc.type = inputAnnotation.type;
 
-			if (inputAnnotation.type === 'body') {
-				factory = (ev : RouteEvent) => ev.request['body'];
-				paramDesc = {
-					name: 'body',
-					type: 'body',
-					description: `An instance of ${paramType}`
-				};
-			} else if (inputAnnotation.type === 'path') {
-				// This is a route parameter binding.
+			let inputName = inputAnnotation.name || paramName;
 
-				factory = (ev : RouteEvent) => ev.request.params[inputName];
+			let typeFactories = {
+				path: (ev : RouteEvent) => ev.request.params[inputName],
+				query: (ev : RouteEvent) => ev.request.query[inputName],
+				session: (ev : RouteEvent) => inputAnnotation.name ? 
+					(ev.request['session'] || {})[inputAnnotation.name]
+					: ev.request['session'],
+				body: (ev : RouteEvent) => ev.request['body']
+			};
+			
+			factory = typeFactories[inputAnnotation.type];
+			
+			if (!this.route.pathParameterMap[inputName])
+				this.route.pathParameterMap[inputName] = paramDesc;
 
-				// Add documentation information via reflection.
-
-				paramDesc = route.pathParameterMap[inputName];
-				if (!paramDesc) {
-					route.pathParameterMap[inputName] = paramDesc = { 
-						name: inputName, type: 'path' 
-					};
-				}
-
-				// Decorate the parameter description with reflection info
-				paramDesc.description = `An instance of ${paramType}`;
-
-			} else if (inputAnnotation.type === 'query') {
-				
-				// This is a query parameter binding.
-
-				factory = (ev : RouteEvent) => ev.request.query[inputName];
-
-				// Add documentation information via reflection.
-
-				paramDesc = this.route.pathParameterMap[inputName];
-				if (!paramDesc) {
-					this.route.pathParameterMap[inputName] = paramDesc = { 
-						name: inputName, type: 'query' 
-					};
-				}
-			} else if (inputAnnotation.type === 'session') {
-
-				if (inputAnnotation.name)
-					factory = (ev : RouteEvent) => (ev.request['session'] || {})[inputAnnotation.name];
-				else
-					factory = (ev : RouteEvent) => ev.request['session'];
-
-				paramDesc = {
-					name: inputAnnotation.name || '',
-					type: 'session',
-					description: `An instance of ${paramType}`
-				};
-			}
 		} else if (paramType === RouteEvent) {
 			factory = ev => ev;
-		} else if (paramName === "body") {
-			factory = (ev : RouteEvent) => ev.request['body'];
-			paramDesc = {
-				name: 'body',
-				type: 'body',
-				description: `An instance of ${paramType}`
-			};
-		} else if (paramName === "session") {
-			factory = (ev : RouteEvent) => ev.request['session'];
-			
-			paramDesc = {
-				name: 'session',
-				type: 'session',
-				description: `An instance of ${paramType}`
-			};
-		} else if (this.route.params.find(x => x == paramName) && simpleTypes.indexOf(paramType) >= 0) {
+		} 
+		
+		// Name based matching for path parameters
 
-			// This is a route parameter binding.
-
-			factory = (ev : RouteEvent) => ev.request.params[paramName];
-
-			// Add documentation information via reflection.
-
-			let paramDesc : RouteParamDescription = this.route.pathParameterMap[paramName];
-			if (!paramDesc) {
-				this.route.pathParameterMap[paramName] = paramDesc = { 
-					name: paramName, type: 'path' 
-				};
+		if (!factory) {
+			if (this.route.params.find(x => x == paramName) && simpleTypes.includes(paramType)) {
+				factory = (ev : RouteEvent) => ev.request.params[paramName];
+				paramDesc.type = 'path';
 			}
+		}
 
-			// Decorate the parameter description with reflection info
+		// Well-known names
 
-			paramDesc.description = `An instance of ${paramType}`;
-		} else {
+		if (!factory) {
+			let paramNameFactories = {
+				body: (ev : RouteEvent) => ev.request['body'],
+				session: (ev : RouteEvent) => ev.request['session']
+			};
+
+			if (paramNameFactories[paramName]) {
+				factory = paramNameFactories[paramName];
+				paramDesc.type = paramName;
+			}
+		}
+
+		if (!factory) {
 			let sanitizedType = paramType ? (paramType.name || '<unknown>') : '<undefined>';
 			throw new Error(
 				`Unable to fulfill route method parameter '${paramName}' of type '${sanitizedType}'\r\n`
 				+ `While preparing route ${this.route.definition.method} ${this.route.definition.path} ` 
 				+ `with method ${this.route.definition.method}()`
 			);
+		}
+
+		// Handle format...
+
+		if (paramType === Number) {
+			let originalFactory = factory;
+			factory = ev => {
+				let value = originalFactory(ev);
+				let number = parseFloat(value);
+				if (isNaN(number)) {
+					throw new HttpError(400, [], {
+						error: 'invalid-request',
+						message: `The parameter ${paramDesc.name} must be a valid number`
+					});
+				}
+
+				return number;
+			}
+		}
+
+		if (paramType === String) {
+			let originalFactory = factory;
+			factory = ev => {
+				let value = originalFactory(ev);
+				if (value === undefined || value === null)
+					return value;
+
+				return ''+value;
+			}
 		}
 
 		this._factory = factory;
@@ -380,10 +371,21 @@ export class RouteInstance {
 		return this._parameters.slice();
 	}
 
-	async execute(instance, event : RouteEvent) {
+	async logAndExecute(instance, event : RouteEvent) {
+		let requestId = uuid.v4();
+		return this.server.logger.withContext(
+			{ host: 'web-server', requestId }, 
+			`${this.definition.method.toUpperCase()} ${this.definition.path} | ${requestId}`, 
+			() => {
+				return this.execute(instance, event);
+			}
+		);
+	}
+
+	private async execute(instance, event : RouteEvent) {
 		if (!instance) 
 			throw new ArgumentNullError('instance');
-
+		
 		if (!instance[this.definition.method]) {
 			throw new ArgumentError(
 				'instance', 
@@ -431,24 +433,41 @@ export class RouteInstance {
 		}
 
 		if (result === null) {
-			event.response	.status(200)
-				.header('Content-Type', 'application/json')
-				.send(JSON.stringify(result))
-			;
+			this.server.engine.sendJsonBody(event, result);
 			return;
 		}
 
 		try {
 			if (result.constructor === Response) {
 				let response = <Response>result;
+
 				event.response.status(response.status);
 				response.headers.forEach(x => event.response.header(x[0], x[1]));
-				event.response.send(response.body); 
+				
+				if (response.encoding === 'raw') {
+					if (response.body instanceof Buffer)
+						event.response.send(response.body);
+					else if (typeof response.body === 'string')
+						event.response.send(new Buffer(response.body)); 
+					else if (response.body === undefined || response.body === null)
+						event.response.send();
+					else
+						throw new Error(`Unknown response body type ${response.body}`);
+
+				} else if (response.encoding === 'json') {
+					this.server.engine.sendJsonBody(event, response.body);
+				} else {
+					throw new Error(`Unknown encoding type ${response.encoding}`);
+				}
+
 			} else {
-				event.response	.status(200)
-					.header('Content-Type', 'application/json')
-					.send(JSON.stringify(result))
-				;
+				// event.response
+				// 	.status(200)
+				// 	.send(result)
+				// ;
+
+				event.response.status(200);
+				this.server.engine.sendJsonBody(event, result);
 			}
 		} catch (e) {
 			console.error(`Caught exception:`);
@@ -456,21 +475,6 @@ export class RouteInstance {
 
 			throw e;
 		}
-	}
-
-	private readonly EXPRESS_SUPPORTED_METHODS = [ 
-		"checkout", "copy", "delete", "get", "head", "lock", "merge", 
-		"mkactivity", "mkcol", "move", "m-search", "notify", "options", 
-		"patch", "post", "purge", "put", "report", "search", "subscribe", 
-		"trace", "unlock", "unsubscribe",
-	];
-	
-	private get expressRegistrarName() {
-		let registrar = this.definition.httpMethod.toLowerCase();
-		if (!this.EXPRESS_SUPPORTED_METHODS.includes(registrar))
-			throw new Error(`The specified method '${this.definition.httpMethod}' is not supported by Express.`);
-			
-		return registrar;
 	}
 
 	/**
@@ -481,7 +485,7 @@ export class RouteInstance {
 		this.server.addRoute(
 			this.definition.httpMethod, 
 			`${pathPrefix || ''}${this.definition.path}`,
-			ev => this.execute(this.controllerInstance, ev), 
+			ev => this.logAndExecute(this.controllerInstance, ev), 
 			this.resolvedMiddleware
 		);
 	}

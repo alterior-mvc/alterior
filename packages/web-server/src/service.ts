@@ -47,7 +47,7 @@ export const WebService = WebServiceAnnotation.decorator({
         let existingModule = options.imports.find(x => x === WebServerModule || x['$module'] === WebServerModule);
 
         if (!existingModule)
-            options.imports.push(WebServerModule.configure(options.server));
+            options.imports.push(WebServerModule.configure(options.server || {}));
 
         Controller('', { group: 'service' })(site.target);
         Module(options)(site.target);
