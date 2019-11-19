@@ -109,9 +109,9 @@ async function runTest(name, discard = false) {
 }
 
 async function main() {
-    await runTest('express', true);
-    await runTest('altweb', true);
     await runTest('express');
-    await runTest('altweb');
+    await runTest('fastify');
+    await runTest('altweb.express');
+    await runTest('altweb.fastify');
 }
 main();
