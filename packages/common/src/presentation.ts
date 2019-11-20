@@ -14,7 +14,7 @@ export interface PresentedPropertyOptions {
 export interface PresentedProperty {
     propertyKey : string;
     options : PresentedPropertyOptions;
-    constructor? : any;
+    designType? : any;
 }
 
 export class PresentationSchema<T> {
@@ -26,7 +26,10 @@ export class PresentationSchema<T> {
         let exposureSets : PresentedProperty[][] = [];
 
         let prototype = this.type.prototype;
+        let prototypes = [ ];
+
         while (prototype) {
+            prototypes.push(prototype);
             let value = prototype[EXPOSE_PROTOTYPE_STORAGE_KEY];
             if (value)
                 exposureSets.push(value);
@@ -50,12 +53,19 @@ export class PresentationSchema<T> {
                 key = exposure.options.useProperty;
             }
 
-            let propertyType = Reflect.getMetadata('design:type', this.constructor.prototype, key);
-            if (!exposure.constructor)
-                exposure.constructor = propertyType;
+            let designType = null;
+            
+            for (let prototype of prototypes) {
+                designType = Reflect.getMetadata('design:type', prototype, key);
+                if (designType)
+                    break;
+            }
+
+            if (!exposure.designType)
+                exposure.designType = designType;
         }
 
-        return exposures;
+        this.properties = exposures;
     }
 
     properties : PresentedProperty[];

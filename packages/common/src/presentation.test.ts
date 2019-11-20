@@ -4,6 +4,40 @@ import { Presentation, Expose } from "./presentation";
 
 suite(describe => {
     describe('Presentation<T>', it => {
+        it('exposes properties via Subclass.properties', () => {
+
+            interface Movie {
+                title : string;
+                description : string;
+                rating : number;
+            }
+            
+            function Nothing() {
+                return (target, ...args) => target;
+            }
+
+            @Nothing()
+            class ApiMovie extends Presentation<Movie> {
+                @Expose() description : string;
+                @Expose() title : string;
+                @Expose() rating : number;
+            }
+
+            let props = ApiMovie.properties;
+            let descProp = props.find(x => x.propertyKey === 'description');
+            let titleProp = props.find(x => x.propertyKey === 'title');
+            let ratingProp = props.find(x => x.propertyKey === 'rating');
+
+            expect(props.length).to.equal(3);
+            expect(descProp).to.exist
+            expect(titleProp).to.exist
+            expect(ratingProp).to.exist
+            
+            expect(descProp.designType).to.equal(String);
+            expect(titleProp.designType).to.equal(String);
+            expect(ratingProp.designType).to.equal(Number);
+        });
+
         it('correctly handles subclassing', () => {
             interface Movie {
                 title : string;
@@ -29,8 +63,6 @@ suite(describe => {
 
             expect(repr.title).to.equal('Title');
             expect(repr.description).to.equal('Description');
-
-
         });
     });
 });
