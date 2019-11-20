@@ -8,7 +8,8 @@ import { RouteEvent, RouteDefinition, RouteOptions } from "./metadata";
 import { ReflectiveInjector, Provider, Injector } from '@alterior/di';
 import { prepareMiddleware } from "./middleware";
 import { Annotations } from "@alterior/annotations";
-import { WebServerSetupError, WebServer } from "./web-server";
+import { WebServer } from "./web-server";
+import { WebServerSetupError } from "./web-server-setup-error";
 import { HttpError, ArgumentError, ArgumentNullError } from "@alterior/common";
 import { Response } from './response';
 
@@ -18,6 +19,7 @@ export interface RouteDescription {
 	httpMethod : string;
 	method? : string;
 	path : string;
+	pathPrefix? : string;
 	group? : string;
 	
 	description? : string;
@@ -190,8 +192,8 @@ export class RouteInstance {
         readonly parentGroup: string,
         readonly controllerType : Function,
         readonly routeTable : any[],
-		readonly definition : RouteDefinition) 
-	{
+		readonly definition : RouteDefinition
+	) {
 		this.prepare();
 	}
 
@@ -240,7 +242,7 @@ export class RouteInstance {
 			httpMethod: route.httpMethod,
 			group: this.group,
 			method: route.method,
-			path: route.path,
+			path: this.definition.path,
 			parameters: []
 		};
 
@@ -254,7 +256,6 @@ export class RouteInstance {
 		);
 
 		this._description = routeDescription;
-		this.server.serviceDescription.routes.push(this.description);
 	}
 
 	private _description : RouteDescription;
@@ -482,7 +483,10 @@ export class RouteInstance {
 	 * @param app 
 	 */
 	mount(pathPrefix : string) {
+		this.description.pathPrefix = pathPrefix;
+
 		this.server.addRoute(
+			this.description,
 			this.definition.httpMethod, 
 			`${pathPrefix || ''}${this.definition.path}`,
 			ev => this.logAndExecute(this.controllerInstance, ev), 

@@ -1,173 +1,18 @@
-import * as express from 'express';
 import * as uuid from 'uuid';
-import * as fastify from 'fastify';
 import * as http from 'http';
 
-import { Injector, ReflectiveInjector, Provider, Module } from "@alterior/di";
+import { Injector, ReflectiveInjector, Module } from "@alterior/di";
 import { prepareMiddleware } from "./middleware";
 import { RouteEvent } from "./metadata";
-import { BaseErrorT } from "@alterior/common";
-import { RouteDescription, RouteInstance } from './route';
+import { RouteInstance, RouteDescription } from './route';
 import { ApplicationOptions, Application, AppOptionsAnnotation, AppOptions } from '@alterior/runtime';
 import { ExpressRef } from './express-ref';
 import { Logger } from '@alterior/logging';
-
-export class WebServerSetupError extends BaseErrorT {
-}
-
-export interface WebServerOptions {
-	port? : number;
-	engine? : any;
-    middleware? : Function[];
-    hideExceptions? : boolean;
-    verbose? : boolean;
-	silent? : boolean;
-	silentErrors? : boolean;
-	onError? : (error : any, event : RouteEvent, route : RouteInstance, source : string) => void;
-	handleError? : (error : any, event : RouteEvent, route : RouteInstance, source : string) => void;
-}
-
-export interface ServiceDescription {
-	name? : string;
-	description? : string;
-	version? : string;
-	routes? : RouteDescription[];
-}
-
-export class ServiceDescriptionRef {
-	constructor(
-		readonly description : ServiceDescription
-	) {
-	}
-}
-
-export abstract class WebServerEngine {
-	readonly app : any;
-	readonly providers : Provider[];
-	abstract addConnectMiddleware(path : string, middleware : Function);
-	abstract addRoute(method : string, path : string, handler : (event : RouteEvent) => void, middleware?);
-	abstract listen(port : number) : Promise<http.Server>;
-	abstract sendJsonBody(routeEvent : RouteEvent, body : any);
-}
-
-export class ExpressEngine implements WebServerEngine {
-	constructor() {
-		this.app = express();
-	}
-
-	app : express.Application;
-	
-	get providers() : Provider[] {
-		return [];
-	}
-
-	sendJsonBody(routeEvent : RouteEvent, body : any) {
-		routeEvent.response
-			.header('Content-Type', 'application/json')
-			.send(JSON.stringify(body))
-		;
-	}
-
-	private readonly supportedMethods = [ 
-		"checkout", "copy", "delete", "get", "head", "lock", "merge", 
-		"mkactivity", "mkcol", "move", "m-search", "notify", "options", 
-		"patch", "post", "purge", "put", "report", "search", "subscribe", 
-		"trace", "unlock", "unsubscribe",
-	];
-	
-	private getRegistrarName(method : string) {
-		let registrar = method.toLowerCase();
-		if (!this.supportedMethods.includes(registrar))
-			throw new Error(`The specified method '${method}' is not supported by Express.`);
-			
-		return registrar;
-	}
-
-	addConnectMiddleware(path : string, middleware : any) {
-		this.app.use(path, middleware);
-	}
-
-	async listen(port : number) {
-		return this.app.listen(port);
-	}
-	
-	addRoute(method : string, path : string, handler : (event : RouteEvent) => void, middleware?) {
-		if (!middleware)
-			middleware = [];
-			
-		this.app[this.getRegistrarName(method)](
-			path, 
-			...middleware, 
-			(req, res) => {
-				return handler(new RouteEvent(req, res));
-			}
-		);
-	}
-}
-
-export class FastifyEngine implements WebServerEngine {
-	constructor() {
-		this._app = fastify({ })
-	}
-
-	get providers() {
-		return [];
-	}
-
-	private _app : fastify.FastifyInstance<http.Server, http.IncomingMessage, http.ServerResponse>;
-
-	get app() {
-		return this._app;
-	}
-
-	sendJsonBody(routeEvent : RouteEvent, body : any) {
-		routeEvent.response
-			.header('Content-Type', 'application/json')
-			.send(body)
-		;
-	}
-	
-	private readonly supportedMethods = [ 
-		"checkout", "copy", "delete", "get", "head", "lock", "merge", 
-		"mkactivity", "mkcol", "move", "m-search", "notify", "options", 
-		"patch", "post", "purge", "put", "report", "search", "subscribe", 
-		"trace", "unlock", "unsubscribe",
-	];
-
-	private getRegistrarName(method : string) {
-		let registrar = method.toLowerCase();
-		if (!this.supportedMethods.includes(registrar))
-			throw new Error(`The specified method '${method}' is not supported by Express.`);
-			
-		return registrar;
-	}
-
-	addConnectMiddleware(path : string, middleware : any) {
-
-		// TODO: bodyParser.json() cannot be used with fastify
-		if (middleware.name === 'jsonParser')
-			return;
-
-		this.app.use(path, middleware);
-	}
-	
-	async listen(port : number) {
-		await this.app.listen(port);
-		return this.app.server;
-	}
-
-	addRoute(method : string, path : string, handler : (event : RouteEvent) => void, middleware?) {
-		if (!middleware)
-			middleware = [];
-		this.app[this.getRegistrarName(method)](
-			path, 
-			...middleware, 
-			(req, res) => {
-				return handler(new RouteEvent(req, res));
-			}
-		);
-	}
-}
+import { WebServerEngine } from './web-server-engine';
+import { ExpressEngine } from './express-engine';
+import { WebServerOptions } from './web-server-options';
+import { ServiceDescription } from './service-description';
+import { ServiceDescriptionRef } from './service-description-ref';
 
 /**
  * Implements a web server which is comprised of a set of Controllers.
@@ -237,11 +82,17 @@ export class WebServer {
 	 */
 	private setupServiceDescription() {
 		let version = '0.0.0';
+		let name = 'Untitled Web Service';
+
 		if (this.appOptions.version)
 			version = this.appOptions.version;
 
+		if (this.appOptions.name)
+			name = this.appOptions.name;
+
 		this._serviceDescription = {
 			routes: [],
+			name,
 			version
 		};
 	}
@@ -324,7 +175,9 @@ export class WebServer {
 	 * Installs this route into the given Express application. 
 	 * @param app 
 	 */
-	addRoute(method : string, path : string, handler : (event : RouteEvent) => void, middleware = []) {
+	addRoute(definition : RouteDescription, method : string, path : string, handler : (event : RouteEvent) => void, middleware = []) {
+		this.serviceDescription.routes.push(definition);
+
 		this.engine.addRoute(method, path, ev => {
 			let requestId = uuid.v4();
 			return this.logger.withContext({ host: 'web-server', requestId }, `${method.toUpperCase()} ${path} | ${requestId}`, () => {

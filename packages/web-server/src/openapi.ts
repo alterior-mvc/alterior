@@ -1,5 +1,5 @@
 import { Controller, Get, RouteEvent } from "./metadata";
-import { ServiceDescriptionRef } from "./web-server";
+import { ServiceDescriptionRef } from "./service-description-ref";
 import { ExpressRef } from "./express-ref";
 
 export interface OpenApiContact {
@@ -106,7 +106,7 @@ export class OpenApiController {
         let desc = this.serviceDescriptionRef.description;
 
         let info : OpenApiServiceInfo = {
-            title: desc.name,
+            title: desc.name || 'Untitled Web Service',
             description: desc.description,
             version: desc.version || '0.0.0'
         };
@@ -116,7 +116,16 @@ export class OpenApiController {
         let tags : (OpenApiTag | string)[] = [];
 
         for (let route of desc.routes) {
-            let oapiPathName = route.path.replace(/:([A-Za-z0-9]+)/g, '{$1}');
+            let path = route.path;
+            if (route.pathPrefix)
+                path = `${route.pathPrefix}${path}`;
+               
+            path = path.replace(/\/+$/g, '');
+
+            if (path === undefined || path === null || path === '')
+                path = '/';
+            
+            let oapiPathName = path.replace(/:([A-Za-z0-9]+)/g, '{$1}');
             let loweredHttpMethod = route.httpMethod.toLowerCase();
 
             if (!paths[oapiPathName])

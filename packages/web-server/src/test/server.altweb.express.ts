@@ -2,20 +2,28 @@ import "reflect-metadata";
 import "zone.js";
 
 import { WebService } from "../service";
-import { Post, Get } from "../metadata";
+import { Post, Get, Mount } from "../metadata";
 import { Body } from "../input";
 import { Application } from "@alterior/runtime";
 import * as bodyParser from 'body-parser';
-import { FastifyEngine } from "../web-server";
+import { OpenApiController } from "../openapi";
+import { ExpressEngine } from "../express-engine";
 
 @WebService({
+    name: 'Alterior Load Testing (Express)',
     server: {
         silent: true,
-        engine: FastifyEngine,
+        engine: ExpressEngine,
         middleware: [ bodyParser.json() ]
     }
 })
 class Server {
+    @Mount('/openapi')
+    openapi : OpenApiController;
+
+    /**
+     * Get the 'value' property of body and echo it back
+     */
     @Post('/')
     post(@Body() body) {
         return { saw: body.value };

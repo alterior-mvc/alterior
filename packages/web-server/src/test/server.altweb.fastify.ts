@@ -6,7 +6,7 @@ import { Post, Get } from "../metadata";
 import { Body } from "../input";
 import { Application } from "@alterior/runtime";
 import * as bodyParser from 'body-parser';
-import { FastifyEngine } from "../web-server";
+import { FastifyEngine } from "../fastify-engine";
 
 @WebService({
     server: {

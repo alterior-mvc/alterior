@@ -35,6 +35,8 @@
     "@types/supertest": "^2.0.8",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
+    "fast-json-stringify": "^1.15.6",
+    "fastify": "^2.10.0",
     "reflect-metadata": "^0.1.12",
     "supertest": "^4.0.2",
     "uuid": "^3.3.2"

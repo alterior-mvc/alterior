@@ -2,7 +2,7 @@ import { Annotation } from "@alterior/annotations";
 import { MetadataName } from "@alterior/annotations";
 import { ModuleOptions, Module } from "@alterior/di";
 import { WebServerModule } from "./web-server.module";
-import { WebServerOptions } from "./web-server";
+import { WebServerOptions } from "./web-server-options";
 import { ApplicationOptions, AppOptions } from "@alterior/runtime";
 import { Controller } from "./metadata";
 import { AnnotationDecorator } from '@alterior/annotations';

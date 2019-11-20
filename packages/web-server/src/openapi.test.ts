@@ -11,6 +11,7 @@ suite(describe => {
         it('produces a valid OpenAPI specification for an empty application.', async () => {
 
             @WebService({
+                name: 'test-app-fubar',
                 version: '1.2.3'
             })
             class TestApp {
@@ -26,7 +27,10 @@ suite(describe => {
                 .expect(200);
 
             expect(response.body).to.contain({ openapi: '3.0.0' });
-            expect(response.body.info).to.contain({ version: '1.2.3' });
+            expect(response.body.info).to.contain({ 
+                title: 'test-app-fubar',
+                version: '1.2.3' 
+            });
             
         });
     });
