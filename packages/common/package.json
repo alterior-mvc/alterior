@@ -34,9 +34,10 @@
   "devDependencies": {
     "@types/node": "^10.9.4",
     "@types/reflect-metadata": "^0.1.0",
-    "razmin": "^0.5.5",
+    "razmin": "^0.6.10",
     "reflect-metadata": "^0.1.13",
-    "typescript": "^3.0.3"
+    "typescript": "^3.0.3",
+    "zone.js": "^0.10.2"
   },
   "gitHead": "01a420479fbf3e1874e240476d2effae10ac050c"
 }
