@@ -403,6 +403,126 @@ suite(describe => {
 			expect(observedQ).to.be.undefined;
 		});
 
+		it('should provide parameters that are inherited via controller mounting', async () => {
+			let observedTopicID;
+			let observedMessageID;
+
+			@Controller()
+			class SubController {
+				@Get('/messages/:messageID')
+				getX(@PathParam() topicID : string, @PathParam() messageID : string) {
+					observedTopicID = topicID;
+					observedMessageID = messageID;
+
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			@WebService()
+			class FakeApp {
+				@Mount('/topics/:topicID')
+				sub : SubController;
+			}
+
+			await teststrap(FakeApp)
+				.get('/topics/futopic/messages/barmessage')
+				.expect(200, { ok: true })
+			;
+			
+			expect(observedTopicID).to.equal('futopic');
+			expect(observedMessageID).to.equal('barmessage');
+		});
+
+		it.skip('should provide parameters that are inherited via controller mounting (no decorator hints)', async () => {
+			let observedTopicID;
+			let observedMessageID;
+
+			@Controller()
+			class SubController {
+				@Get('/messages/:messageID')
+				getX(topicID : string, messageID : string) {
+					observedTopicID = topicID;
+					observedMessageID = messageID;
+
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			@WebService()
+			class FakeApp {
+				@Mount('/topics/:topicID')
+				sub : SubController;
+			}
+
+			await teststrap(FakeApp)
+				.get('/topics/futopic/messages/barmessage')
+				.expect(200, { ok: true })
+			;
+			
+			expect(observedTopicID).to.equal('futopic');
+			expect(observedMessageID).to.equal('barmessage');
+		});
+
+		it('should provide parameters that are inherited via controller prefix', async () => {
+			let observedTopicID;
+			let observedMessageID;
+
+			@Controller('/:topicID')
+			class SubController {
+				@Get('/messages/:messageID')
+				getX(@PathParam() topicID : string, @PathParam() messageID : string) {
+					observedTopicID = topicID;
+					observedMessageID = messageID;
+
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			@WebService()
+			class FakeApp {
+				@Mount('/topics')
+				sub : SubController;
+			}
+
+			await teststrap(FakeApp)
+				.get('/topics/futopic/messages/barmessage')
+				.expect(200, { ok: true })
+			;
+			
+			expect(observedTopicID).to.equal('futopic');
+			expect(observedMessageID).to.equal('barmessage');
+		});
+
+		it.skip('should provide parameters that are inherited via controller prefix (no decorator hints)', async () => {
+			let observedTopicID;
+			let observedMessageID;
+
+			@Controller('/:topicID')
+			class SubController {
+				@Get('/messages/:messageID')
+				getX(topicID : string, messageID : string) {
+					observedTopicID = topicID;
+					observedMessageID = messageID;
+
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			@WebService()
+			class FakeApp {
+				@Mount('/topics')
+				sub : SubController;
+			}
+
+			await teststrap(FakeApp)
+				.get('/topics/futopic/messages/barmessage')
+				.expect(200, { ok: true })
+			;
+			
+			expect(observedTopicID).to.equal('futopic');
+			expect(observedMessageID).to.equal('barmessage');
+		});
+
 		it('should support binding query parameters', async () => {
 			let observedQ;
 			@WebService()

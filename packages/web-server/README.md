@@ -250,11 +250,24 @@ doThings(ev : RouteEvent) {
 }
 ```
 
-Parameters decorated with `@PathParam('a')` will be fulfilled with the value of path parameter `:a` from the route path. 
+Alterior uses the following rules to fulfill the declared method parameters:
 
-Parameters decorated with `@QueryParam('q')` will be fulfilled with the query parameter `q` if provided. 
+- Parameters decorated with `@PathParam('a')` will be fulfilled with the value 
+  of path parameter `:a` from the route path (as in `/some/path/:a`). The 
+  path parameter can be defined in any parent controller/mount context.
+- Parameters decorated with `@QueryParam('q')` will be fulfilled with the query 
+  parameter `q` if provided (`?q=...`) 
+- Parameters which are named `body` or decorated with `@Body()` will be fulfilled 
+  with the value of `request.body`. You must use a body parsing middleware 
+  (we recommend `body-parser`) to populate `request.body`.
+- Parameters which are decorated with `Session('user')` will be populated with 
+  the `user` key of the current session object.
 
-Parameters which are named `body` or decorated with `@Body()` will be fulfilled with the value of `request.body`. You must use a body parsing middleware (we recommend `body-parser`) to populate `request.body`.
+> Note: If a path parameter is defined directly in the path passed to `@Get()` 
+  decorator and an (otherwise unfulfilled) parameter with the same name is 
+  defined on the method, the method parameter is fulfilled with the path parameter
+  for the current request. Method parameters meant to be fulfilled from any 
+  parent controller/mount-defined parameters must be decorated with `@PathParam()`
 
 When combined with value returns, you can achieve a very natural style:  
 
