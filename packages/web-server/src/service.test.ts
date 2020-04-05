@@ -59,4 +59,25 @@ describe("WebServiceDecorator", () => {
 
         expect(optionsRef.options.port).to.eq(12321);
     });
+
+    it.skip('should produce a single instance of a module/controller', async () => {
+        let instances = [];
+        
+		@WebService()
+		class TestService {
+            constructor() {
+                instances.push(this);
+            }
+			@Get('/foo')
+			getX() {
+				return Promise.resolve({ok: true});
+			}
+        }
+        
+        await teststrap(TestService)
+            .get('/foo')
+            .expect(200, {ok: true});
+           
+        expect(instances.length).to.equal(1, 'Only one instance of TestService should have been created');
+    });
 });
