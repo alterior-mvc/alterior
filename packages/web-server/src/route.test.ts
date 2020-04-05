@@ -5,7 +5,7 @@ import * as bodyParser from 'body-parser';
 import { Module } from '@alterior/di';
 import { WebServerModule } from './web-server.module';
 import { teststrap } from './teststrap';
-import { QueryParam, Body, Session } from './input';
+import { QueryParam, Body, Session, PathParam } from './input';
 import { WebService } from './service';
 import { HttpError } from '@alterior/common';
 

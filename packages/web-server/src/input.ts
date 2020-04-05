@@ -51,7 +51,7 @@ export function Session(name? : string) {
  * Apply to a parameter to indicate that it represents a path parameter (ie 'thing' in /hello/:thing)
  * @param name 
  */
-export function PathParam(name : string) {
+export function PathParam(name? : string) {
 	return InputAnnotation.decorator({
 		validTargets: [ 'parameter' ],
 		allowMultiple: false
