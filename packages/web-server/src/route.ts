@@ -12,6 +12,7 @@ import { WebServer } from "./web-server";
 import { WebServerSetupError } from "./web-server-setup-error";
 import { HttpError, ArgumentError, ArgumentNullError } from "@alterior/common";
 import { Response } from './response';
+import { Logger } from '@alterior/logging';
 
 export interface RouteDescription {
 	definition : RouteDefinition;
@@ -407,7 +408,8 @@ export class RouteInstance {
 		// Execute our function by resolving the parameter factories into a set of parameters to provide to the 
 		// function.
 
-        this.server.reportRequest(event, `${controllerType.name}.${route.method}()`);
+		if (!this.server.options.silent)
+			Logger.current.info(`${controllerType.name}.${route.method}()`);
 
 		let result;
 

@@ -53,6 +53,11 @@ export interface LogEvent {
     sourceLabel? : string;
 
     /**
+     * Context summary
+     */
+    contextSummary? : string;
+
+    /**
      * Severity of the log event.
      */
     severity : LogSeverity;
@@ -297,13 +302,19 @@ export class ZonedLogger {
     }
 
     protected createMessage(message : Partial<LogEvent>): LogEvent {
+        let contextSummary = this.contextLabel || '';
+
+        if (this._sourceLabel)
+            contextSummary = `${contextSummary} » ${this._sourceLabel}`;
+
         return <LogEvent>Object.assign(<Partial<LogEvent>>{
             type: 'message',
             context: this.context,
-            contextLabel: this.contextLabel,
             date: new Date(),
             message,
-            sourceLabel: this._sourceLabel
+            contextLabel: this.contextLabel,
+            sourceLabel: this._sourceLabel,
+            contextSummary: contextSummary
         }, message);
     }
     
@@ -395,5 +406,5 @@ export class Logger extends ZonedLogger {
     }
 }
 
-export const DEFAULT_FORMAT = '%date% [source="%sourceLabel%" context="%contextLabel%"] %severity%: %message%';
+export const DEFAULT_FORMAT = '%date% [%contextSummary%] %severity%: %message%';
 export const DEFAULT_LISTENERS : LogListener[] = [ new ConsoleLogger(DEFAULT_FORMAT) ];
