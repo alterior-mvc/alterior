@@ -1,7 +1,7 @@
 import * as uuid from 'uuid';
 import * as http from 'http';
 
-import { Injector, ReflectiveInjector, Module } from "@alterior/di";
+import { Injector, ReflectiveInjector, Module, Provider } from "@alterior/di";
 import { prepareMiddleware } from "./middleware";
 import { RouteEvent } from "./metadata";
 import { RouteInstance, RouteDescription } from './route';
@@ -104,7 +104,7 @@ export class WebServer {
 	 * @param injector 
 	 */
 	private setupInjector(injector : Injector) {
-		let providers = [
+		let providers : Provider[] = [
 			{
 				provide: ServiceDescriptionRef,
 				useValue: new ServiceDescriptionRef(this._serviceDescription)
