@@ -47,7 +47,6 @@
     "razmin": "^0.6.10",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.7.1",
-    "rollup": "^0.41.4",
     "tslib": "1.9.3",
     "tslint": "5.11.0",
     "tslint-config-prettier": "1.17.0",
