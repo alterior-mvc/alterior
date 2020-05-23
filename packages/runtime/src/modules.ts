@@ -173,7 +173,6 @@ export class Runtime {
         if (this.instances)
             return;
 
-        this._injector = injector;
         let ownInjector : ReflectiveInjector;
         let providers = this.definitions.map(x => x.target);
 
@@ -190,6 +189,8 @@ export class Runtime {
             console.dir(this.definitions);
             throw e;
         }
+
+        this._injector = ownInjector;
 
         let moduleInstances = this.definitions.map (defn => new ModuleInstance(defn, ownInjector.get(defn.target)));
         this.instances = moduleInstances;

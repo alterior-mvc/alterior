@@ -60,7 +60,7 @@ describe("WebServiceDecorator", () => {
         expect(optionsRef.options.port).to.eq(12321);
     });
 
-    it.skip('should produce a single instance of a module/controller', async () => {
+    it('should produce a single instance of a module/controller', async () => {
         let instances = [];
         
 		@WebService()

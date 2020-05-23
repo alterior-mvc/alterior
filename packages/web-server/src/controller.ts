@@ -17,6 +17,14 @@ export class ControllerRegistrar {
     
 	register(controllers : Function[]) {
 		let providers : Provider[] = controllers as Provider[];
+
+		// If a controller is provided within the runtime injector (because it 
+		// is also an Module as defined by @alterior/runtime), we will not create
+		// a second instance of it. This is important when using the 
+		// @WebService() decorator.
+		// * see https://github.com/alterior-mvc/alterior/issues/26
+		providers = providers.filter(p => !this.server.injector.get(p, null));
+
         let ownInjector = ReflectiveInjector.resolveAndCreate(providers, this.server.injector);
 		let allRoutes = [];
 
