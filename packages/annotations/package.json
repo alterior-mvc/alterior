@@ -35,7 +35,6 @@
     "@types/supertest": "^2.0.9",
     "assert": "^1.5.0",
     "chai": "^3.5.0",
-    "mocha": "^5.2.0",
     "razmin": "^0.5.5",
     "rimraf": "^2.7.1",
     "supertest": "^3.1.0",
