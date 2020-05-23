@@ -6,8 +6,10 @@
 		"outDir": "./dist",
 		"module": "commonjs",
 		"moduleResolution": "node",
+        "stripInternal": true,
 		"preserveSymlinks": true,
         "importHelpers": true,
+        "esModuleInterop": true,
 		"typeRoots": [
 			"./node_modules/@types"
 		],

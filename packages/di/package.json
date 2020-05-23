@@ -7,9 +7,12 @@
   },
   "description": "",
   "main": "dist/index.js",
+  "module": "dist.esm/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && tsc -p .",
+    "clean": "rimraf dist",
+    "build": "npm run clean && tsc -p .",
+    "build:esm": "npm run clean && tsc -p tsconfig.esm.json",
     "prepare": "npm test",
     "test": "npm run build && node dist/test.js"
   },
