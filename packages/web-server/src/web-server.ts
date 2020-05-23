@@ -155,7 +155,22 @@ export class WebServer {
 
 	reportRequest(event : RouteEvent, source : string) {
 		if (!this.options.silent) {
-			this.logger.info(`${source}`);
+			let req : any = event.request;
+			let method = event.request.method;
+			let path = event.request.path;
+
+			// When using fastify as the underlying server, you must 
+			// access route-specific metadata from the underlying Node.js 
+			// request
+
+			if (req.req) {
+				if (!method)
+					method = req.req.method;
+				if (!path)
+					path = req.req.path;
+			}
+
+			this.logger.info(`${method.toUpperCase()} ${path} » ${source}`);
 		}
 	}
 
@@ -168,7 +183,7 @@ export class WebServer {
 
 		this.engine.addRoute(method, path, ev => {
 			let requestId = uuid.v4();
-			return this.logger.withContext({ host: 'web-server', requestId }, `${method.toUpperCase()} ${path} | ${requestId}`, () => {
+			return this.logger.withContext({ host: 'web-server', requestId }, requestId, () => {
 				return handler(ev);
 			});
 		}, middleware);

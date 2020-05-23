@@ -408,8 +408,7 @@ export class RouteInstance {
 		// Execute our function by resolving the parameter factories into a set of parameters to provide to the 
 		// function.
 
-		if (!this.server.options.silent)
-			Logger.current.info(`${controllerType.name}.${route.method}()`);
+		this.server.reportRequest(event, `${controllerType.name}.${route.method}()`);
 
 		let result;
 
