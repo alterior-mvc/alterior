@@ -1,6 +1,6 @@
 {
   "name": "@alterior/logging",
-  "version": "3.0.0-beta.60",
+  "version": "3.0.0-beta.61",
   "access": "public",
   "publishConfig": {
     "access": "public"
@@ -27,7 +27,7 @@
     "@alterior/annotations": "^3.0.0-beta.60",
     "@alterior/common": "^3.0.0-beta.60",
     "@alterior/di": "^3.0.0-beta.60",
-    "@alterior/runtime": "^3.0.0-beta.60",
+    "@alterior/runtime": "^3.0.0-beta.61",
     "dotenv": "^6.0.0",
     "rxjs": "^6.3.1"
   },
