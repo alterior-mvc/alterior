@@ -29,6 +29,8 @@ export class ControllerRegistrar {
 		let allRoutes = [];
 
 		this._controllers = controllers.map(type => new ControllerInstance(this.server, type, ownInjector, allRoutes));
+
+		this._controllers.forEach(c => c.initialize());
 		this._controllers.forEach(c => c.mount(this.server));
 	}
 }
@@ -235,6 +237,21 @@ export class ControllerInstance {
 	}
 
 	resolvedMiddleware : express.RequestHandler[];
+
+	initialize() {
+		if (this.instance && typeof this.instance.altOnInit === 'function')
+			this.instance.altOnInit();
+	}
+
+	start() {
+		if (this.instance && typeof this.instance.altOnStart === 'function')
+			this.instance.altOnStart();
+	}
+
+	stop() {
+		if (this.instance && typeof this.instance.altOnStop === 'function')
+			this.instance.altOnStop();
+	}
 
 	mount(webServer : WebServer) {
 		this.prepareMiddleware();

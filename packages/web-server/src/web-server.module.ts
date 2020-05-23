@@ -86,7 +86,8 @@ export class WebServerModule implements OnInit {
         this.webserver = new WebServer(this.app.runtime.injector, this.options, this.logger, this.app.options);
         this.webServerRef.server = this.webserver;
 
-        new ControllerRegistrar(this.webserver).register(this.controllers);
+        let registrar = new ControllerRegistrar(this.webserver);
+        registrar.register(this.controllers);
 
         this.expressRef.application = this.webserver.engine.app;
 
@@ -99,10 +100,12 @@ export class WebServerModule implements OnInit {
             summary: 'Starts a web server backed by the controllers configured in the module tree',
             async start() {
                 self.webserver.start();
+                registrar.controllers.forEach(c => c.start());
             },
 
             async stop() {
                 self.webserver.stop();
+                registrar.controllers.forEach(c => c.stop());
             }
         })
 
