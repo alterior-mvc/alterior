@@ -27,7 +27,10 @@ export class WebServer {
 		this.setupServiceDescription();
 		this.setupInjector(injector);
 		this.options = options || {};
-		this._engine = this._injector.get(WebServerEngine);
+		this._engine = this._injector.get(WebServerEngine, null);
+
+		if (!this._engine)
+			this._engine = new ExpressEngine();
 
 		this.installGlobalMiddleware();
 	}
