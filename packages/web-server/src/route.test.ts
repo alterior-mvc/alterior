@@ -339,7 +339,7 @@ suite(describe => {
 			}
 
 			try {
-				await Application.bootstrap(FakeApp, { autostart: false });
+				await Application.bootstrap(FakeApp, { silent: true, autostart: false });
 			} catch (e) {
 				return;
 			}

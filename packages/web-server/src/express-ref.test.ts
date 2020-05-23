@@ -23,7 +23,7 @@ suite(describe => {
 					constructor(public expressRef : _ExpressRef) {}
 				}
 
-				let app = await Application.bootstrap(FakeApp, { autostart: false });
+				let app = await Application.bootstrap(FakeApp, { silent: true, autostart: false });
 				let module = app.runtime.instances.find(x => x.instance.constructor === FakeApp).instance;
 
 				let expressRef = module.expressRef;

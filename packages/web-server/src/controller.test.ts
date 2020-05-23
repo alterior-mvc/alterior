@@ -64,7 +64,7 @@ suite(describe => {
             class FakeModule {
             }
 
-            let app = await Application.bootstrap(FakeModule);
+            let app = await Application.bootstrap(FakeModule, { silent: true });
             let response = await fetch('http://localhost:32552/foo');
             expect(response.status).to.equal(200);
             
@@ -100,7 +100,7 @@ suite(describe => {
             class FakeModule {
             }
 
-            let app = await Application.bootstrap(FakeModule);
+            let app = await Application.bootstrap(FakeModule, { silent: true });
             let response = await fetch('http://localhost:32553/foo');
             expect(response.status).to.equal(200);
             

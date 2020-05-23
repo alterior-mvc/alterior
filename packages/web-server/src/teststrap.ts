@@ -25,7 +25,8 @@ export function teststrap(module : Function, options? : WebServerOptions) {
         }
 
         let app = await Application.bootstrap(EntryModule, { 
-            autostart: false
+            autostart: false,
+            silent: true
         });
         
         app.inject(WebServerRef).server.options.silent = true;
