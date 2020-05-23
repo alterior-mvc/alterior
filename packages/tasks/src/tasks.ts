@@ -1,6 +1,6 @@
 import { Annotation, MetadataName, AnnotationDecorator } from "@alterior/annotations";
 import { Injectable, InjectionToken, Optional, Injector, Provider, ReflectiveInjector } from "@alterior/di";
-import * as BullQueue from "bull";
+import BullQueue from "bull";
 
 export interface TaskModuleOptions {
     queueName? : string;
