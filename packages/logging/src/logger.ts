@@ -204,7 +204,7 @@ export class FileLogger implements LogListener {
     async write(str : string) {
         let fd = await this.open();
         await new Promise<void>((res, rej) => {
-            fs.write(fd, new Buffer(str), (err, written, buffer) => {
+            fs.write(fd, Buffer.from(str), (err, written, buffer) => {
                 if (err) {
                     rej(err);
                     return;

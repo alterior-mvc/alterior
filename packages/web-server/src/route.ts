@@ -455,7 +455,7 @@ export class RouteInstance {
 					if (response.body instanceof Buffer)
 						event.response.send(response.body);
 					else if (typeof response.body === 'string')
-						event.response.send(new Buffer(response.body)); 
+						event.response.send(Buffer.from(response.body)); 
 					else if (response.body === undefined || response.body === null)
 						event.response.send();
 					else
