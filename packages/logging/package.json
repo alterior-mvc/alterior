@@ -7,9 +7,13 @@
   },
   "description": "",
   "main": "./dist/index.js",
+  "module": "./dist.esm/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p .",
+    "clean": "rimraf dist && rimraf dist.esm",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc -p .",
+    "build:esm": "tsc -p tsconfig.esm.json",
     "prepare": "npm run test",
     "test": "npm run build && node dist/test.js"
   },
@@ -40,6 +44,7 @@
     "@types/zone.js": "^0.5.12",
     "chai": "^4.2.0",
     "razmin": "^0.6.10",
+    "rimraf": "^3.0.2",
     "typescript": "^3.9.3"
   },
   "gitHead": "c4c6a563ebc018813b174dbed997adb2ec8fbb02"
