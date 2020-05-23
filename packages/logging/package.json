@@ -29,18 +29,18 @@
     "@alterior/di": "^3.0.0-beta.60",
     "@alterior/runtime": "^3.0.0-beta.61",
     "dotenv": "^6.0.0",
-    "rxjs": "^6.3.1"
+    "rxjs": "^6.5.5"
   },
   "peerDependencies": {
     "@types/zone.js": "^0.10.2"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.7",
-    "@types/node": "^10.12.27",
+    "@types/chai": "^4.2.11",
+    "@types/node": "^10.17.24",
     "@types/zone.js": "^0.5.12",
     "chai": "^4.2.0",
-    "razmin": "^0.6.7",
-    "typescript": "^3.0.3"
+    "razmin": "^0.6.10",
+    "typescript": "^3.9.3"
   },
   "gitHead": "c4c6a563ebc018813b174dbed997adb2ec8fbb02"
 }

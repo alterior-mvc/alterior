@@ -27,12 +27,12 @@
     "@alterior/common": "^3.0.0-beta.60",
     "@alterior/di": "^3.0.0-beta.60",
     "@alterior/runtime": "^3.0.0-beta.61",
-    "rxjs": "^6.3.2",
+    "rxjs": "^6.5.5",
     "xhr2": "^0.1.4"
   },
   "gitHead": "c4c6a563ebc018813b174dbed997adb2ec8fbb02",
   "devDependencies": {
     "razmin": "^0.5.5",
-    "typescript": "^3.0.3"
+    "typescript": "^3.9.3"
   }
 }
