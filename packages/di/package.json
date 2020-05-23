@@ -8,11 +8,12 @@
   "description": "",
   "main": "dist/index.js",
   "module": "dist.esm/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "clean": "rimraf dist",
-    "build": "npm run clean && tsc -p .",
-    "build:esm": "npm run clean && tsc -p tsconfig.esm.json",
+    "clean": "rimraf dist && rimraf dist.esm",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc -p .",
+    "build:esm": "tsc -p tsconfig.esm.json",
     "prepare": "npm test",
     "test": "npm run build && node dist/test.js"
   },
@@ -50,7 +51,7 @@
     "razmin": "^0.6.10",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.7.1",
-    "tslib": "1.9.3",
+    "tslib": "^2.0.0",
     "tslint": "5.11.0",
     "tslint-config-prettier": "1.17.0",
     "typescript": "^3.9.3"
