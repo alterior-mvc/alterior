@@ -8,6 +8,7 @@ import { teststrap } from './teststrap';
 import { QueryParam, Body, Session, PathParam } from './input';
 import { WebService } from './service';
 import { HttpError } from '@alterior/common';
+import { Application } from '@alterior/runtime';
 
 let nextFreePort = 10010;
 
@@ -322,6 +323,28 @@ suite(describe => {
 			
 			expect(observedBar).to.equal('123');
 			expect(observedBaz).to.equal('321');
+		});
+
+		it('should not allow path parameter binding without a type', async () => {
+
+			let observedBar;
+
+			@WebService()
+			class FakeApp {
+				@Get('/foo/:bar')
+				getX(bar) {
+					observedBar = bar;
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			try {
+				await Application.bootstrap(FakeApp, { autostart: false });
+			} catch (e) {
+				return;
+			}
+
+			expect(false, 'Bootstrapping the app should have failed');
 		});
 
 		it('should be reading parameter type metadata to discover how to provide parameters', async () => {

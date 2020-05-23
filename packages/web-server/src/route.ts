@@ -139,8 +139,14 @@ export class RouteMethodParameter<T = any> {
 
 		if (!factory) {
 			let sanitizedType = paramType ? (paramType.name || '<unknown>') : '<undefined>';
+
 			throw new Error(
 				`Unable to fulfill route method parameter '${paramName}' of type '${sanitizedType}'\r\n`
+				+ (this.route.params.find(x => x == paramName) 
+					? `There is a path parameter (:${paramName}) but it was not bound because `
+					  + `the method parameter is not one of ${simpleTypes.map(x => x.name).join(', ')}.\r\n`
+					: ``
+				  )
 				+ `While preparing route ${this.route.definition.method} ${this.route.definition.path} ` 
 				+ `with method ${this.route.definition.method}()`
 			);
