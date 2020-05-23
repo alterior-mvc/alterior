@@ -9,7 +9,10 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p .",
+    "clean": "rimraf dist && rimraf dist.esm",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc -p .",
+    "build:esm": "tsc -p tsconfig.esm.json",
     "prepare": "npm run test",
     "test": "npm run build && node dist/test/test.js"
   },
@@ -33,6 +36,7 @@
   "gitHead": "c4c6a563ebc018813b174dbed997adb2ec8fbb02",
   "devDependencies": {
     "razmin": "^0.5.5",
+    "rimraf": "^3.0.2",
     "typescript": "^3.9.3"
   }
 }
