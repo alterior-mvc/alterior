@@ -6,3 +6,4 @@ dist/test.js
 dist/test/
 src/**/*.ts
 **/*.tgz
+tools/
