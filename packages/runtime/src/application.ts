@@ -173,6 +173,8 @@ export class Application {
 				throw e;
 			}
 
+			(<RolesService>injector.get(RolesService)).silent = options.silent;
+			
 			runtime.load(injector);
 			runtime.fireEvent('OnInit');
 			runtime.configure();

@@ -142,8 +142,11 @@ export class RolesService {
         await this.startAll();
     }
 
+    silent = false;
+
     async startAll() {
-        this.effectiveRoles.forEach(x => console.log(`** [${x.identifier}] Starting`));
+        if (!this.silent)
+            this.effectiveRoles.forEach(x => console.log(`** [${x.identifier}] Starting`));
 
         await Promise.all(
             this.effectiveRoles
@@ -153,7 +156,8 @@ export class RolesService {
     }
 
     async stopAll() {
-        this.effectiveRoles.forEach(x => console.log(`** [${x.identifier}] Stopping`));
+        if (!this.silent)
+            this.effectiveRoles.forEach(x => console.log(`** [${x.identifier}] Stopping`));
 
         await Promise.all(
             this.activeRoles

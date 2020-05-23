@@ -1,5 +1,5 @@
 import { Injectable, Optional } from '@alterior/di';
-import { ExecutionContext } from '@alterior/runtime';
+import { ExecutionContext, Application } from '@alterior/runtime';
 
 export type LogSeverity = 'debug' | 'info' | 'warning' | 'error' | 'fatal';
 
@@ -238,6 +238,7 @@ export interface LoggingOptions {
 export class ZonedLogger {
     constructor(
         protected optionsRef : LoggingOptionsRef,
+        protected app? : Application,
         sourceLabel? : string
     ) {
         this._sourceLabel = sourceLabel;
@@ -248,12 +249,17 @@ export class ZonedLogger {
         }
 
         if (!this._listeners) {
-            this._listeners = DEFAULT_LISTENERS;
+            let defaultListeners = DEFAULT_LISTENERS;
+
+            if (app && app.options.silent)
+                defaultListeners = [];
+               
+            this._listeners = defaultListeners;
         }
     }
     
     clone() {
-        let logger = new ZonedLogger(this.optionsRef, this._sourceLabel);
+        let logger = new ZonedLogger(this.optionsRef, this.app, this._sourceLabel);
         Object.keys(this).filter(x => typeof this[x] !== 'function').forEach(key => logger[key] = this[key]);
         return logger;
     }
@@ -269,7 +275,7 @@ export class ZonedLogger {
     static readonly ZONE_LOCAL_NAME = '@alterior/logger:Logger.current';
 
     public static get current(): ZonedLogger {
-        return Zone.current.get(Logger.ZONE_LOCAL_NAME) || new ZonedLogger(null);
+        return Zone.current.get(Logger.ZONE_LOCAL_NAME) || new ZonedLogger(null, null);
     }
 
     get listeners() {
@@ -362,9 +368,10 @@ export class ZonedLogger {
 export class Logger extends ZonedLogger {
     constructor(
         @Optional()
-        optionsRef : LoggingOptionsRef
+        optionsRef : LoggingOptionsRef,
+        app? : Application
     ) {
-        super(optionsRef);
+        super(optionsRef, app);
     }
     
     clone() {
