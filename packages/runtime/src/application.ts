@@ -6,7 +6,7 @@ import { ReflectiveInjector, Provider, Injectable,
 import { Runtime } from './modules';
 import { ApplicationArgs } from './args';
 import { RolesService } from './roles.service';
-import { Environment } from '@alterior/common';
+import { Environment, Time } from '@alterior/common';
 
 require('source-map-support').install();
 
@@ -147,7 +147,8 @@ export class Application {
 			let providers : Provider[] = [
 				ApplicationArgs,
 				RolesService,
-				Environment
+				Environment,
+				Time
 			];
 	
 			runtime.contributeProviders(providers);

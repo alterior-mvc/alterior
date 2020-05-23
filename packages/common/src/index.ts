@@ -12,3 +12,4 @@ export * from './serializer';
 export * from './lazy-promise';
 export * from './locks';
 export * from './presentation';
+export * from './time';

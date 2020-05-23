@@ -2,6 +2,7 @@ import { describe, it } from 'razmin';
 import { Module, Injector, Inject, Injectable, Optional } from '@alterior/di';
 import { Application } from './application';
 import { expect } from 'chai';
+import { Time, Environment } from '@alterior/common';
 
 describe("Modules", () => {
     it('allows injection of the Injector', () => {
@@ -198,6 +199,7 @@ describe("Modules", () => {
         expect(application.runtime.instances.filter(x => x.definition.target === SubModule).length).to.eq(1);
         expect(log).to.eq('dependency;sub;test;');
     });
+    
     it('runs the altOnInit of all modules in dependency-order', async () => {
         let log = '';
 
@@ -225,5 +227,90 @@ describe("Modules", () => {
         expect(application.runtime).to.exist;
         expect(application.runtime.instances.filter(x => x.definition.target === SubModule).length).to.eq(1);
         expect(log).to.eq('dependency;sub;test;');
+    });
+    
+    it('injects Time', async () => {
+        let observedTime : Time;
+        let baseTime = Date.now();
+
+        @Module()
+        class TestModule {
+            constructor(time : Time) {
+                observedTime = time;
+            }
+        }
+
+        let application = await Application.bootstrap(TestModule);
+
+        expect(observedTime).to.exist;
+        expect(observedTime).to.be.instanceOf(Time);
+        expect(typeof observedTime.now() === 'number');
+        expect(observedTime.now()).to.be.at.least(baseTime);
+    });
+
+    it('allows Time to be overridden', async () => {
+        let observedTime : Time;
+        let specialDate = new Date();
+
+        class FakeTime extends Time {
+            now() {
+                return 123;
+            }
+
+            current() {
+                return specialDate;
+            }
+        }
+
+        @Module({
+            providers: [ { provide: Time, useClass: FakeTime }]
+        })
+        class TestModule {
+            constructor(time : Time) {
+                observedTime = time;
+            }
+        }
+
+        let application = await Application.bootstrap(TestModule);
+
+        expect(observedTime).to.exist;
+        expect(observedTime).to.be.instanceOf(FakeTime);
+        expect(observedTime.now()).to.equal(123);
+        expect(observedTime.current()).to.equal(specialDate);
+    });
+
+    it('injects Environment', async () => {
+        let observedEnv : Environment;
+        @Module()
+        class TestModule {
+            constructor(env : Environment) {
+                observedEnv = env;
+            }
+        }
+
+        let application = await Application.bootstrap(TestModule);
+
+        expect(observedEnv).to.exist;
+        expect(observedEnv).to.be.instanceOf(Environment);
+    });
+
+    it('allows Environment to be overridden', async () => {
+        let observedEnv : Environment;
+
+        class FakeEnvironment extends Environment {
+
+        }
+
+        @Module({ providers: [ { provide: Environment, useClass: FakeEnvironment } ] })
+        class TestModule {
+            constructor(env : Environment) {
+                observedEnv = env;
+            }
+        }
+
+        let application = await Application.bootstrap(TestModule);
+
+        expect(observedEnv).to.exist;
+        expect(observedEnv).to.be.instanceOf(FakeEnvironment);
     });
 })
