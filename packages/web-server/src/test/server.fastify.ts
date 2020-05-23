@@ -1,5 +1,5 @@
 
-import * as fastify from 'fastify';
+import fastify from 'fastify';
 
 fastify()
     .post('/', async (req, res) => res.send({ saw: req.body.value }))

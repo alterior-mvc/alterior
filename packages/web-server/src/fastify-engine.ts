@@ -1,4 +1,4 @@
-import * as fastify from "fastify";
+import fastify from "fastify";
 import * as http from "http";
 import { RouteEvent } from "./metadata";
 import { WebServerEngine } from "./web-server-engine";

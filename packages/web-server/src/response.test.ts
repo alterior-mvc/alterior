@@ -8,7 +8,7 @@ import { Module } from '@alterior/di';
 import { WebServerModule } from './web-server.module';
 import { ExpressRef } from './express-ref';
 
-import * as supertest from 'supertest';
+import supertest from 'supertest';
 import { WebService } from './service';
 import { teststrap } from './teststrap';
 

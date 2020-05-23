@@ -1,6 +1,6 @@
 import { ExpressRef } from "./express-ref";
 import { Application, AppOptions, AppOptionsAnnotation } from "@alterior/runtime";
-import * as supertest from 'supertest';
+import supertest from 'supertest';
 import { Module } from "@alterior/di";
 import { WebServerOptions } from "./web-server-options";
 import { WebServerRef } from "./web-server-ref";
