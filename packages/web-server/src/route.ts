@@ -382,7 +382,7 @@ export class RouteInstance {
 		let requestId = uuid.v4();
 		return this.server.logger.withContext(
 			{ host: 'web-server', requestId }, 
-			`${this.definition.method.toUpperCase()} ${this.definition.path} | ${requestId}`, 
+			`${this.definition.httpMethod.toUpperCase()} ${this.definition.path} | ${requestId}`, 
 			() => {
 				return this.execute(instance, event);
 			}
