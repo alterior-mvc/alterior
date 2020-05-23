@@ -351,7 +351,7 @@ suite(describe => {
 			expect(observedQ).to.equal('baz');
 		});
 
-		it('should automatically parse numbers', async () => {
+		it('should automatically parse numbers in QueryParam', async () => {
 
 			let observedEvent;
 			let observedQ;
@@ -378,7 +378,62 @@ suite(describe => {
 			expect(observedQ).to.equal(123);
 		});
 
-		it('should return 400 when string is passed for number', async () => {
+		it('should automatically parse numbers in PathParam', async () => {
+
+			let observedEvent;
+			let observedNum;
+
+			@WebService()
+			class FakeApp {
+				@Get('/foo/:num')
+				getX(num : number, ev : RouteEvent) { // note they are swapped
+					observedEvent = ev;
+					observedNum = num;
+
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			await teststrap(FakeApp)
+				.get('/foo/123')
+				.expect(200, { ok: true })
+			;
+			
+			expect(observedEvent.response).to.not.be.undefined;
+			expect(observedEvent.request).to.not.be.undefined;
+
+			expect(typeof observedNum === 'number', 'observedNum should be a number')
+			expect(observedNum).to.equal(123);
+		});
+
+		it('should respond with 400 when expecting a number PathParam but a string is provided', async () => {
+
+			let observedEvent : RouteEvent;
+			let observedNum : number = undefined;
+			let executed = false;
+			@WebService()
+			class FakeApp {
+				@Get('/foo/:num')
+				getX(num : number, ev : RouteEvent) { // note they are swapped
+					executed = true;
+					observedEvent = ev;
+					observedNum = num;
+
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			await teststrap(FakeApp)
+				.get('/foo/abc')
+				.expect(400, { error: 'invalid-request', message: 'The parameter num must be a valid number' })
+			;
+			
+			expect(observedEvent).not.to.exist;
+			expect(observedNum).not.to.exist;
+			expect(executed).to.be.false;
+		});
+
+		it('should return 400 when string is passed for number for QueryParam', async () => {
 
 			let observedEvent;
 			let observedQ;
