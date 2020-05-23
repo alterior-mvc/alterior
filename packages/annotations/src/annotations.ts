@@ -1,3 +1,5 @@
+/// <reference types="reflect-metadata" />
+
 /**
  * @alterior/annotations
  * A class library for handling Typescript metadata decorators via "annotation" classes

@@ -1,6 +1,7 @@
-import * as assert from 'assert';
+/// <reference types="reflect-metadata" />
+
 import { Annotation, IAnnotation, METHOD_PARAMETER_ANNOTATIONS_KEY, ANNOTATIONS_KEY, PROPERTY_ANNOTATIONS_KEY, CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY, AnnotationTargetError, Annotations, MetadataName } from './annotations';
-import { expect } from 'chai';
+import { expect, assert } from 'chai';
 import { suite } from 'razmin';
 
 const META_NAME = 'altTests:Label';

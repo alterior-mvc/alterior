@@ -9,8 +9,10 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc -p .",
-    "clean": "rimraf dist",
+    "clean": "rimraf dist && rimraf dist.esm",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc -p .",
+    "build:esm": "tsc -p tsconfig.esm.json",
     "prepare": "npm run test",
     "test": "npm run build && node dist/test.js"
   },
@@ -26,14 +28,14 @@
   "homepage": "https://github.com/alterior-mvc/alterior#readme",
   "dependencies": {
     "@alterior/common": "^3.0.0-beta.62",
-    "reflect-metadata": "^0.1.12"
+    "reflect-metadata": "^0.1.12",
+    "tslib": "^2.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
     "@types/express": "^4.17.6",
     "@types/node": "^10.17.24",
     "@types/supertest": "^2.0.9",
-    "assert": "^1.5.0",
     "chai": "^3.5.0",
     "razmin": "^0.5.5",
     "rimraf": "^2.7.1",
