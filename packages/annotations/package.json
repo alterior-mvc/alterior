@@ -37,7 +37,7 @@
     "@types/node": "^10.17.24",
     "@types/supertest": "^2.0.9",
     "chai": "^3.5.0",
-    "razmin": "^0.6.11",
+    "razmin": "^0.6.13",
     "rimraf": "^2.7.1",
     "supertest": "^3.1.0",
     "swagger-editor-dist": "^3.9.0",

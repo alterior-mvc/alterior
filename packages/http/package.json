@@ -35,7 +35,7 @@
   },
   "gitHead": "c4c6a563ebc018813b174dbed997adb2ec8fbb02",
   "devDependencies": {
-    "razmin": "^0.6.11",
+    "razmin": "^0.6.13",
     "rimraf": "^3.0.2",
     "typescript": "^3.9.3"
   }
