@@ -1,0 +1,711 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Runtime | @alterior/runtime</title>
+	<meta name="description" content="Documentation for @alterior/runtime">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@alterior/runtime</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="runtime.html">Runtime</a>
+				</li>
+			</ul>
+			<h1>Class Runtime</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Used to construct a runtime environment for a given entry module.
+							Handles resolving the module tree into an injector as well as constructing
+						the module instances and running lifecycle events.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">Runtime</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="runtime.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="runtime.html#definitions" class="tsd-kind-icon">definitions</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="runtime.html#instances" class="tsd-kind-icon">instances</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="runtime.html#visited" class="tsd-kind-icon">visited</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Accessors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="runtime.html#injector" class="tsd-kind-icon">injector</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="runtime.html#configure" class="tsd-kind-icon">configure</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="runtime.html#contributeproviders" class="tsd-kind-icon">contribute<wbr>Providers</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="runtime.html#fireevent" class="tsd-kind-icon">fire<wbr>Event</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="runtime.html#getmetadataformodule" class="tsd-kind-icon">get<wbr>Metadata<wbr>For<wbr>Module</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="runtime.html#getservice" class="tsd-kind-icon">get<wbr>Service</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="runtime.html#load" class="tsd-kind-icon">load</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="runtime.html#processcommandline" class="tsd-kind-icon">process<wbr>Command<wbr>Line</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="runtime.html#shutdown" class="tsd-kind-icon">shutdown</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="runtime.html#start" class="tsd-kind-icon">start</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="runtime.html#stop" class="tsd-kind-icon">stop</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Runtime<span class="tsd-signature-symbol">(</span>entryModule<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="runtime.html" class="tsd-signature-type">Runtime</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L32">src/modules.ts:32</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>entryModule: <span class="tsd-signature-type">Function</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="runtime.html" class="tsd-signature-type">Runtime</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="definitions" class="tsd-anchor"></a>
+					<h3>definitions</h3>
+					<div class="tsd-signature tsd-kind-icon">definitions<span class="tsd-signature-symbol">:</span> <a href="moduledefinition.html" class="tsd-signature-type">ModuleDefinition</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L37">src/modules.ts:37</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="instances" class="tsd-anchor"></a>
+					<h3>instances</h3>
+					<div class="tsd-signature tsd-kind-icon">instances<span class="tsd-signature-symbol">:</span> <a href="moduleinstance.html" class="tsd-signature-type">ModuleInstance</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = null</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L39">src/modules.ts:39</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="visited" class="tsd-anchor"></a>
+					<h3>visited</h3>
+					<div class="tsd-signature tsd-kind-icon">visited<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ModuleLike</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L38">src/modules.ts:38</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Accessors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="injector" class="tsd-anchor"></a>
+					<h3>injector</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> injector<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Injector</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L161">src/modules.ts:161</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the runtime&#39;s dependency injector. This injector can provide all dependencies specified
+									in the imported modules&#39; <code>providers</code> definitions.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Injector</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="configure" class="tsd-anchor"></a>
+					<h3>configure</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">configure<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L67">src/modules.ts:67</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Perform runtime configuration steps</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="contributeproviders" class="tsd-anchor"></a>
+					<h3>contribute<wbr>Providers</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">contribute<wbr>Providers<span class="tsd-signature-symbol">(</span>providers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Provider</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L56">src/modules.ts:56</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Iterate over the module definitions which are part of this
+										runtime and append to the given array the set of dependency injection
+									providers which are specified in the module definitions.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>providers: <span class="tsd-signature-type">Provider</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>An array which will be populated</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="fireevent" class="tsd-anchor"></a>
+					<h3>fire<wbr>Event</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">fire<wbr>Event<span class="tsd-signature-symbol">(</span>eventName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L148">src/modules.ts:148</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Fire an event to all modules which understand it. Should be upper-camel-case, meaning
+									to fire the altOnStart() method, send &quot;OnStart&quot;.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>eventName: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getmetadataformodule" class="tsd-anchor"></a>
+					<h3>get<wbr>Metadata<wbr>For<wbr>Module</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Metadata<wbr>For<wbr>Module<span class="tsd-signature-symbol">(</span>module<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ModuleLike</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ModuleAnnotation</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L247">src/modules.ts:247</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Retrieve the ModuleAnnotation for a given Module definition, whether it be a class annotated
+									with <code>@Module()</code> or a plain object with <code>$module</code> which configures a module class.</p>
+								</div>
+								<p>This is an alias of ModuleAnnotation.getForClass(module)</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>module: <span class="tsd-signature-type">ModuleLike</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ModuleAnnotation</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+					<a name="getservice" class="tsd-anchor"></a>
+					<h3>get<wbr>Service</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Service&lt;T&gt;<span class="tsd-signature-symbol">(</span>ctor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>constructor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L45">src/modules.ts:45</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get a specific service from the dependency injector.</p>
+								</div>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ctor: <span class="tsd-signature-symbol">{ </span>constructor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>constructor<span class="tsd-signature-symbol">: </span>function</h5>
+											<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon">new __type<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<aside class="tsd-sources">
+														<ul>
+															<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L45">src/modules.ts:45</a></li>
+														</ul>
+													</aside>
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="load" class="tsd-anchor"></a>
+					<h3>load</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">load<span class="tsd-signature-symbol">(</span>injector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Injector</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="moduleinstance.html" class="tsd-signature-type">ModuleInstance</a><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L172">src/modules.ts:172</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Instantiate the modules of this runtime using the given dependency injector.
+										The injector will be inherited into an injector that provides the dependencies
+									specified in the imported modules&#39; <code>providers</code> definitions.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>injector: <span class="tsd-signature-type">Injector</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="moduleinstance.html" class="tsd-signature-type">ModuleInstance</a><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="processcommandline" class="tsd-anchor"></a>
+					<h3>process<wbr>Command<wbr>Line</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">process<wbr>Command<wbr>Line<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L96">src/modules.ts:96</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="shutdown" class="tsd-anchor"></a>
+					<h3>shutdown</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">shutdown<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L234">src/modules.ts:234</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Stop all running services and shut down the process</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="start" class="tsd-anchor"></a>
+					<h3>start</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">start<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L224">src/modules.ts:224</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Start any services, as defined by modules. For instance, if you import WebServerModule from @alterior/web-server,
+									calling this will instruct the module to begin serving on the configured port.</p>
+								</div>
+								<p>This will send the <code>OnStart</code> lifecycle event to all modules, which triggers the <code>altOnStart()</code> method of any module
+									which implements it to be called. It also instructs the RolesService to start roles as per it&#39;s configuration.
+								For more information about Roles, see the documentation for RolesService.</p>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="stop" class="tsd-anchor"></a>
+					<h3>stop</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">stop<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/runtime/src/modules.ts#L210">src/modules.ts:210</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Stop any services, as defined by imported modules of this runtime. For instance, if you import WebServerModule
+										from @alterior/web-server, calling this will instruct the module to stop serving on the configured port.
+									Also builds in a timeout to allow for all services and operations to stop before resolving.</p>
+								</div>
+								<p>This will send the <code>OnStop</code> lifecycle event to all modules, which triggers the <code>altOnStop()</code> method of any module
+									which implements it to be called. It also instructs the RolesService to stop any roles which are currently running.
+								For more information about Roles, see the documentation for RolesService.</p>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="appoptionsannotation.html" class="tsd-kind-icon">App<wbr>Options<wbr>Annotation</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="application.html" class="tsd-kind-icon">Application</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="applicationargs.html" class="tsd-kind-icon">Application<wbr>Args</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="applicationoptionsref.html" class="tsd-kind-icon">Application<wbr>Options<wbr>Ref</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="constructormethod.html" class="tsd-kind-icon">Constructor<wbr>Method</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="executioncontext.html" class="tsd-kind-icon">Execution<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="field.html" class="tsd-kind-icon">Field</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="method.html" class="tsd-kind-icon">Method</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="moduledefinition.html" class="tsd-kind-icon">Module<wbr>Definition</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="moduleinstance.html" class="tsd-kind-icon">Module<wbr>Instance</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="parameter.html" class="tsd-kind-icon">Parameter</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="property.html" class="tsd-kind-icon">Property</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="reflector.html" class="tsd-kind-icon">Reflector</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="rolesservice.html" class="tsd-kind-icon">Roles<wbr>Service</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
+						<a href="runtime.html" class="tsd-kind-icon">Runtime</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="runtime.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="runtime.html#definitions" class="tsd-kind-icon">definitions</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="runtime.html#instances" class="tsd-kind-icon">instances</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="runtime.html#visited" class="tsd-kind-icon">visited</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="runtime.html#injector" class="tsd-kind-icon">injector</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="runtime.html#configure" class="tsd-kind-icon">configure</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="runtime.html#contributeproviders" class="tsd-kind-icon">contribute<wbr>Providers</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="runtime.html#fireevent" class="tsd-kind-icon">fire<wbr>Event</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="runtime.html#getmetadataformodule" class="tsd-kind-icon">get<wbr>Metadata<wbr>For<wbr>Module</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+								<a href="runtime.html#getservice" class="tsd-kind-icon">get<wbr>Service</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="runtime.html#load" class="tsd-kind-icon">load</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="runtime.html#processcommandline" class="tsd-kind-icon">process<wbr>Command<wbr>Line</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="runtime.html#shutdown" class="tsd-kind-icon">shutdown</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="runtime.html#start" class="tsd-kind-icon">start</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="runtime.html#stop" class="tsd-kind-icon">stop</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="type.html" class="tsd-kind-icon">Type</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/applicationoptions.html" class="tsd-kind-icon">Application<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="../interfaces/constructor.html" class="tsd-kind-icon">Constructor</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/oninit.html" class="tsd-kind-icon">On<wbr>Init</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/onstart.html" class="tsd-kind-icon">On<wbr>Start</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/onstop.html" class="tsd-kind-icon">On<wbr>Stop</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/roleconfiguration.html" class="tsd-kind-icon">Role<wbr>Configuration</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/roleregistration.html" class="tsd-kind-icon">Role<wbr>Registration</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/rolestate.html" class="tsd-kind-icon">Role<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../globals.html#roleconfigurationmode" class="tsd-kind-icon">Role<wbr>Configuration<wbr>Mode</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../globals.html#visibility" class="tsd-kind-icon">Visibility</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="../globals.html#appoptions" class="tsd-kind-icon">App<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="../globals.html#supported_role_modes" class="tsd-kind-icon">SUPPORTED_<wbr>ROLE_<wbr>MODES</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="../globals.html#getparameternames" class="tsd-kind-icon">get<wbr>Parameter<wbr>Names</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="../globals.html#module" class="tsd-kind-icon">module</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

@@ -1,0 +1,793 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@alterior/web-server</title>
+	<meta name="description" content="Documentation for @alterior/web-server">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@alterior/web-server</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>@alterior/web-server</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#alteriorweb-server" id="alteriorweb-server" style="color: inherit; text-decoration: none;">
+					<h1>@alterior/web-server</h1>
+				</a>
+				<p><a href="https://www.npmjs.com/package/@alterior/web-server"><img src="https://img.shields.io/npm/v/@alterior/web-server.svg" alt="Version"></a></p>
+				<p>A framework for building HTTP services in Typescript. Build REST APIs with this. </p>
+				<a href="#getting-started" id="getting-started" style="color: inherit; text-decoration: none;">
+					<h2>Getting started</h2>
+				</a>
+				<p>Install the Alterior runtime, the DI library, and the web-server module:</p>
+				<pre><code><span class="hljs-built_in">npm</span> install reflect-metadata
+<span class="hljs-built_in">npm</span> install @alterior/runtime @alterior/di @alterior/web-server</code></pre>
+				<a href="#a-minimal-example" id="a-minimal-example" style="color: inherit; text-decoration: none;">
+					<h2>A minimal example</h2>
+				</a>
+				<p>For simple use cases, you can build a web service using Alterior in a single file:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { WebService } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/web-server'</span>;
+
+<span class="hljs-meta">@WebService</span>({
+    providers: []
+})
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyWebService <span class="hljs-keyword">implements</span> OnInit {
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/version'</span>)
+    version() {
+        <span class="hljs-keyword">return</span> { version: <span class="hljs-string">"1.0.0"</span> };
+    }
+
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
+    version() {
+        <span class="hljs-keyword">return</span> { hello: <span class="hljs-string">'world'</span> };
+    }
+}
+
+Application.bootstrap(MyWebService);</code></pre>
+				<a href="#building-your-app" id="building-your-app" style="color: inherit; text-decoration: none;">
+					<h2>Building your app</h2>
+				</a>
+				<p>Make sure to enable <code>emitDecoratorMetadata</code> and <code>experimentalDecorators</code> in your project&#39;s <code>tsconfig.json</code>.</p>
+				<a href="#delegation-via-mounting" id="delegation-via-mounting" style="color: inherit; text-decoration: none;">
+					<h2>Delegation via Mounting</h2>
+				</a>
+				<p>You can delegate parts of your web service to dedicated controllers by mounting them within your main service class. Doing so will route specific URLs to specific controllers. Any controller can <code>@Mount()</code>, providing an intuitive way to construct a complete web service from a tree of controllers:</p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@WebService</span>(...)
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyWebService <span class="hljs-keyword">implements</span> OnInit {
+    <span class="hljs-meta">@Mount</span>(<span class="hljs-string">'/users'</span>)
+    usersController : UsersController;
+
+    <span class="hljs-meta">@Mount</span>(<span class="hljs-string">'/some-plugin'</span>)
+    somePlugin : SomePluginController;
+}</code></pre>
+				<p>When you nest controllers using <code>@Mount()</code>, each subcontroller inherits the path prefix defined by all parents:</p>
+				<pre><code class="language-typescript">
+<span class="hljs-meta">@Controller</span>(<span class="hljs-string">'/f'</span>)
+<span class="hljs-keyword">class</span> SubSubController {
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/g'</span>)
+    <span class="hljs-keyword">get</span>() {
+        <span class="hljs-keyword">return</span> { message: <span class="hljs-string">'you requested: GET /a/b/c/d/e/f/g'</span> };
+    }
+}
+
+<span class="hljs-meta">@Controller</span>(<span class="hljs-string">'/c'</span>)
+<span class="hljs-keyword">class</span> SubController {
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/d'</span>)
+    <span class="hljs-keyword">get</span>() {
+        <span class="hljs-keyword">return</span> { message: <span class="hljs-string">'you requested: GET /a/b/c/d'</span> };
+    }
+
+    <span class="hljs-meta">@Mount</span>(<span class="hljs-string">'/e'</span>)
+    subsub : SubSubController;
+}
+
+<span class="hljs-meta">@Controller</span>(<span class="hljs-string">'/a'</span>)
+<span class="hljs-keyword">class</span> MainController {
+    <span class="hljs-meta">@Mount</span>(<span class="hljs-string">'/b'</span>)
+    sub : SubController;
+}</code></pre>
+				<p>Note: You do not always have to specify a path for <code>@Controller()</code>, <code>@Mount()</code> or <code>@Get()</code>, we have done so here for to keep the example clear. If you omit a path or set it to <code>&#39;&#39;</code>, the element will not contribute any path segments to the final path registered for your routes.</p>
+				<a href="#mechanics-of-webservice" id="mechanics-of-webservice" style="color: inherit; text-decoration: none;">
+					<h2>Mechanics of <code>@WebService</code></h2>
+				</a>
+				<p><code>@WebService()</code> declares the class as a module (<code>@Module()</code>), applies <code>@AppOptions()</code>, and registers itself as a controller class within that module.
+				You can pass any of the options for <code>@Module()</code>, <code>@AppOptions()</code> as well as the options available for <code>WebServerModule.configure(...)</code>.</p>
+				<p>The following definition is equivalent to using <code>@WebService(options?)</code>:</p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@AppOptions</span>(options)
+<span class="hljs-meta">@Module</span>({
+    ...options,
+    controllers: [ MyWebService ],
+    imports: [ WebServerModule.configure(options) ]
+})
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyWebService { <span class="hljs-comment">/* ... */</span> }</code></pre>
+				<p>For a larger application, you may wish to separate your
+				top-level module from your web service implementation, especially when your application serves multiple roles. </p>
+				<pre><code class="language-typescript"><span class="hljs-comment">// app.module.ts</span>
+
+<span class="hljs-keyword">import</span> { AppOptions } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/runtime'</span>;
+<span class="hljs-keyword">import</span> { Module } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/di'</span>;
+<span class="hljs-keyword">import</span> { WebServerModule } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/web-server'</span>;
+<span class="hljs-keyword">import</span> { FooController } <span class="hljs-keyword">from</span> <span class="hljs-string">'./foo.controller'</span>;
+
+<span class="hljs-meta">@AppOptions</span>({ name: <span class="hljs-string">'My Application'</span> })
+<span class="hljs-meta">@Module</span>({
+    imports: [ WebServerModule ],
+    controllers: [ FooController ]
+})
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> AppModule {
+}</code></pre>
+				<p>Note that we need to explicitly include the <code>WebServerModule</code> here.
+				We can also configure that module here if desired:</p>
+				<pre><code class="language-typescript">    imports: [ WebServerModule.configure({ port: <span class="hljs-number">1234</span>, ... }) ]</code></pre>
+				<p>Now, let&#39;s create <code>FooController</code>, complete with a number of example routes so you can get an idea of the style:</p>
+				<pre><code class="language-typescript"><span class="hljs-comment">// foo.controller.ts</span>
+
+<span class="hljs-keyword">import</span> { Controller, Get, RouteEvent } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/core'</span>;
+<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> express <span class="hljs-keyword">from</span> <span class="hljs-string">'express'</span>;
+
+<span class="hljs-meta">@Controller</span>(<span class="hljs-string">'/optional-prefix'</span>)
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> FooController {
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/simple'</span>)
+    <span class="hljs-keyword">public</span> simple(ev : RouteEvent)
+    {
+        <span class="hljs-keyword">return</span> { status: <span class="hljs-string">'success!'</span> };
+    }
+
+    <span class="hljs-comment">/**
+     * You can also return promises.
+     */</span>
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/promises'</span>)
+    <span class="hljs-keyword">public</span> canHazPromises()
+    {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.resolve({ nifty: <span class="hljs-number">123</span> });
+    }
+
+    <span class="hljs-comment">/**
+     * Or use async/await (the recommended way!)
+     */</span>
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/async'</span>)
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> canHasAsync()
+    {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> someFunction();
+    }
+
+    <span class="hljs-comment">/**
+     * The parameters specified by your route methods are automatically analyzed,
+     * and the correct value is provided depending on what type (and in some cases what name)
+     * your parameter has.
+     *
+     * For example, you can get access to the Express request and response by injecting 
+     * RouteEvent.
+     */</span>
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/useRouteEvent'</span>)
+    <span class="hljs-keyword">public</span> canHazRouteEvent(ev : RouteEvent)
+    {
+        ev.response.status(<span class="hljs-number">200</span>).send(<span class="hljs-string">"/foo works!"</span>);
+    }
+
+    <span class="hljs-comment">/**
+     * You can also request the Express request/response explicitly (note that this is 
+     * based on the parameter name, see below for more details about
+     * route method parameters).
+     */</span>
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/bar'</span>)
+    <span class="hljs-keyword">public</span> bar(req : express.Request, res : express.Response)
+    {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.resolve({ nifty: <span class="hljs-number">123</span> });
+    }
+
+    <span class="hljs-comment">/**
+     * Promises can reject with an HttpException to specify HTTP errors...
+     */</span>
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/error'</span>)
+    <span class="hljs-keyword">public</span> errorExample(req : express.Request, res : express.Response)
+    {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.reject(<span class="hljs-keyword">new</span> HttpException(<span class="hljs-number">301</span>, {message: <span class="hljs-string">"No, over there"</span>}));
+    }
+
+    <span class="hljs-comment">/**
+     * Or return an Alterior Response object for more flexibility...
+     */</span>
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/specificResponse'</span>)
+    <span class="hljs-keyword">public</span> specificResponseAndSuch(req : express.Request, res : express.Response)
+    {
+    <span class="hljs-keyword">return</span> Response.serverError({ message: <span class="hljs-string">`uh oh, that's never happened before`</span> });
+    }
+
+    <span class="hljs-comment">/**
+     * You can even specify middleware directly on a route method...
+     */</span>
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/middlewareRocks'</span>, {
+        middleware: [ myGreatMiddleware(someParameters) ]
+    })
+    <span class="hljs-keyword">public</span> middlewareRolls(req : express.Request, res : express.Response)
+    {
+    <span class="hljs-keyword">return</span> Response.serverError({ message: <span class="hljs-string">`uh oh, that's never happened before`</span> });
+    }
+
+}</code></pre>
+				<p>Finally, we would make a separate entry point (&quot;main&quot;) file:</p>
+				<pre><code class="language-typescript"><span class="hljs-comment">// main.ts </span>
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">'reflect-metadata'</span>;
+
+<span class="hljs-keyword">import</span> { Application } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/runtime'</span>;
+<span class="hljs-keyword">import</span> { AppModule } <span class="hljs-keyword">from</span> <span class="hljs-string">'./app.module'</span>;
+
+Application.bootstrap(AppModule);</code></pre>
+				<a href="#route-parameters" id="route-parameters" style="color: inherit; text-decoration: none;">
+					<h2>Route Parameters</h2>
+				</a>
+				<p>Alterior inspects the parameters of controller methods to determine what values to provide.
+					First, parameters of type <code>RouteEvent</code> are fulfilled with an instance of that class which
+				contains the Express request and response objects:</p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@Get</span>(<span class="hljs-string">'/do'</span>)
+doThings(ev : RouteEvent) {
+    ev.response.status(<span class="hljs-number">404</span>).send(<span class="hljs-string">"Not found."</span>);
+}</code></pre>
+				<p>Alterior uses the following rules to fulfill the declared method parameters:</p>
+				<ul>
+					<li>Parameters decorated with <code>@PathParam(&#39;a&#39;)</code> will be fulfilled with the value
+						of path parameter <code>:a</code> from the route path (as in <code>/some/path/:a</code>). The
+					path parameter can be defined in any parent controller/mount context.</li>
+					<li>Parameters decorated with <code>@QueryParam(&#39;q&#39;)</code> will be fulfilled with the query
+					parameter <code>q</code> if provided (<code>?q=...</code>) </li>
+					<li>Parameters which are named <code>body</code> or decorated with <code>@Body()</code> will be fulfilled
+						with the value of <code>request.body</code>. You must use a body parsing middleware
+					(we recommend <code>body-parser</code>) to populate <code>request.body</code>.</li>
+					<li>Parameters which are decorated with <code>Session(&#39;user&#39;)</code> will be populated with
+					the <code>user</code> key of the current session object.</li>
+				</ul>
+				<blockquote>
+					<p>Note: If a path parameter is defined directly in the path passed to <code>@Get()</code>
+						decorator and an (otherwise unfulfilled) parameter with the same name is
+						defined on the method, the method parameter is fulfilled with the path parameter
+						for the current request. Method parameters meant to be fulfilled from any
+					parent controller/mount-defined parameters must be decorated with <code>@PathParam()</code></p>
+				</blockquote>
+				<p>When combined with value returns, you can achieve a very natural style:  </p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> bodyParser <span class="hljs-keyword">from</span> <span class="hljs-string">'body-parser'</span>;
+
+<span class="hljs-keyword">interface</span> MyRequestType {
+    action : <span class="hljs-built_in">string</span>;
+    foo? : <span class="hljs-built_in">number</span>;
+}
+
+<span class="hljs-meta">@Controller</span>({ middleware: [ bodyParser.json() ] })
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyController {
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/do/:action'</span>)
+    doThings(
+        <span class="hljs-meta">@Body</span>() body : MyRequestType, 
+        <span class="hljs-meta">@PathParam</span>(<span class="hljs-string">'action'</span>) action : <span class="hljs-built_in">string</span>, 
+        <span class="hljs-meta">@QueryParam</span>(<span class="hljs-string">'message'</span>) message : <span class="hljs-built_in">string</span>
+    ) {
+        <span class="hljs-keyword">return</span> {status: <span class="hljs-string">"success"</span>};
+    }
+}</code></pre>
+				<a href="#httperror" id="httperror" style="color: inherit; text-decoration: none;">
+					<h2><code>HttpError</code></h2>
+				</a>
+				<p>The <code>HttpError</code> class is included to signal Alterior to send certain HTTP status codes and responses back to the client when exceptional circumstances occur.</p>
+				<pre><code class="language-typescript">    <span class="hljs-comment">// Perhaps we couldn't contact a microservice needed to fulfill the request.</span>
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> HttpError(<span class="hljs-number">502</span>, <span class="hljs-string">"Service is not available"</span>);</code></pre>
+				<a href="#response" id="response" style="color: inherit; text-decoration: none;">
+					<h2><code>Response</code></h2>
+				</a>
+				<p>Alterior includes a <code>Response</code> class that makes it easy to return any HTTP response from your method. You can use this instead of HTTP exceptions if you wish, so here&#39;s the same example using <code>Response</code>:</p>
+				<pre><code class="language-typescript">    <span class="hljs-comment">// Perhaps we couldn't contact a microservice needed to fulfill the request.</span>
+    <span class="hljs-keyword">return</span> Response.badGateway({ message: <span class="hljs-string">"Service is not available"</span> });</code></pre>
+				<a href="#dependency-injection" id="dependency-injection" style="color: inherit; text-decoration: none;">
+					<h2>Dependency Injection</h2>
+				</a>
+				<p>Modules, controllers and services all participate in dependency injection. For more information about how DI works in Alterior apps, see the documentation for <a href="../di/README.md">@alterior/di</a>.</p>
+				<a href="#applying-middleware" id="applying-middleware" style="color: inherit; text-decoration: none;">
+					<h2>Applying Middleware</h2>
+				</a>
+				<p>Since Alterior uses Express (<a href="https://expressjs.com/">https://expressjs.com/</a>), it supports any Express-compatible or Connect based middleware. Middleware can be used globally, it can be mounted to a specific set of URLs,  or it can be declared as part of a route, just like you can with vanilla Express.</p>
+				<p>To add middleware globally you must use the <code>@AppOptions</code> decorator on your app class:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> bodyParser <span class="hljs-keyword">from</span> <span class="hljs-string">'body-parser'</span>; <span class="hljs-comment">// you will need to load the body-parser typings for this syntax</span>
+<span class="hljs-meta">@AppOptions</span>({
+    middleware: [bodyParser.json()]
+})
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> Application {
+    <span class="hljs-comment">// ...</span>
+}</code></pre>
+				<p>To add &quot;mounted&quot; middleware:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> fileUpload = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express-fileupload'</span>);
+
+<span class="hljs-meta">@AppOptions</span>({
+    middleware: [
+        [<span class="hljs-string">'/files'</span>, fileUpload]
+    ]
+})
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> Application {
+    <span class="hljs-comment">// ...</span>
+}</code></pre>
+				<p>To add route-specific middleware:</p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@Get</span>(<span class="hljs-string">'/foo'</span>, { middleware: [bodyParser.json()] })
+<span class="hljs-keyword">public</span> foo(req : express.Request, res : express.Response) {
+    <span class="hljs-comment">// todo</span>
+}</code></pre>
+				<p>Middleware is inherited from parent controllers when using <code>@Mount()</code>,
+					you can use this to avoid repeating yoruself when building more complex
+				services:</p>
+				<pre><code class="language-typescript">    <span class="hljs-meta">@Controller</span>()
+    <span class="hljs-keyword">class</span> FeatureController {
+        <span class="hljs-meta">@Get</span>() 
+        <span class="hljs-keyword">get</span>() {
+            <span class="hljs-comment">// corsExampleMiddleware runs for this and all requests on this</span>
+            <span class="hljs-comment">// controller </span>
+
+            <span class="hljs-keyword">return</span> {
+                service: <span class="hljs-string">'feature'</span>
+            }
+        }
+    }
+
+    <span class="hljs-meta">@Controller</span>(<span class="hljs-string">''</span>, { 
+        middleware: [ 
+            corsExampleMiddleware({ allowOrigin: <span class="hljs-string">'*'</span> }) 
+        ]
+    })
+    <span class="hljs-keyword">class</span> ApiController {
+        <span class="hljs-meta">@Mount</span>(<span class="hljs-string">'/feature'</span>)
+        feature : FeatureController;
+    }</code></pre>
+				<a href="#uncaught-exceptions" id="uncaught-exceptions" style="color: inherit; text-decoration: none;">
+					<h2>Uncaught Exceptions</h2>
+				</a>
+				<p>When an exception occurs while executing a controller route method (excluding HttpExceptions), Alterior will respond
+					with an HTTP 500 error. By default, exception information will be included with the response. If the caught exception
+					has a <code>toString()</code> method, it will be executed and its return value will be sent. If it does not, the error object will
+				be included directly, being converted along with the rest of the response to JSON.</p>
+				<p><code>throw new Error(&#39;This is the error text&#39;)</code> would produce:</p>
+				<pre><code>{<span class="hljs-string">"message"</span>:<span class="hljs-string">"An exception occurred while handling this request."</span>,<span class="hljs-string">"error"</span>:<span class="hljs-comment">"Error: This is the error text                                                                 </span>
+    at FooController.sampleRequest (music.<span class="hljs-keyword">j</span><span class="hljs-variable">s:36</span>:<span class="hljs-number">29</span>)<span class="hljs-comment">"}</span></code></pre><p><code>throw { foo: &#39;bar&#39; }</code> would product:</p>
+				<pre><code>{<span class="hljs-attr">"message"</span>:<span class="hljs-string">"An exception occurred while handling this request."</span>,<span class="hljs-attr">"error"</span>:{<span class="hljs-attr">"foo"</span>:<span class="hljs-string">"bar"</span>}}</code></pre><p>You can disable the inclusion of exception information in responses (and this is recommended for production).
+				To do so, set <code>AppOptions.hideExceptions</code> to <code>true</code>. The <code>error</code> field will then be excluded from 500 responses.</p>
+				<pre><code>{<span class="hljs-attr">"message"</span>:<span class="hljs-string">"An exception occurred while handling this request."</span>}</code></pre>
+				<a href="#sessions" id="sessions" style="color: inherit; text-decoration: none;">
+					<h2>Sessions</h2>
+				</a>
+				<p>To add session support, use <code>express-session</code>:</p>
+				<pre><code>npm i <span class="hljs-built_in">express</span>-session --<span class="hljs-built_in">save</span>
+typings i dt~<span class="hljs-built_in">express</span>-session --<span class="hljs-built_in">save</span></code></pre><p>Include it as middleware:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> session <span class="hljs-keyword">from</span> <span class="hljs-string">'express-session'</span>;
+<span class="hljs-meta">@AppOptions</span>({
+    middleware: [session({ secret: SESSION_SECRET })]
+})</code></pre>
+				<p>You can then use the session by requesting it as a parameter from your controller methods:</p>
+				<pre><code class="language-typescript">
+<span class="hljs-keyword">interface</span> SessionData {
+    username : <span class="hljs-built_in">string</span>;
+    cartTotal : <span class="hljs-built_in">number</span>;
+}
+
+<span class="hljs-meta">@Controller</span>()
+<span class="hljs-keyword">class</span> SampleController {
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
+    home(session : SessionData) {
+        <span class="hljs-keyword">return</span> session.cartTotal;
+    }
+}</code></pre>
+				<p><a href="https://github.com/alterior-mvc/alterior-mongo">Alterior Mongo</a> alternatively provides a MongoDB-based session provider based on <code>connect-mongo</code>,
+				or you can use any Express/Connect middleware that provides <code>request.session</code>.</p>
+				<a href="#custom-services" id="custom-services" style="color: inherit; text-decoration: none;">
+					<h2>Custom services</h2>
+				</a>
+				<p>To declare a service, simply mark it with <code>@Injectable()</code> from <code>@alterior/di</code> and then include it in the <code>providers</code> list of one of the Alterior module definitions within your application. The service will be made available across your whole application.</p>
+				<a href="#testing" id="testing" style="color: inherit; text-decoration: none;">
+					<h2>Testing</h2>
+				</a>
+				<p>Use <code>teststrap()</code> to test endpoints in your web service. Since the caller and the server are in the same process, the actual HTTP server is skipped, with requests passed directly from the <code>teststrap()</code> test to an instance of your web service.</p>
+				<p><code>teststrap()</code> uses <a href="https://github.com/visionmedia/supertest">supertest</a> as its core testing mechanism. The type of values returned by <code>teststrap()</code> is <code>supertest.Supertest&lt;supertest.Test&gt;</code>.</p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@WebService</span>()
+<span class="hljs-keyword">class</span> ExampleService { 
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
+    info() {
+        <span class="hljs-keyword">return</span> { name: <span class="hljs-string">'example'</span>, version: <span class="hljs-string">'1.0'</span> };
+    }
+}
+
+<span class="hljs-comment">// suite/it/describe are from razmin (https://github.com/rezonant/razmin)</span>
+<span class="hljs-comment">// you could use any test framework to encapsulate the </span>
+<span class="hljs-comment">// teststrap() assertions.</span>
+
+suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt;</span> {
+    describe(<span class="hljs-string">'ExampleService'</span>, <span class="hljs-function"><span class="hljs-params">it</span> =&gt;</span> {
+        it(<span class="hljs-string">'returns its name'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+            <span class="hljs-keyword">await</span> teststrap(ExampleService)
+                .get(<span class="hljs-string">'/'</span>)
+                .expect(<span class="hljs-number">200</span>, { name: <span class="hljs-string">'example'</span>, version: <span class="hljs-string">'1.0'</span> })
+        });
+    });
+});</code></pre>
+				<p>You can reuse a <code>teststrap()</code> test should you need to perform multiple requests in your tests:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> test = teststrap(ExampleService);
+
+<span class="hljs-keyword">await</span> test.get(<span class="hljs-string">'/'</span>)
+    .expect(<span class="hljs-number">200</span>, { name: <span class="hljs-string">'example'</span>, version: <span class="hljs-string">'1.0'</span> })
+;
+
+<span class="hljs-keyword">await</span> test.get(<span class="hljs-string">'/foo'</span>)
+    .expect(<span class="hljs-number">200</span>, { other: <span class="hljs-number">123</span> })
+;</code></pre>
+				<p><code>supertest</code> offers a number of convenient expectations, but sometimes you need to do something more complex:</p>
+				<pre><code class="language-typescript">    <span class="hljs-keyword">import</span> { expect } <span class="hljs-keyword">from</span> <span class="hljs-string">'chai'</span>;
+
+    <span class="hljs-keyword">let</span> res : express.Response = <span class="hljs-keyword">await</span> teststrap(ExampleService)
+        .get(<span class="hljs-string">'/'</span>)
+        .expect(<span class="hljs-number">200</span>)
+    ;
+
+    expect(res.body).to.contain({ name: })</code></pre>
+				<p>For more information about the capabilities of <code>teststrap()</code>, consult the <a href="https://github.com/visionmedia/supertest">supertest documentation</a>.</p>
+				<a href="#accessing-the-express-instance" id="accessing-the-express-instance" style="color: inherit; text-decoration: none;">
+					<h2>Accessing the Express instance</h2>
+				</a>
+				<p>Perhaps you need access to the Express application object to do something Alterior doesn&#39;t support:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span>
+<span class="hljs-meta">@Controller</span>()
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> FooController {
+    <span class="hljs-keyword">constructor</span>(<span class="hljs-params">
+        <span class="hljs-keyword">private</span> expressRef : ExpressRef
+    </span>) {
+        <span class="hljs-keyword">this</span>.expressApp = expressRef.application;
+        <span class="hljs-keyword">this</span>.expressApp.get(<span class="hljs-string">'/something'</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+            res.status(<span class="hljs-number">200</span>).send(<span class="hljs-string">'/something works!'</span>);
+        });
+    }
+
+    <span class="hljs-keyword">private</span> expressApp : express.Application;
+}</code></pre>
+				<a href="#deploying-to-a-cloud-function" id="deploying-to-a-cloud-function" style="color: inherit; text-decoration: none;">
+					<h2>Deploying to a Cloud Function</h2>
+				</a>
+				<p>You can deploy an Alterior web service as a Cloud Function (Google Cloud Functions, AWS Lambda, or other Function-as-a-Service (FaaS) providers) using <code>WebServer.bootstrapCloudFunction()</code>:</p>
+				<pre><code class="language-typescript"><span class="hljs-comment">// main.ts</span>
+
+<span class="hljs-keyword">import</span> { MyWebService } <span class="hljs-keyword">from</span> <span class="hljs-string">'./my-web-service'</span>;
+<span class="hljs-keyword">import</span> { WebServer } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/web-server'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> cloudFunction = WebServer.bootstrapCloudFunction(MyWebService);</code></pre>
+				<p><code>bootstrapCloudFunction()</code> will handle constructing a function which takes an Express <code>request</code> and <code>response</code> and routes the given <code>request</code> through the given Alterior web service module and populating data into <code>response</code>. This is suitable for exporting into a general cloud function environment like GCF or Lambda.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/controllerannotation.html" class="tsd-kind-icon">Controller<wbr>Annotation</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/controllerinstance.html" class="tsd-kind-icon">Controller<wbr>Instance</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/controllerregistrar.html" class="tsd-kind-icon">Controller<wbr>Registrar</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/expressengine.html" class="tsd-kind-icon">Express<wbr>Engine</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/expressref.html" class="tsd-kind-icon">Express<wbr>Ref</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/fastifyengine.html" class="tsd-kind-icon">Fastify<wbr>Engine</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/inputannotation.html" class="tsd-kind-icon">Input<wbr>Annotation</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/inputoptions.html" class="tsd-kind-icon">Input<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/middlewareannotation.html" class="tsd-kind-icon">Middleware<wbr>Annotation</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/openapicontroller.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Controller</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/perfcomparison.html" class="tsd-kind-icon">Perf<wbr>Comparison</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/response.html" class="tsd-kind-icon">Response</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/routeevent.html" class="tsd-kind-icon">Route<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/routeinstance.html" class="tsd-kind-icon">Route<wbr>Instance</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/routemethodparameter.html" class="tsd-kind-icon">Route<wbr>Method<wbr>Parameter</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/routereflector.html" class="tsd-kind-icon">Route<wbr>Reflector</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/server.html" class="tsd-kind-icon">Server</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/servicedescriptionref.html" class="tsd-kind-icon">Service<wbr>Description<wbr>Ref</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/webserver.html" class="tsd-kind-icon">Web<wbr>Server</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/webserverengine.html" class="tsd-kind-icon">Web<wbr>Server<wbr>Engine</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/webservermodule.html" class="tsd-kind-icon">Web<wbr>Server<wbr>Module</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/webserveroptionsref.html" class="tsd-kind-icon">Web<wbr>Server<wbr>Options<wbr>Ref</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/webserverref.html" class="tsd-kind-icon">Web<wbr>Server<wbr>Ref</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/webserversetuperror.html" class="tsd-kind-icon">Web<wbr>Server<wbr>Setup<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/webserviceannotation.html" class="tsd-kind-icon">Web<wbr>Service<wbr>Annotation</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/controllercontext.html" class="tsd-kind-icon">Controller<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/controlleroptions.html" class="tsd-kind-icon">Controller<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/fileupload.html" class="tsd-kind-icon">File<wbr>Upload</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/mountdefinition.html" class="tsd-kind-icon">Mount<wbr>Definition</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/mountoptions.html" class="tsd-kind-icon">Mount<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/openapicomponents.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Components</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/openapicontact.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Contact</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/openapidefinitionproperty.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Definition<wbr>Property</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/openapidefinitionpropertymap.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Definition<wbr>Property<wbr>Map</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/openapimap.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Map</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/openapioperation.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Operation</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/openapiparameter.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Parameter</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/openapiresponse.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/openapiresponsemap.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Response<wbr>Map</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/openapischema.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Schema</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/openapischemaref.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Schema<wbr>Ref</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/openapisecuritydefinition.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Security<wbr>Definition</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/openapisecuritydefinitionmap.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Security<wbr>Definition<wbr>Map</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/openapiservice.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/openapiserviceinfo.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Service<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/openapitag.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Tag</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/routedefinition.html" class="tsd-kind-icon">Route<wbr>Definition</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/routedescription.html" class="tsd-kind-icon">Route<wbr>Description</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/routemethodmetadata.html" class="tsd-kind-icon">Route<wbr>Method<wbr>Metadata</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/routeoptions.html" class="tsd-kind-icon">Route<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/routeparamdescription.html" class="tsd-kind-icon">Route<wbr>Param<wbr>Description</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/servicedescription.html" class="tsd-kind-icon">Service<wbr>Description</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/testresults.html" class="tsd-kind-icon">Test<wbr>Results</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/testsettings.html" class="tsd-kind-icon">Test<wbr>Settings</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/webserveroptions.html" class="tsd-kind-icon">Web<wbr>Server<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/webserviceoptions.html" class="tsd-kind-icon">Web<wbr>Service<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#encodingtype" class="tsd-kind-icon">Encoding<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#middlewaredefinition" class="tsd-kind-icon">Middleware<wbr>Definition</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#controller_classes" class="tsd-kind-icon">CONTROLLER_<wbr>CLASSES</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#controller" class="tsd-kind-icon">Controller</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#middleware" class="tsd-kind-icon">Middleware</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#webservice" class="tsd-kind-icon">Web<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#getparameternames" class="tsd-kind-icon">get<wbr>Parameter<wbr>Names</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#body" class="tsd-kind-icon">Body</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#delete" class="tsd-kind-icon">Delete</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#get" class="tsd-kind-icon">Get</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#mount" class="tsd-kind-icon">Mount</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#options" class="tsd-kind-icon">Options</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#patch" class="tsd-kind-icon">Patch</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#pathparam" class="tsd-kind-icon">Path<wbr>Param</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#post" class="tsd-kind-icon">Post</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#put" class="tsd-kind-icon">Put</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#queryparam" class="tsd-kind-icon">Query<wbr>Param</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#route" class="tsd-kind-icon">Route</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#session" class="tsd-kind-icon">Session</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#accesscontrol" class="tsd-kind-icon">access<wbr>Control</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#main" class="tsd-kind-icon">main</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#preparemiddleware" class="tsd-kind-icon">prepare<wbr>Middleware</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#runtest" class="tsd-kind-icon">run<wbr>Test</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#teststrap" class="tsd-kind-icon">teststrap</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

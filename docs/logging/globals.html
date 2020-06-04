@@ -1,0 +1,1225 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@alterior/logging</title>
+	<meta name="description" content="Documentation for @alterior/logging">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@alterior/logging</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>@alterior/logging</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Classes</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-class"><a href="classes/consolelogger.html" class="tsd-kind-icon">Console<wbr>Logger</a></li>
+								<li class="tsd-kind-class"><a href="classes/filelogger.html" class="tsd-kind-icon">File<wbr>Logger</a></li>
+								<li class="tsd-kind-class"><a href="classes/logformatter.html" class="tsd-kind-icon">Log<wbr>Formatter</a></li>
+								<li class="tsd-kind-class"><a href="classes/logger.html" class="tsd-kind-icon">Logger</a></li>
+								<li class="tsd-kind-class"><a href="classes/loggingmodule.html" class="tsd-kind-icon">Logging<wbr>Module</a></li>
+								<li class="tsd-kind-class"><a href="classes/loggingoptionsref.html" class="tsd-kind-icon">Logging<wbr>Options<wbr>Ref</a></li>
+								<li class="tsd-kind-class"><a href="classes/zonedlogger.html" class="tsd-kind-icon">Zoned<wbr>Logger</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Interfaces</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface"><a href="interfaces/formatsegment.html" class="tsd-kind-icon">Format<wbr>Segment</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/inspectoptions.html" class="tsd-kind-icon">Inspect<wbr>Options</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/logevent.html" class="tsd-kind-icon">Log<wbr>Event</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/loglistener.html" class="tsd-kind-icon">Log<wbr>Listener</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/logoptions.html" class="tsd-kind-icon">Log<wbr>Options</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/loggingoptions.html" class="tsd-kind-icon">Logging<wbr>Options</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Type aliases</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias"><a href="globals.html#logseverity" class="tsd-kind-icon">Log<wbr>Severity</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Variables</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable"><a href="globals.html#default_format" class="tsd-kind-icon">DEFAULT_<wbr>FORMAT</a></li>
+								<li class="tsd-kind-variable"><a href="globals.html#default_listeners" class="tsd-kind-icon">DEFAULT_<wbr>LISTENERS</a></li>
+								<li class="tsd-kind-variable"><a href="globals.html#enabled" class="tsd-kind-icon">ENABLED</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function"><a href="globals.html#reportexceptionstoconsole" class="tsd-kind-icon">Report<wbr>Exceptions<wbr>ToConsole</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#trace" class="tsd-kind-icon">Trace</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#arraytohash" class="tsd-kind-icon">array<wbr>ToHash</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#formatarray" class="tsd-kind-icon">format<wbr>Array</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#formaterror" class="tsd-kind-icon">format<wbr>Error</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#formatprimitive" class="tsd-kind-icon">format<wbr>Primitive</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#formatproperty" class="tsd-kind-icon">format<wbr>Property</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#formatvalue" class="tsd-kind-icon">format<wbr>Value</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#gettracingenabled" class="tsd-kind-icon">get<wbr>Tracing<wbr>Enabled</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#hasown" class="tsd-kind-icon">has<wbr>Own</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#inspect" class="tsd-kind-icon">inspect</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#isboolean" class="tsd-kind-icon">is<wbr>Boolean</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#isdate" class="tsd-kind-icon">is<wbr>Date</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#iserror" class="tsd-kind-icon">is<wbr>Error</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#isfunction" class="tsd-kind-icon">is<wbr>Function</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#isnull" class="tsd-kind-icon">is<wbr>Null</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#isnumber" class="tsd-kind-icon">is<wbr>Number</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#isobject" class="tsd-kind-icon">is<wbr>Object</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#isregexp" class="tsd-kind-icon">is<wbr>Reg<wbr>Exp</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#isstring" class="tsd-kind-icon">is<wbr>String</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#isundefined" class="tsd-kind-icon">is<wbr>Undefined</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#objecttostring" class="tsd-kind-icon">object<wbr>ToString</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#reducetosinglestring" class="tsd-kind-icon">reduce<wbr>ToSingle<wbr>String</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#settracingenabled" class="tsd-kind-icon">set<wbr>Tracing<wbr>Enabled</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#stylizenothing" class="tsd-kind-icon">stylize<wbr>Nothing</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#stylizewithconsolecolors" class="tsd-kind-icon">stylize<wbr>With<wbr>Console<wbr>Colors</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Object literals</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-object-literal"><a href="globals.html#console_color_styles" class="tsd-kind-icon">CONSOLE_<wbr>COLOR_<wbr>STYLES</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias">
+					<a name="logseverity" class="tsd-anchor"></a>
+					<h3>Log<wbr>Severity</h3>
+					<div class="tsd-signature tsd-kind-icon">Log<wbr>Severity<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"debug"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"info"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"warning"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"error"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"fatal"</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/logger.ts#L4">src/logger.ts:4</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable">
+					<a name="default_format" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> DEFAULT_<wbr>FORMAT</h3>
+					<div class="tsd-signature tsd-kind-icon">DEFAULT_<wbr>FORMAT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"%date% [%contextSummary%] %severity%: %message%"</span><span class="tsd-signature-symbol"> = &quot;%date% [%contextSummary%] %severity%: %message%&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/logger.ts#L409">src/logger.ts:409</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable">
+					<a name="default_listeners" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> DEFAULT_<wbr>LISTENERS</h3>
+					<div class="tsd-signature tsd-kind-icon">DEFAULT_<wbr>LISTENERS<span class="tsd-signature-symbol">:</span> <a href="interfaces/loglistener.html" class="tsd-signature-type">LogListener</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = [ new ConsoleLogger(DEFAULT_FORMAT) ]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/logger.ts#L410">src/logger.ts:410</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable">
+					<a name="enabled" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagLet">Let</span> ENABLED</h3>
+					<div class="tsd-signature tsd-kind-icon">ENABLED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/trace.ts#L9">src/trace.ts:9</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="reportexceptionstoconsole" class="tsd-anchor"></a>
+					<h3>Report<wbr>Exceptions<wbr>ToConsole</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">Report<wbr>Exceptions<wbr>ToConsole<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, <span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/trace.ts#L198">src/trace.ts:198</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>If an exception occurs within the target method, report that exception to the console and rethrow.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">(</span>target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, <span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-signature">
+									<ul class="tsd-signatures tsd-kind-type-literal">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, <span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-parameters-title">Parameters</h4>
+											<ul class="tsd-parameters">
+												<li>
+													<h5>target: <span class="tsd-signature-type">any</span></h5>
+												</li>
+												<li>
+													<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+												</li>
+											</ul>
+											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="trace" class="tsd-anchor"></a>
+					<h3>Trace</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">Trace<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, <span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/trace.ts#L69">src/trace.ts:69</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Prints messages related to the execution of the decorated method
+									to the console.</p>
+								</div>
+								<ul>
+									<li>When multiple traced functions are involved, the output is indented
+									appropriately.</li>
+									<li>Intercepts console messages from within the function to add
+									appropriate indentation.</li>
+									<li>Records (and rethrows) exceptions thrown from within the function.</li>
+									<li>For methods returning promises, the promise itself is traced,
+										printing a &quot;Resolved&quot; message upon completion or a &quot;Rejected&quot;
+									message upon rejection.</li>
+								</ul>
+								<p>Note that this functionality can be enabled and disabled by configuring
+									the <code>tracing</code> option when configuring this module for your application.
+									When @Trace() is used outside of an Alterior execution context, the trace
+								logs are always enabled, and the default log listeners are used.</p>
+								<p>For example, given a class:</p>
+								<pre><code><span class="hljs-keyword">class</span> Thing {
+@<span class="hljs-constructor">ConsoleTrace()</span>
+static <span class="hljs-keyword">do</span><span class="hljs-constructor">Something(<span class="hljs-params">data</span> : <span class="hljs-params">any</span>, <span class="hljs-params">stuff</span> : <span class="hljs-params">number</span>)</span> {
+console.log(<span class="hljs-string">"ALMOST..."</span>);
+<span class="hljs-keyword">try</span> {
+this.another<span class="hljs-constructor">Something(<span class="hljs-params">stuff</span>)</span>;
+} catch (e) {
+
+}
+}
+@<span class="hljs-constructor">ConsoleTrace()</span>
+static another<span class="hljs-constructor">Something(<span class="hljs-params">stuff</span> : <span class="hljs-params">number</span>)</span> {
+console.log(<span class="hljs-string">"NAH..."</span>);
+throw <span class="hljs-keyword">new</span> <span class="hljs-constructor">Error('Uh <span class="hljs-params">oh</span>')</span>;
+}
+}</code></pre><p>When executed, one may see:</p>
+								<pre><code class="language-sh">Thing<span class="hljs-comment">#doSomething({"stuff":321,"other":"nice"}, 12333) {</span>
+ALMOST...
+Thing<span class="hljs-comment">#anotherSomething(12333) {</span>
+NAH...
+(!!) Exception:
+Error: Uh oh
+} // [Exception] Thing<span class="hljs-comment">#anotherSomething(12333)</span>
+} // [Done, 6ms] Thing<span class="hljs-comment">#doSomething({"stuff":321,"other":"nice"}, 12333)</span></code></pre>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">(</span>target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, <span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-signature">
+									<ul class="tsd-signatures tsd-kind-type-literal">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, <span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-parameters-title">Parameters</h4>
+											<ul class="tsd-parameters">
+												<li>
+													<h5>target: <span class="tsd-signature-type">any</span></h5>
+												</li>
+												<li>
+													<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+												</li>
+											</ul>
+											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="arraytohash" class="tsd-anchor"></a>
+					<h3>array<wbr>ToHash</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">array<wbr>ToHash<span class="tsd-signature-symbol">(</span>array<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L127">src/inspect.ts:127</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>array: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{}</span></h4>
+							<ul class="tsd-parameters">
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="formatarray" class="tsd-anchor"></a>
+					<h3>format<wbr>Array</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">format<wbr>Array<span class="tsd-signature-symbol">(</span>ctx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, recurseTimes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, visibleKeys<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, keys<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L137">src/inspect.ts:137</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ctx: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>value: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>recurseTimes: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>visibleKeys: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>keys: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="formaterror" class="tsd-anchor"></a>
+					<h3>format<wbr>Error</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">format<wbr>Error<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L156">src/inspect.ts:156</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="formatprimitive" class="tsd-anchor"></a>
+					<h3>format<wbr>Primitive</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">format<wbr>Primitive<span class="tsd-signature-symbol">(</span>ctx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L350">src/inspect.ts:350</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ctx: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>value: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="formatproperty" class="tsd-anchor"></a>
+					<h3>format<wbr>Property</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">format<wbr>Property<span class="tsd-signature-symbol">(</span>ctx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, recurseTimes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, visibleKeys<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, array<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L276">src/inspect.ts:276</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ctx: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>value: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>recurseTimes: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>visibleKeys: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>key: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>array: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="formatvalue" class="tsd-anchor"></a>
+					<h3>format<wbr>Value</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">format<wbr>Value<span class="tsd-signature-symbol">(</span>ctx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, recurseTimes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L160">src/inspect.ts:160</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ctx: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>value: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>recurseTimes: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="gettracingenabled" class="tsd-anchor"></a>
+					<h3>get<wbr>Tracing<wbr>Enabled</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Tracing<wbr>Enabled<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/trace.ts#L11">src/trace.ts:11</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="hasown" class="tsd-anchor"></a>
+					<h3>has<wbr>Own</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">has<wbr>Own<span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, prop<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L102">src/inspect.ts:102</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>obj: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>prop: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="inspect" class="tsd-anchor"></a>
+					<h3>inspect</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">inspect<span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, opts<span class="tsd-signature-symbol">?: </span><a href="interfaces/inspectoptions.html" class="tsd-signature-type">InspectOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L25">src/inspect.ts:25</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Echos the value of a value. Trys to print the value out
+									in the best way possible given the different types.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>license</dt>
+									<dd><p>MIT (© Joyent)</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>obj: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The object to print out.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> opts: <a href="interfaces/inspectoptions.html" class="tsd-signature-type">InspectOptions</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Optional options object that alters the output.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="isboolean" class="tsd-anchor"></a>
+					<h3>is<wbr>Boolean</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Boolean<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L69">src/inspect.ts:69</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>arg: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="isdate" class="tsd-anchor"></a>
+					<h3>is<wbr>Date</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Date<span class="tsd-signature-symbol">(</span>d<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L119">src/inspect.ts:119</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>d: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="iserror" class="tsd-anchor"></a>
+					<h3>is<wbr>Error</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Error<span class="tsd-signature-symbol">(</span>e<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L114">src/inspect.ts:114</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>e: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="isfunction" class="tsd-anchor"></a>
+					<h3>is<wbr>Function</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Function<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L86">src/inspect.ts:86</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>arg: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="isnull" class="tsd-anchor"></a>
+					<h3>is<wbr>Null</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Null<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L98">src/inspect.ts:98</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>arg: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="isnumber" class="tsd-anchor"></a>
+					<h3>is<wbr>Number</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Number<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L94">src/inspect.ts:94</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>arg: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="isobject" class="tsd-anchor"></a>
+					<h3>is<wbr>Object</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Object<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L110">src/inspect.ts:110</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>arg: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="isregexp" class="tsd-anchor"></a>
+					<h3>is<wbr>Reg<wbr>Exp</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Reg<wbr>Exp<span class="tsd-signature-symbol">(</span>re<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L106">src/inspect.ts:106</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>re: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="isstring" class="tsd-anchor"></a>
+					<h3>is<wbr>String</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>String<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L90">src/inspect.ts:90</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>arg: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="isundefined" class="tsd-anchor"></a>
+					<h3>is<wbr>Undefined</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Undefined<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L73">src/inspect.ts:73</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>arg: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="objecttostring" class="tsd-anchor"></a>
+					<h3>object<wbr>ToString</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">object<wbr>ToString<span class="tsd-signature-symbol">(</span>o<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L123">src/inspect.ts:123</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>o: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="reducetosinglestring" class="tsd-anchor"></a>
+					<h3>reduce<wbr>ToSingle<wbr>String</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">reduce<wbr>ToSingle<wbr>String<span class="tsd-signature-symbol">(</span>output<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, base<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, braces<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L368">src/inspect.ts:368</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>output: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>base: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>braces: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="settracingenabled" class="tsd-anchor"></a>
+					<h3>set<wbr>Tracing<wbr>Enabled</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Tracing<wbr>Enabled<span class="tsd-signature-symbol">(</span>enabled<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/trace.ts#L15">src/trace.ts:15</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>enabled: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="stylizenothing" class="tsd-anchor"></a>
+					<h3>stylize<wbr>Nothing</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">stylize<wbr>Nothing<span class="tsd-signature-symbol">(</span>str<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, styleType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L65">src/inspect.ts:65</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Pass the string through with no stylization.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>str: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>styleType: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="stylizewithconsolecolors" class="tsd-anchor"></a>
+					<h3>stylize<wbr>With<wbr>Console<wbr>Colors</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">stylize<wbr>With<wbr>Console<wbr>Colors<span class="tsd-signature-symbol">(</span>str<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, styleType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L81">src/inspect.ts:81</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Use console colors to style the string. Suitable for output to
+									terminals with ANSI color support.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>str: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>styleType: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Object literals</h2>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal">
+					<a name="console_color_styles" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> CONSOLE_<wbr>COLOR_<wbr>STYLES</h3>
+					<div class="tsd-signature tsd-kind-icon">CONSOLE_<wbr>COLOR_<wbr>STYLES<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L50">src/inspect.ts:50</a></li>
+						</ul>
+					</aside>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="console_color_styles.boolean" class="tsd-anchor"></a>
+						<h3>boolean</h3>
+						<div class="tsd-signature tsd-kind-icon">boolean<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;yellow&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L53">src/inspect.ts:53</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="console_color_styles.date" class="tsd-anchor"></a>
+						<h3>date</h3>
+						<div class="tsd-signature tsd-kind-icon">date<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;magenta&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L57">src/inspect.ts:57</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="console_color_styles.null" class="tsd-anchor"></a>
+						<h3>null</h3>
+						<div class="tsd-signature tsd-kind-icon">null<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;bold&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L55">src/inspect.ts:55</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="console_color_styles.number" class="tsd-anchor"></a>
+						<h3>number</h3>
+						<div class="tsd-signature tsd-kind-icon">number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;yellow&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L52">src/inspect.ts:52</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="console_color_styles.regexp" class="tsd-anchor"></a>
+						<h3>regexp</h3>
+						<div class="tsd-signature tsd-kind-icon">regexp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;red&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L59">src/inspect.ts:59</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="console_color_styles.special" class="tsd-anchor"></a>
+						<h3>special</h3>
+						<div class="tsd-signature tsd-kind-icon">special<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;cyan&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L51">src/inspect.ts:51</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="console_color_styles.string" class="tsd-anchor"></a>
+						<h3>string</h3>
+						<div class="tsd-signature tsd-kind-icon">string<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;green&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L56">src/inspect.ts:56</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="console_color_styles.undefined" class="tsd-anchor"></a>
+						<h3>undefined</h3>
+						<div class="tsd-signature tsd-kind-icon">undefined<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;grey&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/logging/src/inspect.ts#L54">src/inspect.ts:54</a></li>
+							</ul>
+						</aside>
+					</section>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals current ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/consolelogger.html" class="tsd-kind-icon">Console<wbr>Logger</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/filelogger.html" class="tsd-kind-icon">File<wbr>Logger</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/logformatter.html" class="tsd-kind-icon">Log<wbr>Formatter</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/logger.html" class="tsd-kind-icon">Logger</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/loggingmodule.html" class="tsd-kind-icon">Logging<wbr>Module</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/loggingoptionsref.html" class="tsd-kind-icon">Logging<wbr>Options<wbr>Ref</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/zonedlogger.html" class="tsd-kind-icon">Zoned<wbr>Logger</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/formatsegment.html" class="tsd-kind-icon">Format<wbr>Segment</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/inspectoptions.html" class="tsd-kind-icon">Inspect<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/logevent.html" class="tsd-kind-icon">Log<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/loglistener.html" class="tsd-kind-icon">Log<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/logoptions.html" class="tsd-kind-icon">Log<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/loggingoptions.html" class="tsd-kind-icon">Logging<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#logseverity" class="tsd-kind-icon">Log<wbr>Severity</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#default_format" class="tsd-kind-icon">DEFAULT_<wbr>FORMAT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#default_listeners" class="tsd-kind-icon">DEFAULT_<wbr>LISTENERS</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#enabled" class="tsd-kind-icon">ENABLED</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#reportexceptionstoconsole" class="tsd-kind-icon">Report<wbr>Exceptions<wbr>ToConsole</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#trace" class="tsd-kind-icon">Trace</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#arraytohash" class="tsd-kind-icon">array<wbr>ToHash</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#formatarray" class="tsd-kind-icon">format<wbr>Array</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#formaterror" class="tsd-kind-icon">format<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#formatprimitive" class="tsd-kind-icon">format<wbr>Primitive</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#formatproperty" class="tsd-kind-icon">format<wbr>Property</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#formatvalue" class="tsd-kind-icon">format<wbr>Value</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#gettracingenabled" class="tsd-kind-icon">get<wbr>Tracing<wbr>Enabled</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#hasown" class="tsd-kind-icon">has<wbr>Own</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#inspect" class="tsd-kind-icon">inspect</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isboolean" class="tsd-kind-icon">is<wbr>Boolean</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isdate" class="tsd-kind-icon">is<wbr>Date</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#iserror" class="tsd-kind-icon">is<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isfunction" class="tsd-kind-icon">is<wbr>Function</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isnull" class="tsd-kind-icon">is<wbr>Null</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isnumber" class="tsd-kind-icon">is<wbr>Number</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isobject" class="tsd-kind-icon">is<wbr>Object</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isregexp" class="tsd-kind-icon">is<wbr>Reg<wbr>Exp</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isstring" class="tsd-kind-icon">is<wbr>String</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isundefined" class="tsd-kind-icon">is<wbr>Undefined</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#objecttostring" class="tsd-kind-icon">object<wbr>ToString</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#reducetosinglestring" class="tsd-kind-icon">reduce<wbr>ToSingle<wbr>String</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#settracingenabled" class="tsd-kind-icon">set<wbr>Tracing<wbr>Enabled</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#stylizenothing" class="tsd-kind-icon">stylize<wbr>Nothing</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#stylizewithconsolecolors" class="tsd-kind-icon">stylize<wbr>With<wbr>Console<wbr>Colors</a>
+					</li>
+					<li class=" tsd-kind-object-literal">
+						<a href="globals.html#console_color_styles" class="tsd-kind-icon">CONSOLE_<wbr>COLOR_<wbr>STYLES</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

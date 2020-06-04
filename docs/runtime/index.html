@@ -1,0 +1,267 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@alterior/runtime</title>
+	<meta name="description" content="Documentation for @alterior/runtime">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@alterior/runtime</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>@alterior/runtime</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#alteriorruntime" id="alteriorruntime" style="color: inherit; text-decoration: none;">
+					<h1>@alterior/runtime</h1>
+				</a>
+				<p><a href="https://www.npmjs.com/package/@alterior/runtime"><img src="https://img.shields.io/npm/v/@alterior/runtime.svg" alt="Version"></a></p>
+				<p>Provides the core of Alterior: the ability to declare, configure, bootstrap and execute an application composed of executable modules and their dependencies.</p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<pre><code><span class="hljs-built_in">npm</span> install @alterior/runtime</code></pre>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h2>Usage</h2>
+				</a>
+				<p>An Alterior application consists of an &quot;entry&quot; module and its dependency imports. You &quot;bootstrap&quot; the entry module which causes dependencies to be resolved, an application to be constructed, and modules to be executed.</p>
+				<p>You should define your entry module in its own file (<code>app.module.ts</code>).</p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@Module</span>({
+    imports: [ LoggerModule ]
+})
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> AppModule {
+    <span class="hljs-keyword">constructor</span>(<span class="hljs-params">
+        <span class="hljs-keyword">private</span> logger : Logger
+    </span>) {
+    }
+
+    altOnInit() {
+        <span class="hljs-keyword">this</span>.logger.info(<span class="hljs-string">'Hello, world!'</span>);
+    }
+}</code></pre>
+				<p>A separate entrypoint file (<code>main.ts</code>) should handle bootstrapping the entry module.</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Application } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/runtime'</span>;
+<span class="hljs-keyword">import</span> { AppModule } <span class="hljs-keyword">from</span> <span class="hljs-string">'./app.module'</span>;
+
+Application.bootstrap(AppModule);</code></pre>
+				<a href="#module-lifecycle-events" id="module-lifecycle-events" style="color: inherit; text-decoration: none;">
+					<h2>Module Lifecycle Events</h2>
+				</a>
+				<p>Each Alterior module is the coupling of a unit of execution (the Module class) and a set of services used by the unit and/or made available to other modules which depend on it. </p>
+				<p>Modules can optionally define lifecycle methods which are invoked by the runtime. When a module is first bootstrapped, <code>altOnInit()</code> is run. A simple one-shot execution module should implement its business logic in <code>altOnInit()</code>.</p>
+				<p><code>altOnStart()</code> is called once when the application starts, and <code>altOnStop()</code> is called before the application is terminated, so as to give the module an opportunity to gracefully shut down. If you want the ability to dynamically control the start/stop status of your module, you should use Roles.</p>
+				<a href="#roles" id="roles" style="color: inherit; text-decoration: none;">
+					<h2>Roles</h2>
+				</a>
+				<p>Many execution modules represent a service which can be turned on and off. Alterior has support baked in for this with Roles. Such modules can register a Role which allows the status of the service to be controlled and queried programmatically by using the <code>RolesService</code> injectable service.</p>
+				<p>To register a role, use <code>RolesService.registerRole(roleRegistration)</code>. You will need to provide <code>start()</code> and <code>stop()</code> methods which will be executed when the roles service decides to start/stop your role. You will also need to specify an <code>identifier</code> which is used when referring to the role in configuration and the environment.</p>
+				<a href="#configuring-enabled-roles" id="configuring-enabled-roles" style="color: inherit; text-decoration: none;">
+					<h2>Configuring enabled roles</h2>
+				</a>
+				<p>When an Alterior app is bootstrapped, the <code>ALT_ROLES_ONLY</code>/<code>ALT_ROLES_ALL_EXCEPT</code> environment variables are inspected to determine which roles should be started when the application starts. The variables are comma-delimited lists of role <code>identifiers</code> that should be started or ignored. By default all registered roles are started. If both variables are specified, <code>ALT_ROLES_ONLY</code> takes precedence.</p>
+				<p>Alternatively you can specify roles via the command line when the application is started using one of the following options:</p>
+				<pre><code>--roles-only,   -r [role,<span class="hljs-built_in">..</span>.]  <span class="hljs-builtin-name">Enable</span> only the specified roles
+--roles-except, -R [role,<span class="hljs-built_in">..</span>.]  <span class="hljs-builtin-name">Enable</span> all roles except the specified roles</code></pre><p>For example, to enable only the <code>web-server</code> and <code>tasks</code> roles:</p>
+				<pre><code><span class="hljs-keyword">node</span> <span class="hljs-title">dist</span>/main.js -r web-server,tasks</code></pre>
+				<a href="#stopping-the-application" id="stopping-the-application" style="color: inherit; text-decoration: none;">
+					<h2>Stopping the application</h2>
+				</a>
+				<p>The application can be explicitly stopped by injecting <code>Runtime</code> and calling the <code>shutdown()</code> method. This causes the <code>altOnStop()</code> lifecycle event to be run for all loaded modules, and execution to be stopped with <code>process.exit()</code>. If you wish to stop all modules of the application without exiting the process, use <code>Runtime.stop()</code> instead. </p>
+				<a href="#custom-lifecycle-events" id="custom-lifecycle-events" style="color: inherit; text-decoration: none;">
+					<h2>Custom Lifecycle Events</h2>
+				</a>
+				<p>You can programmatically trigger custom lifecycle events by calling <code>Runtime.fireEvent(eventName)</code>. </p>
+				<p><code>eventName</code> should be an UpperCamelCase string. The method executed on modules will be <code>alt${eventName}</code>, so if you specify <code>DoSomething</code>, then the method <code>altDoSomething()</code> will be executed on each module which implements it.</p>
+				<a href="#" id="" style="color: inherit; text-decoration: none;">
+					<h2></h2>
+				</a>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/appoptionsannotation.html" class="tsd-kind-icon">App<wbr>Options<wbr>Annotation</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/application.html" class="tsd-kind-icon">Application</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/applicationargs.html" class="tsd-kind-icon">Application<wbr>Args</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/applicationoptionsref.html" class="tsd-kind-icon">Application<wbr>Options<wbr>Ref</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/constructormethod.html" class="tsd-kind-icon">Constructor<wbr>Method</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/executioncontext.html" class="tsd-kind-icon">Execution<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/field.html" class="tsd-kind-icon">Field</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/method.html" class="tsd-kind-icon">Method</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/moduledefinition.html" class="tsd-kind-icon">Module<wbr>Definition</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/moduleinstance.html" class="tsd-kind-icon">Module<wbr>Instance</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/parameter.html" class="tsd-kind-icon">Parameter</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/property.html" class="tsd-kind-icon">Property</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/reflector.html" class="tsd-kind-icon">Reflector</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/rolesservice.html" class="tsd-kind-icon">Roles<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/runtime.html" class="tsd-kind-icon">Runtime</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/type.html" class="tsd-kind-icon">Type</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/applicationoptions.html" class="tsd-kind-icon">Application<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/constructor.html" class="tsd-kind-icon">Constructor</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/oninit.html" class="tsd-kind-icon">On<wbr>Init</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/onstart.html" class="tsd-kind-icon">On<wbr>Start</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/onstop.html" class="tsd-kind-icon">On<wbr>Stop</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/roleconfiguration.html" class="tsd-kind-icon">Role<wbr>Configuration</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/roleregistration.html" class="tsd-kind-icon">Role<wbr>Registration</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/rolestate.html" class="tsd-kind-icon">Role<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#roleconfigurationmode" class="tsd-kind-icon">Role<wbr>Configuration<wbr>Mode</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#visibility" class="tsd-kind-icon">Visibility</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#appoptions" class="tsd-kind-icon">App<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#supported_role_modes" class="tsd-kind-icon">SUPPORTED_<wbr>ROLE_<wbr>MODES</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#getparameternames" class="tsd-kind-icon">get<wbr>Parameter<wbr>Names</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#module" class="tsd-kind-icon">module</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
