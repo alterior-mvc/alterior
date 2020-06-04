@@ -16,7 +16,8 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepare": "npm run test",
     "npm:clean": "rimraf node_modules",
-    "test": "npm run build && node dist/test.js"
+    "test": "npm run build && node dist/test.js",
+    "docs": "typedoc ."
   },
   "repository": {
     "type": "git",

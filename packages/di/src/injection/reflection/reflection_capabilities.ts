@@ -1,3 +1,4 @@
+/// <reference types="reflect-metadata" />
 /**
  * @license
  * Copyright Google Inc. All Rights Reserved.

@@ -19,7 +19,8 @@
     "clean:lerna": "rimraf **/*.tgz",
     "clean:dist": "rimraf packages/*/dist",
     "clean": "npm run clean:dist && lerna run clean",
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "docs": "lerna run --parallel docs"
   },
   "author": "William Lahti <wilahti@gmail.com>",
   "license": "MIT",
@@ -48,6 +49,7 @@
     "rimraf": "^2.7.1",
     "supertest": "^3.1.0",
     "swagger-editor-dist": "^3.9.0",
+    "typedoc": "^0.17.7",
     "typescript": "^3.9.3"
   }
 }
