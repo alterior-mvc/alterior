@@ -8,8 +8,6 @@ import { ApplicationArgs } from './args';
 import { RolesService } from './roles.service';
 import { Environment, Time } from '@alterior/common';
 
-require('source-map-support').install();
-
 declare let module : never;
 
 export class ApplicationOptionsRef {

@@ -34,7 +34,6 @@
     "@alterior/di": "^3.0.0-beta.66",
     "@avejidah/get-parameter-names": "^0.3.2",
     "reflect-metadata": "^0.1.12",
-    "source-map-support": "^0.4.6",
     "tslib": "^2.0.0"
   },
   "peerDependencies": {
