@@ -7,6 +7,15 @@ import { Provider } from './injection';
 
 export interface ConfiguredModule extends ModuleOptions {
     $module: ModuleLike;
+    ngModule? : ModuleLike;
+}
+
+export function configureModule(module, providers : Provider[]): ConfiguredModule {
+    return {
+        $module: module,
+        ngModule: module,
+        providers
+    };
 }
 
 export type ModuleLike = Function | ConfiguredModule;
