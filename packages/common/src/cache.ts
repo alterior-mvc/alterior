@@ -25,14 +25,17 @@ interface FetchOptions {
     /**
      * What kind of cache miss strategy should be used here.
      * - "fulfill": 
-     *   If the cache misses for any reason, wait until the new value is fetched and return it
-     * - "fallback-refresh":
-     *   If the cache misses
+     *   If the cache misses for any reason, wait until the new value is fetched and return it.
+     * - "stale-revalidate":
+     *   If the cache misses due to an expired value, return the expired (stale) value
+     *   and call the fetcher to update the value in the background.
      */
-    missStrategy? : "fulfill" | "fallback-refresh";
+    missStrategy? : "fulfill" | "stale-revalidate";
 }
 
-
+/**
+ * Provides a generic caching mechanism useful for a number of cases
+ */
 export class Cache<T> {
     /**
      * 
@@ -99,40 +102,49 @@ export class Cache<T> {
         this.sliceCleanup();
     }
 
+    private outstandingFetches = new Map<string, Promise<any>>();
+
     public async fetch(key : string, fetcher? : CacheFetcher<T>, options : FetchOptions = {}): Promise<T> {
+        let existingFetch = this.outstandingFetches.get(key);
+        if (existingFetch)
+            return await existingFetch;
+
         let entry : CacheEntry<T>;
-        let now = new Date().getTime();
-        let availableCachedItem = null;
-        let timeToLive = options.timeToLive;
-
-        if (key in this.entries) {
-            let hitEntry = this.entries[key];
-            availableCachedItem = hitEntry.value;
-
-            if (hitEntry.expiresAt > now) {
-                entry = hitEntry;
-            }
-        }
-
-        if (entry)
-            return deepClone(entry.value);
-
-        if (!fetcher)
-            return availableCachedItem;
+        let now = Date.now();
+        let stale = true;
         
-        // Fetch!
-        let value : T;
-        try {
-            value = await fetcher();
-            this.insertItem(key, value, timeToLive);
-        } catch (e) {
-            console.error(`Failed to fetch item ${key}:`);
-            console.error(e);
-            debugger;
+        if (key in this.entries) {
+            entry = this.entries[key];
+            stale = entry.expiresAt < now;
+        }
+        
+        if (options.missStrategy === 'fulfill')
+            entry = stale ? undefined : entry;
 
-            return availableCachedItem;
+        let fetchOperation : Promise<any>;
+
+        if (stale && fetcher) {
+            fetchOperation = new Promise(async (resolve, reject) => {
+                // Fetch!
+                let value : T;
+                try {
+                    value = await fetcher();
+                    this.insertItem(key, value, options.timeToLive);
+                    resolve(value);
+                } catch (e) {
+                    console.error(`Failed to fetch item ${key}:`);
+                    console.error(e);
+                    debugger;
+
+                    resolve(entry ? deepClone(entry.value) : undefined);
+                }
+            });
+
+            fetchOperation.finally(() => this.outstandingFetches.delete(key));
+
+            this.outstandingFetches.set(key, fetchOperation);
         }
 
-        return value;
+        return entry ? deepClone(entry.value) : await fetchOperation;
     }
 }
