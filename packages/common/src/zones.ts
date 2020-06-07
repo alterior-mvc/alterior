@@ -1,3 +1,5 @@
+/// <reference types="zone.js" />
+
 /**
  * Copyright Google Inc. All Rights Reserved.
  * Copyright William Lahti
