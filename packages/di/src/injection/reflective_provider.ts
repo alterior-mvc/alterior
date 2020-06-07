@@ -251,7 +251,7 @@ function _extractToken(typeOrFunc: any, metadata: any[] | any, params: any[][]):
   if (token != null) {
     return _createDependency(token, optional, visibility);
   } else {
-    console.error(`Failed to find token  ${typeOrFunc.name || typeOrFunc} are null:`);
+    console.error(`Failed to find token ${typeOrFunc.name || typeOrFunc}:`);
     console.dir(params);
     
     throw noAnnotationError(typeOrFunc, params);
