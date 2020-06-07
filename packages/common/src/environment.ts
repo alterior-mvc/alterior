@@ -1,5 +1,4 @@
 import { Injectable } from './decorators';
-import * as dotenv from 'dotenv';
 
 /**
  * 
@@ -9,7 +8,7 @@ export class Environment {
     constructor() {
         // Load configuration from .env if there is one.
         if (typeof process !== 'undefined') {
-            dotenv.config();
+            require('dotenv').config();
             this.env = process.env;
         } else {
             this.env = {};
