@@ -1,5 +1,5 @@
 import { describe, it } from 'razmin';
-import { Module, Injector, Inject, Injectable, Optional } from '@alterior/di';
+import { Module, Injector, Inject, Injectable, Optional, InjectionToken } from '@alterior/di';
 import { Application } from './application';
 import { expect } from 'chai';
 import { Time, Environment } from '@alterior/common';
@@ -110,7 +110,7 @@ describe("Modules", () => {
 
         @Injectable()
         class DependencyConfig implements DependencyConfigInterface {
-            constructor(private config : DependencyConfigInterface) {
+            constructor(config : DependencyConfigInterface) {
                 Object.assign(this, config);
             }
 
@@ -313,4 +313,62 @@ describe("Modules", () => {
         expect(observedEnv).to.exist;
         expect(observedEnv).to.be.instanceOf(FakeEnvironment);
     });
+    
+    it('allows an injection token within a module', async () => {
+        let log = '';
+
+        const ITEM = new InjectionToken('A THING');
+
+        @Injectable()
+        class Options {
+            constructor(
+                @Inject(ITEM) 
+                readonly options
+            ) {
+            }
+        }
+
+        @Injectable()
+        class MyService {
+            constructor(
+                readonly options : Options
+            ) {
+
+            }
+        }
+
+        @Module()
+        class DependencyModule {
+            static configure() {
+                return {
+                    $module: DependencyModule,
+                    providers: [ 
+                        { provide: ITEM, useValue: { foo: 123 } },
+                        Options,
+                        MyService
+                    ]
+                }
+            }
+        }
+
+        @Module({
+            imports: [ DependencyModule.configure() ]
+        })
+        class TestModule {
+            constructor(
+                private service : MyService
+            ) {
+            }
+
+            altOnInit() { 
+                log += this.service.options.options.foo; 
+            }
+        }
+
+        let application = await Application.bootstrap(TestModule);
+
+        expect(application.runtime).to.exist;
+        expect(log).to.eq('123');
+    });
+    
 })
