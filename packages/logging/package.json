@@ -1,6 +1,6 @@
 {
   "name": "@alterior/logging",
-  "version": "3.0.0-beta.66",
+  "version": "3.0.0-beta.68",
   "access": "public",
   "publishConfig": {
     "access": "public"
@@ -29,10 +29,10 @@
   },
   "homepage": "https://github.com/alterior-mvc/alterior#readme",
   "dependencies": {
-    "@alterior/annotations": "^3.0.0-beta.66",
-    "@alterior/common": "^3.0.0-beta.66",
-    "@alterior/di": "^3.0.0-beta.66",
-    "@alterior/runtime": "^3.0.0-beta.66",
+    "@alterior/annotations": "^3.0.0-beta.68",
+    "@alterior/common": "^3.0.0-beta.68",
+    "@alterior/di": "^3.0.0-beta.68",
+    "@alterior/runtime": "^3.0.0-beta.68",
     "dotenv": "^6.0.0",
     "rxjs": "^6.5.5"
   },
