@@ -1,6 +1,6 @@
 {
   "name": "@alterior/annotations",
-  "version": "3.0.0-beta.62",
+  "version": "3.0.0-beta.66",
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/alterior-mvc/alterior#readme",
   "dependencies": {
-    "@alterior/common": "^3.0.0-beta.62",
+    "@alterior/common": "^3.0.0-beta.66",
     "reflect-metadata": "^0.1.12",
     "tslib": "^2.0.0"
   },
