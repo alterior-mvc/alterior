@@ -1,5 +1,9 @@
 import { Injectable } from './decorators';
 
+function include(moduleName : string) {
+    return require(moduleName);
+}
+
 /**
  * 
  */
@@ -8,7 +12,11 @@ export class Environment {
     constructor() {
         // Load configuration from .env if there is one.
         if (typeof process !== 'undefined') {
-            require('dotenv').config();
+            try {
+                include('dotenv').config();
+            } catch (e) {
+            }
+
             this.env = process.env;
         } else {
             this.env = {};
