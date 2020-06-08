@@ -1,6 +1,6 @@
 {
   "name": "@alterior/common",
-  "version": "3.0.0-beta.69",
+  "version": "3.0.0-beta.70",
   "access": "public",
   "publishConfig": {
     "access": "public"
@@ -42,9 +42,9 @@
     "dotenv": "^6.2.0"
   },
   "devDependencies": {
-    "@types/zone.js": "^0.5.12",
     "@types/node": "^10.9.4",
     "@types/reflect-metadata": "^0.1.0",
+    "@types/zone.js": "^0.5.12",
     "razmin": "^0.6.13",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

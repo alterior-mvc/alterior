@@ -1,6 +1,6 @@
 {
   "name": "@alterior/platform-angular",
-  "version": "3.0.0-beta.69",
+  "version": "3.0.0-beta.70",
   "access": "public",
   "publishConfig": {
     "access": "public"
@@ -25,9 +25,9 @@
     "zone.js": "^0.10.3"
   },
   "dependencies": {
-    "@alterior/annotations": "^3.0.0-beta.69",
-    "@alterior/common": "^3.0.0-beta.69",
-    "@alterior/di": "^3.0.0-beta.69",
-    "@alterior/runtime": "^3.0.0-beta.69"
+    "@alterior/annotations": "^3.0.0-beta.70",
+    "@alterior/common": "^3.0.0-beta.70",
+    "@alterior/di": "^3.0.0-beta.70",
+    "@alterior/runtime": "^3.0.0-beta.70"
   }
 }
