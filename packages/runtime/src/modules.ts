@@ -260,7 +260,7 @@ export class Runtime {
 
         if (this.visited.includes(module))
             return;
-            this.visited.push(module);
+        this.visited.push(module);
 
         // Construct this compilation unit
         let isExtension = false;
