@@ -1,6 +1,10 @@
 {
   "name": "@alterior/platform-angular",
   "version": "3.0.0-beta.69",
+  "access": "public",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Adapt Alterior modules to work within Angular apps",
   "main": "dist/index.js",
   "scripts": {
