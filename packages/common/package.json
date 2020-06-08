@@ -42,6 +42,7 @@
     "dotenv": "^6.2.0"
   },
   "devDependencies": {
+    "@types/zone.js": "^0.5.12",
     "@types/node": "^10.9.4",
     "@types/reflect-metadata": "^0.1.0",
     "razmin": "^0.6.13",

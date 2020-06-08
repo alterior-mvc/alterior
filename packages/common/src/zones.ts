@@ -9,8 +9,6 @@
 
 import { Observable, Subject } from 'rxjs';
 
-declare let Zone : any;
-
 export class AsyncZone {
     public constructor(name : string, properties : any = {}) {
         let self = this;
