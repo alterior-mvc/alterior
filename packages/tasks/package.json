@@ -23,7 +23,7 @@
     "type": "git",
     "url": "git+https://github.com/alterior-mvc/alterior.git"
   },
-  "author": "William Lahti",
+  "author": "William Lahti <wilahti@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/alterior-mvc/alterior/issues"
