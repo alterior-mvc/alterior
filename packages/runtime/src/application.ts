@@ -144,9 +144,9 @@ export class Application {
 	/**
 	 * Bootstrap an Alterior application.
 	 */
-	public static async bootstrap(entryModule : Function, options? : ApplicationOptions): Promise<Application> {
+	public static bootstrap(entryModule : Function, options? : ApplicationOptions): Application {
 		let executionContext = new ExecutionContext();
-		return await executionContext.run(async () => {
+		return executionContext.runSync(() => {
 			this.validateEntryModule(entryModule);
 
 			options = this.loadOptions(entryModule, options);
