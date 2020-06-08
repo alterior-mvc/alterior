@@ -1,6 +1,6 @@
 {
   "name": "@alterior/platform-nodejs",
-  "version": "3.0.0-beta.71",
+  "version": "3.0.0-beta.72",
   "access": "public",
   "publishConfig": {
     "access": "public"
@@ -9,7 +9,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p .",
-    "docs": "typedoc .", 
+    "docs": "typedoc .",
     "test": "exit 0"
   },
   "author": "William Lahti <wilahti@gmail.com>",
