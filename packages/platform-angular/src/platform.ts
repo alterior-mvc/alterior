@@ -1,3 +1,5 @@
+/// <reference types="zone.js" />
+
 import { NgModule, ModuleWithProviders, Optional } from '@angular/core';
 import { Application, ExecutionContext, Runtime, ApplicationArgs, RolesService, ApplicationOptionsRef } from '@alterior/runtime';
 import { Module, Provider, ClassProvider, InjectAnnotation, OptionalAnnotation } from '@alterior/di';
