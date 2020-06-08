@@ -15,7 +15,7 @@
   "author": "William Lahti <wilahti@gmail.com>",
   "license": "MIT",
   "peerDependencies": {
-    "@angular/core": "^9.1.9"
+    "@angular/core": "^9.1.0"
   },
   "devDependencies": {
     "@angular/core": "^9.1.9",
