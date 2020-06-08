@@ -4,6 +4,7 @@
   "description": "Adapt Alterior modules to work within Angular apps",
   "main": "dist/index.js",
   "scripts": {
+    "build": "tsc -p .",
     "test": "exit 0"
   },
   "author": "William Lahti <wilahti@gmail.com>",
@@ -15,6 +16,7 @@
     "@angular/core": "^9.1.9",
     "rxjs": "^6.5.5",
     "tslib": "^2.0.0",
+    "typescript": "^3.9.5",
     "zone.js": "^0.10.3"
   },
   "dependencies": {

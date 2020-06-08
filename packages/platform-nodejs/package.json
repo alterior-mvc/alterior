@@ -4,6 +4,7 @@
   "description": "Provide a smoother experience when using Alterior on Node.js",
   "main": "dist/index.js",
   "scripts": {
+    "build": "tsc -p .",
     "test": "exit 0"
   },
   "author": "William Lahti <wilahti@gmail.com>",
@@ -13,5 +14,8 @@
     "reflect-metadata": "^0.1.13",
     "source-map-support": "^0.5.19",
     "zone.js": "^0.10.3"
+  },
+  "devDependencies": {
+    "typescript": "^3.9.5"
   }
 }
