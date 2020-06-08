@@ -29,5 +29,6 @@
     "@alterior/common": "^3.0.0-beta.70",
     "@alterior/di": "^3.0.0-beta.70",
     "@alterior/runtime": "^3.0.0-beta.70"
-  }
+  },
+  "gitHead": "48a32c2d232db270e1b4c4db5a373c28f1b48347"
 }
