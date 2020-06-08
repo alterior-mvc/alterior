@@ -8,7 +8,8 @@
  */
 
 import { Observable, Subject } from 'rxjs';
-import { resolve } from 'dns';
+
+declare let Zone : any;
 
 export class AsyncZone {
     public constructor(name : string, properties : any = {}) {

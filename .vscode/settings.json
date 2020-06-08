@@ -5,7 +5,8 @@
 		"**/.svn": true,
 		"**/.hg": true,
 		"**/.DS_Store": true,
-		"*~": true
+		"*~": true,
+		"/docs/*": true
 	},
 	"editor.tabSize": 4,
 	"editor.useTabStops": false,

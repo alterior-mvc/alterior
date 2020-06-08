@@ -1,0 +1,26 @@
+{
+  "name": "@alterior/platform-angular",
+  "version": "3.0.0-beta.69",
+  "description": "Adapt Alterior modules to work within Angular apps",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "William Lahti",
+  "license": "MIT",
+  "peerDependencies": {
+    "@angular/core": "^9.1.9"
+  },
+  "devDependencies": {
+    "@angular/core": "^9.1.9",
+    "rxjs": "^6.5.5",
+    "tslib": "^2.0.0",
+    "zone.js": "^0.10.3"
+  },
+  "dependencies": {
+    "@alterior/annotations": "^3.0.0-beta.69",
+    "@alterior/common": "^3.0.0-beta.69",
+    "@alterior/di": "^3.0.0-beta.69",
+    "@alterior/runtime": "^3.0.0-beta.69"
+  }
+}

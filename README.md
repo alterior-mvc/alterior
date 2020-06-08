@@ -83,8 +83,23 @@ time while you build your applications.
   [![Version](https://img.shields.io/npm/v/@alterior/logging.svg)](https://www.npmjs.com/package/@alterior/logging)
   ![Size](https://img.shields.io/bundlephobia/min/@alterior/logging.svg)
 
+- **[@alterior/platform-angular](packages/platform-angular/README.md)**
+  Provides support for loading Alterior modules into an Angular app, including 
+  the ability to access Alterior injectable services from Angular components 
+  and services. Use this to consume isomorphic libraries from within frontend 
+  apps written in Angular.
+  [![Version](https://img.shields.io/npm/v/@alterior/platform-angular.svg)](https://www.npmjs.com/package/@alterior/platform-angular)
+  ![Size](https://img.shields.io/bundlephobia/min/@alterior/platform-angular.svg)
+
+- **[@alterior/platform-nodejs](packages/platform-nodejs/README.md)**
+  Provides support for bootstrapping an Alterior application within the 
+  Node.js server environment.
+  [![Version](https://img.shields.io/npm/v/@alterior/platform-nodejs.svg)](https://www.npmjs.com/package/@alterior/platform-nodejs)
+  ![Size](https://img.shields.io/bundlephobia/min/@alterior/platform-nodejs.svg)
+
 - **[@alterior/runtime](packages/runtime/README.md)**  
-  An Angular-compatible module system suitable for use in Typescript-on-Node.js applications  
+  An module-based dependency injection and lifecycle event system similar to 
+  that of Angular, suitable for use in Alterior libraries and applications.
   [![Version](https://img.shields.io/npm/v/@alterior/runtime.svg)](https://www.npmjs.com/package/@alterior/runtime)
   ![Size](https://img.shields.io/bundlephobia/min/@alterior/runtime.svg)
 
