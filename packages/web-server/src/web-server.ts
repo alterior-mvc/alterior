@@ -46,37 +46,25 @@ export class WebServer {
 	}
 
 	public static bootstrapCloudFunction(entryModule : any, options? : ApplicationOptions) {
-		let appReady : Promise<Application>;
-		let expressRef : ExpressRef = null;
-
-		return async (req, res) => {
-			if (!appReady) {
-				let appOptionsAnnot = AppOptionsAnnotation.getForClass(entryModule);
-				@AppOptions(appOptionsAnnot ? appOptionsAnnot.options : {})
-				@Module({
-					imports: [ entryModule ],
-					providers: [
-						{ provide: WebServerEngine, useClass: ExpressEngine }
-					]
-				})
-				class EntryModule {
-				}
-		
-				appReady = Application.bootstrap(
-					EntryModule, 
-					Object.assign({}, options, { 
-						autostart: false 
-					})
-				);
-			}
-
-			if (!expressRef) {
-				let app = await appReady;
-				expressRef = app.injector.get(ExpressRef);
-			}
-			
-		    expressRef.application(req, res);
+		let appOptionsAnnot = AppOptionsAnnotation.getForClass(entryModule);
+		@AppOptions(appOptionsAnnot ? appOptionsAnnot.options : {})
+		@Module({
+			imports: [ entryModule ],
+			providers: [
+				{ provide: WebServerEngine, useClass: ExpressEngine }
+			]
+		})
+		class EntryModule {
 		}
+
+		let app = Application.bootstrap(
+			EntryModule, 
+			Object.assign({}, options, { 
+				autostart: false 
+			})
+		);
+		
+		return app.injector.get(ExpressRef).application;
 	}
 	
 	/**
