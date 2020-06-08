@@ -7,19 +7,38 @@ the ability to access Alterior injectable services from Angular components
 and services. Use this to consume isomorphic libraries from within frontend 
 apps written in Angular.
 
-# Rationale
+# Installation
 
-In Angular 9, loading Alterior modules natively is not yet supported. This is
-due to the new Ivy compiler. We hope to add support for this in the future, but
-in the mean time you can use `@alterior/platform-angular` to use Alterior modules
-within your Angular 9+ apps. Instead of adding Alterior modules directly to 
-the `imports` property of `@NgModule()`, you should instead use:
+```
+npm install @alterior/platform-angular
+```
+
+# Usage
+
+In Angular 7.0 and later, static analysis is used to determine the structure 
+and metadata of your application. This means Angular no longer requires you to 
+load the `reflect-metadata` polyfill. Alterior's reflection system _does_ use 
+it, so you must ensure your app loads it. In earlier versions you can skip this 
+step.
+
+To enable this add the following in `polyfills.ts`:
+
+```typescript
+import 'reflect-metadata';
+```
+
+Alterior modules cannot be directly used as Angular modules.
+- Alterior has its own lifecycle hooks that Angular does not understand
+- Alterior provides built-in services (like `Application`, `Runtime`, etc) that Angular does not provide
+- Angular's module system is not built in a way that allows for direct compatibility with other frameworks (something we'd love to work with them on) 
+
+Instead, `@alterior/platform-angular` provides a way to bootstrap one or more Alterior modules and export the resulting dependency injection providers in a format that Angular can understand. 
 
 ```typescript
 import { AngularPlatform } from '@alterior/platform-angular';
 
 @NgModule({
-    providers: [
+    providers: [ // <-- *not* imports
         AngularPlatform.bridge(
             MyAlteriorModule1,
             MyAlteriorModule2,
@@ -31,10 +50,13 @@ export class AppModule {
 }
 ```
 
-This will bootstrap the Alterior app and provide its injectable dependencies 
-via Angular. Because the Alterior app is actually booted, all lifecycle events 
-work as they do normally. AngularBridge also makes available Alterior's 
-base services, so you can start all loaded Alterior services like so:
+This will bootstrap a dynamic Alterior app module which `imports` the given modules and passes back its injectable dependencies so that your Angular module can register them. 
+
+Because Alterior is bootstrapped just like it is on the server-side, all 
+defined lifecycle events work as they do normally.
+
+`AngularPlatform.bridge()` also provides all of Alterior's base services to 
+your Angular app, so you can, for instance, start (`altOnStart()`) all the Alterior modules you've loaded:
 
 ```typescript
 import { Component, OnInit } from '@angular/core';
@@ -58,5 +80,4 @@ export class AppComponent extends OnInit {
         this.altApp.stop();
     }
 }
-
-In Angular 8 and earlier Alterior modules can be added directly
+```

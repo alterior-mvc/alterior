@@ -2,20 +2,41 @@
 
 [NPM](https://www.npmjs.com/org/alterior) | [Github](https://github.com/alterior-mvc/alterior) | [Documentation](https://alterior-mvc.github.io/alterior/index.html)
 
-A framework for building Node applications in Typescript. Build 
-your Typescript applications with this. 
+A framework for building well-structured applications and isomorphic libraries in Typescript.
 
-## Usage
+## Installation
 
 ```
 npm install @alterior/runtime
 ```
 
-Here's a minimal single file example. While it doesn't take 
-advantage of many of the benefits of Alterior (which become more apparent as 
-your application grows and adds richer functionality), it does succinctly 
-convey the structural aspects, and underscores the
-fact that there is no unseen magic that makes Alterior apps possible:
+## Building a REST Service
+
+Alterior is **not just a REST framework**, but we'd be remiss if we didn't provide a first-class way to build REST services.
+
+```typescript
+import '@alterior/platform-nodejs';
+import { WebService, Get } from '@alterior/web-server';
+import { Application } from '@alterior/runtime';
+
+@WebService()
+export class MyWebService {
+    @Get('/service-info')
+    info() {
+      return { 
+        service: 'my-web-service' 
+      };
+    }
+}
+
+Application.bootstrap(MyWebService);
+```
+
+For more information on building web services with Alterior, see [@alterior/web-server](packages/web-server/README.md).
+
+## General App Pattern
+
+Alterior is not just for building REST services. Here's a minimal single file example of an application that does not use the `@WebService` syntactic sugar shown above. While it doesn't take advantage of many of the benefits of Alterior (which become more apparent as your application grows and adds richer functionality), it does succinctly convey the structural aspects, and underscores the fact that there is no unseen magic that makes Alterior apps possible:
 
 ```typescript
 import 'reflect-metadata';
@@ -29,33 +50,74 @@ export class AppModule implements OnInit {
 }
 
 Application.bootstrap(AppModule);
-``` 
+```
+
+## Using Alterior modules in Angular
+
+You can use any browser-compatible Alterior module in Angular by using  
+`@alterior/platform-angular`:
+
+```typescript
+import { AngularPlatform } from '@alterior/angular-platform';
+import { MyAlteriorModule, MyAlteriorService } from '@my/alterior-module';
+
+@NgModule({
+  providers: [
+    AngularPlatform.bridge(
+      MyAlteriorModule,
+      // ...
+    )
+  ]
+})
+export class AppModule {
+  constructor(
+    someAlteriorService : MyAlteriorService
+  ) {
+    console.log(`The following service was injected from an Alterior module:`);
+    console.log(someAlteriorService);
+  }
+}
+```
+
+For more about using Alterior modules in Angular, see [@alterior/platform-angular](packages/platform-angular/README.md).
 
 ## Starting a project with Alterior?
 
-For more than demonstrative applications, the [Alterior Quickstart](https://github.com/alterior-mvc/quickstart) repository conveys an application structure using recommended idioms and best practices.
+For more than demonstrative applications, the [Alterior Quickstart](https://
+github.com/alterior-mvc/quickstart) repository conveys an application structure 
+using recommended idioms and best practices.
 
 ## Overview
 
-At it's heart, Alterior is a framework for building Typescript applications composed of executable modules which participate in dependency injection and declare components.
-This is the same type of module system used by Angular (`@NgModule`) and other backend frameworks like Nestjs, but with a few important differences.
+Alterior is a framework for building Typescript applications composed of 
+executable modules which participate in dependency injection and declare 
+components.
+This is the same type of module system used by Angular (`@NgModule`) and other 
+backend frameworks like Nestjs, but with a few important differences.
 
-First, Alterior modules can be used for both server-side and client-side code. Every Alterior 
-module can be used as an Angular module, and vice versa. This offers interesting possibilities
-for isomorphic applications.
+First, Alterior modules are _isomorphic_. This means they can be used on 
+both the server (on Node.js) and in the browser (via Angular). The same 
+Alterior module can be loaded into a backend server or loaded into a frontend 
+Angular application. When used with Angular, services provided by Alterior 
+modules are exposed directly to Angular components, services, and pipes. This
+makes Alterior an ideal framework for isomorphic modules.
 
-Second, unlike Angular modules, Alterior modules are _units of execution_, with a defined lifecycle, which respond to standardized lifecycle events. This makes them suitable for 
-use as a primary vehicle for top-level general purpose code. 
+Second, unlike Angular/Nest.js modules, Alterior modules are well-defined 
+units of execution which have a defined lifecycle, and respond to standardized 
+lifecycle events. This makes them suitable for use as a primary vehicle for 
+top-level general purpose code, such as a server or even a desktop 
+application. 
 
 ## Class Libraries
 
-Alterior strives to provide a strong isomorphic base class library that fills the gaps between 
-ECMAScript and larger BCLs like Java or .NET. In service of this, Alterior ships low-level 
-libraries for handling decorators/annotations, errors and error base classes, dependency 
-injection, an HTTP client, and more. 
+Alterior strives to provide a strong isomorphic base class library that fills 
+the gaps between ECMAScript and larger BCLs like Java or .NET. In service of 
+this, Alterior ships low-level libraries for handling decorators/annotations, 
+errors and error base classes, dependency injection, an HTTP client, and more. 
 
 ## Packages
-Alterior consists of the following individual NPM packages. You can pull in packages as you need them.
+Alterior consists of the following individual NPM packages. You can pull in 
+packages as you need them.
 
 - **[@alterior/annotations](packages/annotations/README.md)**  
   A system for decorating and introspecting standardized metadata on programmatic elements in Typescript  
