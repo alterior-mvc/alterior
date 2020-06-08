@@ -1,6 +1,6 @@
 {
   "name": "@alterior/platform-nodejs",
-  "version": "3.0.0-beta.70",
+  "version": "3.0.0-beta.71",
   "access": "public",
   "publishConfig": {
     "access": "public"
