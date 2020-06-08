@@ -47,6 +47,12 @@ export class Runtime {
     }
 
     /**
+     * Retrieve the providers that were collected from the 
+     * module graph and used to create the primary injector.
+     */
+    providers : Provider[] = [];
+
+    /**
      * Iterate over the module definitions which are part of this 
      * runtime and append to the given array the set of dependency injection
      * providers which are specified in the module definitions.

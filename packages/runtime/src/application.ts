@@ -157,6 +157,8 @@ export class Application {
 				}
 			);
 			providers.push(Application);
+
+			runtime.providers = providers;
 	
 			let injector : ReflectiveInjector;
 			try {
