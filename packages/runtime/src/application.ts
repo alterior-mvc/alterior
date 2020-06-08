@@ -55,6 +55,17 @@ export class ExecutionContext {
 
 		return await zone.run(() => callback());
 	}
+
+	public runSync<T>(callback : () => T): T {
+		let zone = Zone.current.fork({
+			name: `AlteriorExecutionContext`,
+			properties: {
+				[ExecutionContext.ZONE_LOCAL_NAME]: this
+			}
+		});
+
+		return zone.run(() => callback());
+	}
 }
 
 /**
