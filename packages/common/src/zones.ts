@@ -83,7 +83,14 @@ export class AsyncZone {
         });
     }
 
-    public get zone(): Zone {
+    /**
+     * Get the underlying Zone object.
+     * @returns Zone
+     * @todo Typed as `any` to avoid issue where this reference to Zone
+     *       is undefined because we cannot directly export Zone's types without
+     *       directly referencing Zone. PRs welcome.
+     */
+    public get zone(): any {
         return this._zone;
     }
 
