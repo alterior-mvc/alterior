@@ -1,0 +1,155 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@alterior/platform-angular</title>
+	<meta name="description" content="Documentation for @alterior/platform-angular">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@alterior/platform-angular</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>@alterior/platform-angular</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#alteriorplatform-angular" id="alteriorplatform-angular" style="color: inherit; text-decoration: none;">
+					<h1>@alterior/platform-angular</h1>
+				</a>
+				<p><a href="https://www.npmjs.com/package/@alterior/platform-angular"><img src="https://img.shields.io/npm/v/@alterior/platform-angular.svg" alt="Version"></a></p>
+				<p>Provides support for loading Alterior modules into an Angular app, including
+					the ability to access Alterior injectable services from Angular components
+					and services. Use this to consume isomorphic libraries from within frontend
+				apps written in Angular.</p>
+				<a href="#rationale" id="rationale" style="color: inherit; text-decoration: none;">
+					<h1>Rationale</h1>
+				</a>
+				<p>In Angular 9, loading Alterior modules natively is not yet supported. This is
+					due to the new Ivy compiler. We hope to add support for this in the future, but
+					in the mean time you can use <code>@alterior/platform-angular</code> to use Alterior modules
+					within your Angular 9+ apps. Instead of adding Alterior modules directly to
+				the <code>imports</code> property of <code>@NgModule()</code>, you should instead use:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { AngularPlatform } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/platform-angular'</span>;
+
+<span class="hljs-meta">@NgModule</span>({
+    providers: [
+        AngularPlatform.bridge(
+            MyAlteriorModule1,
+            MyAlteriorModule2,
+            <span class="hljs-comment">// ...</span>
+        )
+    ]
+})
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> AppModule {
+}</code></pre>
+				<p>This will bootstrap the Alterior app and provide its injectable dependencies
+					via Angular. Because the Alterior app is actually booted, all lifecycle events
+					work as they do normally. AngularBridge also makes available Alterior&#39;s
+				base services, so you can start all loaded Alterior services like so:</p>
+				<p>```typescript
+					import { Component, OnInit } from &#39;@angular/core&#39;;
+				import * as AltRuntime from &#39;@alterior/runtime&#39;;</p>
+				<p>@Component(/* ... */)
+					export class AppComponent extends OnInit {
+					constructor(
+					private altApp : AltRuntime.Application
+				) {</p>
+				<pre><code>}
+
+ngOnInit() {
+    <span class="hljs-keyword">this</span>.altApp.start();
+}
+
+<span class="hljs-comment">// you can also stop the Alterior app:</span>
+<span class="hljs-comment">// - presumably connected to some button in the template</span>
+onStopButtonClicked() {
+    <span class="hljs-keyword">this</span>.altApp.stop();
+}</code></pre><p>}</p>
+				<p>In Angular 8 and earlier Alterior modules can be added directly</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/angularplatform.html" class="tsd-kind-icon">Angular<wbr>Platform</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

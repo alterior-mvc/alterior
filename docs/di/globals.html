@@ -104,6 +104,7 @@
 								<li class="tsd-kind-interface"><a href="interfaces/moduleoptions.html" class="tsd-kind-icon">Module<wbr>Options</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/normalizedprovider.html" class="tsd-kind-icon">Normalized<wbr>Provider</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/platformreflectioncapabilities.html" class="tsd-kind-icon">Platform<wbr>Reflection<wbr>Capabilities</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/providerdependencies.html" class="tsd-kind-icon">Provider<wbr>Dependencies</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/resolvedreflectiveprovider.html" class="tsd-kind-icon">Resolved<wbr>Reflective<wbr>Provider</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/type.html" class="tsd-kind-icon">Type</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/typeprovider.html" class="tsd-kind-icon">Type<wbr>Provider</a></li>
@@ -117,6 +118,7 @@
 								<li class="tsd-kind-type-alias"><a href="globals.html#methodfn" class="tsd-kind-icon">Method<wbr>Fn</a></li>
 								<li class="tsd-kind-type-alias"><a href="globals.html#modulelike" class="tsd-kind-icon">Module<wbr>Like</a></li>
 								<li class="tsd-kind-type-alias"><a href="globals.html#provider" class="tsd-kind-icon">Provider</a></li>
+								<li class="tsd-kind-type-alias"><a href="globals.html#providerwithdependencies" class="tsd-kind-icon">Provider<wbr>With<wbr>Dependencies</a></li>
 								<li class="tsd-kind-type-alias"><a href="globals.html#setterfn" class="tsd-kind-icon">Setter<wbr>Fn</a></li>
 							</ul>
 						</section>
@@ -159,6 +161,7 @@
 								<li class="tsd-kind-function"><a href="globals.html#_mapproviders" class="tsd-kind-icon">_map<wbr>Providers</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#_normalizeproviders" class="tsd-kind-icon">_normalize<wbr>Providers</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#addkey" class="tsd-kind-icon">add<wbr>Key</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#configuremodule" class="tsd-kind-icon">configure<wbr>Module</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#constructdependencies" class="tsd-kind-icon">construct<wbr>Dependencies</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#constructresolvingpath" class="tsd-kind-icon">construct<wbr>Resolving<wbr>Path</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#converttsickledecoratorintometadata" class="tsd-kind-icon">convert<wbr>Tsickle<wbr>Decorator<wbr>Into<wbr>Metadata</a></li>
@@ -200,7 +203,7 @@
 					<div class="tsd-signature tsd-kind-icon">Getter<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflection/types.ts#L10">packages/di/src/injection/reflection/types.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflection/types.ts#L10">packages/di/src/injection/reflection/types.ts:10</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -231,7 +234,7 @@
 					<div class="tsd-signature tsd-kind-icon">Method<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflection/types.ts#L11">packages/di/src/injection/reflection/types.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflection/types.ts#L11">packages/di/src/injection/reflection/types.ts:11</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -265,7 +268,7 @@
 					<div class="tsd-signature tsd-kind-icon">Module<wbr>Like<span class="tsd-signature-symbol">:</span> <a href="interfaces/type.html#function" class="tsd-signature-type">Function</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/configuredmodule.html" class="tsd-signature-type">ConfiguredModule</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/modules.ts#L12">packages/di/src/modules.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/modules.ts#L21">packages/di/src/modules.ts:21</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -275,7 +278,7 @@
 					<div class="tsd-signature tsd-kind-icon">Provider<span class="tsd-signature-symbol">:</span> <a href="interfaces/typeprovider.html" class="tsd-signature-type">TypeProvider</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/valueprovider.html" class="tsd-signature-type">ValueProvider</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/classprovider.html" class="tsd-signature-type">ClassProvider</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/existingprovider.html" class="tsd-signature-type">ExistingProvider</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/factoryprovider.html" class="tsd-signature-type">FactoryProvider</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/provider.ts#L219">packages/di/src/injection/provider.ts:219</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/provider.ts#L219">packages/di/src/injection/provider.ts:219</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -296,12 +299,22 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
+					<a name="providerwithdependencies" class="tsd-anchor"></a>
+					<h3>Provider<wbr>With<wbr>Dependencies</h3>
+					<div class="tsd-signature tsd-kind-icon">Provider<wbr>With<wbr>Dependencies<span class="tsd-signature-symbol">:</span> <a href="globals.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol"> &amp; </span><a href="interfaces/providerdependencies.html" class="tsd-signature-type">ProviderDependencies</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/provider.ts#L225">packages/di/src/injection/provider.ts:225</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias">
 					<a name="setterfn" class="tsd-anchor"></a>
 					<h3>Setter<wbr>Fn</h3>
 					<div class="tsd-signature tsd-kind-icon">Setter<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflection/types.ts#L9">packages/di/src/injection/reflection/types.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflection/types.ts#L9">packages/di/src/injection/reflection/types.ts:9</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -347,7 +360,7 @@
 					<div class="tsd-signature tsd-kind-icon">DELEGATE_<wbr>CTOR<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> = /^function\s+\S+\(\)\s*{[\s\S]+\.apply\(this,\s*arguments\)/</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflection/reflection_capabilities.ts#L20">packages/di/src/injection/reflection/reflection_capabilities.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflection/reflection_capabilities.ts#L20">packages/di/src/injection/reflection/reflection_capabilities.ts:20</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -362,7 +375,7 @@
 					<div class="tsd-signature tsd-kind-icon">ERROR_<wbr>COMPONENT_<wbr>TYPE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"ngComponentType"</span><span class="tsd-signature-symbol"> = &quot;ngComponentType&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/errors.ts#L11">packages/di/src/injection/facade/errors.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/errors.ts#L11">packages/di/src/injection/facade/errors.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -372,7 +385,7 @@
 					<div class="tsd-signature tsd-kind-icon">ERROR_<wbr>DEBUG_<wbr>CONTEXT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"ngDebugContext"</span><span class="tsd-signature-symbol"> = &quot;ngDebugContext&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/errors.ts#L12">packages/di/src/injection/facade/errors.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/errors.ts#L12">packages/di/src/injection/facade/errors.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -382,7 +395,7 @@
 					<div class="tsd-signature tsd-kind-icon">ERROR_<wbr>LOGGER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"ngErrorLogger"</span><span class="tsd-signature-symbol"> = &quot;ngErrorLogger&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/errors.ts#L14">packages/di/src/injection/facade/errors.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/errors.ts#L14">packages/di/src/injection/facade/errors.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -392,7 +405,7 @@
 					<div class="tsd-signature tsd-kind-icon">ERROR_<wbr>ORIGINAL_<wbr>ERROR<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"ngOriginalError"</span><span class="tsd-signature-symbol"> = &quot;ngOriginalError&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/errors.ts#L13">packages/di/src/injection/facade/errors.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/errors.ts#L13">packages/di/src/injection/facade/errors.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -402,7 +415,7 @@
 					<div class="tsd-signature tsd-kind-icon">ERROR_<wbr>TYPE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"ngType"</span><span class="tsd-signature-symbol"> = &quot;ngType&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/errors.ts#L10">packages/di/src/injection/facade/errors.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/errors.ts#L10">packages/di/src/injection/facade/errors.ts:10</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -421,7 +434,7 @@
 					<div class="tsd-signature tsd-kind-icon">Host<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = HostAnnotation.decorator({validTargets: [&#x27;parameter&#x27;]})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/metadata/decorators.ts#L164">packages/di/src/injection/metadata/decorators.ts:164</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/metadata/decorators.ts#L164">packages/di/src/injection/metadata/decorators.ts:164</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -453,7 +466,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">INJECTOR_<wbr>KEY<span class="tsd-signature-symbol">:</span> <a href="classes/reflectivekey.html" class="tsd-signature-type">ReflectiveKey</a><span class="tsd-signature-symbol"> = ReflectiveKey.get(Injector)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_injector.ts#L472">packages/di/src/injection/reflective_injector.ts:472</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_injector.ts#L534">packages/di/src/injection/reflective_injector.ts:534</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -463,7 +476,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">Inject<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = InjectAnnotation.decorator({validTargets: [&#x27;parameter&#x27;, &#x27;property&#x27;]})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/metadata/decorators.ts#L94">packages/di/src/injection/metadata/decorators.ts:94</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/metadata/decorators.ts#L94">packages/di/src/injection/metadata/decorators.ts:94</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -500,7 +513,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">Injectable<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = InjectableAnnotation.decorator({validTargets: [&#x27;class&#x27;],/*** Allow multiple because this decorator is usually applied to both superclasses* and subclasses. TODO: if we change semantics on super/subclass duplicate definitions* this should be revisited and probably removed.*/allowMultiple: true})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/metadata/decorators.ts#L33">packages/di/src/injection/metadata/decorators.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/metadata/decorators.ts#L33">packages/di/src/injection/metadata/decorators.ts:33</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -532,7 +545,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">Module<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><a href="interfaces/moduleoptions.html" class="tsd-signature-type">ModuleOptions</a><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ModuleAnnotation.decorator()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/modules.ts#L61">packages/di/src/modules.ts:61</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/modules.ts#L70">packages/di/src/modules.ts:70</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -542,7 +555,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">Optional<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = OptionalAnnotation.decorator({validTargets: [&#x27;parameter&#x27;]})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/metadata/decorators.ts#L64">packages/di/src/injection/metadata/decorators.ts:64</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/metadata/decorators.ts#L64">packages/di/src/injection/metadata/decorators.ts:64</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -574,7 +587,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">Self<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = SelfAnnotation.decorator({validTargets: [&#x27;parameter&#x27;]})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/metadata/decorators.ts#L117">packages/di/src/injection/metadata/decorators.ts:117</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/metadata/decorators.ts#L117">packages/di/src/injection/metadata/decorators.ts:117</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -605,7 +618,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">Skip<wbr>Self<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = SkipSelfAnnotation.decorator({validTargets: [&#x27;parameter&#x27;]})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/metadata/decorators.ts#L140">packages/di/src/injection/metadata/decorators.ts:140</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/metadata/decorators.ts#L140">packages/di/src/injection/metadata/decorators.ts:140</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -636,7 +649,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">THROW_<wbr>IF_<wbr>NOT_<wbr>FOUND<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol"> = _THROW_IF_NOT_FOUND</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/injector.ts#L15">packages/di/src/injection/injector.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/injector.ts#L15">packages/di/src/injection/injector.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -646,7 +659,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">FunctionConstructor</span><span class="tsd-signature-symbol"> = Function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/type.ts#L19">packages/di/src/injection/facade/type.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/type.ts#L19">packages/di/src/injection/facade/type.ts:19</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -669,7 +682,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">UNDEFINED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol"> = new Object()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_injector.ts#L22">packages/di/src/injection/reflective_injector.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_injector.ts#L23">packages/di/src/injection/reflective_injector.ts:23</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -679,7 +692,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">Worker<wbr>Global<wbr>Scope<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/lang.ts#L33">packages/di/src/injection/facade/lang.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/lang.ts#L33">packages/di/src/injection/facade/lang.ts:33</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -689,7 +702,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">_EMPTY_<wbr>LIST<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_provider.ts#L34">packages/di/src/injection/reflective_provider.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_provider.ts#L34">packages/di/src/injection/reflective_provider.ts:34</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -699,7 +712,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">_THROW_<wbr>IF_<wbr>NOT_<wbr>FOUND<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol"> = new Object()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/injector.ts#L14">packages/di/src/injection/injector.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/injector.ts#L14">packages/di/src/injection/injector.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -709,7 +722,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">_global<span class="tsd-signature-symbol">:</span> <a href="interfaces/browsernodeglobal.html" class="tsd-signature-type">BrowserNodeGlobal</a><span class="tsd-signature-symbol"> = globalScope</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/lang.ts#L53">packages/di/src/injection/facade/lang.ts:53</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/lang.ts#L53">packages/di/src/injection/facade/lang.ts:53</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -719,7 +732,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">_global<wbr>Key<wbr>Registry<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">KeyRegistry</span><span class="tsd-signature-symbol"> = new KeyRegistry()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_key.ts#L86">packages/di/src/injection/reflective_key.ts:86</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_key.ts#L86">packages/di/src/injection/reflective_key.ts:86</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -729,7 +742,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">global<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/lang.ts#L37">packages/di/src/injection/facade/lang.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/lang.ts#L37">packages/di/src/injection/facade/lang.ts:37</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -739,7 +752,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">global<wbr>Scope<span class="tsd-signature-symbol">:</span> <a href="interfaces/browsernodeglobal.html" class="tsd-signature-type">BrowserNodeGlobal</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/lang.ts#L39">packages/di/src/injection/facade/lang.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/lang.ts#L39">packages/di/src/injection/facade/lang.ts:39</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -749,7 +762,7 @@ class Car {
 					<div class="tsd-signature tsd-kind-icon">reflector<span class="tsd-signature-symbol">:</span> <a href="classes/reflector.html" class="tsd-signature-type">Reflector</a><span class="tsd-signature-symbol"> = new Reflector(new ReflectionCapabilities())</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflection/reflection.ts#L18">packages/di/src/injection/reflection/reflection.ts:18</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflection/reflection.ts#L18">packages/di/src/injection/reflection/reflection.ts:18</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -772,7 +785,7 @@ class Car {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_provider.ts#L261">packages/di/src/injection/reflective_provider.ts:261</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_provider.ts#L261">packages/di/src/injection/reflective_provider.ts:261</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -801,7 +814,7 @@ class Car {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_provider.ts#L206">packages/di/src/injection/reflective_provider.ts:206</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_provider.ts#L206">packages/di/src/injection/reflective_provider.ts:206</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -824,7 +837,7 @@ class Car {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_provider.ts#L219">packages/di/src/injection/reflective_provider.ts:219</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_provider.ts#L219">packages/di/src/injection/reflective_provider.ts:219</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -853,7 +866,7 @@ class Car {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_injector.ts#L474">packages/di/src/injection/reflective_injector.ts:474</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_injector.ts#L536">packages/di/src/injection/reflective_injector.ts:536</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -879,7 +892,7 @@ class Car {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_provider.ts#L181">packages/di/src/injection/reflective_provider.ts:181</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_provider.ts#L181">packages/di/src/injection/reflective_provider.ts:181</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -905,7 +918,7 @@ class Car {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_errors.ts#L62">packages/di/src/injection/reflective_errors.ts:62</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_errors.ts#L62">packages/di/src/injection/reflective_errors.ts:62</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -925,6 +938,32 @@ class Car {
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="configuremodule" class="tsd-anchor"></a>
+					<h3>configure<wbr>Module</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">configure<wbr>Module<span class="tsd-signature-symbol">(</span>module<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, providers<span class="tsd-signature-symbol">: </span><a href="globals.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/configuredmodule.html" class="tsd-signature-type">ConfiguredModule</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/modules.ts#L13">packages/di/src/modules.ts:13</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>module: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>providers: <a href="globals.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="interfaces/configuredmodule.html" class="tsd-signature-type">ConfiguredModule</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
 					<a name="constructdependencies" class="tsd-anchor"></a>
 					<h3>construct<wbr>Dependencies</h3>
 					<ul class="tsd-signatures tsd-kind-function">
@@ -934,7 +973,7 @@ class Car {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_provider.ts#L197">packages/di/src/injection/reflective_provider.ts:197</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_provider.ts#L197">packages/di/src/injection/reflective_provider.ts:197</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -960,7 +999,7 @@ class Car {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_errors.ts#L29">packages/di/src/injection/reflective_errors.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_errors.ts#L29">packages/di/src/injection/reflective_errors.ts:29</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -983,7 +1022,7 @@ class Car {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflection/reflection_capabilities.ts#L180">packages/di/src/injection/reflection/reflection_capabilities.ts:180</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflection/reflection_capabilities.ts#L180">packages/di/src/injection/reflection/reflection_capabilities.ts:180</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1006,7 +1045,7 @@ class Car {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_errors.ts#L105">packages/di/src/injection/reflective_errors.ts:105</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_errors.ts#L105">packages/di/src/injection/reflective_errors.ts:105</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1047,7 +1086,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/errors.ts#L28">packages/di/src/injection/facade/errors.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/errors.ts#L28">packages/di/src/injection/facade/errors.ts:28</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1073,7 +1112,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_errors.ts#L17">packages/di/src/injection/reflective_errors.ts:17</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_errors.ts#L17">packages/di/src/injection/reflective_errors.ts:17</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1096,7 +1135,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/forward_ref.ts#L36">packages/di/src/injection/forward_ref.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/forward_ref.ts#L36">packages/di/src/injection/forward_ref.ts:36</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1136,7 +1175,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/errors.ts#L20">packages/di/src/injection/facade/errors.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/errors.ts#L20">packages/di/src/injection/facade/errors.ts:20</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1159,7 +1198,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/errors.ts#L32">packages/di/src/injection/facade/errors.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/errors.ts#L32">packages/di/src/injection/facade/errors.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1203,7 +1242,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/errors.ts#L24">packages/di/src/injection/facade/errors.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/errors.ts#L24">packages/di/src/injection/facade/errors.ts:24</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1226,7 +1265,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflection/reflection_capabilities.ts#L192">packages/di/src/injection/reflection/reflection_capabilities.ts:192</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflection/reflection_capabilities.ts#L192">packages/di/src/injection/reflection/reflection_capabilities.ts:192</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1249,7 +1288,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/errors.ts#L16">packages/di/src/injection/facade/errors.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/errors.ts#L16">packages/di/src/injection/facade/errors.ts:16</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1272,7 +1311,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_errors.ts#L46">packages/di/src/injection/reflective_errors.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_errors.ts#L46">packages/di/src/injection/reflective_errors.ts:46</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1322,7 +1361,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_errors.ts#L137">packages/di/src/injection/reflective_errors.ts:137</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_errors.ts#L137">packages/di/src/injection/reflective_errors.ts:137</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1379,7 +1418,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_errors.ts#L164">packages/di/src/injection/reflective_errors.ts:164</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_errors.ts#L164">packages/di/src/injection/reflective_errors.ts:164</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1412,7 +1451,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/lang.ts#L57">packages/di/src/injection/facade/lang.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/lang.ts#L57">packages/di/src/injection/facade/lang.ts:57</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1441,7 +1480,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/type.ts#L21">packages/di/src/injection/facade/type.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/type.ts#L21">packages/di/src/injection/facade/type.ts:21</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1464,7 +1503,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_provider.ts#L150">packages/di/src/injection/reflective_provider.ts:150</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_provider.ts#L150">packages/di/src/injection/reflective_provider.ts:150</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1497,7 +1536,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_errors.ts#L250">packages/di/src/injection/reflective_errors.ts:250</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_errors.ts#L250">packages/di/src/injection/reflective_errors.ts:250</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1535,7 +1574,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_errors.ts#L197">packages/di/src/injection/reflective_errors.ts:197</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_errors.ts#L197">packages/di/src/injection/reflective_errors.ts:197</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1588,7 +1627,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_errors.ts#L82">packages/di/src/injection/reflective_errors.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_errors.ts#L82">packages/di/src/injection/reflective_errors.ts:82</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1628,7 +1667,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_errors.ts#L233">packages/di/src/injection/reflective_errors.ts:233</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_errors.ts#L233">packages/di/src/injection/reflective_errors.ts:233</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1668,7 +1707,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/forward_ref.ts#L56">packages/di/src/injection/forward_ref.ts:56</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/forward_ref.ts#L56">packages/di/src/injection/forward_ref.ts:56</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1706,7 +1745,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_provider.ts#L101">packages/di/src/injection/reflective_provider.ts:101</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_provider.ts#L101">packages/di/src/injection/reflective_provider.ts:101</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1734,7 +1773,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_provider.ts#L127">packages/di/src/injection/reflective_provider.ts:127</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_provider.ts#L127">packages/di/src/injection/reflective_provider.ts:127</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1764,7 +1803,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/reflective_provider.ts#L138">packages/di/src/injection/reflective_provider.ts:138</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/reflective_provider.ts#L138">packages/di/src/injection/reflective_provider.ts:138</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1792,7 +1831,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/lang.ts#L61">packages/di/src/injection/facade/lang.ts:61</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/lang.ts#L61">packages/di/src/injection/facade/lang.ts:61</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1815,7 +1854,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/di/src/injection/facade/errors.ts#L36">packages/di/src/injection/facade/errors.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/di/src/injection/facade/errors.ts#L36">packages/di/src/injection/facade/errors.ts:36</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1937,6 +1976,9 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 						<a href="interfaces/platformreflectioncapabilities.html" class="tsd-kind-icon">Platform<wbr>Reflection<wbr>Capabilities</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="interfaces/providerdependencies.html" class="tsd-kind-icon">Provider<wbr>Dependencies</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/resolvedreflectiveprovider.html" class="tsd-kind-icon">Resolved<wbr>Reflective<wbr>Provider</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
@@ -1959,6 +2001,9 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#provider" class="tsd-kind-icon">Provider</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#providerwithdependencies" class="tsd-kind-icon">Provider<wbr>With<wbr>Dependencies</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#setterfn" class="tsd-kind-icon">Setter<wbr>Fn</a>
@@ -2055,6 +2100,9 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#addkey" class="tsd-kind-icon">add<wbr>Key</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#configuremodule" class="tsd-kind-icon">configure<wbr>Module</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#constructdependencies" class="tsd-kind-icon">construct<wbr>Dependencies</a>

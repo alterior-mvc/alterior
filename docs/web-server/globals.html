@@ -181,7 +181,7 @@
 					<div class="tsd-signature tsd-kind-icon">Encoding<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"json"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"raw"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/response.ts#L1">src/response.ts:1</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/response.ts#L1">src/response.ts:1</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -191,7 +191,7 @@
 					<div class="tsd-signature tsd-kind-icon">Middleware<wbr>Definition<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">express.RequestHandler</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">express.RequestHandler</span><span class="tsd-signature-symbol">]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/metadata/controller.ts#L6">src/metadata/controller.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/metadata/controller.ts#L6">src/metadata/controller.ts:6</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -204,7 +204,7 @@
 					<div class="tsd-signature tsd-kind-icon">CONTROLLER_<wbr>CLASSES<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/metadata/controller.ts#L4">src/metadata/controller.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/metadata/controller.ts#L4">src/metadata/controller.ts:4</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -214,7 +214,7 @@
 					<div class="tsd-signature tsd-kind-icon">Controller<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="interfaces/controlleroptions.html" class="tsd-signature-type">ControllerOptions</a><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ControllerAnnotation.decorator()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/metadata/controller.ts#L42">src/metadata/controller.ts:42</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/metadata/controller.ts#L42">src/metadata/controller.ts:42</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -237,7 +237,7 @@
 					<div class="tsd-signature tsd-kind-icon">Middleware<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = MiddlewareAnnotation.decorator()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/middleware.ts#L6">src/middleware.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/middleware.ts#L6">src/middleware.ts:6</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -247,7 +247,7 @@
 					<div class="tsd-signature tsd-kind-icon">Web<wbr>Service<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><a href="interfaces/webserviceoptions.html" class="tsd-signature-type">WebServiceOptions</a><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = WebServiceAnnotation.decorator({validTargets: [ &#x27;class&#x27; ],factory: (site, options) &#x3D;&gt; {options &#x3D; Object.assign({}, options);if (!options.controllers)options.controllers &#x3D; [];if (!options.imports)options.imports &#x3D; [];options.controllers.push(site.target);let existingModule &#x3D; options.imports.find(x &#x3D;&gt; x &#x3D;&#x3D;&#x3D; WebServerModule || x[&#x27;$module&#x27;] &#x3D;&#x3D;&#x3D; WebServerModule);if (!existingModule)options.imports.push(WebServerModule.configure(options.server || {}));Controller(&#x27;&#x27;, { group: &#x27;service&#x27; })(site.target);Module(options)(site.target);AppOptions(options)(site.target);return new WebServiceAnnotation(options);}})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/service.ts#L35">src/service.ts:35</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/service.ts#L35">src/service.ts:35</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -265,7 +265,7 @@
 					<div class="tsd-signature tsd-kind-icon">get<wbr>Parameter<wbr>Names<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = require(&#x27;@avejidah/get-parameter-names&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/route.ts#L1">src/route.ts:1</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/route.ts#L1">src/route.ts:1</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -282,7 +282,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/input.ts#L67">src/input.ts:67</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/input.ts#L67">src/input.ts:67</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -325,7 +325,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/metadata/route.ts#L89">src/metadata/route.ts:89</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/metadata/route.ts#L89">src/metadata/route.ts:89</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -351,7 +351,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/metadata/route.ts#L86">src/metadata/route.ts:86</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/metadata/route.ts#L86">src/metadata/route.ts:86</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -377,7 +377,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/metadata/route.ts#L108">src/metadata/route.ts:108</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/metadata/route.ts#L108">src/metadata/route.ts:108</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -403,7 +403,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/metadata/route.ts#L90">src/metadata/route.ts:90</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/metadata/route.ts#L90">src/metadata/route.ts:90</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -429,7 +429,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/metadata/route.ts#L91">src/metadata/route.ts:91</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/metadata/route.ts#L91">src/metadata/route.ts:91</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -455,7 +455,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/input.ts#L54">src/input.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/input.ts#L54">src/input.ts:54</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -506,7 +506,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/metadata/route.ts#L88">src/metadata/route.ts:88</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/metadata/route.ts#L88">src/metadata/route.ts:88</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -532,7 +532,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/metadata/route.ts#L87">src/metadata/route.ts:87</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/metadata/route.ts#L87">src/metadata/route.ts:87</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -558,7 +558,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/input.ts#L26">src/input.ts:26</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/input.ts#L26">src/input.ts:26</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -609,7 +609,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/metadata/route.ts#L93">src/metadata/route.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/metadata/route.ts#L93">src/metadata/route.ts:93</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -638,7 +638,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/input.ts#L40">src/input.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/input.ts#L40">src/input.ts:40</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -689,7 +689,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/accesscontrol.ts#L10">src/accesscontrol.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/accesscontrol.ts#L10">src/accesscontrol.ts:10</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -727,7 +727,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/test/perf-comparison.ts#L111">src/test/perf-comparison.ts:111</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/test/perf-comparison.ts#L111">src/test/perf-comparison.ts:111</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -744,7 +744,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/middleware.ts#L8">src/middleware.ts:8</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/middleware.ts#L8">src/middleware.ts:8</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -770,7 +770,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/test/perf-comparison.ts#L96">src/test/perf-comparison.ts:96</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/test/perf-comparison.ts#L96">src/test/perf-comparison.ts:96</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -796,7 +796,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/4169002/packages/web-server/src/teststrap.ts#L10">src/teststrap.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/1885756/packages/web-server/src/teststrap.ts#L10">src/teststrap.ts:10</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
