@@ -5,23 +5,12 @@ function include(moduleName : string) {
 }
 
 /**
- * 
+ * Access the environment variables of the current process.
  */
 @Injectable()
 export class Environment {
     constructor() {
-        // Load configuration from .env if there is one.
-        if (typeof process !== 'undefined') {
-            try {
-                include('dotenv').config();
-            } catch (e) {
-            }
-
-            this.env = process.env;
-        } else {
-            this.env = {};
-        }
-        
+        this.env = typeof process !== 'undefined' ? process.env : {};
     }
 
     private defaults : any;

@@ -5,9 +5,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "browser": {
-    "dotenv": false
-  },
   "description": "",
   "main": "./dist/index.js",
   "module": "./dist.esm/index.js",
@@ -37,9 +34,6 @@
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.13"
-  },
-  "optionalDependencies": {
-    "dotenv": "^6.2.0"
   },
   "devDependencies": {
     "@types/node": "^10.9.4",
