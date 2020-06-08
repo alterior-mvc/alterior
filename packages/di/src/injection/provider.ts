@@ -217,3 +217,9 @@ export interface FactoryProvider {
  * @stable
  */
 export type Provider = TypeProvider | ValueProvider | ClassProvider | ExistingProvider | FactoryProvider | any[];
+
+export interface ProviderDependencies {
+  deps? : any[];
+}
+
+export type ProviderWithDependencies = Provider & ProviderDependencies;

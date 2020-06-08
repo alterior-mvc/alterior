@@ -7,8 +7,8 @@
  */
 
 import { Injector, THROW_IF_NOT_FOUND } from './injector';
-import { SelfAnnotation, SkipSelfAnnotation } from './metadata';
-import { Provider } from './provider';
+import { SelfAnnotation, SkipSelfAnnotation, InjectAnnotation, OptionalAnnotation, Optional } from './metadata';
+import { Provider, ClassProvider, ProviderWithDependencies } from './provider';
 import { cyclicDependencyError, instantiationError, noProviderError, outOfBoundsError } from './reflective_errors';
 import { ReflectiveKey } from './reflective_key';
 import {
@@ -17,6 +17,7 @@ import {
   ResolvedReflectiveProvider,
   resolveReflectiveProviders,
 } from './reflective_provider';
+import { Annotation } from '@alterior/annotations';
 
 // Threshold for the dynamic version
 const UNDEFINED = new Object();
@@ -123,6 +124,67 @@ export abstract class ReflectiveInjector implements Injector {
   static resolveAndCreate(providers: Provider[], parent?: Injector): ReflectiveInjector {
     const ResolvedReflectiveProviders = ReflectiveInjector.resolve(providers);
     return ReflectiveInjector.fromResolvedProviders(ResolvedReflectiveProviders, parent);
+  }
+
+  /**
+   * Extract the dependencies of the given providers
+   * @param providers 
+   */
+  static reflectDependencies(provider : Provider): ProviderWithDependencies {
+    if (typeof provider === 'function') {
+      provider = {
+        provide: provider,
+        useClass: provider
+      };
+    }
+
+    if (!provider['useClass'])
+      return provider;
+  
+    let classProvider : ClassProvider = <any>provider;
+
+    const paramsAnnotations = Annotation.getAllForConstructorParameters(classProvider.useClass);
+    let params = Reflect.getOwnMetadata('design:paramtypes', classProvider.useClass);
+    let deps = [];
+
+    if (classProvider.useClass.length > 0 && typeof params === 'undefined') {
+      throw new Error(
+        `missing-reflection: No reflection metadata available ` 
+        + `for ${classProvider.useClass.name}`
+      );
+    }
+
+    if (params && params.length > 0) {
+      for (let i = 0; i < params.length; ++i) {
+        let param = params[i];
+        let paramAnnotations = paramsAnnotations[i] || [];
+
+        let injectAnnotation = <InjectAnnotation>paramAnnotations.find(x => x instanceof InjectAnnotation);
+        let optionalAnnotation = <OptionalAnnotation>paramAnnotations.find(x => x instanceof OptionalAnnotation);
+
+        let token = param;
+
+        if (injectAnnotation) {
+          token = injectAnnotation.token;
+        }
+
+        let dep : any = token;
+
+        if (optionalAnnotation) {
+          dep = [ Optional, token ];
+        } else {
+          dep = token;
+        }
+
+        deps.push(dep);
+      }
+    }
+
+    return <ProviderWithDependencies>{
+      provide: classProvider.provide,
+      useClass: classProvider.useClass,
+      deps
+    }
   }
 
   /**
