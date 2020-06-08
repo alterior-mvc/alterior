@@ -9,6 +9,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p .",
+    "docs": "typedoc .", 
     "test": "exit 0"
   },
   "author": "William Lahti <wilahti@gmail.com>",
