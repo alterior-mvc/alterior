@@ -1,9 +1,5 @@
 import { Injectable } from './decorators';
 
-function include(moduleName : string) {
-    return require(moduleName);
-}
-
 /**
  * Access the environment variables of the current process.
  */
