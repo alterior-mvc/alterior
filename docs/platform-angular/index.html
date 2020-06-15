@@ -70,18 +70,31 @@
 					the ability to access Alterior injectable services from Angular components
 					and services. Use this to consume isomorphic libraries from within frontend
 				apps written in Angular.</p>
-				<a href="#rationale" id="rationale" style="color: inherit; text-decoration: none;">
-					<h1>Rationale</h1>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h1>Installation</h1>
 				</a>
-				<p>In Angular 9, loading Alterior modules natively is not yet supported. This is
-					due to the new Ivy compiler. We hope to add support for this in the future, but
-					in the mean time you can use <code>@alterior/platform-angular</code> to use Alterior modules
-					within your Angular 9+ apps. Instead of adding Alterior modules directly to
-				the <code>imports</code> property of <code>@NgModule()</code>, you should instead use:</p>
+				<pre><code><span class="hljs-built_in">npm</span> install @alterior/platform-angular</code></pre>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h1>Usage</h1>
+				</a>
+				<p>In Angular 7.0 and later, static analysis is used to determine the structure
+					and metadata of your application. This means Angular no longer requires you to
+					load the <code>reflect-metadata</code> polyfill. Alterior&#39;s reflection system <em>does</em> use
+					it, so you must ensure your app loads it. In earlier versions you can skip this
+				step.</p>
+				<p>To enable this add the following in <code>polyfills.ts</code>:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> <span class="hljs-string">'reflect-metadata'</span>;</code></pre>
+				<p>Alterior modules cannot be directly used as Angular modules.</p>
+				<ul>
+					<li>Alterior has its own lifecycle hooks that Angular does not understand</li>
+					<li>Alterior provides built-in services (like <code>Application</code>, <code>Runtime</code>, etc) that Angular does not provide</li>
+					<li>Angular&#39;s module system is not built in a way that allows for direct compatibility with other frameworks (something we&#39;d love to work with them on) </li>
+				</ul>
+				<p>Instead, <code>@alterior/platform-angular</code> provides a way to bootstrap one or more Alterior modules and export the resulting dependency injection providers in a format that Angular can understand. </p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { AngularPlatform } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/platform-angular'</span>;
 
 <span class="hljs-meta">@NgModule</span>({
-    providers: [
+    providers: [ <span class="hljs-comment">// &lt;-- *not* imports</span>
         AngularPlatform.bridge(
             MyAlteriorModule1,
             MyAlteriorModule2,
@@ -91,30 +104,32 @@
 })
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> AppModule {
 }</code></pre>
-				<p>This will bootstrap the Alterior app and provide its injectable dependencies
-					via Angular. Because the Alterior app is actually booted, all lifecycle events
-					work as they do normally. AngularBridge also makes available Alterior&#39;s
-				base services, so you can start all loaded Alterior services like so:</p>
-				<p>```typescript
-					import { Component, OnInit } from &#39;@angular/core&#39;;
-				import * as AltRuntime from &#39;@alterior/runtime&#39;;</p>
-				<p>@Component(/* ... */)
-					export class AppComponent extends OnInit {
-					constructor(
-					private altApp : AltRuntime.Application
-				) {</p>
-				<pre><code>}
+				<p>This will bootstrap a dynamic Alterior app module which <code>imports</code> the given modules and passes back its injectable dependencies so that your Angular module can register them. </p>
+				<p>Because Alterior is bootstrapped just like it is on the server-side, all
+				defined lifecycle events work as they do normally.</p>
+				<p><code>AngularPlatform.bridge()</code> also provides all of Alterior&#39;s base services to
+				your Angular app, so you can, for instance, start (<code>altOnStart()</code>) all the Alterior modules you&#39;ve loaded:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Component, OnInit } <span class="hljs-keyword">from</span> <span class="hljs-string">'@angular/core'</span>;
+<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> AltRuntime <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/runtime'</span>;
 
-ngOnInit() {
-    <span class="hljs-keyword">this</span>.altApp.start();
-}
+<span class="hljs-meta">@Component</span>(<span class="hljs-comment">/* ... */</span>)
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> AppComponent <span class="hljs-keyword">extends</span> OnInit {
+    <span class="hljs-keyword">constructor</span>(<span class="hljs-params">
+        <span class="hljs-keyword">private</span> altApp : AltRuntime.Application
+    </span>) {
 
-<span class="hljs-comment">// you can also stop the Alterior app:</span>
-<span class="hljs-comment">// - presumably connected to some button in the template</span>
-onStopButtonClicked() {
-    <span class="hljs-keyword">this</span>.altApp.stop();
-}</code></pre><p>}</p>
-				<p>In Angular 8 and earlier Alterior modules can be added directly</p>
+    }
+
+    ngOnInit() {
+        <span class="hljs-keyword">this</span>.altApp.start();
+    }
+
+    <span class="hljs-comment">// you can also stop the Alterior app:</span>
+    <span class="hljs-comment">// - presumably connected to some button in the template</span>
+    onStopButtonClicked() {
+        <span class="hljs-keyword">this</span>.altApp.stop();
+    }
+}</code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
