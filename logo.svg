@@ -51,9 +51,9 @@
      showgrid="false"
      inkscape:current-layer="g4438"
      inkscape:document-units="px"
-     inkscape:cy="179.74784"
-     inkscape:cx="406.17804"
-     inkscape:zoom="2.8284271"
+     inkscape:cy="130.26582"
+     inkscape:cx="319.45431"
+     inkscape:zoom="1"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0"
      borderopacity="1.0"
@@ -153,40 +153,6 @@
            width="113.80142"
            id="rect2164"
            style="opacity:1;fill:#3771c8;fill-opacity:1;stroke:#ffffff;stroke-width:3.73894;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0" />
-      </g>
-      <g
-         id="g942-1"
-         transform="matrix(2.8666171,0,0,2.8666171,1012.4836,-2054.7611)"
-         mask="url(#mask2139)">
-        <rect
-           transform="rotate(45)"
-           y="69.842361"
-           x="232.77649"
-           height="112.97248"
-           width="113.80141"
-           id="rect926-3-9"
-           style="opacity:1;fill:#8ac1ff;fill-opacity:1;stroke:#ffffff;stroke-width:3.73890996;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0" />
-        <path
-           style="opacity:1;fill:#0044aa;fill-opacity:1;stroke:#ffffff;stroke-width:3.75338006;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0"
-           d="m 115.95775,253.10787 51.03043,51.03042 -8.8e-4,8.7e-4 H 65.552592 l -0.31307,-0.31308 z"
-           id="path928-0"
-           inkscape:connector-curvature="0" />
-        <rect
-           style="opacity:1;fill:#5f8dd3;fill-opacity:1;stroke:#ffffff;stroke-width:3.7244401;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0"
-           id="rect930-5"
-           width="113.3063"
-           height="40.62323"
-           x="-182.85445"
-           y="232.76923"
-           transform="rotate(-45)" />
-        <rect
-           style="opacity:1;fill:#3771c8;fill-opacity:1;stroke:#ffffff;stroke-width:3.73894;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0"
-           id="rect932-0"
-           width="113.80142"
-           height="40.608734"
-           x="232.77649"
-           y="69.842361"
-           transform="rotate(45)" />
       </g>
       <text
          id="text3742-5-7-0"
