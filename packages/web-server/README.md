@@ -13,6 +13,22 @@ npm install reflect-metadata
 npm install @alterior/runtime @alterior/di @alterior/web-server
 ```
 
+## Configuring Typescript 
+
+You must enable `enableExperimentalDecorators` and `emitDecoratorMetadata`,
+and `esModuleInterop` Typescript compiler options to use this library. Do
+this within `tsconfig.json`:
+
+```json
+{
+    "compilerOptions": {
+        "enableExperimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "esModuleInterop": true
+    }
+}
+```
+
 ## A minimal example
 
 For simple use cases, you can build a web service using Alterior in a single file:
