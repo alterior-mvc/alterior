@@ -273,6 +273,8 @@ Alterior uses the following rules to fulfill the declared method parameters:
   path parameter can be defined in any parent controller/mount context.
 - Parameters decorated with `@QueryParam('q')` will be fulfilled with the query 
   parameter `q` if provided (`?q=...`) 
+- Parameters decorated with `@Request('abc')` will be fulfilled with the request
+  field `abc` if provided by the Connect engine or a preceding middleware.
 - Parameters which are named `body` or decorated with `@Body()` will be fulfilled 
   with the value of `request.body`. You must use a body parsing middleware 
   (we recommend `body-parser`) to populate `request.body`.
