@@ -48,6 +48,20 @@ export function Session(name? : string) {
 }
 
 /**
+ * Apply to a parameter to indicate that it represents a session parameter (ie foo in /bar?foo=1)
+ * @param name 
+ */
+export function Request(name? : string) {
+	return InputAnnotation.decorator({
+		validTargets: [ 'parameter' ],
+		allowMultiple: false
+	})({ 
+		type: 'request', 
+		name 
+	});
+}
+
+/**
  * Apply to a parameter to indicate that it represents a path parameter (ie 'thing' in /hello/:thing)
  * @param name 
  */
