@@ -44,7 +44,7 @@
     "@types/node": "^10.17.24",
     "@types/zone.js": "^0.5.12",
     "chai": "^4.2.0",
-    "razmin": "^0.6.11",
+    "razmin": "^0.6.18",
     "rimraf": "^3.0.2",
     "typescript": "^3.9.3"
   },

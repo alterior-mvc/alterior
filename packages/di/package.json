@@ -49,7 +49,7 @@
     "@types/node": "^8.10.61",
     "chai": "^4.2.0",
     "prettier": "1.13.7",
-    "razmin": "^0.6.13",
+    "razmin": "^0.6.18",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.7.1",
     "tslib": "^2.0.0",
