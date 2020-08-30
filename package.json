@@ -44,7 +44,7 @@
     "@types/node": "^10.17.24",
     "@types/supertest": "^2.0.9",
     "chai": "^3.5.0",
-    "lerna": "^3.21.0",
+    "lerna": "^3.22.1",
     "rimraf": "^2.7.1",
     "supertest": "^3.1.0",
     "swagger-editor-dist": "^3.9.0",
