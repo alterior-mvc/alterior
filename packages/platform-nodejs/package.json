@@ -21,7 +21,7 @@
     "zone.js": "^0.10.3"
   },
   "devDependencies": {
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.7"
   },
   "gitHead": "48a32c2d232db270e1b4c4db5a373c28f1b48347"
 }
