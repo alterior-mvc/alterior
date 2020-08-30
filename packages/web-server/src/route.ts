@@ -464,7 +464,7 @@ export class RouteInstance {
 						throw new Error(`Unknown response body type ${response.body}`);
 
 				} else if (response.encoding === 'json') {
-					this.server.engine.sendJsonBody(event, response.body);
+					this.server.engine.sendJsonBody(event, response.unencodedBody);
 				} else {
 					throw new Error(`Unknown encoding type ${response.encoding}`);
 				}

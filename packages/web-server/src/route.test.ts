@@ -9,6 +9,7 @@ import { QueryParam, Body, Session, PathParam } from './input';
 import { WebService } from './service';
 import { HttpError } from '@alterior/common';
 import { Application } from '@alterior/runtime';
+import { Response } from './response';
 
 let nextFreePort = 10010;
 
@@ -43,6 +44,16 @@ function fakeAppVarietyOfMethods() {
 		@Options('/foo')
 		optionsX(ev : RouteEvent) {
 			ev.response.status(200).send(JSON.stringify({foo:"options"}));
+		}
+
+		@Get('/json/bare')
+		jsonBare() {
+			return { foo: 123 };
+		}
+
+		@Get('/json/response')
+		jsonResponse() {
+			return Response.ok({ foo: 123 });
 		}
 	}
 
@@ -964,6 +975,22 @@ suite(describe => {
 			await teststrap(fakeAppVarietyOfMethods())
 				.options('/foo')
 				.expect(200, { foo: "options" })
+			;
+		});
+
+		it('should pass bare returned data to engine.sendJsonBody', async () => {
+			await teststrap(fakeAppVarietyOfMethods())
+				.get('/json/bare')
+				.expect('Content-Type', /^application\/json/)
+				.expect(200, { foo: 123 })
+			;
+		});
+
+		it('should pass raw Response data to engine.sendJsonBody', async () => {
+			await teststrap(fakeAppVarietyOfMethods())
+				.get('/json/response')
+  				.expect('Content-Type', /^application\/json/)
+				.expect(200, { foo: 123 })
 			;
 		});
 	});

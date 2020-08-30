@@ -40,7 +40,7 @@ export class Response {
 	/**
 	 * Stores the raw, unencoded body in case the user calls encodeAs()
 	 */
-	private unencodedBody  : any;
+	public unencodedBody : any;
 
 	/**
 	 * Return a 201 Created response with the given body (will be encoded as JSON, append encodeAs('raw') to disable).
