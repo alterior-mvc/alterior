@@ -37,7 +37,7 @@
     "@alterior/runtime": "^3.0.0-beta.74",
     "@avejidah/get-parameter-names": "^0.3.2",
     "@types/ejs": "^2.7.0",
-    "bull": "^3.14.0",
+    "bull": "^3.18.0",
     "ejs": "^2.7.4",
     "express": "^4.17.1",
     "kind-of": ">=6.0.3",
