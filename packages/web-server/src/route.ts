@@ -385,9 +385,7 @@ export class RouteInstance {
 		return this.server.logger.withContext(
 			{ host: 'web-server', requestId }, 
 			requestId, 
-			() => {
-				return this.execute(instance, event);
-			}
+			() => this.execute(instance, event)
 		);
 	}
 
@@ -414,9 +412,11 @@ export class RouteInstance {
 		let result;
 
 		try {
-			result = await instance[route.method](
-				...(await Promise.all(this.parameters.map(x => x.resolve(event))))
-			);
+			result = await event.context(async () => {
+				return await instance[route.method](
+					...(await Promise.all(this.parameters.map(x => x.resolve(event))))
+				);
+			});
 		} catch (e) {
 			
 			if (e.constructor === HttpError) {
