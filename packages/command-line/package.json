@@ -1,0 +1,30 @@
+{
+  "name": "@alterior/command-line",
+  "version": "0.0.1",
+  "description": "Tools for building command line tools using Alterior",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "npm run build && node dist/test",
+    "build": "tsc -p ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alterior-mvc/alterior.git"
+  },
+  "keywords": [
+    "cli",
+    "command",
+    "line",
+    "tool"
+  ],
+  "author": "William Lahti",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alterior-mvc/alterior/issues"
+  },
+  "homepage": "https://github.com/alterior-mvc/alterior#readme",
+  "devDependencies": {
+    "@types/node": "^14.14.25",
+    "razmin": "^1.0.2"
+  }
+}
