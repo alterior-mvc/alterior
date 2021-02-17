@@ -74,6 +74,25 @@ export class RouteEvent {
 
 	request : express.Request;
 	response : express.Response;
+
+	static get current(): RouteEvent {
+		return Zone.current.get('@alterior/web-server:RouteEvent.current');
+	}
+
+	context<T>(callback : () => T): T {
+		return RouteEvent.with(this, callback);
+	}
+
+	static with<T>(routeEvent : RouteEvent, callback : () => T): T {
+		let zone = Zone.current.fork({
+			name: `RouteEventZone`,
+			properties: {
+				'@alterior/web-server:RouteEvent.current': routeEvent
+			}
+		});
+
+		return zone.run(callback);
+	}
 }
 
 export interface RouteOptions {
@@ -91,17 +110,22 @@ export function Options(path? : string, options? : RouteOptions) { return Route(
 export function Patch(path? : string, options? : RouteOptions) { return Route('PATCH', path, options); }
 
 export function Route(method : string, path? : string, options? : RouteOptions) {
-    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-		let routes = target['alterior:routes'] || [];
+    return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
 
-		routes.push(<RouteDefinition>{
+
+		if (!target.hasOwnProperty('alterior:routes')) {
+			Object.defineProperty(target, 'alterior:routes', {
+				enumerable: false,
+				value: []
+			});
+		}
+
+		target['alterior:routes'].push(<RouteDefinition>{
 			method: propertyKey,
 			httpMethod: method || "GET", 
 			options: options || {},
 			path: path || ''
 		});
-
-		target['alterior:routes'] = routes;
 	};
 }
 
