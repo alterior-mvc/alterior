@@ -9,5 +9,6 @@ export {
     ExistingProvider,
     FactoryProvider,
     TypeProvider,
-    ValueProvider
+    ValueProvider,
+    Type
 } from './injection';
