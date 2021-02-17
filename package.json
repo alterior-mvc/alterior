@@ -45,11 +45,11 @@
     "@types/supertest": "^2.0.9",
     "chai": "^3.5.0",
     "lerna": "^3.22.1",
+    "lodash": ">=4.17.19",
     "rimraf": "^2.7.1",
     "supertest": "^3.1.0",
     "swagger-editor-dist": "^3.9.0",
     "typedoc": "^0.17.7",
-    "typescript": "^3.9.7",
-    "lodash": ">=4.17.19"
+    "typescript": "^3.9.7"
   }
 }
