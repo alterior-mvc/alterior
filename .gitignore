@@ -4,3 +4,6 @@ dist/
 dist.esm/
 *~
 *.tgz
+
+foobar*/
+example-app/
