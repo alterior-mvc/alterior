@@ -773,7 +773,7 @@ export class Annotations {
 
     private static getOrCreateListForClass(target : Object): IAnnotation[] {
         if (!target.hasOwnProperty(ANNOTATIONS_KEY))
-            Object.defineProperty(target, ANNOTATIONS_KEY, { value: [] });
+            Object.defineProperty(target, ANNOTATIONS_KEY, { enumerable: false, value: [] });
         return target[ANNOTATIONS_KEY];
     }
 
@@ -799,7 +799,7 @@ export class Annotations {
 
     private static getOrCreateMapForClassProperties(target : Object): ObjectMap<IAnnotation[]> {
         if (!target.hasOwnProperty(PROPERTY_ANNOTATIONS_KEY))
-            Object.defineProperty(target, PROPERTY_ANNOTATIONS_KEY, { value: [] });
+            Object.defineProperty(target, PROPERTY_ANNOTATIONS_KEY, { enumerable: false, value: [] });
         return target[PROPERTY_ANNOTATIONS_KEY];
     }
 
@@ -861,7 +861,7 @@ export class Annotations {
 
     private static getOrCreateMapForMethodParameters(target : Object): IAnnotation[] {
         if (!target.hasOwnProperty(METHOD_PARAMETER_ANNOTATIONS_KEY))
-            Object.defineProperty(target, METHOD_PARAMETER_ANNOTATIONS_KEY, { value: [] });
+            Object.defineProperty(target, METHOD_PARAMETER_ANNOTATIONS_KEY, { enumerable: false, value: [] });
         return target[METHOD_PARAMETER_ANNOTATIONS_KEY];
     }
 
@@ -884,7 +884,7 @@ export class Annotations {
 
     private static getOrCreateListForConstructorParameters(target : any): IAnnotation[][] {
         if (!target[CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY])
-            Object.defineProperty(target, CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY, { value: [] });
+            Object.defineProperty(target, CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY, { enumerable: false, value: [] });
         return target[CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY];
     }
 
