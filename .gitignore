@@ -5,4 +5,5 @@ dist.esm/
 *~
 *.tgz
 
-packages/example-app/
+foobar*/
+example-app/
