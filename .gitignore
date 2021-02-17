@@ -4,3 +4,5 @@ dist/
 dist.esm/
 *~
 *.tgz
+
+packages/example-app/
