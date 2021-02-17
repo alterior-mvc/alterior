@@ -2,6 +2,7 @@
 import * as express from 'express';
 import { shallowClone } from '@alterior/common';
 import { Provider } from '@alterior/di';
+import { Expose } from '@alterior/runtime';
 
 export class RouteReflector {
 	constructor(type : Function, mountPath? : string) {
@@ -112,6 +113,7 @@ export function Patch(path? : string, options? : RouteOptions) { return Route('P
 export function Route(method : string, path? : string, options? : RouteOptions) {
     return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
 
+		Expose()(target, propertyKey, descriptor);
 
 		if (!target.hasOwnProperty('alterior:routes')) {
 			Object.defineProperty(target, 'alterior:routes', {

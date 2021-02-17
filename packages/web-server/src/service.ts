@@ -3,9 +3,10 @@ import { MetadataName } from "@alterior/annotations";
 import { ModuleOptions, Module } from "@alterior/di";
 import { WebServerModule } from "./web-server.module";
 import { WebServerOptions } from "./web-server-options";
-import { ApplicationOptions, AppOptions } from "@alterior/runtime";
+import { ApplicationOptions, AppOptions, Service } from "@alterior/runtime";
 import { Controller } from "./metadata";
 import { AnnotationDecorator } from '@alterior/annotations';
+import { WebServiceCompiler } from './web-service-compiler';
 
 /**
  * Options for the web service. Available options are a superset 
@@ -52,6 +53,7 @@ export const WebService = WebServiceAnnotation.decorator({
         Controller('', { group: 'service' })(site.target);
         Module(options)(site.target);
         AppOptions(options)(site.target);
+        Service({ compiler: WebServiceCompiler })(site.target);
         
         return new WebServiceAnnotation(options);
     }
