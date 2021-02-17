@@ -1,0 +1,37 @@
+{
+  "name": "@alterior/cli",
+  "version": "0.0.1",
+  "description": "Provides the `alt` command line tool for managing Alterior projects.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "start": "npm run build && node dist/main",
+    "test": "npm run build && node dist/test"
+  },
+  "bin": {
+    "alt": "./dist/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alterior-mvc/alterior.git"
+  },
+  "author": "William Lahti",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alterior-mvc/alterior/issues"
+  },
+  "homepage": "https://github.com/alterior-mvc/alterior#readme",
+  "dependencies": {
+    "@alterior/command-line": "^0.0.1",
+    "@alterior/runtime": "^3.0.0-beta.75",
+    "@alterior/common": "^3.0.0-beta.75",
+    "@alterior/annotations": "^3.0.0-beta.75",
+    "@avejidah/get-parameter-names": "^0.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.25",
+    "razmin": "^1.0.2",
+    "reflect-metadata": "^0.1.13",
+    "typescript": "^4.1.3"
+  }
+}
