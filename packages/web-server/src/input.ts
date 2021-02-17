@@ -50,6 +50,7 @@ export function Session(name? : string) {
 /**
  * Apply to a parameter to indicate that it represents a session parameter (ie foo in /bar?foo=1)
  * @param name 
+ * @deprecated Use RouteEvent.current. Will be removed in 4.0.0
  */
 export function Request(name? : string) {
 	return InputAnnotation.decorator({
