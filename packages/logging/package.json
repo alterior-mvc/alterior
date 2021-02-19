@@ -36,13 +36,9 @@
     "dotenv": "^6.0.0",
     "rxjs": "^6.5.5"
   },
-  "peerDependencies": {
-    "@types/zone.js": "^0.10.2"
-  },
   "devDependencies": {
     "@types/chai": "^4.2.11",
     "@types/node": "^10.17.24",
-    "@types/zone.js": "^0.5.12",
     "chai": "^4.2.0",
     "razmin": "^0.6.18",
     "rimraf": "^3.0.2",

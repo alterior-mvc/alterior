@@ -1,6 +1,6 @@
 import { suite } from 'razmin';
 import { expect } from 'chai';
-import { WebService } from 'service';
+import { WebService } from './service';
 import { Get, Controller } from './metadata';
 import { teststrap } from './teststrap';
 import { Module } from '@alterior/di';

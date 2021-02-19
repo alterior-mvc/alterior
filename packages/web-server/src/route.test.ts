@@ -5,7 +5,7 @@ import * as bodyParser from 'body-parser';
 import { Module } from '@alterior/di';
 import { WebServerModule } from './web-server.module';
 import { teststrap } from './teststrap';
-import { QueryParam, Body, Session, PathParam } from './input';
+import { QueryParam, Body, PathParam, SessionValue } from './input';
 import { WebService } from './service';
 import { HttpError } from '@alterior/common';
 import { Application } from '@alterior/runtime';
@@ -126,7 +126,7 @@ suite(describe => {
 			;
 		});
 
-		it('should bind @Session() parameter to `request.session`', async () => {
+		it('should bind @SessionValue() parameter to `request.session`', async () => {
 			@WebService()
 			class FakeApp {
 				@Get('/foo', { 
@@ -135,7 +135,7 @@ suite(describe => {
 							(req.session = { test: 'session-value' }, next()) 
 					]
 				})
-				getX(@Session() session : any) {
+				getX(@SessionValue() session : any) {
 					return Promise.resolve({foo: session.test});
 				}
 			}
@@ -146,7 +146,7 @@ suite(describe => {
 			;
 		});
 		
-		it('should bind @Session(\'name\') property to `request.session[\'name\']`', async () => {
+		it('should bind @SessionValue(\'name\') property to `request.session[\'name\']`', async () => {
 			@WebService()
 			class FakeApp {
 				@Get('/foo', { 
@@ -155,7 +155,7 @@ suite(describe => {
 							(req.session = { test: 123 }, next()) 
 					]
 				})
-				getX(@Session('test') test : number) {
+				getX(@SessionValue('test') test : number) {
 					return Promise.resolve({foo: test});
 				}
 			}
