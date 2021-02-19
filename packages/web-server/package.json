@@ -56,7 +56,7 @@
     "@types/node": "^10.17.24",
     "@types/uuid": "^3.4.9",
     "chai": "^3.5.0",
-    "razmin": "^0.6.18",
+    "razmin": "^1.0.4",
     "require-glob": "^3.2.0",
     "rimraf": "^2.7.1",
     "swagger-editor-dist": "^3.9.0",
