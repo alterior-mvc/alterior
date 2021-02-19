@@ -36,8 +36,9 @@ export function QueryParam(name : string) {
 /**
  * Apply to a parameter to indicate that it represents a session parameter (ie foo in /bar?foo=1)
  * @param name 
+ * @deprecated Use the Session class
  */
-export function Session(name? : string) {
+export function SessionValue(name? : string) {
 	return InputAnnotation.decorator({
 		validTargets: [ 'parameter' ],
 		allowMultiple: false
