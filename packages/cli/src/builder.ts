@@ -6,6 +6,7 @@ import { ApplicationError } from "@alterior/common";
 import { CommandRunner } from "./command-runner";
 import { ANNOTATIONS_KEY, CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY, PROPERTY_ANNOTATIONS_KEY, METHOD_PARAMETER_ANNOTATIONS_KEY } from "@alterior/annotations";
 import * as typescript from 'typescript';
+import { readJsonFile } from "./utils";
 
 export class BuildError extends ApplicationError {
 
@@ -331,9 +332,31 @@ export class BackendBuilder {
     }
 
     private commandRunner : CommandRunner;
-
+    private enableCustomTSC = true;
     async build() {
-        await this.commandRunner.run(`tsc`, `--incremental`);
+        if (this.enableCustomTSC) {
+            let config = await readJsonFile(pathResolve('.', "tsconfig.json"));
+
+            let program = typescript.createProgram({
+                rootNames: [],
+                projectReferences: [{
+                    path: pathResolve('.', "tsconfig.json")
+                }],
+                options: config.compilerOptions
+            });
+
+            let emitResult = program.emit();
+
+            if (emitResult.emitSkipped) {
+                console.error(`Failed to compile TS`);
+            } else {
+                console.log(`Successfully emitted JS`);
+            }
+
+            
+        } else {
+            await this.commandRunner.run(`tsc`, `--incremental`);
+        }
     }
 }
 
@@ -341,15 +364,15 @@ export class Builder {
     constructor(
         readonly projectDir : string
     ) {
-        this.BackendBuilder = new BackendBuilder(projectDir);
+        this.backendBuilder = new BackendBuilder(projectDir);
         this.clientBuilder = new ClientBuilder(projectDir);
     }
 
-    private BackendBuilder : BackendBuilder;
+    private backendBuilder : BackendBuilder;
     private clientBuilder : ClientBuilder;
 
     async build() {
-        await this.BackendBuilder.build();
+        await this.backendBuilder.build();
         await this.clientBuilder.build();
     }
 }
