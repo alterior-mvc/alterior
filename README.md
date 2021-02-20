@@ -83,8 +83,7 @@ For more about using Alterior modules in Angular, see [@alterior/platform-angula
 
 ## Starting a project with Alterior?
 
-For more than demonstrative applications, the [Alterior Quickstart](https://
-github.com/alterior-mvc/quickstart) repository conveys an application structure 
+For more than demonstrative applications, the [Alterior Quickstart](https://github.com/alterior-mvc/quickstart) repository conveys an application structure 
 using recommended idioms and best practices.
 
 ## Overview
@@ -96,11 +95,10 @@ This is the same type of module system used by Angular (`@NgModule`) and other
 backend frameworks like Nestjs, but with a few important differences.
 
 First, Alterior modules are _isomorphic_. This means they can be used on 
-both the server (on Node.js) and in the browser (via Angular). The same 
-Alterior module can be loaded into a backend server or loaded into a frontend 
-Angular application. When used with Angular, services provided by Alterior 
-modules are exposed directly to Angular components, services, and pipes. This
-makes Alterior an ideal framework for isomorphic modules.
+both the server (on Node.js) and in the browser (via Angular). When used with 
+Angular, services provided by Alterior modules are exposed directly to 
+Angular components, services, and pipes. This makes Alterior an ideal framework 
+for isomorphic modules.
 
 Second, unlike Angular/Nest.js modules, Alterior modules are well-defined 
 units of execution which have a defined lifecycle, and respond to standardized 
