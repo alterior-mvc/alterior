@@ -1,7 +1,7 @@
 const getParameterNames = require('@avejidah/get-parameter-names');
 import * as express from 'express';
 import * as uuid from 'uuid';
-
+import * as bodyParser from 'body-parser';
 import { IAnnotation } from "@alterior/annotations";
 import { InputAnnotation } from "./input";
 import { WebEvent, RouteDefinition, RouteOptions } from "./metadata";
@@ -295,6 +295,33 @@ export class RouteInstance {
 
 		this.middleware = middleware;
 		this.resolvedMiddleware = middleware.map(x => prepareMiddleware(childInjector, x));
+
+		// Automatically handle body parsing 
+
+		let { paramTypes, paramAnnotations } = this._methodMetadata;
+		
+		let bodyAnnotation = paramAnnotations
+			.map(annots => annots.find(x => x instanceof InputAnnotation && x.type === 'body') as InputAnnotation)
+			[0]
+		;
+		let bodyIndex = paramAnnotations.findIndex(annots => annots.some(x => x === bodyAnnotation));
+		if (bodyAnnotation) {
+			// need to add bodyParser
+			let paramType = paramTypes[bodyIndex];
+			let bodyMiddleware;
+
+			if (paramType === String) {
+				bodyMiddleware = bodyParser.text();
+			} else if (paramType === Buffer) {
+				bodyMiddleware = bodyParser.raw();
+			} else {
+				bodyMiddleware = bodyParser.json();
+			}
+
+			if (bodyMiddleware) {
+				this.resolvedMiddleware.push(bodyMiddleware);
+			}
+		}
 	}
 
 	middleware : any[];

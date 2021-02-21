@@ -107,18 +107,18 @@ Note: You do not always have to specify a path for `@Controller()`, `@Mount()` o
 
 ## Mechanics of `@WebService`
 
-`@WebService()` declares the class as a module (`@Module()`), applies `@AppOptions()`, and registers itself as a controller class within that module. 
-You can pass any of the options for `@Module()`, `@AppOptions()` as well as the options available for `WebServerModule.configure(...)`.
+`@WebService()` declares the class as a module (`@Module()`) and registers itself as a controller class (`@Controller()`) 
+within that module. You can pass any of the options for `@Module()` and `WebServerModule.configure(...)`.
 
 The following definition is equivalent to using `@WebService(options?)`:
 
 ```typescript
-@AppOptions(options)
 @Module({
     ...options,
     controllers: [ MyWebService ],
     imports: [ WebServerModule.configure(options) ]
 })
+@Controller()
 export class MyWebService { /* ... */ }
 ```
 
@@ -127,13 +127,10 @@ top-level module from your web service implementation, especially when your appl
 
 ```typescript
 // app.module.ts
-
-import { AppOptions } from '@alterior/runtime';
 import { Module } from '@alterior/di';
 import { WebServerModule } from '@alterior/web-server';
 import { FooController } from './foo.controller';
 
-@AppOptions({ name: 'My Application' })
 @Module({
     imports: [ WebServerModule ],
     controllers: [ FooController ]
@@ -300,7 +297,7 @@ interface MyRequestType {
 	foo? : number;
 }
 
-@Controller({ middleware: [ bodyParser.json() ] })
+@Controller()
 export class MyController {
     @Get('/do/:action')
     doThings(
@@ -337,31 +334,33 @@ Modules, controllers and services all participate in dependency injection. For m
 
 ## Applying Middleware
 
-Since Alterior uses Express (https://expressjs.com/), it supports any Express-compatible or Connect based middleware. Middleware can be used globally, it can be mounted to a specific set of URLs,  or it can be declared as part of a route, just like you can with vanilla Express.
+Alterior supports Connect middleware (as used in Express, Fastify, etc). Middleware can be connected globally or 
+declared as part of a route. 
 
-To add middleware globally you must use the `@AppOptions` decorator on your app class:
+To add middleware globally you can declare the `middleware` property on your `@WebService` or via 
+`WebServerModule.configure()`.
 
 ```typescript
-import * as bodyParser from 'body-parser'; // you will need to load the body-parser typings for this syntax
-@AppOptions({
-    middleware: [bodyParser.json()]
+import * as myConnectMiddleware from 'my-connect-middleware';
+@WebService({
+    middleware: [myConnectMiddleware()]
 })
-export class Application {
+export class MyService {
     // ...
 }
 ```
 
-To add "mounted" middleware:
+You can also connect middleware globally, but limit it to specific paths:
 
 ```typescript
-const fileUpload = require('express-fileupload');
+import fileUpload = require('express-fileupload');
 
-@AppOptions({
+@WebService({
     middleware: [
         ['/files', fileUpload]
     ]
 })
-export class Application {
+export class MyService {
     // ...
 }
 ```
@@ -369,14 +368,14 @@ export class Application {
 To add route-specific middleware:
 
 ```typescript
-@Get('/foo', { middleware: [bodyParser.json()] })
-public foo(req : express.Request, res : express.Response) {
-    // todo
+@Get('/foo', { middleware: [fileUpload] })
+public getFoo() {
+    // ...
 }
 ```
 
 Middleware is inherited from parent controllers when using `@Mount()`, 
-you can use this to avoid repeating yoruself when building more complex
+you can use this to avoid repeating yourself when building more complex
 services:
 
 ```typescript
@@ -412,21 +411,22 @@ has a `toString()` method, it will be executed and its return value will be sent
 be included directly, being converted along with the rest of the response to JSON.
 
 `throw new Error('This is the error text')` would produce:
-```
-{"message":"An exception occurred while handling this request.","error":"Error: This is the error text                                                                 
-    at FooController.sampleRequest (music.js:36:29)"}
+```json
+{
+    "message":"An exception occurred while handling this request.",
+    "error":"Error: This is the error text\n    at FooController.sampleRequest (music.js:36:29)"
+}
 ```
 
 `throw { foo: 'bar' }` would product:
-
-```
+```json
 {"message":"An exception occurred while handling this request.","error":{"foo":"bar"}}
 ``` 
 
 You can disable the inclusion of exception information in responses (and this is recommended for production).
-To do so, set `AppOptions.hideExceptions` to `true`. The `error` field will then be excluded from 500 responses.
+To do so, set `WebServerOptions.hideExceptions` to `true`. The `error` field will then be excluded from 500 responses.
 
-```
+```json
 {"message":"An exception occurred while handling this request."}
 ``` 
 
@@ -443,7 +443,7 @@ Include it as middleware:
 
 ```typescript
 import * as session from 'express-session';
-@AppOptions({
+@WebService({
 	middleware: [session({ secret: SESSION_SECRET })]
 })
 ```
