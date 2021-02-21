@@ -41,10 +41,65 @@ Application.bootstrap(MyWebService);
 
 For more information on building web services with Alterior, see [@alterior/web-server](packages/web-server/README.md).
 
-## Starting a project with Alterior?
+## Consuming your web service
 
-For more than demonstrative applications, the [Alterior Quickstart](https://github.com/alterior-mvc/quickstart) repository conveys a simple web service 
-using recommended idioms and best practices.
+A web service built with Alterior 4 can be consumed on the client transparently. This is an example of a [Transparent Service](https://github.com/alterior-mvc/alterior/wiki/TransparentServicesPlanning)
+
+```typescript
+import { MyWebService } from '@example/my-backend';
+import { Component } from '@angular/core';
+
+@Component({ selector: 'my-component', ... })
+export class MyComponent {
+  constructor(
+    private service : MyWebService
+  ) {
+  }
+
+  onButtonClicked() {
+    let serviceInfo = await this.service.info();
+    console.log(serviceInfo);
+    // { service: 'my-web-service' }
+  }
+}
+```
+
+Transparent services are not limited to being used in Angular. The simplest way to consume a service on the frontend is to create it using Service.bootstrap()
+
+```typescript
+import { Service } from '@alterior/runtime';
+import { MyWebService } from '@example/my-backend';
+
+let service = Service.bootstrap(MyWebService);
+```
+
+## Creating a project
+
+Start by installing the Alterior command line tooling:
+
+```
+npm install @alterior/cli -g
+```
+
+Then you can generate a new Alterior service:
+
+```
+alt new service my-web-service
+```
+
+A new folder called `my-web-service` will be created containing a fully formed Alterior project. To start the service, enter the new folder and call
+
+```
+npm start
+```
+
+To publish the project to NPM for use in your frontend, use
+
+```
+npm publish
+```
+
+Alterior automatically handles everything needed to build and publish your application, including removing your actual backend code if you have asked for that.
 
 # Architecture
 
