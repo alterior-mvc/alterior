@@ -3,7 +3,6 @@ import { suite } from 'razmin';
 import { expect } from 'chai';
 import * as bodyParser from 'body-parser';
 import { Module } from '@alterior/di';
-import { WebServerModule } from './web-server.module';
 import { teststrap } from './teststrap';
 import { QueryParam, Body, PathParam, SessionValue } from './input';
 import { WebService } from './service';
@@ -14,8 +13,19 @@ import { Response } from './response';
 let nextFreePort = 10010;
 
 function fakeAppVarietyOfMethods() {
-	@Controller()
-	class TestController {
+	@WebService({ 
+		server: {
+			port: nextFreePort++, 
+			silent: true,
+			middleware: [
+				(req, res, next) => { 
+					res.header('Content-Type', 'application/json'); 
+					next(); 
+				}
+			]
+		}
+	})
+	class FakeApp {
 		@Get('/foo')
 		getX(ev : WebEvent) {
 			ev.response.status(200).send(JSON.stringify({foo:"get"}));
@@ -55,25 +65,6 @@ function fakeAppVarietyOfMethods() {
 		jsonResponse() {
 			return Response.ok({ foo: 123 });
 		}
-	}
-
-	@Module({ 
-		controllers: [TestController],
-		imports: [
-			WebServerModule.configure({
-				port: nextFreePort++, 
-				silent: true,
-				middleware: [
-					(req, res, next) => { 
-						res.header('Content-Type', 'application/json'); 
-						next(); 
-					}
-				]
-			})
-		]
-		
-	}) 
-	class FakeApp {
 	}
 
 	return FakeApp;
@@ -681,8 +672,10 @@ suite(describe => {
 				subcontroller : SubController;
 			}
 
-			@WebService({ controllers: [TestController] })
-			class FakeApp { }
+			@WebService()
+			class FakeApp { 
+				@Mount() test : TestController;
+			}
 
 			await teststrap(FakeApp)
 				.post('/abc/def/ghi/jkl')
@@ -723,8 +716,10 @@ suite(describe => {
 				subcontroller : SubController;
 			}
 
-			@WebService({ controllers: [TestController] })
-			class FakeApp { }
+			@WebService()
+			class FakeApp { 
+				@Mount() test : TestController;
+			}
 
 			await teststrap(FakeApp)
 				.post('/abc/def/ghi/jkl')
@@ -755,8 +750,10 @@ suite(describe => {
 				}
 			}
 
-			@WebService({ controllers: [TestController] })
-			class FakeApp { }
+			@WebService()
+			class FakeApp { 
+				@Mount() test : TestController;
+			}
 
 			await teststrap(FakeApp)
 				.get('/abc/other')
@@ -796,8 +793,10 @@ suite(describe => {
 				feature : FeatureController;
 			}
 
-			@WebService({ controllers: [TestController] })
-			class FakeApp { }
+			@WebService()
+			class FakeApp { 
+				@Mount() test : TestController;
+			}
 
 			let test = teststrap(FakeApp)
 			
@@ -849,8 +848,10 @@ suite(describe => {
 				subcontroller : SubController;
 			}
 
-			@WebService({ controllers: [TestController] })
-			class FakeApp { }
+			@WebService()
+			class FakeApp { 
+				@Mount() test : TestController;
+			}
 
 			await teststrap(FakeApp)
 				.post('/abc/def/ghi')
@@ -901,8 +902,10 @@ suite(describe => {
 				subcontroller : FeatureController;
 			}
 
-			@WebService({ controllers: [TestController] })
-			class FakeApp { }
+			@WebService()
+			class FakeApp { 
+				@Mount() test : TestController;
+			}
 
 			let test = teststrap(FakeApp);
 

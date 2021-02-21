@@ -1,6 +1,5 @@
 import { Controller, Get, WebEvent } from "./metadata";
 import { ServiceDescriptionRef } from "./service-description-ref";
-import { ExpressRef } from "./express-ref";
 
 export interface OpenApiContact {
     name : string;
@@ -96,8 +95,7 @@ export interface OpenApiDefinitionProperty {
 @Controller('', { group: 'openapi' })
 export class OpenApiController {
     constructor(
-        private serviceDescriptionRef : ServiceDescriptionRef,
-        private expressRef : ExpressRef
+        private serviceDescriptionRef : ServiceDescriptionRef
     ) {
     }
 

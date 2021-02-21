@@ -1,22 +1,19 @@
 import { suite } from 'razmin';
 import { expect } from 'chai';
 import { WebService } from './service';
-import { Get, Controller } from './metadata';
+import { Get, Controller, Mount } from './metadata';
 import { teststrap } from './teststrap';
 import { Module } from '@alterior/di';
-import { WebServerModule } from './web-server.module';
 import { Application } from '@alterior/runtime';
 import * as fetch from 'node-fetch';
 
 suite(describe => {
     describe('@Controller', it => {
         it('should execute altOnInit once', async () => {
-            
             let initialized = 0;
 
-			@Controller()
-			class FakeController {
-
+            @WebService()
+            class FakeModule {
                 altOnInit() {
                     initialized += 1;
                 }
@@ -24,13 +21,6 @@ suite(describe => {
 				getX() {
 					return Promise.resolve({ok: true});
 				}
-			}
-
-            @Module({
-                controllers: [ FakeController ],
-                imports: [ WebServerModule ]
-            })
-            class FakeModule {
             }
 
 			await teststrap(FakeModule)
@@ -42,26 +32,20 @@ suite(describe => {
                 .to.equal(1);
         });
         it('should execute altOnStart once', async () => {
-            
             let started = 0;
 
-			@Controller()
-			class FakeController {
-
+            @WebService({
+                server: { port: 32552 }
+            })
+            class FakeModule {
                 altOnStart() {
                     started += 1;
                 }
+
 				@Get('/foo')
 				getX() {
 					return Promise.resolve({ok: true});
 				}
-			}
-
-            @Module({
-                controllers: [ FakeController ],
-                imports: [ WebServerModule.configure({ port: 32552 }) ]
-            })
-            class FakeModule {
             }
 
             let app = await Application.bootstrap(FakeModule, { silent: true });
@@ -74,12 +58,13 @@ suite(describe => {
             app.stop();
         });
         it('should execute both altOnInit and altOnStart once each', async () => {
-            
             let started = 0;
             let initialized = 0;
 
-			@Controller()
-			class FakeController {
+            @WebService({
+                server: { port: 32553 }
+            })
+            class FakeModule {
 
                 altOnInit() {
                     initialized += 1;
@@ -91,13 +76,6 @@ suite(describe => {
 				getX() {
 					return Promise.resolve({ok: true});
 				}
-			}
-
-            @Module({
-                controllers: [ FakeController ],
-                imports: [ WebServerModule.configure({ port: 32553 }) ]
-            })
-            class FakeModule {
             }
 
             let app = await Application.bootstrap(FakeModule, { silent: true });
