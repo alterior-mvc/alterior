@@ -159,8 +159,11 @@ import * as express from 'express';
 
 @Controller('/optional-prefix')
 export class FooController {
+    /**
+     * Every method is a web request. This one is "GET /simple".
+     */
     @Get('/simple')
-    public simple(ev : RouteEvent)
+    public canBeSimple(ev : RouteEvent)
     {
     	return { status: 'success!' };
     }
@@ -169,7 +172,7 @@ export class FooController {
      * You can also return promises.
      */
     @Get('/promises')
-    public canHazPromises()
+    public canUsePromises()
     {
         return Promise.resolve({ nifty: 123 });
     }
@@ -178,36 +181,32 @@ export class FooController {
      * Or use async/await (the recommended way!)
      */
     @Get('/async')
-    public async canHasAsync()
+    public async canUseAsync()
     {
     	return await someFunction();
     }
     
     /**
-     * The parameters specified by your route methods are automatically analyzed,
-     * and the correct value is provided depending on what type (and in some cases what name)
-     * your parameter has.
+     * The parameters specified by your route methods are automatically 
+     * analyzed, and the correct value is provided depending on what type 
+     * (and in some cases what name) your parameter has.
      *
-     * For example, you can get access to the Express request and response by injecting 
-     * RouteEvent.
+     * For example, you can receive path parameters.
      */
-    @Get('/useRouteEvent')
-    public canHazRouteEvent(ev : RouteEvent)
+    @Get('/cars/:nameOfCar')
+    public canUseRouteParams(nameOfCar : string)
     {
-        ev.response.status(200).send("/foo works!");
+        return `you asked for car named ${nameOfCar}`;
     }
-    
+
     /**
-     * You can also request the Express request/response explicitly (note that this is 
-     * based on the parameter name, see below for more details about
-     * route method parameters).
+     * You can access the HTTP request and response using RouteEvent.request and 
+     * RouteEvent.response if needed.
      */
-    @Get('/bar')
-    public bar(req : express.Request, res : express.Response)
-    {
-        return Promise.resolve({ nifty: 123 });
+    public useRouteEvents() {
+        RouteEvent.response.status(200).send(`hello ${RouteEvent.request.header('user-agent')}`);
     }
-    
+
     /**
      * Promises can reject with an HttpException to specify HTTP errors...
      */
@@ -223,7 +222,9 @@ export class FooController {
     @Get('/specificResponse')
     public specificResponseAndSuch(req : express.Request, res : express.Response)
     {
-	return Response.serverError({ message: `uh oh, that's never happened before` });
+	    return Response.serverError({ 
+            message: `uh oh, that's never happened before` 
+        });
     }
     
     /**
@@ -234,7 +235,9 @@ export class FooController {
     })
     public middlewareRolls(req : express.Request, res : express.Response)
     {
-	return Response.serverError({ message: `uh oh, that's never happened before` });
+	    return Response.serverError({ 
+            message: `uh oh, that's never happened before` 
+        });
     }
     
 }
