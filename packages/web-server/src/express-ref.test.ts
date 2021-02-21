@@ -1,42 +1,31 @@
 import { suite } from 'razmin';
-import { ExpressRef as _ExpressRef } from './express-ref';
-import { AppOptions, Application } from '@alterior/runtime';
-import * as assert from 'assert';
+import { Application } from '@alterior/runtime';
 import { expect } from 'chai';
-import { Module } from '@alterior/di';
-import { WebServerModule } from './web-server.module';
+import { WebService } from './service';
+import { WebServer } from './web-server';
 
 suite(describe => {
 	describe('ExpressRef', it => {
 		it('should provide ExpressRef with a valid Express application in it', async () => {
-
 			return new Promise(async (resolve, reject) => {
-				@Module({
-					imports: [
-						WebServerModule.configure({ 
-							port: 10007, 
-							silent: true
-						})
-					]
+				@WebService({
+					server: { 
+						port: 10007, 
+						silent: true
+					}
 				})
 				class FakeApp { 
-					constructor(public expressRef : _ExpressRef) {}
 				}
 
 				let app = await Application.bootstrap(FakeApp, { silent: true, autostart: false });
-				let module = app.runtime.instances.find(x => x.instance.constructor === FakeApp).instance;
+				let server = WebServer.for(app.inject(FakeApp));
+				expect(server, 'server should be retrievable via WebServer.for()').to.exist;
 
-				let expressRef = module.expressRef;
+				let expressApp = WebServer.for(app.inject(FakeApp)).engine.app;
 
-				expect(expressRef, 'ExpressRef is invalid').to.exist;
-
-				let expressApp = expressRef.application;
-
-				expect(expressApp, 'ExpressRef provided invalid app value').to.exist;
-				expect(expressApp.patch, 'ExpressRef provided app without patch() method').to.exist;
-
+				expect(expressApp, 'WebServer provided invalid app value').to.exist;
+				expect(expressApp.patch, 'WebServer provided app without patch() method').to.exist;
 				resolve();
-
 				app.stop();
 			});
 		});

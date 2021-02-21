@@ -6,7 +6,6 @@ import { prepareMiddleware } from "./middleware";
 import { RouteEvent } from "./metadata";
 import { RouteInstance, RouteDescription } from './route';
 import { ApplicationOptions, Application, AppOptionsAnnotation, AppOptions } from '@alterior/runtime';
-import { ExpressRef } from './express-ref';
 import { Logger } from '@alterior/logging';
 import { WebServerEngine } from './web-server-engine';
 import { ExpressEngine } from './express-engine';
@@ -45,6 +44,16 @@ export class WebServer {
 		return this._engine;
 	}
 
+	private static _servers = new WeakMap<Object, WebServer>();
+
+	public static for(webService : any): WebServer {
+		return this._servers.get(webService);
+	}
+
+	public static register(webService : any, server : WebServer) {
+		this._servers.set(webService, server);
+	}
+
 	public static bootstrapCloudFunction(entryModule : any, options? : ApplicationOptions) {
 		let appOptionsAnnot = AppOptionsAnnotation.getForClass(entryModule);
 		@AppOptions(appOptionsAnnot ? appOptionsAnnot.options : {})
@@ -64,7 +73,8 @@ export class WebServer {
 			})
 		);
 		
-		return app.injector.get(ExpressRef).application;
+		return WebServer.for(app.injector.get(entryModule))
+			.engine.app;
 	}
 	
 	/**

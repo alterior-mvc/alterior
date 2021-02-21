@@ -1,11 +1,13 @@
 import { Annotation } from "@alterior/annotations";
 import { MetadataName } from "@alterior/annotations";
-import { ModuleOptions, Module } from "@alterior/di";
-import { WebServerModule } from "./web-server.module";
+import { ModuleOptions, Module, Optional, ReflectiveInjector } from "@alterior/di";
 import { WebServerOptions } from "./web-server-options";
-import { ApplicationOptions, AppOptions } from "@alterior/runtime";
+import { ApplicationOptions, AppOptions, Application, RolesService } from "@alterior/runtime";
 import { Controller } from "./metadata";
 import { AnnotationDecorator } from '@alterior/annotations';
+import { Logger, LoggingModule } from '@alterior/logging';
+import { WebServer } from './web-server';
+import { ControllerInstance } from './controller';
 
 /**
  * Options for the web service. Available options are a superset 
@@ -27,28 +29,67 @@ export class WebServiceAnnotation extends Annotation {
 }
 
 /**
- * Used to decorate a class which represents a minimal boilerplate REST service.
+ * Used to decorate a class which represents a REST service.
  * Such a class is both an Alterior module and an Alterior controller, meaning it 
  * can both act as the entry module of an Alterior application as well as define
  * REST routes using the @alterior/web-server @Get()/@Post()/etc decorators.
  */
 export const WebService = WebServiceAnnotation.decorator({
     validTargets: [ 'class' ],
-    factory: (site, options) => {
+    factory: (site, options : WebServiceOptions) => {
+        @Module({
+            imports: [ LoggingModule ]
+        })
+        class WebServerModule {
+            constructor(
+                private app : Application,
+                private rolesService : RolesService,
+                private logger : Logger
+            ) {
+            }
+
+            altOnInit() {
+                let  webserver : WebServer;
+
+                webserver = new WebServer(this.app.runtime.injector, options.server, this.logger, this.app.options);
+                let allRoutes = [];
+                let serviceInstance = new ControllerInstance(
+                    webserver, 
+                    site.target, 
+                    webserver.injector, 
+                    allRoutes, 
+                    undefined, 
+                    true
+                );
+
+                serviceInstance.initialize();
+                serviceInstance.mount(webserver);
+
+                WebServer.register(serviceInstance.instance, webserver);
+
+                this.rolesService.registerRole({
+                    identifier: 'web-server',
+                    instance: this,
+                    name: 'Web Server',
+                    summary: 'Starts a web server backed by the controllers configured in the module tree',
+                    start: async () => {
+                        webserver.start();
+                        serviceInstance.start();
+                    },
+                    stop: async () => {
+                        webserver.stop();
+                        serviceInstance.stop();
+                    }
+                })
+            }
+        }
+        
         options = Object.assign({}, options);
 
-        if (!options.controllers)
-            options.controllers = [];
         if (!options.imports)
             options.imports = [];
 
-        options.controllers.push(site.target);
-
-        let existingModule = options.imports.find(x => x === WebServerModule || x['$module'] === WebServerModule);
-
-        if (!existingModule)
-            options.imports.push(WebServerModule.configure(options.server || {}));
-
+        options.imports.push(WebServerModule);
         Controller('', { group: 'service' })(site.target);
         Module(options)(site.target);
         AppOptions(options)(site.target);

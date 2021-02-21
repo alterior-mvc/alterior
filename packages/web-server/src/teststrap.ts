@@ -1,11 +1,10 @@
-import { ExpressRef } from "./express-ref";
 import { Application, AppOptions, AppOptionsAnnotation } from "@alterior/runtime";
 import supertest from 'supertest';
 import { Module } from "@alterior/di";
 import { WebServerOptions } from "./web-server-options";
-import { WebServerRef } from "./web-server-ref";
 import { WebServerEngine } from "./web-server-engine";
 import { ExpressEngine } from "./express-engine";
+import { WebServer } from './web-server';
 
 export function teststrap(module : Function, options? : WebServerOptions) {
     return supertest(async (req, res, next) => {
@@ -29,9 +28,8 @@ export function teststrap(module : Function, options? : WebServerOptions) {
             silent: true
         });
         
-        app.inject(WebServerRef).server.options.silent = true;
-
-        app.inject(ExpressRef)
-            .application(req, res, next);
+        let server = WebServer.for(app.injector.get(module));
+        server.options.silent = true;
+        server.engine.app(req, res, next);
     });
 }

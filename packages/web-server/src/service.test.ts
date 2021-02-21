@@ -6,7 +6,6 @@ import { OpenApiController } from "./openapi";
 import { expect } from "chai";
 import { AppOptionsAnnotation } from "@alterior/runtime";
 import { ModuleAnnotation } from "@alterior/di";
-import { WebServerModule, WebServerOptionsRef } from "./web-server.module";
 
 describe("WebServiceDecorator", () => {
 	it('should work for a simple use case', async () => {
@@ -48,16 +47,8 @@ describe("WebServiceDecorator", () => {
         expect(moduleAnnotation.providers[0]['provide']).to.eq('foo');
         expect(moduleAnnotation.providers[0]['useValue']).to.eq(123);
 
-        let webServerModule = moduleAnnotation.imports.find(x => x['$module'] === WebServerModule);
-        expect(webServerModule).to.not.eq(null);
-        expect(webServerModule['providers'].length).to.be.gte(1);
-
-        let optionsProvider = webServerModule['providers'].find(x => x.provide == WebServerOptionsRef);
-        expect(optionsProvider).to.not.eq(null);
-
-        let optionsRef : WebServerOptionsRef = optionsProvider.useValue;
-
-        expect(optionsRef.options.port).to.eq(12321);
+        let webServerModule = moduleAnnotation.imports.find(x => typeof x === 'function' && x.name === 'WebServerModule');
+        expect(webServerModule).to.exist;
     });
 
     it('should produce a single instance of a module/controller', async () => {

@@ -5,36 +5,6 @@ import { ControllerAnnotation, ControllerOptions, MountOptions, RouteReflector, 
 import * as express from 'express';
 import { prepareMiddleware } from "./middleware";
 
-export class ControllerRegistrar {
-	constructor(readonly server : WebServer) {
-	}
-
-	private _controllers : ControllerInstance[] = [];
-
-	public get controllers() {
-		return this._controllers.slice();
-	}
-    
-	register(controllers : Function[]) {
-		let providers : Provider[] = controllers as Provider[];
-
-		// If a controller is provided within the runtime injector (because it 
-		// is also an Module as defined by @alterior/runtime), we will not create
-		// a second instance of it. This is important when using the 
-		// @WebService() decorator.
-		// * see https://github.com/alterior-mvc/alterior/issues/26
-		providers = providers.filter(p => !this.server.injector.get(p, null));
-
-        let ownInjector = ReflectiveInjector.resolveAndCreate(providers, this.server.injector);
-		let allRoutes = [];
-
-		this._controllers = controllers.map(type => new ControllerInstance(this.server, type, ownInjector, allRoutes));
-
-		this._controllers.forEach(c => c.initialize());
-		this._controllers.forEach(c => c.mount(this.server));
-	}
-}
-
 export interface ControllerContext {
 	pathPrefix? : string;
 
@@ -52,7 +22,8 @@ export class ControllerInstance {
 		readonly type : Function, 
 		readonly injector : Injector, 
 		readonly routeTable : any[], 
-		context? : ControllerContext
+		context? : ControllerContext,
+		readonly isModule = false
 	) {
 		this.setContext(context);
 		this.prepare();
@@ -239,17 +210,17 @@ export class ControllerInstance {
 	resolvedMiddleware : express.RequestHandler[];
 
 	initialize() {
-		if (this.instance && typeof this.instance.altOnInit === 'function')
+		if (!this.isModule && this.instance && typeof this.instance.altOnInit === 'function') 
 			this.instance.altOnInit();
 	}
 
 	start() {
-		if (this.instance && typeof this.instance.altOnStart === 'function')
+		if (!this.isModule && this.instance && typeof this.instance.altOnStart === 'function')
 			this.instance.altOnStart();
 	}
 
 	stop() {
-		if (this.instance && typeof this.instance.altOnStop === 'function')
+		if (!this.isModule && this.instance && typeof this.instance.altOnStop === 'function')
 			this.instance.altOnStop();
 	}
 
