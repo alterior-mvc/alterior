@@ -4,14 +4,14 @@
 
 A framework for building well-structured applications and isomorphic libraries in Typescript.
 
-## Status
+# Status
 
 Alterior has three major versions.
 - (**`unsupported`**) [v2.x](https://github.com/alterior-mvc/alterior/tree/2.x) is now retired.
 - (**`beta`**) [v3.x](https://github.com/alterior-mvc/alterior/tree/main) is the current stable version, but it has been in a beta semver holding pattern as final details are worked out and the library is battle tested on internal projects at Astronaut Labs and elsewhere. Final production release is imminent and 3.x will be officially recommended for production use.
 - (**`next`**) [v4.x](https://github.com/alterior-mvc/alterior/tree/4.x) development started in Feb 2021. 4.x APIs builds on the architecture of 3.x with small (but backwards incompatible) changes to enable [Transparent Services](https://github.com/alterior-mvc/alterior/wiki/TransparentServicesPlanning). 4.x also requires use of a custom build process handled by a new CLI tool called `alt`.
 
-## Installation
+# Getting Started
 
 ```
 npm install @alterior/runtime
@@ -19,7 +19,7 @@ npm install @alterior/runtime
 
 ## Building a REST Service
 
-Alterior is **not just a REST framework**, but we'd be remiss if we didn't provide a first-class way to build REST services.
+Alterior is **not just a REST framework**, but that's certainly it's most common usage.
 
 ```typescript
 import '@alterior/platform-nodejs';
@@ -41,9 +41,14 @@ Application.bootstrap(MyWebService);
 
 For more information on building web services with Alterior, see [@alterior/web-server](packages/web-server/README.md).
 
-## General App Pattern
+## Starting a project with Alterior?
 
-Alterior is not just for building REST services. Here's a minimal single file example of an application that does not use the `@WebService` syntactic sugar shown above. While it doesn't take advantage of many of the benefits of Alterior (which become more apparent as your application grows and adds richer functionality), it does succinctly convey the structural aspects, and underscores the fact that there is no unseen magic that makes Alterior apps possible:
+For more than demonstrative applications, the [Alterior Quickstart](https://github.com/alterior-mvc/quickstart) repository conveys a simple web service 
+using recommended idioms and best practices.
+
+# Architecture
+
+Alterior is not just for building REST services. Here's a minimal single file example of an application that is something other than a `@WebService`.
 
 ```typescript
 import 'reflect-metadata';
@@ -59,41 +64,64 @@ export class AppModule implements OnInit {
 Application.bootstrap(AppModule);
 ```
 
-## Using Alterior modules in Angular
+This becomes useful because Alterior modules can participate in dependency injection and builtin lifecycle management functionality. A class decorated with `@WebService()` is also considered an `@Module()`.
 
-You can use any browser-compatible Alterior module in Angular by using  
-`@alterior/platform-angular`:
+### Dependency Injection
+
+Bootstrapped classes can participate in dependency injection. 
 
 ```typescript
-import { AngularPlatform } from '@alterior/angular-platform';
-import { MyAlteriorModule, MyAlteriorService } from '@my/alterior-module';
+import 'reflect-metadata';
+import { Module, OnInit, AppOptions, Application } from '@alterior/runtime';
+import { Injectable } from '@alterior/di';
 
-@NgModule({
-  providers: [
-    AngularPlatform.bridge(
-      MyAlteriorModule,
-      // ...
-    )
-  ]
-})
-export class AppModule {
-  constructor(
-    someAlteriorService : MyAlteriorService
-  ) {
-    console.log(`The following service was injected from an Alterior module:`);
-    console.log(someAlteriorService);
+@Injectable()
+export class WorldService {
+  theWorld() {
+    return 'world';
   }
 }
+
+@Injectable()
+export class HelloService {
+  constructor(
+    private world : WorldService
+  ) {
+  }
+
+  sayHello() {
+    return `hello, ${this.world.theWorld()}`;
+  }
+}
+
+@Module()
+export class AppModule implements OnInit {
+    constructor(
+      private hello : HelloService
+    ) {
+    }
+
+    public altOnInit() {
+        console.log(this.hello.sayHello());
+    }
+}
+
+Application.bootstrap(AppModule);
 ```
 
-For more about using Alterior modules in Angular, see [@alterior/platform-angular](packages/platform-angular/README.md).
+### Lifecycle Management
 
-## Starting a project with Alterior?
+Modules can have any of the following lifecycle methods which act as hooks for running custom behaviors
 
-For more than demonstrative applications, the [Alterior Quickstart](https://github.com/alterior-mvc/quickstart) repository conveys an application structure 
-using recommended idioms and best practices.
+- **`altOnInit()`** Called when the module is bootstrapped. Implement the `OnInit` interface when using this lifecycle method. 
+- **`altOnStart()`** Called when the overall application is started. Implement the `OnStart` interface when using this lifecycle method.
+- **`altOnStop()`** Called when the overall application is stopped before exiting. Implement the `OnStop` interface when using this lifecycle method.
+- **`RolesService`** The notion of "roles" is used to allow a module to define or react to a certain class of functionality being started or stopped. For instance `@/web-server` adds a `web-server` role which can be enabled or disabled at configuration time to control whether the web server portion of the application is enabled or disabled. Similarly `@/tasks` adds a `task-worker` role. By default all roles 
+are started when the application starts. This can be used to start only a specific portion of an application in a particular environment, for instance having the web server and task worker roles started in development, but splitting these into separate tiers in production.
 
-## Overview
+For more information about lifecycle management, see [the Roles section of the @/runtime documentation](packages/runtime/README.md#roles).
+
+# Overview
 
 Alterior is a framework for building Typescript applications composed of 
 executable modules which participate in dependency injection and declare 
@@ -120,7 +148,7 @@ the gaps between ECMAScript and larger BCLs like Java or .NET. In service of
 this, Alterior ships low-level libraries for handling decorators/annotations, 
 errors and error base classes, dependency injection, an HTTP client, and more. 
 
-## Packages
+# Packages
 Alterior consists of the following individual NPM packages. You can pull in 
 packages as you need them.
 
@@ -180,3 +208,33 @@ time while you build your applications.
   [![Version](https://img.shields.io/npm/v/@alterior/web-server.svg)](https://www.npmjs.com/package/@alterior/web-server)
   ![Size](https://img.shields.io/bundlephobia/min/@alterior/web-server.svg)
 
+## Compatibility
+
+### Using Alterior modules in Angular
+
+You can use any browser-compatible Alterior module in Angular by using  
+`@alterior/platform-angular`:
+
+```typescript
+import { AngularPlatform } from '@alterior/angular-platform';
+import { MyAlteriorModule, MyAlteriorService } from '@my/alterior-module';
+
+@NgModule({
+  providers: [
+    AngularPlatform.bridge(
+      MyAlteriorModule,
+      // ...
+    )
+  ]
+})
+export class AppModule {
+  constructor(
+    someAlteriorService : MyAlteriorService
+  ) {
+    console.log(`The following service was injected from an Alterior module:`);
+    console.log(someAlteriorService);
+  }
+}
+```
+
+For more about using Alterior modules in Angular, see [@alterior/platform-angular](packages/platform-angular/README.md).
