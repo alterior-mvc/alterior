@@ -21,7 +21,6 @@ export function configureModule(module, providers : Provider[]): ConfiguredModul
 export type ModuleLike = Function | ConfiguredModule;
 
 export interface ModuleOptions {
-    declarations?: any[];
     controllers?: any[];
     tasks? : any[];
     imports?: ModuleLike[];
@@ -34,19 +33,6 @@ export class ModuleAnnotation extends Annotation implements ModuleOptions {
     constructor(moduleOptions? : ModuleOptions) {
         super(moduleOptions);
     }
-
-    /**
-     * Declarations
-     * @deprecated Has no meaning to Alterior, will be removed in 4.0.0
-     */
-    declarations : any[];
-
-    /**
-     * Angular-compatible exports. Not used by Alterior 
-     * currently. Ignored if present.
-     * @deprecated Has no meaning to Alterior, will be removed in 4.0.0
-     */
-    exports : any[];
 
     /**
      * Controllers which are part of this module
