@@ -54,10 +54,6 @@ export class MyWebService implements OnInit {
 Application.bootstrap(MyWebService);
 ```
 
-## Building your app
-
-Make sure to enable `emitDecoratorMetadata` and `experimentalDecorators` in your project's `tsconfig.json`.
-
 ## Delegation via Mounting
 
 You can delegate parts of your web service to dedicated controllers by mounting them within your main service class. Doing so will route specific URLs to specific controllers. Any controller can `@Mount()`, providing an intuitive way to construct a complete web service from a tree of controllers:
