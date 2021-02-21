@@ -4,6 +4,13 @@
 
 A framework for building well-structured applications and isomorphic libraries in Typescript.
 
+## Status
+
+Alterior has three major versions.
+- (**`unsupported`**) [v2.x](https://github.com/alterior-mvc/alterior/tree/2.x) is now retired.
+- (**`beta`**) [v3.x](https://github.com/alterior-mvc/alterior/tree/main) is the current stable version, but it has been in a beta semver holding pattern as final details are worked out and the library is battle tested on internal projects at Astronaut Labs and elsewhere. Final production release is imminent and 3.x will be officially recommended for production use.
+- (**`next`**) [v4.x](https://github.com/alterior-mvc/alterior/tree/4.x) development started in Feb 2021. 4.x APIs builds on the architecture of 3.x with small (but backwards incompatible) changes to enable [Transparent Services](https://github.com/alterior-mvc/alterior/wiki/TransparentServicesPlanning). 4.x also requires use of a custom build process handled by a new CLI tool called `alt`.
+
 ## Installation
 
 ```
