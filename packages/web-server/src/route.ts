@@ -223,8 +223,8 @@ export class RouteInstance {
 		let routeParams = (this.definition.path || "").match(/:([A-Za-z][A-Za-z0-9]*)/g) || [];
 		this._params = routeParams.map(x => x.substr(1));
 
-		this.prepareMiddleware();
 		this.prepareMethodMetadata();
+		this.prepareMiddleware();
 		this.prepareParameters();
 		this.prepareMetadata();
 	}
