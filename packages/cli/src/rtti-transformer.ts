@@ -108,50 +108,52 @@ export const rttiTransformer: ts.TransformerFactory<ts.SourceFile> = (context) =
         ];
     }
 
+    let trace = false;
+
     return sourceFile => {
         const visitor = (node : ts.Node) => {
             if (!node)
                 return;
              
             if (ts.isPropertyDeclaration(node)) {
-                if (!node.decorators || node.decorators.length === 0) {
-                    node = ts.factory.updatePropertyDeclaration(
-                        node, 
-                        [ ...extractPropertyMetadata(node) ], 
-                        node.modifiers, 
-                        node.name, 
-                        node.questionToken || node.exclamationToken, 
-                        node.type,
-                        node.initializer
-                    )
-                }
+                if (trace)
+                    console.log(`Decorating property ${node.parent.name.text}#${node.name.getText()}`);
+                node = ts.factory.updatePropertyDeclaration(
+                    node, 
+                    [ ...(node.decorators || []), ...extractPropertyMetadata(node) ], 
+                    node.modifiers, 
+                    node.name, 
+                    node.questionToken || node.exclamationToken, 
+                    node.type,
+                    node.initializer
+                )
             } else if (ts.isClassDeclaration(node)) {
-                if (!node.decorators || node.decorators.length === 0) {
-                    node = ts.factory.updateClassDeclaration(
-                        node, 
-                        [ ...extractClassMetadata(node) ],
-                        node.modifiers,
-                        node.name,
-                        node.typeParameters,
-                        node.heritageClauses,
-                        node.members
-                    );
-                }
+                if (trace)
+                    console.log(`Decorating class ${node.name.text}`);
+                node = ts.factory.updateClassDeclaration(
+                    node, 
+                    [ ...(node.decorators || []), ...extractClassMetadata(node) ],
+                    node.modifiers,
+                    node.name,
+                    node.typeParameters,
+                    node.heritageClauses,
+                    node.members
+                );
             } else if (ts.isMethodDeclaration(node)) {
-                if (!node.decorators || node.decorators.length === 0) {
-                    node = ts.factory.updateMethodDeclaration(
-                        node,
-                        [ ...extractMethodMetadata(node) ],
-                        node.modifiers,
-                        node.asteriskToken,
-                        node.name,
-                        node.questionToken,
-                        node.typeParameters,
-                        node.parameters,
-                        node.type,
-                        node.body
-                    );
-                }
+                if (trace)
+                    console.log(`Decorating method ${ts.isClassDeclaration(node.parent) ? node.parent.name.text : '<anon>'}#${node.name.getText()}`);
+                node = ts.factory.updateMethodDeclaration(
+                    node,
+                    [ ...(node.decorators || []), ...extractMethodMetadata(node) ],
+                    node.modifiers,
+                    node.asteriskToken,
+                    node.name,
+                    node.questionToken,
+                    node.typeParameters,
+                    node.parameters,
+                    node.type,
+                    node.body
+                );
             }
 
             return ts.visitEachChild(node, visitor, context);
