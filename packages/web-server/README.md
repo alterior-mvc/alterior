@@ -163,7 +163,7 @@ export class FooController {
      * Every method is a web request. This one is "GET /simple".
      */
     @Get('/simple')
-    public canBeSimple(ev : RouteEvent)
+    public canBeSimple(ev : WebEvent)
     {
     	return { status: 'success!' };
     }
@@ -200,11 +200,11 @@ export class FooController {
     }
 
     /**
-     * You can access the HTTP request and response using RouteEvent.request and 
-     * RouteEvent.response if needed.
+     * You can access the HTTP request and response using WebEvent.request and 
+     * WebEvent.response if needed.
      */
-    public useRouteEvents() {
-        RouteEvent.response.status(200).send(`hello ${RouteEvent.request.header('user-agent')}`);
+    public useWebEvents() {
+        WebEvent.response.status(200).send(`hello ${WebEvent.request.header('user-agent')}`);
     }
 
     /**
@@ -259,12 +259,12 @@ Application.bootstrap(AppModule);
 ## Route Parameters
 
 Alterior inspects the parameters of controller methods to determine what values to provide. 
-First, parameters of type `RouteEvent` are fulfilled with an instance of that class which
+First, parameters of type `WebEvent` are fulfilled with an instance of that class which
 contains the Express request and response objects:
 
 ```typescript
 @Get('/do')
-doThings(ev : RouteEvent) {
+doThings(ev : WebEvent) {
 	ev.response.status(404).send("Not found.");
 }
 ```
