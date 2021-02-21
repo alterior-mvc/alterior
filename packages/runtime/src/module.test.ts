@@ -44,7 +44,7 @@ describe("Modules", () => {
         await Application.bootstrap(TestModule);
         expect(sawFoo).to.eq(123);
     });
-    it('imports declarations of imported modules', async () => {
+    it('provides providers of imported modules', async () => {
         let sawFoo : number = null;
         
         @Module({
