@@ -5,8 +5,9 @@ import { ServiceAnnotation, ExposureReflector, ServiceCompiler, MethodShim } fro
 import { ApplicationError } from "@alterior/common";
 import { CommandRunner } from "./command-runner";
 import { ANNOTATIONS_KEY, CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY, PROPERTY_ANNOTATIONS_KEY, METHOD_PARAMETER_ANNOTATIONS_KEY } from "@alterior/annotations";
-import * as typescript from 'typescript';
+import * as ts from 'typescript';
 import { readJsonFile } from "./utils";
+import { rttiTransformer } from './rtti-transformer';
 
 export class BuildError extends ApplicationError {
 
@@ -335,25 +336,65 @@ export class BackendBuilder {
     private enableCustomTSC = true;
     async build() {
         if (this.enableCustomTSC) {
-            let config = await readJsonFile(pathResolve('.', "tsconfig.json"));
+            let tsConfigFile = pathResolve('.', "tsconfig.json");
+            let config = await readJsonFile(tsConfigFile);
 
-            let program = typescript.createProgram({
-                rootNames: [],
-                projectReferences: [{
-                    path: pathResolve('.', "tsconfig.json")
-                }],
-                options: config.compilerOptions
+            let createProgram : ts.CreateProgram<ts.EmitAndSemanticDiagnosticsBuilderProgram>;
+            
+            createProgram = (
+                rootNames: readonly string[] | undefined, 
+                options: ts.CompilerOptions, 
+                host?: ts.CompilerHost, 
+                oldProgram?: ts.EmitAndSemanticDiagnosticsBuilderProgram, 
+                configFileParsingDiagnostics?: readonly ts.Diagnostic[], 
+                projectReferences?: readonly ts.ProjectReference[] | undefined
+            ) => {
+                let program = ts.createEmitAndSemanticDiagnosticsBuilderProgram(
+                    rootNames, options, host, oldProgram, configFileParsingDiagnostics, projectReferences
+                );
+
+                let origEmit = program.emit;
+
+                program.emit = (
+                    targetSourceFile?: ts.SourceFile, 
+                    writeFile?: ts.WriteFileCallback, 
+                    cancellationToken?: ts.CancellationToken, 
+                    emitOnlyDtsFiles?: boolean, 
+                    customTransformers?: ts.CustomTransformers
+                ) => {
+                    if (!customTransformers)
+                        customTransformers = {};
+
+                    if (!customTransformers.before)
+                        customTransformers.before = [];
+
+                    customTransformers.before.push(rttiTransformer);
+                    
+                    return origEmit.apply(program, [
+                        targetSourceFile,
+                        writeFile,
+                        cancellationToken,
+                        emitOnlyDtsFiles,
+                        customTransformers
+                    ])
+                };
+
+                return program;
+            };
+
+            let host = ts.createSolutionBuilderHost(undefined, createProgram);
+
+            let builder = ts.createSolutionBuilder(host, [ tsConfigFile ], {
+
             });
 
-            let emitResult = program.emit();
 
-            if (emitResult.emitSkipped) {
-                console.error(`Failed to compile TS`);
-            } else {
-                console.log(`Successfully emitted JS`);
+            const exitStatus = builder.build();
+
+            if (exitStatus !== ts.ExitStatus.Success) {
+                console.error(`Failed to build project: ${exitStatus}`);
+                throw new BuildError(`Failed to build project: ${exitStatus}`);
             }
-
-            
         } else {
             await this.commandRunner.run(`tsc`, `--incremental`);
         }
