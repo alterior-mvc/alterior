@@ -21,7 +21,6 @@ export function configureModule(module, providers : Provider[]): ConfiguredModul
 export type ModuleLike = Function | ConfiguredModule;
 
 export interface ModuleOptions {
-    controllers?: any[];
     tasks? : any[];
     imports?: ModuleLike[];
     providers?: Provider[];
@@ -33,12 +32,6 @@ export class ModuleAnnotation extends Annotation implements ModuleOptions {
     constructor(moduleOptions? : ModuleOptions) {
         super(moduleOptions);
     }
-
-    /**
-     * Controllers which are part of this module
-     * @deprecated Use `@WebService` and `@Mount` from @/web-server instead. Will be removed in 4.0.0
-     */
-    controllers : any[];
 
     /**
      * Task classes which are part of this module
