@@ -1,5 +1,5 @@
 import express from "express";
-import { RouteEvent } from "./metadata";
+import { WebEvent } from "./metadata";
 import { WebServerEngine } from "./web-server-engine";
 
 export class ExpressEngine implements WebServerEngine {
@@ -13,7 +13,7 @@ export class ExpressEngine implements WebServerEngine {
 		return [];
 	}
 
-	sendJsonBody(routeEvent : RouteEvent, body : any) {
+	sendJsonBody(routeEvent : WebEvent, body : any) {
 		routeEvent.response
 			.header('Content-Type', 'application/json')
 			.send(JSON.stringify(body))
@@ -43,7 +43,7 @@ export class ExpressEngine implements WebServerEngine {
 		return this.app.listen(port);
 	}
 	
-	addRoute(method : string, path : string, handler : (event : RouteEvent) => void, middleware?) {
+	addRoute(method : string, path : string, handler : (event : WebEvent) => void, middleware?) {
 		if (!middleware)
 			middleware = [];
 			
@@ -51,7 +51,7 @@ export class ExpressEngine implements WebServerEngine {
 			path, 
 			...middleware, 
 			(req, res) => {
-				return handler(new RouteEvent(req, res));
+				return handler(new WebEvent(req, res));
 			}
 		);
 	}

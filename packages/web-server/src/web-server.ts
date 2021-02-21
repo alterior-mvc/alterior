@@ -3,7 +3,7 @@ import * as http from 'http';
 
 import { Injector, ReflectiveInjector, Module, Provider } from "@alterior/di";
 import { prepareMiddleware } from "./middleware";
-import { RouteEvent } from "./metadata";
+import { WebEvent } from "./metadata";
 import { RouteInstance, RouteDescription } from './route';
 import { ApplicationOptions, Application, AppOptionsAnnotation, AppOptions } from '@alterior/runtime';
 import { ExpressRef } from './express-ref';
@@ -141,7 +141,7 @@ export class WebServer {
 		this.httpServer.close();
     }
 
-	reportRequest(event : RouteEvent, source : string) {
+	reportRequest(event : WebEvent, source : string) {
 		if (!this.options.silent) {
 			let req : any = event.request;
 			let method = event.request.method;
@@ -166,7 +166,7 @@ export class WebServer {
 	 * Installs this route into the given Express application. 
 	 * @param app 
 	 */
-	addRoute(definition : RouteDescription, method : string, path : string, handler : (event : RouteEvent) => void, middleware = []) {
+	addRoute(definition : RouteDescription, method : string, path : string, handler : (event : WebEvent) => void, middleware = []) {
 		this.serviceDescription.routes.push(definition);
 
 		this.engine.addRoute(method, path, ev => {
@@ -177,7 +177,7 @@ export class WebServer {
 		}, middleware);
 	}
 
-	handleError(error : any, event : RouteEvent, route : RouteInstance, source : string) {
+	handleError(error : any, event : WebEvent, route : RouteInstance, source : string) {
 
 		if (this.options.onError)
 			this.options.onError(error, event, route, source);

@@ -1,6 +1,6 @@
 import fastify from "fastify";
 import * as http from "http";
-import { RouteEvent } from "./metadata";
+import { WebEvent } from "./metadata";
 import { WebServerEngine } from "./web-server-engine";
 
 export class FastifyEngine implements WebServerEngine {
@@ -18,7 +18,7 @@ export class FastifyEngine implements WebServerEngine {
 		return this._app;
 	}
 
-	sendJsonBody(routeEvent : RouteEvent, body : any) {
+	sendJsonBody(routeEvent : WebEvent, body : any) {
 		routeEvent.response
 			.header('Content-Type', 'application/json')
 			.send(body)
@@ -54,14 +54,14 @@ export class FastifyEngine implements WebServerEngine {
 		return this.app.server;
 	}
 
-	addRoute(method : string, path : string, handler : (event : RouteEvent) => void, middleware?) {
+	addRoute(method : string, path : string, handler : (event : WebEvent) => void, middleware?) {
 		if (!middleware)
 			middleware = [];
 		this.app[this.getRegistrarName(method)](
 			path, 
 			...middleware, 
 			(req, res) => {
-				return handler(new RouteEvent(req, res));
+				return handler(new WebEvent(req, res));
 			}
 		);
 	}

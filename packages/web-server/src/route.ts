@@ -4,7 +4,7 @@ import * as uuid from 'uuid';
 
 import { IAnnotation } from "@alterior/annotations";
 import { InputAnnotation } from "./input";
-import { RouteEvent, RouteDefinition, RouteOptions } from "./metadata";
+import { WebEvent, RouteDefinition, RouteOptions } from "./metadata";
 import { ReflectiveInjector, Provider, Injector } from '@alterior/di';
 import { prepareMiddleware } from "./middleware";
 import { Annotations } from "@alterior/annotations";
@@ -62,12 +62,12 @@ export class RouteMethodParameter<T = any> {
 		return this.annotations.find(x => x instanceof InputAnnotation) as InputAnnotation;
 	}
 	
-	private _factory : (ev : RouteEvent) => Promise<T>;
+	private _factory : (ev : WebEvent) => Promise<T>;
 	public get factory() {
 		return this._factory;
 	}
 
-	async resolve(ev : RouteEvent) {
+	async resolve(ev : WebEvent) {
 		return await this._factory(ev);
 	}
 
@@ -80,7 +80,7 @@ export class RouteMethodParameter<T = any> {
 	prepare() {
 		let inputAnnotation = this.inputAnnotation;
 		let paramName = this.name;
-		let factory : (ev : RouteEvent) => any = null;
+		let factory : (ev : WebEvent) => any = null;
 		let paramDesc = null;
 		let paramType = this.type;
 		let route = this.route;
@@ -98,13 +98,13 @@ export class RouteMethodParameter<T = any> {
 			let inputName = inputAnnotation.name || paramName;
 
 			let typeFactories = {
-				path: (ev : RouteEvent) => ev.request.params[inputName],
-				query: (ev : RouteEvent) => ev.request.query[inputName],
-				session: (ev : RouteEvent) => inputAnnotation.name ? 
+				path: (ev : WebEvent) => ev.request.params[inputName],
+				query: (ev : WebEvent) => ev.request.query[inputName],
+				session: (ev : WebEvent) => inputAnnotation.name ? 
 					(ev.request['session'] || {})[inputAnnotation.name]
 					: ev.request['session'],
-				body: (ev : RouteEvent) => ev.request['body'],
-				request: (ev : RouteEvent) => ev.request[inputName]
+				body: (ev : WebEvent) => ev.request['body'],
+				request: (ev : WebEvent) => ev.request[inputName]
 			};
 			
 			factory = typeFactories[inputAnnotation.type];
@@ -112,7 +112,7 @@ export class RouteMethodParameter<T = any> {
 			if (!this.route.pathParameterMap[inputName])
 				this.route.pathParameterMap[inputName] = paramDesc;
 
-		} else if (paramType === RouteEvent) {
+		} else if (paramType === WebEvent) {
 			factory = ev => ev;
 		} 
 		
@@ -120,7 +120,7 @@ export class RouteMethodParameter<T = any> {
 
 		if (!factory) {
 			if (this.route.params.find(x => x == paramName) && simpleTypes.includes(paramType)) {
-				factory = (ev : RouteEvent) => ev.request.params[paramName];
+				factory = (ev : WebEvent) => ev.request.params[paramName];
 				paramDesc.type = 'path';
 			}
 		}
@@ -129,8 +129,8 @@ export class RouteMethodParameter<T = any> {
 
 		if (!factory) {
 			let paramNameFactories = {
-				body: (ev : RouteEvent) => ev.request['body'],
-				session: (ev : RouteEvent) => ev.request['session']
+				body: (ev : WebEvent) => ev.request['body'],
+				session: (ev : WebEvent) => ev.request['session']
 			};
 
 			if (paramNameFactories[paramName]) {
@@ -340,8 +340,8 @@ export class RouteInstance {
 
 		if (!paramTypes) {
 			paramFactories = [
-				(ev : RouteEvent) => ev.request, 
-				(ev : RouteEvent) => ev.response
+				(ev : WebEvent) => ev.request, 
+				(ev : WebEvent) => ev.response
 			];
 			return;
 		}
@@ -380,16 +380,18 @@ export class RouteInstance {
 		return this._parameters.slice();
 	}
 
-	async logAndExecute(instance, event : RouteEvent) {
+	async logAndExecute(instance, event : WebEvent) {
 		let requestId = uuid.v4();
-		return this.server.logger.withContext(
-			{ host: 'web-server', requestId }, 
-			requestId, 
-			() => this.execute(instance, event)
-		);
+		this.server.logger.run(() => {
+			return this.server.logger.withContext(
+				{ host: 'web-server', requestId }, 
+				requestId, 
+				() => this.execute(instance, event)
+			);
+		});
 	}
 
-	private async execute(instance, event : RouteEvent) {
+	private async execute(instance, event : WebEvent) {
 		if (!instance) 
 			throw new ArgumentNullError('instance');
 		

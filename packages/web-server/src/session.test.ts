@@ -1,7 +1,7 @@
 import { describe } from "razmin";
 import { Session } from "./session";
 import { expect } from "chai";
-import { RouteEvent } from './metadata';
+import { WebEvent } from './metadata';
 import { Injectable } from '@alterior/di';
 
 describe('Session', it => {
@@ -10,13 +10,13 @@ describe('Session', it => {
             bar : number;
         }
 
-        let event = new RouteEvent(<any>{
+        let event = new WebEvent(<any>{
             session: {
                 bar: 123
             }
         }, <any>{});
 
-        RouteEvent.with(event, () => {
+        WebEvent.with(event, () => {
             expect(FooSession.current().bar).to.equal(123);
         });
     });
@@ -31,24 +31,24 @@ describe('Session', it => {
             bar : number;
         }
 
-        let event = new RouteEvent(<any>{
+        let event = new WebEvent(<any>{
             session: {
                 bar: '123'
             }
         }, <any>{});
 
-        RouteEvent.with(event, () => {
+        WebEvent.with(event, () => {
             expect(FooSession.current().bar).to.equal(123);
             expect(FooSession.current().bar).to.be.a('number');
         });
         
-        let event2 = new RouteEvent(<any>{
+        let event2 = new WebEvent(<any>{
             session: {
                 bar: 123
             }
         }, <any>{});
 
-        RouteEvent.with(event2, () => {
+        WebEvent.with(event2, () => {
             expect(FooSession.current().bar).to.equal(123);
             expect(FooSession.current().bar).to.be.a('number');
         });

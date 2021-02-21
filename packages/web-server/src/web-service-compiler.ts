@@ -1,5 +1,5 @@
 import { ServiceCompiler, MethodShim } from '@alterior/runtime';
-import { RouteReflector, RouteEvent } from './metadata';
+import { RouteReflector, WebEvent } from './metadata';
 import { InputAnnotation } from './input';
 import { describe } from 'razmin';
 
@@ -49,7 +49,7 @@ export class WebServiceCompiler extends ServiceCompiler {
                     // implicit path param
                     url = url.replace(new RegExp(`:${param.name.slice(1)}\\b`, 'g'), `\${${param.name}}`);
                     //mutators.push(`url = url.replace(/:${param.name}\\b/g, encodeURIComponent(${param.name}));`);
-                } else if (param.type === RouteEvent) {
+                } else if (param.type === WebEvent) {
                     throw new Error(`Transparent service cannot have a RouteEvent parameter`);
                 } else {
                     throw new Error(`${method.target.name}#${method.name}(): Not sure how to handle parameter '${param.name}'`);

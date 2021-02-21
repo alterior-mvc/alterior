@@ -154,7 +154,7 @@ Now, let's create `FooController`, complete with a number of example routes so y
 ```typescript
 // foo.controller.ts
 
-import { Controller, Get, RouteEvent } from '@alterior/core';
+import { Controller, Get, WebEvent } from '@alterior/core';
 import * as express from 'express';
 
 @Controller('/optional-prefix')

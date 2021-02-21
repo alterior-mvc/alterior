@@ -1,4 +1,4 @@
-import { RouteEvent } from "./metadata";
+import { WebEvent } from "./metadata";
 import { RouteInstance } from "./route";
 
 export interface WebServerOptions {
@@ -9,6 +9,6 @@ export interface WebServerOptions {
     verbose? : boolean;
 	silent? : boolean;
 	silentErrors? : boolean;
-	onError? : (error : any, event : RouteEvent, route : RouteInstance, source : string) => void;
-	handleError? : (error : any, event : RouteEvent, route : RouteInstance, source : string) => void;
+	onError? : (error : any, event : WebEvent, route : RouteInstance, source : string) => void;
+	handleError? : (error : any, event : WebEvent, route : RouteInstance, source : string) => void;
 }
