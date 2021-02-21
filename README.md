@@ -11,13 +11,34 @@ Alterior has three major versions.
 - (**`beta`**) [v3.x](https://github.com/alterior-mvc/alterior/tree/main) is the current stable version, but it has been in a beta semver holding pattern as final details are worked out and the library is battle tested on internal projects at Astronaut Labs and elsewhere. Final production release is imminent and 3.x will be officially recommended for production use.
 - (**`next`**) [v4.x](https://github.com/alterior-mvc/alterior/tree/4.x) development started in Feb 2021. 4.x APIs builds on the architecture of 3.x with small (but backwards incompatible) changes to enable [Transparent Services](https://github.com/alterior-mvc/alterior/wiki/TransparentServicesPlanning). 4.x also requires use of a custom build process handled by a new CLI tool called `alt`.
 
+# Overview
+
+Alterior is a framework for building Typescript applications composed of 
+executable modules which participate in dependency injection and declare 
+components.
+This is the same type of module system used by Angular (`@NgModule`) and other 
+backend frameworks like Nestjs, but with a few important differences.
+
+First, Alterior modules are _isomorphic_. This means they can be used on 
+both the server (on Node.js) and in the browser (via Angular). When used with 
+Angular, services provided by Alterior modules are exposed directly to 
+Angular components, services, and pipes. This makes Alterior an ideal framework 
+for isomorphic modules.
+
+Second, unlike Angular/Nest.js modules, Alterior modules are well-defined 
+units of execution which have a defined lifecycle, and respond to standardized 
+lifecycle events. This makes them suitable for use as a primary vehicle for 
+top-level general purpose code, such as a server or even a desktop 
+application. 
+
+## Class Libraries
+
+Alterior strives to provide a strong isomorphic base class library that fills 
+the gaps between ECMAScript and larger BCLs like Java or .NET. In service of 
+this, Alterior ships low-level libraries for handling decorators/annotations, 
+errors and error base classes, dependency injection, an HTTP client, and more. 
+
 # Getting Started
-
-```
-npm install @alterior/runtime
-```
-
-## Building a REST Service
 
 Alterior is **not just a REST framework**, but that's certainly it's most common usage.
 
@@ -101,7 +122,7 @@ npm publish
 
 Alterior automatically handles everything needed to build and publish your application, including removing your actual backend code if you have asked for that.
 
-# Architecture
+# Mechanics
 
 Alterior is not just for building REST services. Here's a minimal single file example of an application that is something other than a `@WebService`.
 
@@ -175,33 +196,6 @@ Modules can have any of the following lifecycle methods which act as hooks for r
 are started when the application starts. This can be used to start only a specific portion of an application in a particular environment, for instance having the web server and task worker roles started in development, but splitting these into separate tiers in production.
 
 For more information about lifecycle management, see [the Roles section of the @/runtime documentation](packages/runtime/README.md#roles).
-
-# Overview
-
-Alterior is a framework for building Typescript applications composed of 
-executable modules which participate in dependency injection and declare 
-components.
-This is the same type of module system used by Angular (`@NgModule`) and other 
-backend frameworks like Nestjs, but with a few important differences.
-
-First, Alterior modules are _isomorphic_. This means they can be used on 
-both the server (on Node.js) and in the browser (via Angular). When used with 
-Angular, services provided by Alterior modules are exposed directly to 
-Angular components, services, and pipes. This makes Alterior an ideal framework 
-for isomorphic modules.
-
-Second, unlike Angular/Nest.js modules, Alterior modules are well-defined 
-units of execution which have a defined lifecycle, and respond to standardized 
-lifecycle events. This makes them suitable for use as a primary vehicle for 
-top-level general purpose code, such as a server or even a desktop 
-application. 
-
-## Class Libraries
-
-Alterior strives to provide a strong isomorphic base class library that fills 
-the gaps between ECMAScript and larger BCLs like Java or .NET. In service of 
-this, Alterior ships low-level libraries for handling decorators/annotations, 
-errors and error base classes, dependency injection, an HTTP client, and more. 
 
 # Packages
 Alterior consists of the following individual NPM packages. You can pull in 
