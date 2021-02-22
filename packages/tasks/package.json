@@ -44,7 +44,7 @@
     "reflect-metadata": "^0.1.12"
   },
   "peerDependencies": {
-    "zone.js": "^0.10.2"
+    "zone.js": "^0.11.4"
   },
   "devDependencies": {
     "@types/bull": "^3.13.0",
