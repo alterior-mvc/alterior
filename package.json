@@ -19,7 +19,7 @@
     "clean:npm:modules": "rimraf packages/*/node_modules",
     "clean:npm": "npm run clean:npm:lock && npm run clean:npm:modules",
     "clean:lerna": "rimraf **/*.tgz",
-    "clean:dist": "rimraf packages/*/dist",
+    "clean:dist": "rimraf packages/*/dist pacakges/*/dist.esm",
     "clean": "npm run clean:dist && lerna run clean",
     "build": "lerna run build",
     "docs": "lerna run --parallel docs"
