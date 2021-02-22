@@ -4,9 +4,6 @@
   "private": true,
   "description": "An Express-based Typescript MVC framework with decorators and dependency injection.",
   "main": "dist/index.js",
-  "workspaces": {
-    "packages": ["./packages/*"]
-  },
   "module": "dist.esm/index.js",
   "typings": "dist/index.d.ts",
   "repository": {
