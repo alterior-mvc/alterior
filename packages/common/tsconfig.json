@@ -1,15 +1,9 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
+        "rootDir": "./src",
         "baseUrl": "./src",
-        "outDir": "./dist",
-        "typeRoots": [
-            "./node_modules/@types",
-            "./node_modules"
-        ],
-        "types": [
-            "node"
-        ]
+        "outDir": "./dist"
     },
     "include": [ "./src/**/*.ts" ],
     "typedocOptions": {

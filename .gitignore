@@ -8,3 +8,4 @@ dist.esm/
 foobar*/
 example-app/
 lerna-debug.log
+*.tsbuildinfo
