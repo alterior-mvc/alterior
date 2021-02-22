@@ -1,18 +1,20 @@
 {
   "name": "@alterior/root-package",
-  "version": "3.0.0-beta.1",
+  "version": "0.0.0",
   "private": true,
   "description": "An Express-based Typescript MVC framework with decorators and dependency injection.",
-  "main": "dist/index.js",
-  "module": "dist.esm/index.js",
-  "typings": "dist/index.d.ts",
+  "author": "The Alterior Project (https://github.com/alterior-mvc)",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/alterior-mvc/alterior.git"
   },
+  "bugs": {
+    "url": "https://github.com/alterior-mvc/alterior/issues"
+  },
   "scripts": {
     "test": "lerna run test",
-    "publish:all": "npm run test && lerna publish",
+    "publish:all": "npm test && lerna publish",
     "clean:npm:lock": "rimraf packages/*/package-lock.json",
     "clean:npm:modules": "rimraf packages/*/node_modules",
     "clean:npm": "npm run clean:npm:lock && npm run clean:npm:modules",
@@ -22,9 +24,7 @@
     "build": "lerna run build",
     "docs": "lerna run --parallel docs"
   },
-  "author": "William Lahti <wilahti@gmail.com>",
-  "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "@avejidah/get-parameter-names": "^0.3.2",
     "@types/ejs": "^2.7.0",
     "@types/mkdirp": "^0.5.2",
@@ -36,9 +36,7 @@
     "mkdirp": "^0.5.5",
     "reflect-metadata": "^0.1.8",
     "source-map-support": "^0.4.6",
-    "zone.js": "^0.11.4"
-  },
-  "devDependencies": {
+    "zone.js": "^0.11.4",
     "@types/chai": "^4.2.11",
     "@types/express": "^4.17.6",
     "@types/node": "^10.17.24",
