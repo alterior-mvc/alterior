@@ -15,7 +15,6 @@
     "build:cjs": "tsc -p .",
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublishOnly": "npm run test",
-    "npm:clean": "rimraf node_modules",
     "test": "npm run build && node dist/test.js",
     "docs": "typedoc ."
   },
