@@ -1,4 +1,4 @@
-# ![Alterior](./logo.svg) [![CircleCI](https://circleci.com/gh/alterior-mvc/alterior/tree/master.svg?style=shield)](https://circleci.com/gh/alterior-mvc/alterior/tree/master) [![Join the chat at https://gitter.im/alterior-mvc/Lobby](https://badges.gitter.im/alterior-core/Lobby.svg)](https://gitter.im/alterior-mvc/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![License](https://img.shields.io/npm/l/@alterior/runtime.svg)
+# ![Alterior](./logo.svg) [![CircleCI](https://circleci.com/gh/alterior-mvc/alterior/tree/main.svg?style=shield)](https://circleci.com/gh/alterior-mvc/alterior/tree/master) [![Join the chat at https://gitter.im/alterior-mvc/Lobby](https://badges.gitter.im/alterior-core/Lobby.svg)](https://gitter.im/alterior-mvc/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![License](https://img.shields.io/npm/l/@alterior/runtime.svg)
 
 [NPM](https://www.npmjs.com/org/alterior) | [Github](https://github.com/alterior-mvc/alterior) | [Documentation](https://alterior-mvc.github.io/alterior/index.html)
 

@@ -34,6 +34,8 @@ this within `tsconfig.json`:
 For simple use cases, you can build a web service using Alterior in a single file:
 
 ```typescript
+// my-web-service.ts
+
 import { WebService } from '@alterior/web-server';
 
 @WebService({
@@ -54,6 +56,35 @@ export class MyWebService implements OnInit {
 Application.bootstrap(MyWebService);
 ```
 
+## How do I run it?
+
+# Additional Features
+
+Make an entry point for your application if you don't already have one:
+
+```typescript
+// main.ts 
+
+import 'reflect-metadata';
+
+import { Application } from '@alterior/runtime';
+import { MyWebService } from './my-web-service';
+
+Application.bootstrap(MyWebService);
+```
+
+After you compile your application using Typescript, run your app using Node.js:
+
+```
+node dist/main
+```
+
+You should use NPM scripts to manage building, testing and running your application per the conventions of the Node.js community.
+
+## Mechanics of `@WebService`
+
+When classes marked `@WebService()` are bootstrapped as part of an Alterior application (via `Application#bootstrap()`), a new Alterior role is registered with [`RolesService`](../runtime/README.md#roles) which is responsible for starting up and shutting down a web server using one of the supported WebEngines (currently Express and Fastify). The class itself acts both as a `@Module()` and the root `@Controller()` of the service. The class can then use `@Mount()` to add additional controllers to the service. Each `@WebService()` has its own separate server instance, which means you can host multiple web services (on different ports) within the same overall application. Each service will be given its own role which can be controlled independently.
+
 ## Delegation via Mounting
 
 You can delegate parts of your web service to dedicated controllers by mounting them within your main service class. Doing so will route specific URLs to specific controllers. Any controller can `@Mount()`, providing an intuitive way to construct a complete web service from a tree of controllers:
@@ -69,7 +100,7 @@ export class MyWebService implements OnInit {
 }
 ```
 
-When you nest controllers using `@Mount()`, each subcontroller inherits the path prefix defined by all parents:
+When you nest controllers using `@Mount()`, each subcontroller inherits the path prefix defined by all parents, like below:
 
 ```typescript
 
@@ -101,181 +132,104 @@ class MainController {
 
 Note: You do not always have to specify a path for `@Controller()`, `@Mount()` or `@Get()`, we have done so here for to keep the example clear. If you omit a path or set it to `''`, the element will not contribute any path segments to the final path registered for your routes.
 
-## Mechanics of `@WebService`
+# When to use base paths with @Mount
 
-`@WebService()` declares the class as a module (`@Module()`) and registers itself as a controller class (`@Controller()`) 
-within that module. You can pass any of the options for `@Module()` and `WebServerModule.configure(...)`.
+To ensure your app is easy to maintain as it grows, we recommend that you design your mounted controllers to operate from the root of your web service. This means omitting a base path when using `@Mount()`. Doing so ensures that you will not need to rewrite all of your route definitions if you need to add a route that falls outside of your controller's expected base path.
 
-The following definition is equivalent to using `@WebService(options?)`:
+Passing a base path can be useful however when consuming a controller which is intended to be consumed by many web services.
 
+# Promises & Async
 ```typescript
-@Module({
-    ...options,
-    controllers: [ MyWebService ],
-    imports: [ WebServerModule.configure(options) ]
-})
-@Controller()
-export class MyWebService { /* ... */ }
-```
+/**
+ * You can return promises. Alterior will wait for the promise to resolve
+ * before responding to the HTTP request.
+ */
+@Get('/promises')
+public canUsePromises()
+{
+    return Promise.resolve({ nifty: 123 });
+}
 
-For a larger application, you may wish to separate your 
-top-level module from your web service implementation, especially when your application serves multiple roles. 
-
-```typescript
-// app.module.ts
-import { Module } from '@alterior/di';
-import { WebServerModule } from '@alterior/web-server';
-import { FooController } from './foo.controller';
-
-@Module({
-    imports: [ WebServerModule ],
-    controllers: [ FooController ]
-})
-export class AppModule {
+/**
+ * Or use async/await (the recommended way!)
+ */
+@Get('/async')
+public async canUseAsync()
+{
+	return await someFunction();
 }
 ```
 
-Note that we need to explicitly include the `WebServerModule` here. 
-We can also configure that module here if desired:
+# Path Parameters
 
-```typescript 
-    imports: [ WebServerModule.configure({ port: 1234, ... }) ]
-```
+The parameters specified by your route methods are automatically 
+analyzed, and the correct value is provided depending on what type 
+(and in some cases what name) your parameter has.
 
-Now, let's create `FooController`, complete with a number of example routes so you can get an idea of the style:
+For example, you can receive path parameters. Alterior knows that 
+since you have a path parameter named `nameOfCar` and an otherwise 
+undecorated method parameter also named `nameOfCar` that these two are 
+related 
 
 ```typescript
-// foo.controller.ts
-
-import { Controller, Get, WebEvent } from '@alterior/core';
-import * as express from 'express';
-
-@Controller('/optional-prefix')
-export class FooController {
-    /**
-     * Every method is a web request. This one is "GET /simple".
-     */
-    @Get('/simple')
-    public canBeSimple(ev : WebEvent)
-    {
-    	return { status: 'success!' };
-    }
-    
-    /**
-     * You can also return promises.
-     */
-    @Get('/promises')
-    public canUsePromises()
-    {
-        return Promise.resolve({ nifty: 123 });
-    }
-    
-    /**
-     * Or use async/await (the recommended way!)
-     */
-    @Get('/async')
-    public async canUseAsync()
-    {
-    	return await someFunction();
-    }
-    
-    /**
-     * The parameters specified by your route methods are automatically 
-     * analyzed, and the correct value is provided depending on what type 
-     * (and in some cases what name) your parameter has.
-     *
-     * For example, you can receive path parameters.
-     */
-    @Get('/cars/:nameOfCar')
-    public canUseRouteParams(nameOfCar : string)
-    {
-        return `you asked for car named ${nameOfCar}`;
-    }
-
-    /**
-     * You can access the HTTP request and response using WebEvent.request and 
-     * WebEvent.response if needed.
-     */
-    public useWebEvents() {
-        WebEvent.response.status(200).send(`hello ${WebEvent.request.header('user-agent')}`);
-    }
-
-    /**
-     * Promises can reject with an HttpException to specify HTTP errors...
-     */
-    @Get('/error')
-    public errorExample(req : express.Request, res : express.Response)
-    {
-        return Promise.reject(new HttpException(301, {message: "No, over there"}));
-    }
-
-    /**
-     * Or return an Alterior Response object for more flexibility...
-     */
-    @Get('/specificResponse')
-    public specificResponseAndSuch(req : express.Request, res : express.Response)
-    {
-	    return Response.serverError({ 
-            message: `uh oh, that's never happened before` 
-        });
-    }
-    
-    /**
-     * You can even specify middleware directly on a route method...
-     */
-    @Get('/middlewareRocks', {
-        middleware: [ myGreatMiddleware(someParameters) ]
-    })
-    public middlewareRolls(req : express.Request, res : express.Response)
-    {
-	    return Response.serverError({ 
-            message: `uh oh, that's never happened before` 
-        });
-    }
-    
+@Get('/cars/:nameOfCar')
+public canUseRouteParams(nameOfCar : string)
+{
+    return `you asked for car named ${nameOfCar}`;
 }
 ```
 
-Finally, we would make a separate entry point ("main") file:
+# Accessing the Request/Response
+
+Sometimes you need to check or set an HTTP header, interact directly with middleware, or handle parsing the request body or serializing the response body yourself. Alterior lets you do that using the `WebEvent` class. 
 
 ```typescript
-// main.ts 
-
-import 'reflect-metadata';
-
-import { Application } from '@alterior/runtime';
-import { AppModule } from './app.module';
-
-Application.bootstrap(AppModule);
-```
-
-## Route Parameters
-
-Alterior inspects the parameters of controller methods to determine what values to provide. 
-First, parameters of type `WebEvent` are fulfilled with an instance of that class which
-contains the Express request and response objects:
-
-```typescript
-@Get('/do')
-doThings(ev : WebEvent) {
-	ev.response.status(404).send("Not found.");
+@Get()
+public whoAmI() {
+    WebEvent.response.status(200).send(`hello ${WebEvent.request.header('user-agent')}`);
 }
 ```
 
-Alterior uses the following rules to fulfill the declared method parameters:
+## Is this done via global variables? Wouldn't that not work with async requests?
+
+`WebEvent` uses Zone-local variables to accomplish its task, so there is no risk that you will access the wrong request/response when using it unlike when global variables are used for this purpose. 
+
+# Complex Responses
+
+The recommended way to handle HTTP error statuses is using the `HttpException` class. You can throw the exception from your route method and Alterior will recognize this and fulfill the HTTP response as you specify.
+
+```typescript
+/**
+ * Promises can reject with an HttpException to specify HTTP errors...
+ */
+@Get('/error')
+public async errorExample()
+{
+    throw new HttpException(301, {message: "No, over there"}));
+}
+```
+
+For successful responses, throwing HttpException (while supported) is not idiomatic. Instead you should return a special response value from your method using the `Response` class
+
+```typescript
+@Get()
+public responseExample()
+{
+    return Response.movedPermanently('https://example.com/');
+}
+```
+
+# Parameters Matching
+
+Alterior inspects the parameters of controller methods to determine what values need to be provided while handling a request. 
 
 - Parameters decorated with `@PathParam('a')` will be fulfilled with the value 
   of path parameter `:a` from the route path (as in `/some/path/:a`). The 
-  path parameter can be defined in any parent controller/mount context.
+  path parameter can be defined in any parent controller/mount context. Since path parameters are the most common, and there is a high degree of linkage between path parameters and method parameters, you can omit `@PathParam()` if the name of your path parameters is the same as your method parameter as shown above
 - Parameters decorated with `@QueryParam('q')` will be fulfilled with the query 
-  parameter `q` if provided (`?q=...`) 
-- Parameters decorated with `@Request('abc')` will be fulfilled with the request
-  field `abc` if provided by the Connect engine or a preceding middleware.
-- Parameters which are named `body` or decorated with `@Body()` will be fulfilled 
-  with the value of `request.body`. You must use a body parsing middleware 
-  (we recommend `body-parser`) to populate `request.body`.
-- Parameters which are decorated with `Session('user')` will be populated with 
-  the `user` key of the current session object.
+  parameter `q` if provided (`?q=...`). If the query parameter was not provided in the request, the value of the parameter will be `undefined`.
+- Parameters which are decorated with `@Body()` will be fulfilled 
+  with the value of `WebEvent.request.body`. If the type of the method parameter is `string`, Alterior will automatically connect a text body parsing middleware (`bodyParser.text()`). If the type of the method parameter is `Buffer`, Alterior will automatically connect a raw body parsing middleware (`bodyParser.raw()`). For any other parameter type, Alterior adds a JSON body parsing middleware (`bodyParser.json()`). If you need other body parsing middleware, you can add it directly to the `middleware` property of the route decorator's `options` parameter and use `WebEvent.request.body` directly instead.
 
 > Note: If a path parameter is defined directly in the path passed to `@Get()` 
   decorator and an (otherwise unfulfilled) parameter with the same name is 
@@ -306,29 +260,11 @@ export class MyController {
 }
 ```
 
-## `HttpError`
-
-The `HttpError` class is included to signal Alterior to send certain HTTP status codes and responses back to the client when exceptional circumstances occur.
-
-```typescript
-	// Perhaps we couldn't contact a microservice needed to fulfill the request.
-	throw new HttpError(502, "Service is not available");
-```
-
-## `Response`
-
-Alterior includes a `Response` class that makes it easy to return any HTTP response from your method. You can use this instead of HTTP exceptions if you wish, so here's the same example using `Response`:
-
-```typescript
-	// Perhaps we couldn't contact a microservice needed to fulfill the request.
-	return Response.badGateway({ message: "Service is not available" });
-```
-
 ## Dependency Injection
 
 Modules, controllers and services all participate in dependency injection. For more information about how DI works in Alterior apps, see the documentation for [@alterior/di](../di/README.md).
 
-## Applying Middleware
+## Middleware
 
 Alterior supports Connect middleware (as used in Express, Fastify, etc). Middleware can be connected globally or 
 declared as part of a route. 
@@ -361,7 +297,7 @@ export class MyService {
 }
 ```
 
-To add route-specific middleware:
+To add route-specific middleware, use the `middleware` property of the options object:
 
 ```typescript
 @Get('/foo', { middleware: [fileUpload] })
@@ -428,11 +364,17 @@ To do so, set `WebServerOptions.hideExceptions` to `true`. The `error` field wil
 
 ## Sessions
 
+WARNING: Generally APIs should not use cookies. If your API is used by a by a browser application (which is the main reason you would use cookies in the first place), it is essential that you restrict the allowed origins of your API using CORS to ensure that other (potentially malicious) origins cannot request your API using credentials saved in the browser of your authorized users. Known as Cross Site Request Forgery (CSRF), this is a serious security vulnerability and it should be treated with care. 
+
+It is far better to use the `Authorization` header to pass an explicit auth token and if necessary correlate that token to a server-managed session instead. Authorization headers are managed by the calling application, not by the user agent and are not automatically sent with requests to your API. Doing so can avoid many of the pitfalls that using cookies can cause. 
+
+Nonetheless, if you understand the security risks and have taken the proper precautions, it is possible to use cookie-driven sessions with Alterior, though managing the session itself is not included by default.
+
 To add session support, use `express-session`:
 
 ```
 npm i express-session --save
-typings i dt~express-session --save
+npm i @types/express-session --save-dev
 ```
 
 Include it as middleware:
@@ -444,30 +386,33 @@ import * as session from 'express-session';
 })
 ```
 
-You can then use the session by requesting it as a parameter from your controller methods:
+You can then use the session via the `Session` class which is provided for you. The simplest way to use it is via the `get()` and `set()` methods:
 
 ```typescript
-
-interface SessionData {
-	username : string;
-	cartTotal : number;
-}
-
 @Controller()
 class SampleController {
 	@Get('/')
-	home(session : SessionData) {
-		return session.cartTotal;
+	home() {
+		return Session.current.get('cartTotal');
 	}
 }
 ```
 
-[Alterior Mongo](https://github.com/alterior-mvc/alterior-mongo) alternatively provides a MongoDB-based session provider based on `connect-mongo`,
-or you can use any Express/Connect middleware that provides `request.session`.
+Using `get()` and `set()` provide no benefits via Typescript. The `Session` class can be subclassed however:
 
-## Custom services
+```typescript
+class MySession extends Session {
+    cartTotal : number;
+}
+```
 
-To declare a service, simply mark it with `@Injectable()` from `@alterior/di` and then include it in the `providers` list of one of the Alterior module definitions within your application. The service will be made available across your whole application.
+You can then access that session from within your route methods like so:
+
+```typescript
+MySession.current.cartTotal
+```
+
+Note that both `Session.current` and `MySession.current` only have meaning when called from within a route method while an HTTP request is being processed. 
 
 ## Testing
 
@@ -476,6 +421,8 @@ Use `teststrap()` to test endpoints in your web service. Since the caller and th
 `teststrap()` uses [supertest](https://github.com/visionmedia/supertest) as its core testing mechanism. The type of values returned by `teststrap()` is `supertest.Supertest<supertest.Test>`.
 
 ```typescript
+import { teststrap } from '@alterior/web-server/dist/testing`;
+
 @WebService()
 class ExampleService { 
     @Get('/')
@@ -527,18 +474,19 @@ await test.get('/foo')
 ```
 
 For more information about the capabilities of `teststrap()`, consult the [supertest documentation](https://github.com/visionmedia/supertest).
+
 ## Accessing the Express instance
 
-Perhaps you need access to the Express application object to do something Alterior doesn't support:
+Perhaps you need access to the Express (or other web engine) application object to do something Alterior doesn't support:
 
 ```typescript
 import 
-@Controller()
-export class FooController {
+@WebService()
+export class MyService {
     constructor(
-        private expressRef : ExpressRef
     ) {
-        this.expressApp = expressRef.application;
+        let server = WebServer.for(this);
+        this.expressApp = server.engine.app;
         this.expressApp.get('/something', (req, res) => {
             res.status(200).send('/something works!');
         });
@@ -547,6 +495,8 @@ export class FooController {
     private expressApp : express.Application;
 }
 ```
+
+You can call `WebServer.for()` and pass any web service or any controller mounted within a web service. Always pass the object instance (`this`) in order to ensure you get the correct web server instance. Note that if your controller is used in multiple web services, different instances of your controller will correspond to different instances of `WebServer`. 
 
 ## Deploying to a Cloud Function
 
@@ -561,4 +511,6 @@ import { WebServer } from '@alterior/web-server';
 export const cloudFunction = WebServer.bootstrapCloudFunction(MyWebService);
 ```
 
-`bootstrapCloudFunction()` will handle constructing a function which takes an Express `request` and `response` and routes the given `request` through the given Alterior web service module and populating data into `response`. This is suitable for exporting into a general cloud function environment like GCF or Lambda.
+`bootstrapCloudFunction()` will handle constructing a function which takes an Express `request` and `response` and routes the given `request` through the given Alterior WebService module and populating data into `response`. This is suitable for exporting into a general cloud function environment like GCF or Lambda. 
+
+Note: You can only pass a `@WebService()` class (ie, the top level of your web service). You cannot pass a `@Controller()` class, as controllers by themselves are not Alterior modules, and do not automatically 

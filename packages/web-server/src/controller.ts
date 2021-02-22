@@ -225,11 +225,14 @@ export class ControllerInstance {
 	}
 
 	mount(webServer : WebServer) {
+		WebServer.register(this.instance, this.server);
+		
 		this.prepareMiddleware();
 		for (let middleware of this.resolvedMiddleware)
 			webServer.engine.addConnectMiddleware(this.pathPrefix, middleware);
 		
 		this.routes.forEach(r => r.mount(this.pathPrefix));
 		this.controllers.forEach(c => c.mount(webServer));
+
 	}
 }

@@ -64,9 +64,7 @@ export const WebService = WebServiceAnnotation.decorator({
 
                 serviceInstance.initialize();
                 serviceInstance.mount(webserver);
-
-                WebServer.register(serviceInstance.instance, webserver);
-
+                
                 this.rolesService.registerRole({
                     identifier: 'web-server',
                     instance: this,
