@@ -14,7 +14,7 @@
     "build": "npm run clean && npm run build:cjs && npm run build:esm",
     "build:cjs": "tsc -p .",
     "build:esm": "tsc -p tsconfig.esm.json",
-    "prepare": "npm test",
+    "prepublishOnly": "npm test",
     "test": "npm run build && node dist/test.js",
     "docs": "typedoc ."
   },
@@ -41,7 +41,7 @@
   "dependencies": {
     "@alterior/annotations": "^3.0.0-beta.75",
     "@alterior/common": "^3.0.0-beta.75",
-    "zone.js": "^0.10.3"
+    "zone.js": "^0.11.4"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
