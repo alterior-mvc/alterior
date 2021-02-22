@@ -14,7 +14,7 @@ export class LoggingOptionsRef {
         if (!ExecutionContext.current || !ExecutionContext.current.application)
            return null;
 
-        return ExecutionContext.current.application.inject(LoggingOptionsRef);
+        return ExecutionContext.current.application.inject(LoggingOptionsRef, null);
     }
 
     public static get current(): LoggingOptions {
@@ -242,7 +242,7 @@ export interface LoggingOptions {
 
 export class ZonedLogger {
     constructor(
-        protected optionsRef : LoggingOptionsRef,
+        @Optional() protected optionsRef : LoggingOptionsRef,
         protected app? : Application,
         sourceLabel? : string
     ) {
@@ -378,8 +378,7 @@ export class ZonedLogger {
 @Injectable()
 export class Logger extends ZonedLogger {
     constructor(
-        @Optional()
-        optionsRef : LoggingOptionsRef,
+        @Optional() optionsRef : LoggingOptionsRef,
         app? : Application
     ) {
         super(optionsRef, app);

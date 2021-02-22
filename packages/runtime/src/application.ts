@@ -93,8 +93,8 @@ export class Application {
 		return this.runtime.injector;
 	}
 
-	inject<T>(ctor : { new(...args) : T }): T {
-		return this.injector.get(ctor);
+	inject<T>(ctor : { new(...args) : T }, notFoundValue? : T): T {
+		return this.injector.get(ctor, notFoundValue);
 	}
 
 	get args() : string[] {
