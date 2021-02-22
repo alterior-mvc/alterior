@@ -1,19 +1,37 @@
 {
   "name": "@alterior/platform-nodejs",
   "version": "3.0.0-beta.75",
+  "description": "Smoother experience for Alterior on Node.js",
+  "author": "The Alterior Project (https://github.com/alterior-mvc)",
+  "license": "MIT",
+  "homepage": "https://github.com/alterior-mvc/alterior/blob/main/packages/platform-nodejs/README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alterior-mvc/alterior.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alterior-mvc/alterior/issues"
+  },
+  "keywords": ["nodejs"],
+  "main": "dist/index.js",
+  "module": "dist.esm/index.js",
+  "types": "dist/index.d.ts",
   "access": "public",
   "publishConfig": {
     "access": "public"
   },
-  "description": "Provide a smoother experience when using Alterior on Node.js",
-  "main": "dist/index.js",
-  "scripts": {
-    "build": "tsc -p .",
-    "docs": "typedoc .",
-    "test": "exit 0"
+  "engines": {
+    "node": ">=10"
   },
-  "author": "William Lahti <wilahti@gmail.com>",
-  "license": "MIT",
+  "scripts": {
+    "clean": "rimraf dist dist.esm",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "prepublishOnly": "npm test",
+    "test": "npm run build && node dist/test",
+    "docs": "typedoc ."
+  },
   "dependencies": {
     "dotenv": "^8.2.0",
     "reflect-metadata": "^0.1.13",
@@ -21,7 +39,8 @@
     "zone.js": "^0.11.4"
   },
   "devDependencies": {
-    "typescript": "^3.9.7"
+    "razmin": "^1.0.4",
+    "typescript": "^4.1.5"
   },
   "gitHead": "48a32c2d232db270e1b4c4db5a373c28f1b48347"
 }

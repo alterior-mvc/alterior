@@ -1,43 +1,37 @@
 {
   "name": "@alterior/di",
   "version": "3.0.0-beta.75",
+  "description": "Flexible reflection-based dependency injection",
+  "author": "The Alterior Project (https://github.com/alterior-mvc)",
+  "license": "MIT",
+  "homepage": "https://github.com/alterior-mvc/alterior/blob/main/packages/di/README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alterior-mvc/alterior.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alterior-mvc/alterior/issues"
+  },
+  "keywords": [ "DI", "dependency", "injection", "dependency injection", "injector" ],
+  "main": "dist/index.js",
+  "module": "dist.esm/index.js",
+  "types": "dist/index.d.ts",
   "access": "public",
   "publishConfig": {
     "access": "public"
   },
-  "description": "",
-  "main": "dist/index.js",
-  "module": "dist.esm/index.js",
-  "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=10"
+  },
   "scripts": {
-    "clean": "rimraf dist && rimraf dist.esm",
+    "clean": "rimraf dist dist.esm",
     "build": "npm run clean && npm run build:cjs && npm run build:esm",
-    "build:cjs": "tsc -p .",
+    "build:cjs": "tsc",
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublishOnly": "npm test",
     "test": "npm run build && node dist/test.js",
     "docs": "typedoc ."
   },
-  "engines": {
-    "node": ">=8.5"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alterior-mvc/alterior.git"
-  },
-  "author": "William Lahti <wilahti@gmail.com>, Minko Gechev <mgechev@gmail.com>",
-  "license": "MIT",
-  "keywords": [
-    "DI",
-    "dependency",
-    "injection",
-    "dependency injection",
-    "injector"
-  ],
-  "bugs": {
-    "url": "https://github.com/alterior-mvc/alterior/issues"
-  },
-  "homepage": "https://github.com/alterior-mvc/alterior#readme",
   "dependencies": {
     "@alterior/annotations": "^3.0.0-beta.75",
     "@alterior/common": "^3.0.0-beta.75",
@@ -55,7 +49,7 @@
     "tslib": "^2.0.0",
     "tslint": "5.11.0",
     "tslint-config-prettier": "1.17.0",
-    "typescript": "^3.9.7"
+    "typescript": "^4.1.5"
   },
   "gitHead": "48a32c2d232db270e1b4c4db5a373c28f1b48347"
 }

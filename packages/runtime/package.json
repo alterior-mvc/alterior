@@ -1,33 +1,37 @@
 {
   "name": "@alterior/runtime",
   "version": "3.0.0-beta.75",
-  "access": "public",
-  "publishConfig": {
-    "access": "public"
-  },
-  "description": "",
-  "main": "dist/index.js",
-  "module": "dist.esm/index.js",
-  "typings": "dist/index.d.ts",
-  "scripts": {
-    "clean": "rimraf dist && rimraf dist.esm",
-    "build": "npm run clean && npm run build:cjs && npm run build:esm",
-    "build:cjs": "tsc -p .",
-    "build:esm": "tsc -p tsconfig.esm.json",
-    "prepublishOnly": "npm run test",
-    "test": "npm run build && node dist/test.js",
-    "docs": "typedoc ."
-  },
+  "description": "Core runtime for Alterior apps",
+  "author": "The Alterior Project (https://github.com/alterior-mvc)",
+  "license": "MIT",
+  "homepage": "https://github.com/alterior-mvc/alterior/blob/main/packages/runtime/README.md",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alterior-mvc/alterior.git"
   },
-  "author": "William Lahti",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/alterior-mvc/alterior/issues"
   },
-  "homepage": "https://github.com/alterior-mvc/alterior#readme",
+  "keywords": ["application", "framework", "runtime"],
+  "main": "dist/index.js",
+  "module": "dist.esm/index.js",
+  "types": "dist/index.d.ts",
+  "access": "public",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "clean": "rimraf dist dist.esm",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "prepublishOnly": "npm test",
+    "test": "npm run build && node dist/test.js",
+    "docs": "typedoc ."
+  },
   "dependencies": {
     "@alterior/annotations": "^3.0.0-beta.75",
     "@alterior/common": "^3.0.0-beta.75",
@@ -45,7 +49,7 @@
     "razmin": "^0.6.18",
     "require-glob": "^3.2.0",
     "rimraf": "^3.0.2",
-    "typescript": "^3.9.7"
+    "typescript": "^4.1.5"
   },
   "gitHead": "48a32c2d232db270e1b4c4db5a373c28f1b48347"
 }
