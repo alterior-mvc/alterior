@@ -62,7 +62,7 @@
     "require-glob": "^3.2.0",
     "rimraf": "^2.7.1",
     "swagger-editor-dist": "^3.9.0",
-    "typescript": "^3.9.7",
+    "typescript": "^4.1.5",
     "wtfnode": "^0.8.1"
   },
   "gitHead": "48a32c2d232db270e1b4c4db5a373c28f1b48347"
