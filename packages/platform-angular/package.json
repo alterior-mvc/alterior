@@ -8,9 +8,13 @@
   "description": "Adapt Alterior modules to work within Angular apps",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -p .",
-    "docs": "typedoc .",
-    "test": "exit 0"
+    "clean": "rimraf dist && rimraf dist.esm",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc -p .",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "prepublishOnly": "npm run test",
+    "test": "npm run build && node dist/test",
+    "docs": "typedoc ."
   },
   "author": "William Lahti <wilahti@gmail.com>",
   "license": "MIT",
@@ -19,6 +23,7 @@
   },
   "devDependencies": {
     "@angular/core": "^9.1.9",
+    "razmin": "^1.0.4",
     "rxjs": "^6.5.5",
     "tslib": "^2.0.0",
     "typescript": "^4.1.5",
