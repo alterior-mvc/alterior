@@ -272,6 +272,56 @@ mySocket() {
 }
 ```
 
+# TLS (HTTPS)
+
+Typically it is best to terminate HTTPS at a reverse proxy running on the same machine as your application server, or at an external load balancer. However Alterior does allow you to do it within the application server (which is required for native HTTP/2)
+
+```typescript
+@WebService({
+    server: {
+        certificate: `---BEGIN...`,
+        privateKey: `---BEGIN...`,
+        port: 443
+    }
+})
+export class MyService {
+    // ...
+}
+```
+
+# HTTP/2
+
+HTTP/2 support is built-in. Specify `protocols` to enable it. If you provide a TLS certificate HTTP/2 is enabled by default. Otherwise only HTTP is enabled. However, if you add `h2` (or one of the `spdy/*` versions) to `protocols` but you do not specify a TLS certificate, then Alterior will automatically generate and use a self-signed certificate which is useful for testing HTTP/2 services in development.
+
+```typescript
+@WebService({
+    server: {
+        protocols: [`h2`, `spdy/3.1`, `spdy/3`, `spdy/2`, `http/1.1`, `http/1.0`]
+    }
+})
+export class MyService {
+    // ...
+}
+```
+
+# Server-Sent Events
+
+You can use `RouteEvent.sendEvent()` to send an event stream response back to the client. For more information about 
+server-sent events, see https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
+
+The `data` field is serialized into JSON for you. Note that Server-Sent Events over HTTP/1.1 is not ideal as modern 
+browsers only allow a maximum of six (6) connections to a given server. However, [with HTTP/2](#http2) this is not an issue.
+
+```typescript
+@Get('/sse')
+async sse() {
+    while (RouteEvent.connected) {
+        await timeout(1000);
+        await RouteEvent.sendEvent({ event: 'ping', data: { message: 'are you still there?' } });
+    }
+}
+```
+
 # Dependency Injection
 
 Modules, controllers and services all participate in dependency injection. For more information about how DI works in Alterior apps, see the documentation for [@alterior/di](../di/README.md).
