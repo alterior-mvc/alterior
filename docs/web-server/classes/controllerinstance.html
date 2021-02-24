@@ -93,6 +93,7 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="controllerinstance.html#injector" class="tsd-kind-icon">injector</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="controllerinstance.html#ismodule" class="tsd-kind-icon">is<wbr>Module</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="controllerinstance.html#resolvedmiddleware" class="tsd-kind-icon">resolved<wbr>Middleware</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="controllerinstance.html#routetable" class="tsd-kind-icon">route<wbr>Table</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="controllerinstance.html#server" class="tsd-kind-icon">server</a></li>
@@ -131,13 +132,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Controller<wbr>Instance<span class="tsd-signature-symbol">(</span>server<span class="tsd-signature-symbol">: </span><a href="webserver.html" class="tsd-signature-type">WebServer</a>, type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span>, injector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Injector</span>, routeTable<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, context<span class="tsd-signature-symbol">?: </span><a href="../interfaces/controllercontext.html" class="tsd-signature-type">ControllerContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="controllerinstance.html" class="tsd-signature-type">ControllerInstance</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Controller<wbr>Instance<span class="tsd-signature-symbol">(</span>server<span class="tsd-signature-symbol">: </span><a href="webserver.html" class="tsd-signature-type">WebServer</a>, type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span>, injector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Injector</span>, routeTable<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, context<span class="tsd-signature-symbol">?: </span><a href="../interfaces/controllercontext.html" class="tsd-signature-type">ControllerContext</a>, isModule<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="controllerinstance.html" class="tsd-signature-type">ControllerInstance</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L49">src/controller.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L19">src/controller.ts:19</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -157,6 +158,9 @@
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> context: <a href="../interfaces/controllercontext.html" class="tsd-signature-type">ControllerContext</a></h5>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> isModule: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="controllerinstance.html" class="tsd-signature-type">ControllerInstance</a></h4>
 						</li>
@@ -171,7 +175,17 @@
 					<div class="tsd-signature tsd-kind-icon">injector<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Injector</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L53">src/controller.ts:53</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L23">src/controller.ts:23</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="ismodule" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> is<wbr>Module</h3>
+					<div class="tsd-signature tsd-kind-icon">is<wbr>Module<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L26">src/controller.ts:26</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -181,7 +195,7 @@
 					<div class="tsd-signature tsd-kind-icon">resolved<wbr>Middleware<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">express.RequestHandler</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L239">src/controller.ts:239</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L210">src/controller.ts:210</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -191,7 +205,7 @@
 					<div class="tsd-signature tsd-kind-icon">route<wbr>Table<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L54">src/controller.ts:54</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L24">src/controller.ts:24</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -201,7 +215,7 @@
 					<div class="tsd-signature tsd-kind-icon">server<span class="tsd-signature-symbol">:</span> <a href="webserver.html" class="tsd-signature-type">WebServer</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L51">src/controller.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L21">src/controller.ts:21</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -211,7 +225,7 @@
 					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L52">src/controller.ts:52</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L22">src/controller.ts:22</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -228,7 +242,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L87">src/controller.ts:87</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L58">src/controller.ts:58</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/controllercontext.html" class="tsd-signature-type">ControllerContext</a></h4>
@@ -245,7 +259,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L194">src/controller.ts:194</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L165">src/controller.ts:165</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="controllerinstance.html" class="tsd-signature-type">ControllerInstance</a><span class="tsd-signature-symbol">[]</span></h4>
@@ -262,7 +276,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L204">src/controller.ts:204</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L175">src/controller.ts:175</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -279,7 +293,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L63">src/controller.ts:63</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L34">src/controller.ts:34</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -296,7 +310,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L91">src/controller.ts:91</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L62">src/controller.ts:62</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RequestHandler</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ParamsDictionary</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ParsedQs</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">RequestHandler</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ParamsDictionary</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ParsedQs</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -313,7 +327,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L200">src/controller.ts:200</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L171">src/controller.ts:171</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/controlleroptions.html" class="tsd-signature-type">ControllerOptions</a></h4>
@@ -330,7 +344,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L184">src/controller.ts:184</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L155">src/controller.ts:155</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -347,7 +361,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L188">src/controller.ts:188</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L159">src/controller.ts:159</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="routeinstance.html" class="tsd-signature-type">RouteInstance</a><span class="tsd-signature-symbol">[]</span></h4>
@@ -367,7 +381,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L99">src/controller.ts:99</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L70">src/controller.ts:70</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -390,7 +404,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L241">src/controller.ts:241</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L212">src/controller.ts:212</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -407,7 +421,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L256">src/controller.ts:256</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L227">src/controller.ts:227</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -430,7 +444,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L246">src/controller.ts:246</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L217">src/controller.ts:217</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -447,7 +461,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/controller.ts#L251">src/controller.ts:251</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/controller.ts#L222">src/controller.ts:222</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -476,6 +490,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="controllerinstance.html#injector" class="tsd-kind-icon">injector</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="controllerinstance.html#ismodule" class="tsd-kind-icon">is<wbr>Module</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="controllerinstance.html#resolvedmiddleware" class="tsd-kind-icon">resolved<wbr>Middleware</a>

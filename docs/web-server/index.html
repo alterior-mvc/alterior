@@ -68,226 +68,188 @@
 				<p><a href="https://www.npmjs.com/package/@alterior/web-server"><img src="https://img.shields.io/npm/v/@alterior/web-server.svg" alt="Version"></a></p>
 				<p>A framework for building HTTP services in Typescript. Build REST APIs with this. </p>
 				<a href="#getting-started" id="getting-started" style="color: inherit; text-decoration: none;">
-					<h2>Getting started</h2>
+					<h1>Getting started</h1>
 				</a>
 				<p>Install the Alterior runtime, the DI library, and the web-server module:</p>
 				<pre><code><span class="hljs-built_in">npm</span> install reflect-metadata
 <span class="hljs-built_in">npm</span> install @alterior/runtime @alterior/di @alterior/web-server</code></pre>
+				<a href="#configuring-typescript" id="configuring-typescript" style="color: inherit; text-decoration: none;">
+					<h1>Configuring Typescript</h1>
+				</a>
+				<p>You must enable <code>enableExperimentalDecorators</code> and <code>emitDecoratorMetadata</code>,
+					and <code>esModuleInterop</code> Typescript compiler options to use this library. Do
+				this within <code>tsconfig.json</code>:</p>
+				<pre><code class="language-json">{
+    <span class="hljs-attr">&quot;compilerOptions&quot;</span>: {
+        <span class="hljs-attr">&quot;enableExperimentalDecorators&quot;</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">&quot;emitDecoratorMetadata&quot;</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">&quot;esModuleInterop&quot;</span>: <span class="hljs-literal">true</span>
+    }
+}</code></pre>
 				<a href="#a-minimal-example" id="a-minimal-example" style="color: inherit; text-decoration: none;">
-					<h2>A minimal example</h2>
+					<h1>A minimal example</h1>
 				</a>
 				<p>For simple use cases, you can build a web service using Alterior in a single file:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { WebService } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/web-server'</span>;
+				<pre><code class="language-typescript"><span class="hljs-comment">// my-web-service.ts</span>
+
+<span class="hljs-keyword">import</span> { WebService } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@alterior/web-server&#x27;</span>;
 
 <span class="hljs-meta">@WebService</span>({
-    providers: []
+    <span class="hljs-attr">providers</span>: []
 })
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyWebService <span class="hljs-keyword">implements</span> OnInit {
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/version'</span>)
-    version() {
-        <span class="hljs-keyword">return</span> { version: <span class="hljs-string">"1.0.0"</span> };
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyWebService</span> <span class="hljs-title">implements</span> <span class="hljs-title">OnInit</span> </span>{
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">&#x27;/version&#x27;</span>)
+    <span class="hljs-function"><span class="hljs-title">version</span>(<span class="hljs-params"></span>)</span> {
+        <span class="hljs-keyword">return</span> { <span class="hljs-attr">version</span>: <span class="hljs-string">&quot;1.0.0&quot;</span> };
     }
 
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
-    version() {
-        <span class="hljs-keyword">return</span> { hello: <span class="hljs-string">'world'</span> };
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">&#x27;/&#x27;</span>)
+    <span class="hljs-function"><span class="hljs-title">version</span>(<span class="hljs-params"></span>)</span> {
+        <span class="hljs-keyword">return</span> { <span class="hljs-attr">hello</span>: <span class="hljs-string">&#x27;world&#x27;</span> };
     }
 }
 
 Application.bootstrap(MyWebService);</code></pre>
-				<a href="#building-your-app" id="building-your-app" style="color: inherit; text-decoration: none;">
-					<h2>Building your app</h2>
+				<a href="#how-do-i-run-it" id="how-do-i-run-it" style="color: inherit; text-decoration: none;">
+					<h1>How do I run it?</h1>
 				</a>
-				<p>Make sure to enable <code>emitDecoratorMetadata</code> and <code>experimentalDecorators</code> in your project&#39;s <code>tsconfig.json</code>.</p>
+				<p>Make an entry point for your application if you don&#39;t already have one:</p>
+				<pre><code class="language-typescript"><span class="hljs-comment">// main.ts </span>
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">&#x27;reflect-metadata&#x27;</span>;
+
+<span class="hljs-keyword">import</span> { Application } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@alterior/runtime&#x27;</span>;
+<span class="hljs-keyword">import</span> { MyWebService } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./my-web-service&#x27;</span>;
+
+Application.bootstrap(MyWebService);</code></pre>
+				<p>After you compile your application using Typescript, run your app using Node.js:</p>
+				<pre><code><span class="hljs-keyword">node</span> <span class="hljs-title">dist</span>/main</code></pre><p>You should use NPM scripts to manage building, testing and running your application per the conventions of the Node.js community.</p>
+				<a href="#mechanics-of-webservice" id="mechanics-of-webservice" style="color: inherit; text-decoration: none;">
+					<h1>Mechanics of <code>@WebService</code></h1>
+				</a>
+				<p>When classes marked <code>@WebService()</code> are bootstrapped as part of an Alterior application (via <code>Application#bootstrap()</code>), a new Alterior role is registered with <a href="../runtime/README.md#roles"><code>RolesService</code></a> which is responsible for starting up and shutting down a web server using one of the supported WebEngines (currently Express and Fastify). The class itself acts both as a <code>@Module()</code> and the root <code>@Controller()</code> of the service. The class can then use <code>@Mount()</code> to add additional controllers to the service. Each <code>@WebService()</code> has its own separate server instance, which means you can host multiple web services (on different ports) within the same overall application. Each service will be given its own role which can be controlled independently.</p>
 				<a href="#delegation-via-mounting" id="delegation-via-mounting" style="color: inherit; text-decoration: none;">
-					<h2>Delegation via Mounting</h2>
+					<h1>Delegation via Mounting</h1>
 				</a>
 				<p>You can delegate parts of your web service to dedicated controllers by mounting them within your main service class. Doing so will route specific URLs to specific controllers. Any controller can <code>@Mount()</code>, providing an intuitive way to construct a complete web service from a tree of controllers:</p>
 				<pre><code class="language-typescript"><span class="hljs-meta">@WebService</span>(...)
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyWebService <span class="hljs-keyword">implements</span> OnInit {
-    <span class="hljs-meta">@Mount</span>(<span class="hljs-string">'/users'</span>)
-    usersController : UsersController;
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyWebService</span> <span class="hljs-title">implements</span> <span class="hljs-title">OnInit</span> </span>{
+    <span class="hljs-meta">@Mount</span>(<span class="hljs-string">&#x27;/users&#x27;</span>)
+    <span class="hljs-attr">usersController</span> : UsersController;
 
-    <span class="hljs-meta">@Mount</span>(<span class="hljs-string">'/some-plugin'</span>)
-    somePlugin : SomePluginController;
+    <span class="hljs-meta">@Mount</span>(<span class="hljs-string">&#x27;/some-plugin&#x27;</span>)
+    <span class="hljs-attr">somePlugin</span> : SomePluginController;
 }</code></pre>
-				<p>When you nest controllers using <code>@Mount()</code>, each subcontroller inherits the path prefix defined by all parents:</p>
+				<p>When you nest controllers using <code>@Mount()</code>, each subcontroller inherits the path prefix defined by all parents, like below:</p>
 				<pre><code class="language-typescript">
-<span class="hljs-meta">@Controller</span>(<span class="hljs-string">'/f'</span>)
-<span class="hljs-keyword">class</span> SubSubController {
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/g'</span>)
-    <span class="hljs-keyword">get</span>() {
-        <span class="hljs-keyword">return</span> { message: <span class="hljs-string">'you requested: GET /a/b/c/d/e/f/g'</span> };
+<span class="hljs-meta">@Controller</span>(<span class="hljs-string">&#x27;/f&#x27;</span>)
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SubSubController</span> </span>{
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">&#x27;/g&#x27;</span>)
+    <span class="hljs-function"><span class="hljs-title">get</span>(<span class="hljs-params"></span>)</span> {
+        <span class="hljs-keyword">return</span> { <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;you requested: GET /a/b/c/d/e/f/g&#x27;</span> };
     }
 }
 
-<span class="hljs-meta">@Controller</span>(<span class="hljs-string">'/c'</span>)
-<span class="hljs-keyword">class</span> SubController {
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/d'</span>)
-    <span class="hljs-keyword">get</span>() {
-        <span class="hljs-keyword">return</span> { message: <span class="hljs-string">'you requested: GET /a/b/c/d'</span> };
+<span class="hljs-meta">@Controller</span>(<span class="hljs-string">&#x27;/c&#x27;</span>)
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SubController</span> </span>{
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">&#x27;/d&#x27;</span>)
+    <span class="hljs-function"><span class="hljs-title">get</span>(<span class="hljs-params"></span>)</span> {
+        <span class="hljs-keyword">return</span> { <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;you requested: GET /a/b/c/d&#x27;</span> };
     }
 
-    <span class="hljs-meta">@Mount</span>(<span class="hljs-string">'/e'</span>)
-    subsub : SubSubController;
+    <span class="hljs-meta">@Mount</span>(<span class="hljs-string">&#x27;/e&#x27;</span>)
+    <span class="hljs-attr">subsub</span> : SubSubController;
 }
 
-<span class="hljs-meta">@Controller</span>(<span class="hljs-string">'/a'</span>)
-<span class="hljs-keyword">class</span> MainController {
-    <span class="hljs-meta">@Mount</span>(<span class="hljs-string">'/b'</span>)
-    sub : SubController;
+<span class="hljs-meta">@Controller</span>(<span class="hljs-string">&#x27;/a&#x27;</span>)
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MainController</span> </span>{
+    <span class="hljs-meta">@Mount</span>(<span class="hljs-string">&#x27;/b&#x27;</span>)
+    <span class="hljs-attr">sub</span> : SubController;
 }</code></pre>
 				<p>Note: You do not always have to specify a path for <code>@Controller()</code>, <code>@Mount()</code> or <code>@Get()</code>, we have done so here for to keep the example clear. If you omit a path or set it to <code>&#39;&#39;</code>, the element will not contribute any path segments to the final path registered for your routes.</p>
-				<a href="#mechanics-of-webservice" id="mechanics-of-webservice" style="color: inherit; text-decoration: none;">
-					<h2>Mechanics of <code>@WebService</code></h2>
+				<a href="#when-to-use-base-paths-with-mount" id="when-to-use-base-paths-with-mount" style="color: inherit; text-decoration: none;">
+					<h1>When to use base paths with @Mount</h1>
 				</a>
-				<p><code>@WebService()</code> declares the class as a module (<code>@Module()</code>), applies <code>@AppOptions()</code>, and registers itself as a controller class within that module.
-				You can pass any of the options for <code>@Module()</code>, <code>@AppOptions()</code> as well as the options available for <code>WebServerModule.configure(...)</code>.</p>
-				<p>The following definition is equivalent to using <code>@WebService(options?)</code>:</p>
-				<pre><code class="language-typescript"><span class="hljs-meta">@AppOptions</span>(options)
-<span class="hljs-meta">@Module</span>({
-    ...options,
-    controllers: [ MyWebService ],
-    imports: [ WebServerModule.configure(options) ]
-})
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyWebService { <span class="hljs-comment">/* ... */</span> }</code></pre>
-				<p>For a larger application, you may wish to separate your
-				top-level module from your web service implementation, especially when your application serves multiple roles. </p>
-				<pre><code class="language-typescript"><span class="hljs-comment">// app.module.ts</span>
-
-<span class="hljs-keyword">import</span> { AppOptions } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/runtime'</span>;
-<span class="hljs-keyword">import</span> { Module } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/di'</span>;
-<span class="hljs-keyword">import</span> { WebServerModule } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/web-server'</span>;
-<span class="hljs-keyword">import</span> { FooController } <span class="hljs-keyword">from</span> <span class="hljs-string">'./foo.controller'</span>;
-
-<span class="hljs-meta">@AppOptions</span>({ name: <span class="hljs-string">'My Application'</span> })
-<span class="hljs-meta">@Module</span>({
-    imports: [ WebServerModule ],
-    controllers: [ FooController ]
-})
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> AppModule {
-}</code></pre>
-				<p>Note that we need to explicitly include the <code>WebServerModule</code> here.
-				We can also configure that module here if desired:</p>
-				<pre><code class="language-typescript">    imports: [ WebServerModule.configure({ port: <span class="hljs-number">1234</span>, ... }) ]</code></pre>
-				<p>Now, let&#39;s create <code>FooController</code>, complete with a number of example routes so you can get an idea of the style:</p>
-				<pre><code class="language-typescript"><span class="hljs-comment">// foo.controller.ts</span>
-
-<span class="hljs-keyword">import</span> { Controller, Get, RouteEvent } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/core'</span>;
-<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> express <span class="hljs-keyword">from</span> <span class="hljs-string">'express'</span>;
-
-<span class="hljs-meta">@Controller</span>(<span class="hljs-string">'/optional-prefix'</span>)
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> FooController {
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/simple'</span>)
-    <span class="hljs-keyword">public</span> simple(ev : RouteEvent)
-    {
-        <span class="hljs-keyword">return</span> { status: <span class="hljs-string">'success!'</span> };
-    }
-
-    <span class="hljs-comment">/**
-     * You can also return promises.
-     */</span>
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/promises'</span>)
-    <span class="hljs-keyword">public</span> canHazPromises()
-    {
-        <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.resolve({ nifty: <span class="hljs-number">123</span> });
-    }
-
-    <span class="hljs-comment">/**
-     * Or use async/await (the recommended way!)
-     */</span>
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/async'</span>)
-    <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> canHasAsync()
-    {
-        <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> someFunction();
-    }
-
-    <span class="hljs-comment">/**
-     * The parameters specified by your route methods are automatically analyzed,
-     * and the correct value is provided depending on what type (and in some cases what name)
-     * your parameter has.
-     *
-     * For example, you can get access to the Express request and response by injecting 
-     * RouteEvent.
-     */</span>
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/useRouteEvent'</span>)
-    <span class="hljs-keyword">public</span> canHazRouteEvent(ev : RouteEvent)
-    {
-        ev.response.status(<span class="hljs-number">200</span>).send(<span class="hljs-string">"/foo works!"</span>);
-    }
-
-    <span class="hljs-comment">/**
-     * You can also request the Express request/response explicitly (note that this is 
-     * based on the parameter name, see below for more details about
-     * route method parameters).
-     */</span>
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/bar'</span>)
-    <span class="hljs-keyword">public</span> bar(req : express.Request, res : express.Response)
-    {
-        <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.resolve({ nifty: <span class="hljs-number">123</span> });
-    }
-
-    <span class="hljs-comment">/**
-     * Promises can reject with an HttpException to specify HTTP errors...
-     */</span>
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/error'</span>)
-    <span class="hljs-keyword">public</span> errorExample(req : express.Request, res : express.Response)
-    {
-        <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.reject(<span class="hljs-keyword">new</span> HttpException(<span class="hljs-number">301</span>, {message: <span class="hljs-string">"No, over there"</span>}));
-    }
-
-    <span class="hljs-comment">/**
-     * Or return an Alterior Response object for more flexibility...
-     */</span>
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/specificResponse'</span>)
-    <span class="hljs-keyword">public</span> specificResponseAndSuch(req : express.Request, res : express.Response)
-    {
-    <span class="hljs-keyword">return</span> Response.serverError({ message: <span class="hljs-string">`uh oh, that's never happened before`</span> });
-    }
-
-    <span class="hljs-comment">/**
-     * You can even specify middleware directly on a route method...
-     */</span>
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/middlewareRocks'</span>, {
-        middleware: [ myGreatMiddleware(someParameters) ]
-    })
-    <span class="hljs-keyword">public</span> middlewareRolls(req : express.Request, res : express.Response)
-    {
-    <span class="hljs-keyword">return</span> Response.serverError({ message: <span class="hljs-string">`uh oh, that's never happened before`</span> });
-    }
-
-}</code></pre>
-				<p>Finally, we would make a separate entry point (&quot;main&quot;) file:</p>
-				<pre><code class="language-typescript"><span class="hljs-comment">// main.ts </span>
-
-<span class="hljs-keyword">import</span> <span class="hljs-string">'reflect-metadata'</span>;
-
-<span class="hljs-keyword">import</span> { Application } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/runtime'</span>;
-<span class="hljs-keyword">import</span> { AppModule } <span class="hljs-keyword">from</span> <span class="hljs-string">'./app.module'</span>;
-
-Application.bootstrap(AppModule);</code></pre>
-				<a href="#route-parameters" id="route-parameters" style="color: inherit; text-decoration: none;">
-					<h2>Route Parameters</h2>
+				<p>To ensure your app is easy to maintain as it grows, we recommend that you design your mounted controllers to operate from the root of your web service. This means omitting a base path when using <code>@Mount()</code>. Doing so ensures that you will not need to rewrite all of your route definitions if you need to add a route that falls outside of your controller&#39;s expected base path.</p>
+				<p>Passing a base path can be useful however when consuming a controller which is intended to be consumed by many web services.</p>
+				<a href="#promises-amp-async" id="promises-amp-async" style="color: inherit; text-decoration: none;">
+					<h1>Promises &amp; Async</h1>
 				</a>
-				<p>Alterior inspects the parameters of controller methods to determine what values to provide.
-					First, parameters of type <code>RouteEvent</code> are fulfilled with an instance of that class which
-				contains the Express request and response objects:</p>
-				<pre><code class="language-typescript"><span class="hljs-meta">@Get</span>(<span class="hljs-string">'/do'</span>)
-doThings(ev : RouteEvent) {
-    ev.response.status(<span class="hljs-number">404</span>).send(<span class="hljs-string">"Not found."</span>);
+				<pre><code class="language-typescript"><span class="hljs-comment">/**
+ * You can return promises. Alterior will wait for the promise to resolve
+ * before responding to the HTTP request.
+ */</span>
+<span class="hljs-meta">@Get</span>(<span class="hljs-string">&#x27;/promises&#x27;</span>)
+<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-title">canUsePromises</span>(<span class="hljs-params"></span>)</span>
+{
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.resolve({ <span class="hljs-attr">nifty</span>: <span class="hljs-number">123</span> });
+}
+
+<span class="hljs-comment">/**
+ * Or use async/await (the recommended way!)
+ */</span>
+<span class="hljs-meta">@Get</span>(<span class="hljs-string">&#x27;/async&#x27;</span>)
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-title">canUseAsync</span>(<span class="hljs-params"></span>)</span>
+{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> someFunction();
 }</code></pre>
-				<p>Alterior uses the following rules to fulfill the declared method parameters:</p>
+				<a href="#path-parameters" id="path-parameters" style="color: inherit; text-decoration: none;">
+					<h1>Path Parameters</h1>
+				</a>
+				<p>The parameters specified by your route methods are automatically
+					analyzed, and the correct value is provided depending on what type
+				(and in some cases what name) your parameter has.</p>
+				<p>For example, you can receive path parameters. Alterior knows that
+					since you have a path parameter named <code>nameOfCar</code> and an otherwise
+					undecorated method parameter also named <code>nameOfCar</code> that these two are
+				related </p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@Get</span>(<span class="hljs-string">&#x27;/cars/:nameOfCar&#x27;</span>)
+<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-title">canUseRouteParams</span>(<span class="hljs-params">nameOfCar : <span class="hljs-built_in">string</span></span>)</span>
+{
+    <span class="hljs-keyword">return</span> <span class="hljs-string">`you asked for car named <span class="hljs-subst">${nameOfCar}</span>`</span>;
+}</code></pre>
+				<a href="#accessing-the-requestresponse" id="accessing-the-requestresponse" style="color: inherit; text-decoration: none;">
+					<h1>Accessing the Request/Response</h1>
+				</a>
+				<p>Sometimes you need to check or set an HTTP header, interact directly with middleware, or handle parsing the request body or serializing the response body yourself. Alterior lets you do that using the <code>RouteEvent</code> class. </p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@Get</span>()
+<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-title">whoAmI</span>(<span class="hljs-params"></span>)</span> {
+    RouteEvent.response.status(<span class="hljs-number">200</span>).send(<span class="hljs-string">`hello <span class="hljs-subst">${RouteEvent.request.header(<span class="hljs-string">&#x27;user-agent&#x27;</span>)}</span>`</span>);
+}</code></pre>
+				<a href="#is-this-done-via-global-variables-wouldn39t-that-not-work-with-async-requests" id="is-this-done-via-global-variables-wouldn39t-that-not-work-with-async-requests" style="color: inherit; text-decoration: none;">
+					<h2>Is this done via global variables? Wouldn&#39;t that not work with async requests?</h2>
+				</a>
+				<p><code>RouteEvent</code> uses Zone-local variables to accomplish its task, so there is no risk that you will access the wrong request/response when using it unlike when global variables are used for this purpose. </p>
+				<a href="#complex-responses" id="complex-responses" style="color: inherit; text-decoration: none;">
+					<h1>Complex Responses</h1>
+				</a>
+				<p>The recommended way to handle HTTP error statuses is using the <code>HttpException</code> class. You can throw the exception from your route method and Alterior will recognize this and fulfill the HTTP response as you specify.</p>
+				<pre><code class="language-typescript"><span class="hljs-comment">/**
+ * Promises can reject with an HttpException to specify HTTP errors...
+ */</span>
+<span class="hljs-meta">@Get</span>(<span class="hljs-string">&#x27;/error&#x27;</span>)
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-title">errorExample</span>(<span class="hljs-params"></span>)</span>
+{
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> HttpException(<span class="hljs-number">301</span>, {<span class="hljs-attr">message</span>: <span class="hljs-string">&quot;No, over there&quot;</span>}));
+}</code></pre>
+				<p>For successful responses, throwing HttpException (while supported) is not idiomatic. Instead you should return a special response value from your method using the <code>Response</code> class</p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@Get</span>()
+<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-title">responseExample</span>(<span class="hljs-params"></span>)</span>
+{
+    <span class="hljs-keyword">return</span> Response.movedPermanently(<span class="hljs-string">&#x27;https://example.com/&#x27;</span>);
+}</code></pre>
+				<a href="#parameters-matching" id="parameters-matching" style="color: inherit; text-decoration: none;">
+					<h1>Parameters Matching</h1>
+				</a>
+				<p>Alterior inspects the parameters of controller methods to determine what values need to be provided while handling a request. </p>
 				<ul>
 					<li>Parameters decorated with <code>@PathParam(&#39;a&#39;)</code> will be fulfilled with the value
 						of path parameter <code>:a</code> from the route path (as in <code>/some/path/:a</code>). The
-					path parameter can be defined in any parent controller/mount context.</li>
+					path parameter can be defined in any parent controller/mount context. Since path parameters are the most common, and there is a high degree of linkage between path parameters and method parameters, you can omit <code>@PathParam()</code> if the name of your path parameters is the same as your method parameter as shown above</li>
 					<li>Parameters decorated with <code>@QueryParam(&#39;q&#39;)</code> will be fulfilled with the query
-					parameter <code>q</code> if provided (<code>?q=...</code>) </li>
-					<li>Parameters which are named <code>body</code> or decorated with <code>@Body()</code> will be fulfilled
-						with the value of <code>request.body</code>. You must use a body parsing middleware
-					(we recommend <code>body-parser</code>) to populate <code>request.body</code>.</li>
-					<li>Parameters which are decorated with <code>Session(&#39;user&#39;)</code> will be populated with
-					the <code>user</code> key of the current session object.</li>
+					parameter <code>q</code> if provided (<code>?q=...</code>). If the query parameter was not provided in the request, the value of the parameter will be <code>undefined</code>.</li>
+					<li>Parameters which are decorated with <code>@Body()</code> will be fulfilled
+					with the value of <code>RouteEvent.request.body</code>. If the type of the method parameter is <code>string</code>, Alterior will automatically connect a text body parsing middleware (<code>bodyParser.text()</code>). If the type of the method parameter is <code>Buffer</code>, Alterior will automatically connect a raw body parsing middleware (<code>bodyParser.raw()</code>). For any other parameter type, Alterior adds a JSON body parsing middleware (<code>bodyParser.json()</code>). If you need other body parsing middleware, you can add it directly to the <code>middleware</code> property of the route decorator&#39;s <code>options</code> parameter and use <code>RouteEvent.request.body</code> directly instead.</li>
 				</ul>
 				<blockquote>
 					<p>Note: If a path parameter is defined directly in the path passed to <code>@Get()</code>
@@ -297,146 +259,191 @@ doThings(ev : RouteEvent) {
 					parent controller/mount-defined parameters must be decorated with <code>@PathParam()</code></p>
 				</blockquote>
 				<p>When combined with value returns, you can achieve a very natural style:  </p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> bodyParser <span class="hljs-keyword">from</span> <span class="hljs-string">'body-parser'</span>;
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> bodyParser <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;body-parser&#x27;</span>;
 
 <span class="hljs-keyword">interface</span> MyRequestType {
-    action : <span class="hljs-built_in">string</span>;
+    <span class="hljs-attr">action</span> : <span class="hljs-built_in">string</span>;
     foo? : <span class="hljs-built_in">number</span>;
 }
 
-<span class="hljs-meta">@Controller</span>({ middleware: [ bodyParser.json() ] })
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyController {
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/do/:action'</span>)
-    doThings(
+<span class="hljs-meta">@Controller</span>()
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyController</span> </span>{
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">&#x27;/do/:action&#x27;</span>)
+    <span class="hljs-function"><span class="hljs-title">doThings</span>(<span class="hljs-params">
         <span class="hljs-meta">@Body</span>() body : MyRequestType, 
-        <span class="hljs-meta">@PathParam</span>(<span class="hljs-string">'action'</span>) action : <span class="hljs-built_in">string</span>, 
-        <span class="hljs-meta">@QueryParam</span>(<span class="hljs-string">'message'</span>) message : <span class="hljs-built_in">string</span>
-    ) {
-        <span class="hljs-keyword">return</span> {status: <span class="hljs-string">"success"</span>};
+        <span class="hljs-meta">@PathParam</span>(<span class="hljs-string">&#x27;action&#x27;</span>) action : <span class="hljs-built_in">string</span>, 
+        <span class="hljs-meta">@QueryParam</span>(<span class="hljs-string">&#x27;message&#x27;</span>) message : <span class="hljs-built_in">string</span>
+    </span>)</span> {
+        <span class="hljs-keyword">return</span> {<span class="hljs-attr">status</span>: <span class="hljs-string">&quot;success&quot;</span>};
     }
 }</code></pre>
-				<a href="#httperror" id="httperror" style="color: inherit; text-decoration: none;">
-					<h2><code>HttpError</code></h2>
+				<a href="#websockets" id="websockets" style="color: inherit; text-decoration: none;">
+					<h1>WebSockets</h1>
 				</a>
-				<p>The <code>HttpError</code> class is included to signal Alterior to send certain HTTP status codes and responses back to the client when exceptional circumstances occur.</p>
-				<pre><code class="language-typescript">    <span class="hljs-comment">// Perhaps we couldn't contact a microservice needed to fulfill the request.</span>
-    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> HttpError(<span class="hljs-number">502</span>, <span class="hljs-string">"Service is not available"</span>);</code></pre>
-				<a href="#response" id="response" style="color: inherit; text-decoration: none;">
-					<h2><code>Response</code></h2>
+				<p>WebSocket support is built in. You can call <code>WebServer.startSocket()</code> while handling a request to upgrade the current request into a WebSocket connection.</p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@Get</span>()
+<span class="hljs-function"><span class="hljs-title">mySocket</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">let</span> socket = WebServer.startSocket();
+    socket.addEventListener(<span class="hljs-string">&#x27;message&#x27;</span>, <span class="hljs-function"><span class="hljs-params">ev</span> =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Received message from client: <span class="hljs-subst">${ev.data}</span>`</span>);
+    });
+}</code></pre>
+				<a href="#tls-https" id="tls-https" style="color: inherit; text-decoration: none;">
+					<h1>TLS (HTTPS)</h1>
 				</a>
-				<p>Alterior includes a <code>Response</code> class that makes it easy to return any HTTP response from your method. You can use this instead of HTTP exceptions if you wish, so here&#39;s the same example using <code>Response</code>:</p>
-				<pre><code class="language-typescript">    <span class="hljs-comment">// Perhaps we couldn't contact a microservice needed to fulfill the request.</span>
-    <span class="hljs-keyword">return</span> Response.badGateway({ message: <span class="hljs-string">"Service is not available"</span> });</code></pre>
+				<p>Typically it is best to terminate HTTPS at a reverse proxy running on the same machine as your application server, or at an external load balancer. However Alterior does allow you to do it within the application server (which is required for native HTTP/2)</p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@WebService</span>({
+    <span class="hljs-attr">server</span>: {
+        <span class="hljs-attr">certificate</span>: <span class="hljs-string">`---BEGIN...`</span>,
+        <span class="hljs-attr">privateKey</span>: <span class="hljs-string">`---BEGIN...`</span>,
+        <span class="hljs-attr">port</span>: <span class="hljs-number">443</span>
+    }
+})
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyService</span> </span>{
+    <span class="hljs-comment">// ...</span>
+}</code></pre>
+				<a href="#http2" id="http2" style="color: inherit; text-decoration: none;">
+					<h1>HTTP/2</h1>
+				</a>
+				<p>HTTP/2 support is built-in. Specify <code>protocols</code> to enable it. If you provide a TLS certificate HTTP/2 is enabled by default. Otherwise only HTTP is enabled. However, if you add <code>h2</code> (or one of the <code>spdy/*</code> versions) to <code>protocols</code> but you do not specify a TLS certificate, then Alterior will automatically generate and use a self-signed certificate which is useful for testing HTTP/2 services in development.</p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@WebService</span>({
+    <span class="hljs-attr">server</span>: {
+        <span class="hljs-attr">protocols</span>: [<span class="hljs-string">`h2`</span>, <span class="hljs-string">`spdy/3.1`</span>, <span class="hljs-string">`spdy/3`</span>, <span class="hljs-string">`spdy/2`</span>, <span class="hljs-string">`http/1.1`</span>, <span class="hljs-string">`http/1.0`</span>]
+    }
+})
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyService</span> </span>{
+    <span class="hljs-comment">// ...</span>
+}</code></pre>
+				<a href="#server-sent-events" id="server-sent-events" style="color: inherit; text-decoration: none;">
+					<h1>Server-Sent Events</h1>
+				</a>
+				<p>You can use <code>RouteEvent.sendEvent()</code> to send an event stream response back to the client. For more information about
+				server-sent events, see <a href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events">https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events</a></p>
+				<p>The <code>data</code> field is serialized into JSON for you. Note that Server-Sent Events over HTTP/1.1 is not ideal as modern
+				browsers only allow a maximum of six (6) connections to a given server. However, <a href="#http2">with HTTP/2</a> this is not an issue.</p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@Get</span>(<span class="hljs-string">&#x27;/sse&#x27;</span>)
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-title">sse</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">while</span> (RouteEvent.connected) {
+        <span class="hljs-keyword">await</span> timeout(<span class="hljs-number">1000</span>);
+        <span class="hljs-keyword">await</span> RouteEvent.sendEvent({ <span class="hljs-attr">event</span>: <span class="hljs-string">&#x27;ping&#x27;</span>, <span class="hljs-attr">data</span>: { <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;are you still there?&#x27;</span> } });
+    }
+}</code></pre>
 				<a href="#dependency-injection" id="dependency-injection" style="color: inherit; text-decoration: none;">
-					<h2>Dependency Injection</h2>
+					<h1>Dependency Injection</h1>
 				</a>
 				<p>Modules, controllers and services all participate in dependency injection. For more information about how DI works in Alterior apps, see the documentation for <a href="../di/README.md">@alterior/di</a>.</p>
-				<a href="#applying-middleware" id="applying-middleware" style="color: inherit; text-decoration: none;">
-					<h2>Applying Middleware</h2>
+				<a href="#middleware" id="middleware" style="color: inherit; text-decoration: none;">
+					<h1>Middleware</h1>
 				</a>
-				<p>Since Alterior uses Express (<a href="https://expressjs.com/">https://expressjs.com/</a>), it supports any Express-compatible or Connect based middleware. Middleware can be used globally, it can be mounted to a specific set of URLs,  or it can be declared as part of a route, just like you can with vanilla Express.</p>
-				<p>To add middleware globally you must use the <code>@AppOptions</code> decorator on your app class:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> bodyParser <span class="hljs-keyword">from</span> <span class="hljs-string">'body-parser'</span>; <span class="hljs-comment">// you will need to load the body-parser typings for this syntax</span>
-<span class="hljs-meta">@AppOptions</span>({
-    middleware: [bodyParser.json()]
+				<p>Alterior supports Connect middleware (as used in Express, Fastify, etc). Middleware can be connected globally or
+				declared as part of a route. </p>
+				<p>To add middleware globally you can declare the <code>middleware</code> property on your <code>@WebService</code> or via
+				<code>WebServerModule.configure()</code>.</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> myConnectMiddleware <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;my-connect-middleware&#x27;</span>;
+<span class="hljs-meta">@WebService</span>({
+    <span class="hljs-attr">middleware</span>: [myConnectMiddleware()]
 })
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> Application {
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyService</span> </span>{
     <span class="hljs-comment">// ...</span>
 }</code></pre>
-				<p>To add &quot;mounted&quot; middleware:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> fileUpload = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express-fileupload'</span>);
+				<p>You can also connect middleware globally, but limit it to specific paths:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> fileUpload = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;express-fileupload&#x27;</span>);
 
-<span class="hljs-meta">@AppOptions</span>({
-    middleware: [
-        [<span class="hljs-string">'/files'</span>, fileUpload]
+<span class="hljs-meta">@WebService</span>({
+    <span class="hljs-attr">middleware</span>: [
+        [<span class="hljs-string">&#x27;/files&#x27;</span>, fileUpload]
     ]
 })
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> Application {
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyService</span> </span>{
     <span class="hljs-comment">// ...</span>
 }</code></pre>
-				<p>To add route-specific middleware:</p>
-				<pre><code class="language-typescript"><span class="hljs-meta">@Get</span>(<span class="hljs-string">'/foo'</span>, { middleware: [bodyParser.json()] })
-<span class="hljs-keyword">public</span> foo(req : express.Request, res : express.Response) {
-    <span class="hljs-comment">// todo</span>
+				<p>To add route-specific middleware, use the <code>middleware</code> property of the options object:</p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@Get</span>(<span class="hljs-string">&#x27;/foo&#x27;</span>, { <span class="hljs-attr">middleware</span>: [fileUpload] })
+<span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-title">getFoo</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-comment">// ...</span>
 }</code></pre>
 				<p>Middleware is inherited from parent controllers when using <code>@Mount()</code>,
-					you can use this to avoid repeating yoruself when building more complex
+					you can use this to avoid repeating yourself when building more complex
 				services:</p>
 				<pre><code class="language-typescript">    <span class="hljs-meta">@Controller</span>()
-    <span class="hljs-keyword">class</span> FeatureController {
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FeatureController</span> </span>{
         <span class="hljs-meta">@Get</span>() 
-        <span class="hljs-keyword">get</span>() {
+        <span class="hljs-function"><span class="hljs-title">get</span>(<span class="hljs-params"></span>)</span> {
             <span class="hljs-comment">// corsExampleMiddleware runs for this and all requests on this</span>
             <span class="hljs-comment">// controller </span>
 
             <span class="hljs-keyword">return</span> {
-                service: <span class="hljs-string">'feature'</span>
+                <span class="hljs-attr">service</span>: <span class="hljs-string">&#x27;feature&#x27;</span>
             }
         }
     }
 
-    <span class="hljs-meta">@Controller</span>(<span class="hljs-string">''</span>, { 
-        middleware: [ 
-            corsExampleMiddleware({ allowOrigin: <span class="hljs-string">'*'</span> }) 
+    <span class="hljs-meta">@Controller</span>(<span class="hljs-string">&#x27;&#x27;</span>, { 
+        <span class="hljs-attr">middleware</span>: [ 
+            corsExampleMiddleware({ <span class="hljs-attr">allowOrigin</span>: <span class="hljs-string">&#x27;*&#x27;</span> }) 
         ]
     })
-    <span class="hljs-keyword">class</span> ApiController {
-        <span class="hljs-meta">@Mount</span>(<span class="hljs-string">'/feature'</span>)
-        feature : FeatureController;
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ApiController</span> </span>{
+        <span class="hljs-meta">@Mount</span>(<span class="hljs-string">&#x27;/feature&#x27;</span>)
+        <span class="hljs-attr">feature</span> : FeatureController;
     }</code></pre>
 				<a href="#uncaught-exceptions" id="uncaught-exceptions" style="color: inherit; text-decoration: none;">
-					<h2>Uncaught Exceptions</h2>
+					<h1>Uncaught Exceptions</h1>
 				</a>
 				<p>When an exception occurs while executing a controller route method (excluding HttpExceptions), Alterior will respond
 					with an HTTP 500 error. By default, exception information will be included with the response. If the caught exception
 					has a <code>toString()</code> method, it will be executed and its return value will be sent. If it does not, the error object will
 				be included directly, being converted along with the rest of the response to JSON.</p>
 				<p><code>throw new Error(&#39;This is the error text&#39;)</code> would produce:</p>
-				<pre><code>{<span class="hljs-string">"message"</span>:<span class="hljs-string">"An exception occurred while handling this request."</span>,<span class="hljs-string">"error"</span>:<span class="hljs-comment">"Error: This is the error text                                                                 </span>
-    at FooController.sampleRequest (music.<span class="hljs-keyword">j</span><span class="hljs-variable">s:36</span>:<span class="hljs-number">29</span>)<span class="hljs-comment">"}</span></code></pre><p><code>throw { foo: &#39;bar&#39; }</code> would product:</p>
-				<pre><code>{<span class="hljs-attr">"message"</span>:<span class="hljs-string">"An exception occurred while handling this request."</span>,<span class="hljs-attr">"error"</span>:{<span class="hljs-attr">"foo"</span>:<span class="hljs-string">"bar"</span>}}</code></pre><p>You can disable the inclusion of exception information in responses (and this is recommended for production).
-				To do so, set <code>AppOptions.hideExceptions</code> to <code>true</code>. The <code>error</code> field will then be excluded from 500 responses.</p>
-				<pre><code>{<span class="hljs-attr">"message"</span>:<span class="hljs-string">"An exception occurred while handling this request."</span>}</code></pre>
+				<pre><code class="language-json">{
+    <span class="hljs-attr">&quot;message&quot;</span>:<span class="hljs-string">&quot;An exception occurred while handling this request.&quot;</span>,
+    <span class="hljs-attr">&quot;error&quot;</span>:<span class="hljs-string">&quot;Error: This is the error text\n    at FooController.sampleRequest (music.js:36:29)&quot;</span>
+}</code></pre>
+				<p><code>throw { foo: &#39;bar&#39; }</code> would product:</p>
+				<pre><code class="language-json">{<span class="hljs-attr">&quot;message&quot;</span>:<span class="hljs-string">&quot;An exception occurred while handling this request.&quot;</span>,<span class="hljs-attr">&quot;error&quot;</span>:{<span class="hljs-attr">&quot;foo&quot;</span>:<span class="hljs-string">&quot;bar&quot;</span>}}</code></pre>
+				<p>You can disable the inclusion of exception information in responses (and this is recommended for production).
+				To do so, set <code>WebServerOptions.hideExceptions</code> to <code>true</code>. The <code>error</code> field will then be excluded from 500 responses.</p>
+				<pre><code class="language-json">{<span class="hljs-attr">&quot;message&quot;</span>:<span class="hljs-string">&quot;An exception occurred while handling this request.&quot;</span>}</code></pre>
 				<a href="#sessions" id="sessions" style="color: inherit; text-decoration: none;">
-					<h2>Sessions</h2>
+					<h1>Sessions</h1>
 				</a>
+				<p>WARNING: Generally APIs should not use cookies. If your API is used by a by a browser application (which is the main reason you would use cookies in the first place), it is essential that you restrict the allowed origins of your API using CORS to ensure that other (potentially malicious) origins cannot request your API using credentials saved in the browser of your authorized users. Known as Cross Site Request Forgery (CSRF), this is a serious security vulnerability and it should be treated with care. </p>
+				<p>It is far better to use the <code>Authorization</code> header to pass an explicit auth token and if necessary correlate that token to a server-managed session instead. Authorization headers are managed by the calling application, not by the user agent and are not automatically sent with requests to your API. Doing so can avoid many of the pitfalls that using cookies can cause. </p>
+				<p>Nonetheless, if you understand the security risks and have taken the proper precautions, it is possible to use cookie-driven sessions with Alterior, though managing the session itself is not included by default.</p>
 				<p>To add session support, use <code>express-session</code>:</p>
-				<pre><code>npm i <span class="hljs-built_in">express</span>-session --<span class="hljs-built_in">save</span>
-typings i dt~<span class="hljs-built_in">express</span>-session --<span class="hljs-built_in">save</span></code></pre><p>Include it as middleware:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> session <span class="hljs-keyword">from</span> <span class="hljs-string">'express-session'</span>;
-<span class="hljs-meta">@AppOptions</span>({
-    middleware: [session({ secret: SESSION_SECRET })]
+				<pre><code>npm i express-<span class="hljs-keyword">session</span> <span class="hljs-comment">--save</span>
+npm i @<span class="hljs-keyword">types</span>/express-<span class="hljs-keyword">session</span> <span class="hljs-comment">--save-dev</span></code></pre><p>Include it as middleware:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> session <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;express-session&#x27;</span>;
+<span class="hljs-meta">@WebService</span>({
+    <span class="hljs-attr">middleware</span>: [session({ <span class="hljs-attr">secret</span>: SESSION_SECRET })]
 })</code></pre>
-				<p>You can then use the session by requesting it as a parameter from your controller methods:</p>
-				<pre><code class="language-typescript">
-<span class="hljs-keyword">interface</span> SessionData {
-    username : <span class="hljs-built_in">string</span>;
-    cartTotal : <span class="hljs-built_in">number</span>;
-}
-
-<span class="hljs-meta">@Controller</span>()
-<span class="hljs-keyword">class</span> SampleController {
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
-    home(session : SessionData) {
-        <span class="hljs-keyword">return</span> session.cartTotal;
+				<p>You can then use the session via the <code>Session</code> class which is provided for you. The simplest way to use it is via the <code>get()</code> and <code>set()</code> methods:</p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@Controller</span>()
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SampleController</span> </span>{
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">&#x27;/&#x27;</span>)
+    <span class="hljs-function"><span class="hljs-title">home</span>(<span class="hljs-params"></span>)</span> {
+        <span class="hljs-keyword">return</span> Session.current.get(<span class="hljs-string">&#x27;cartTotal&#x27;</span>);
     }
 }</code></pre>
-				<p><a href="https://github.com/alterior-mvc/alterior-mongo">Alterior Mongo</a> alternatively provides a MongoDB-based session provider based on <code>connect-mongo</code>,
-				or you can use any Express/Connect middleware that provides <code>request.session</code>.</p>
-				<a href="#custom-services" id="custom-services" style="color: inherit; text-decoration: none;">
-					<h2>Custom services</h2>
-				</a>
-				<p>To declare a service, simply mark it with <code>@Injectable()</code> from <code>@alterior/di</code> and then include it in the <code>providers</code> list of one of the Alterior module definitions within your application. The service will be made available across your whole application.</p>
+				<p>Using <code>get()</code> and <code>set()</code> provide no benefits via Typescript. The <code>Session</code> class can be subclassed however:</p>
+				<pre><code class="language-typescript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MySession</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Session</span> </span>{
+    <span class="hljs-attr">cartTotal</span> : <span class="hljs-built_in">number</span>;
+}</code></pre>
+				<p>You can then access that session from within your route methods like so:</p>
+				<pre><code class="language-typescript">MySession.current.cartTotal</code></pre>
+				<p>Note that both <code>Session.current</code> and <code>MySession.current</code> only have meaning when called from within a route method while an HTTP request is being processed. </p>
 				<a href="#testing" id="testing" style="color: inherit; text-decoration: none;">
-					<h2>Testing</h2>
+					<h1>Testing</h1>
 				</a>
 				<p>Use <code>teststrap()</code> to test endpoints in your web service. Since the caller and the server are in the same process, the actual HTTP server is skipped, with requests passed directly from the <code>teststrap()</code> test to an instance of your web service.</p>
 				<p><code>teststrap()</code> uses <a href="https://github.com/visionmedia/supertest">supertest</a> as its core testing mechanism. The type of values returned by <code>teststrap()</code> is <code>supertest.Supertest&lt;supertest.Test&gt;</code>.</p>
-				<pre><code class="language-typescript"><span class="hljs-meta">@WebService</span>()
-<span class="hljs-keyword">class</span> ExampleService { 
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
-    info() {
-        <span class="hljs-keyword">return</span> { name: <span class="hljs-string">'example'</span>, version: <span class="hljs-string">'1.0'</span> };
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { teststrap } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@alterior/web-server/dist/testing&#x27;</span>;
+
+<span class="hljs-meta">@WebService</span>()
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExampleService</span> </span>{ 
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">&#x27;/&#x27;</span>)
+    <span class="hljs-function"><span class="hljs-title">info</span>(<span class="hljs-params"></span>)</span> {
+        <span class="hljs-keyword">return</span> { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;example&#x27;</span>, <span class="hljs-attr">version</span>: <span class="hljs-string">&#x27;1.0&#x27;</span> };
     }
 }
 
@@ -445,63 +452,65 @@ typings i dt~<span class="hljs-built_in">express</span>-session --<span class="h
 <span class="hljs-comment">// teststrap() assertions.</span>
 
 suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt;</span> {
-    describe(<span class="hljs-string">'ExampleService'</span>, <span class="hljs-function"><span class="hljs-params">it</span> =&gt;</span> {
-        it(<span class="hljs-string">'returns its name'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    describe(<span class="hljs-string">&#x27;ExampleService&#x27;</span>, <span class="hljs-function"><span class="hljs-params">it</span> =&gt;</span> {
+        it(<span class="hljs-string">&#x27;returns its name&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
             <span class="hljs-keyword">await</span> teststrap(ExampleService)
-                .get(<span class="hljs-string">'/'</span>)
-                .expect(<span class="hljs-number">200</span>, { name: <span class="hljs-string">'example'</span>, version: <span class="hljs-string">'1.0'</span> })
+                .get(<span class="hljs-string">&#x27;/&#x27;</span>)
+                .expect(<span class="hljs-number">200</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;example&#x27;</span>, <span class="hljs-attr">version</span>: <span class="hljs-string">&#x27;1.0&#x27;</span> })
         });
     });
 });</code></pre>
 				<p>You can reuse a <code>teststrap()</code> test should you need to perform multiple requests in your tests:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> test = teststrap(ExampleService);
 
-<span class="hljs-keyword">await</span> test.get(<span class="hljs-string">'/'</span>)
-    .expect(<span class="hljs-number">200</span>, { name: <span class="hljs-string">'example'</span>, version: <span class="hljs-string">'1.0'</span> })
+<span class="hljs-keyword">await</span> test.get(<span class="hljs-string">&#x27;/&#x27;</span>)
+    .expect(<span class="hljs-number">200</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;example&#x27;</span>, <span class="hljs-attr">version</span>: <span class="hljs-string">&#x27;1.0&#x27;</span> })
 ;
 
-<span class="hljs-keyword">await</span> test.get(<span class="hljs-string">'/foo'</span>)
-    .expect(<span class="hljs-number">200</span>, { other: <span class="hljs-number">123</span> })
+<span class="hljs-keyword">await</span> test.get(<span class="hljs-string">&#x27;/foo&#x27;</span>)
+    .expect(<span class="hljs-number">200</span>, { <span class="hljs-attr">other</span>: <span class="hljs-number">123</span> })
 ;</code></pre>
 				<p><code>supertest</code> offers a number of convenient expectations, but sometimes you need to do something more complex:</p>
-				<pre><code class="language-typescript">    <span class="hljs-keyword">import</span> { expect } <span class="hljs-keyword">from</span> <span class="hljs-string">'chai'</span>;
+				<pre><code class="language-typescript">    <span class="hljs-keyword">import</span> { expect } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;chai&#x27;</span>;
 
     <span class="hljs-keyword">let</span> res : express.Response = <span class="hljs-keyword">await</span> teststrap(ExampleService)
-        .get(<span class="hljs-string">'/'</span>)
+        .get(<span class="hljs-string">&#x27;/&#x27;</span>)
         .expect(<span class="hljs-number">200</span>)
     ;
 
-    expect(res.body).to.contain({ name: })</code></pre>
+    expect(res.body).to.contain({ <span class="hljs-attr">name</span>: })</code></pre>
 				<p>For more information about the capabilities of <code>teststrap()</code>, consult the <a href="https://github.com/visionmedia/supertest">supertest documentation</a>.</p>
 				<a href="#accessing-the-express-instance" id="accessing-the-express-instance" style="color: inherit; text-decoration: none;">
-					<h2>Accessing the Express instance</h2>
+					<h1>Accessing the Express instance</h1>
 				</a>
-				<p>Perhaps you need access to the Express application object to do something Alterior doesn&#39;t support:</p>
+				<p>Perhaps you need access to the Express (or other web engine) application object to do something Alterior doesn&#39;t support:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span>
-<span class="hljs-meta">@Controller</span>()
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> FooController {
-    <span class="hljs-keyword">constructor</span>(<span class="hljs-params">
-        <span class="hljs-keyword">private</span> expressRef : ExpressRef
-    </span>) {
-        <span class="hljs-keyword">this</span>.expressApp = expressRef.application;
-        <span class="hljs-keyword">this</span>.expressApp.get(<span class="hljs-string">'/something'</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
-            res.status(<span class="hljs-number">200</span>).send(<span class="hljs-string">'/something works!'</span>);
+<span class="hljs-meta">@WebService</span>()
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyService</span> </span>{
+    <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">
+    </span>)</span> {
+        <span class="hljs-keyword">let</span> server = WebServer.for(<span class="hljs-built_in">this</span>);
+        <span class="hljs-built_in">this</span>.expressApp = server.engine.app;
+        <span class="hljs-built_in">this</span>.expressApp.get(<span class="hljs-string">&#x27;/something&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+            res.status(<span class="hljs-number">200</span>).send(<span class="hljs-string">&#x27;/something works!&#x27;</span>);
         });
     }
 
     <span class="hljs-keyword">private</span> expressApp : express.Application;
 }</code></pre>
+				<p>You can call <code>WebServer.for()</code> and pass any web service or any controller mounted within a web service. Always pass the object instance (<code>this</code>) in order to ensure you get the correct web server instance. Note that if your controller is used in multiple web services, different instances of your controller will correspond to different instances of <code>WebServer</code>. </p>
 				<a href="#deploying-to-a-cloud-function" id="deploying-to-a-cloud-function" style="color: inherit; text-decoration: none;">
-					<h2>Deploying to a Cloud Function</h2>
+					<h1>Deploying to a Cloud Function</h1>
 				</a>
 				<p>You can deploy an Alterior web service as a Cloud Function (Google Cloud Functions, AWS Lambda, or other Function-as-a-Service (FaaS) providers) using <code>WebServer.bootstrapCloudFunction()</code>:</p>
 				<pre><code class="language-typescript"><span class="hljs-comment">// main.ts</span>
 
-<span class="hljs-keyword">import</span> { MyWebService } <span class="hljs-keyword">from</span> <span class="hljs-string">'./my-web-service'</span>;
-<span class="hljs-keyword">import</span> { WebServer } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/web-server'</span>;
+<span class="hljs-keyword">import</span> { MyWebService } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./my-web-service&#x27;</span>;
+<span class="hljs-keyword">import</span> { WebServer } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@alterior/web-server&#x27;</span>;
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> cloudFunction = WebServer.bootstrapCloudFunction(MyWebService);</code></pre>
-				<p><code>bootstrapCloudFunction()</code> will handle constructing a function which takes an Express <code>request</code> and <code>response</code> and routes the given <code>request</code> through the given Alterior web service module and populating data into <code>response</code>. This is suitable for exporting into a general cloud function environment like GCF or Lambda.</p>
+				<p><code>bootstrapCloudFunction()</code> will handle constructing a function which takes an Express <code>request</code> and <code>response</code> and routes the given <code>request</code> through the given Alterior WebService module and populating data into <code>response</code>. This is suitable for exporting into a general cloud function environment like GCF or Lambda. </p>
+				<p>Note: You can only pass a <code>@WebService()</code> class (ie, the top level of your web service). You cannot pass a <code>@Controller()</code> class, as controllers by themselves are not Alterior modules, and do not automatically </p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -515,19 +524,16 @@ suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class">
+						<a href="classes/certificategenerator.html" class="tsd-kind-icon">Certificate<wbr>Generator</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/controllerannotation.html" class="tsd-kind-icon">Controller<wbr>Annotation</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/controllerinstance.html" class="tsd-kind-icon">Controller<wbr>Instance</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/controllerregistrar.html" class="tsd-kind-icon">Controller<wbr>Registrar</a>
-					</li>
-					<li class=" tsd-kind-class">
 						<a href="classes/expressengine.html" class="tsd-kind-icon">Express<wbr>Engine</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/expressref.html" class="tsd-kind-icon">Express<wbr>Ref</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/fastifyengine.html" class="tsd-kind-icon">Fastify<wbr>Engine</a>
@@ -569,16 +575,13 @@ suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt
 						<a href="classes/servicedescriptionref.html" class="tsd-kind-icon">Service<wbr>Description<wbr>Ref</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="classes/session.html" class="tsd-kind-icon">Session</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/webserver.html" class="tsd-kind-icon">Web<wbr>Server</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/webserverengine.html" class="tsd-kind-icon">Web<wbr>Server<wbr>Engine</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/webservermodule.html" class="tsd-kind-icon">Web<wbr>Server<wbr>Module</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/webserveroptionsref.html" class="tsd-kind-icon">Web<wbr>Server<wbr>Options<wbr>Ref</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/webserverref.html" class="tsd-kind-icon">Web<wbr>Server<wbr>Ref</a>
@@ -597,6 +600,12 @@ suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/fileupload.html" class="tsd-kind-icon">File<wbr>Upload</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/generatedcertificate.html" class="tsd-kind-icon">Generated<wbr>Certificate</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/generatoroptions.html" class="tsd-kind-icon">Generator<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/mountdefinition.html" class="tsd-kind-icon">Mount<wbr>Definition</a>
@@ -668,6 +677,9 @@ suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt
 						<a href="interfaces/routeparamdescription.html" class="tsd-kind-icon">Route<wbr>Param<wbr>Description</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="interfaces/serversentevent.html" class="tsd-kind-icon">Server<wbr>Sent<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/servicedescription.html" class="tsd-kind-icon">Service<wbr>Description</a>
 					</li>
 					<li class=" tsd-kind-interface">
@@ -683,10 +695,16 @@ suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt
 						<a href="interfaces/webserviceoptions.html" class="tsd-kind-icon">Web<wbr>Service<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#certattributes" class="tsd-kind-icon">Cert<wbr>Attributes</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#encodingtype" class="tsd-kind-icon">Encoding<wbr>Type</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#middlewaredefinition" class="tsd-kind-icon">Middleware<wbr>Definition</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#protocol" class="tsd-kind-icon">Protocol</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#controller_classes" class="tsd-kind-icon">CONTROLLER_<wbr>CLASSES</a>
@@ -734,10 +752,13 @@ suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt
 						<a href="globals.html#queryparam" class="tsd-kind-icon">Query<wbr>Param</a>
 					</li>
 					<li class=" tsd-kind-function">
+						<a href="globals.html#request" class="tsd-kind-icon">Request</a>
+					</li>
+					<li class=" tsd-kind-function">
 						<a href="globals.html#route" class="tsd-kind-icon">Route</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#session" class="tsd-kind-icon">Session</a>
+						<a href="globals.html#sessionvalue" class="tsd-kind-icon">Session<wbr>Value</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#accesscontrol" class="tsd-kind-icon">access<wbr>Control</a>

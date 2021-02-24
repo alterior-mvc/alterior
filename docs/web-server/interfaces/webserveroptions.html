@@ -79,12 +79,15 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="webserveroptions.html#certificate" class="tsd-kind-icon">certificate</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="webserveroptions.html#engine" class="tsd-kind-icon">engine</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="webserveroptions.html#handleerror" class="tsd-kind-icon">handle<wbr>Error</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="webserveroptions.html#hideexceptions" class="tsd-kind-icon">hide<wbr>Exceptions</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="webserveroptions.html#middleware" class="tsd-kind-icon">middleware</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="webserveroptions.html#onerror" class="tsd-kind-icon">on<wbr>Error</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="webserveroptions.html#port" class="tsd-kind-icon">port</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="webserveroptions.html#privatekey" class="tsd-kind-icon">private<wbr>Key</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="webserveroptions.html#protocols" class="tsd-kind-icon">protocols</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="webserveroptions.html#silent" class="tsd-kind-icon">silent</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="webserveroptions.html#silenterrors" class="tsd-kind-icon">silent<wbr>Errors</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="webserveroptions.html#verbose" class="tsd-kind-icon">verbose</a></li>
@@ -96,12 +99,22 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="certificate" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> certificate</h3>
+					<div class="tsd-signature tsd-kind-icon">certificate<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/web-server-options.ts#L13">src/web-server-options.ts:13</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="engine" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> engine</h3>
 					<div class="tsd-signature tsd-kind-icon">engine<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/web-server-options.ts#L6">src/web-server-options.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/web-server-options.ts#L23">src/web-server-options.ts:23</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -111,7 +124,7 @@
 					<div class="tsd-signature tsd-kind-icon">handle<wbr>Error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, event<span class="tsd-signature-symbol">: </span><a href="../classes/routeevent.html" class="tsd-signature-type">RouteEvent</a>, route<span class="tsd-signature-symbol">: </span><a href="../classes/routeinstance.html" class="tsd-signature-type">RouteInstance</a>, source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/web-server-options.ts#L13">src/web-server-options.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/web-server-options.ts#L30">src/web-server-options.ts:30</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -151,7 +164,7 @@
 					<div class="tsd-signature tsd-kind-icon">hide<wbr>Exceptions<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/web-server-options.ts#L8">src/web-server-options.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/web-server-options.ts#L25">src/web-server-options.ts:25</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -161,7 +174,7 @@
 					<div class="tsd-signature tsd-kind-icon">middleware<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/web-server-options.ts#L7">src/web-server-options.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/web-server-options.ts#L24">src/web-server-options.ts:24</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -171,7 +184,7 @@
 					<div class="tsd-signature tsd-kind-icon">on<wbr>Error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, event<span class="tsd-signature-symbol">: </span><a href="../classes/routeevent.html" class="tsd-signature-type">RouteEvent</a>, route<span class="tsd-signature-symbol">: </span><a href="../classes/routeinstance.html" class="tsd-signature-type">RouteInstance</a>, source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/web-server-options.ts#L12">src/web-server-options.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/web-server-options.ts#L29">src/web-server-options.ts:29</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -211,9 +224,37 @@
 					<div class="tsd-signature tsd-kind-icon">port<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/web-server-options.ts#L5">src/web-server-options.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/web-server-options.ts#L12">src/web-server-options.ts:12</a></li>
 						</ul>
 					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="privatekey" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> private<wbr>Key</h3>
+					<div class="tsd-signature tsd-kind-icon">private<wbr>Key<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/web-server-options.ts#L14">src/web-server-options.ts:14</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="protocols" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> protocols</h3>
+					<div class="tsd-signature tsd-kind-icon">protocols<span class="tsd-signature-symbol">:</span> <a href="../globals.html#protocol" class="tsd-signature-type">Protocol</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/web-server-options.ts#L22">src/web-server-options.ts:22</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>What protocols should be supported on incoming client connections
+								If not specified, HTTP/2, SPDY and HTTP/1.1 will all be supported
+								if an SSL certificate is provided. If not, then only HTTP/1.1 will
+							be supported.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="silent" class="tsd-anchor"></a>
@@ -221,7 +262,7 @@
 					<div class="tsd-signature tsd-kind-icon">silent<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/web-server-options.ts#L10">src/web-server-options.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/web-server-options.ts#L27">src/web-server-options.ts:27</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -231,7 +272,7 @@
 					<div class="tsd-signature tsd-kind-icon">silent<wbr>Errors<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/web-server-options.ts#L11">src/web-server-options.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/web-server-options.ts#L28">src/web-server-options.ts:28</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -241,7 +282,7 @@
 					<div class="tsd-signature tsd-kind-icon">verbose<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/web-server-options.ts#L9">src/web-server-options.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/web-server-options.ts#L26">src/web-server-options.ts:26</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -263,6 +304,9 @@
 						<a href="webserveroptions.html" class="tsd-kind-icon">Web<wbr>Server<wbr>Options</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="webserveroptions.html#certificate" class="tsd-kind-icon">certificate</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="webserveroptions.html#engine" class="tsd-kind-icon">engine</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
@@ -279,6 +323,12 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="webserveroptions.html#port" class="tsd-kind-icon">port</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="webserveroptions.html#privatekey" class="tsd-kind-icon">private<wbr>Key</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="webserveroptions.html#protocols" class="tsd-kind-icon">protocols</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="webserveroptions.html#silent" class="tsd-kind-icon">silent</a>

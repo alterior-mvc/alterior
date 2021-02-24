@@ -80,73 +80,73 @@
 				<p>This module is intended to be used as part of an Alterior application. Several of the higher level first-party Alterior modules use this logger already, so it is a natural fit.</p>
 				<p>The module provides a <code>Logger</code> injectable when <code>LoggingModule</code> is imported into your Alterior application:</p>
 				<pre><code class="language-typescript"><span class="hljs-meta">@Module</span>({
-    imports: [ LoggingModule ]
+    <span class="hljs-attr">imports</span>: [ LoggingModule ]
 })
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyEntryModule { }</code></pre>
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyEntryModule</span> </span>{ }</code></pre>
 				<p>Once the module is imported, you can inject <code>Logger</code> into your services, controllers, tasks, etc:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Logger } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/logging'</span>;
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Logger } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@alterior/logging&#x27;</span>;
 <span class="hljs-comment">// ...</span>
 
-<span class="hljs-meta">@Controller</span>(<span class="hljs-string">'/foo'</span>)
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyController {
-    <span class="hljs-keyword">constructor</span>(<span class="hljs-params">
+<span class="hljs-meta">@Controller</span>(<span class="hljs-string">&#x27;/foo&#x27;</span>)
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyController</span> </span>{
+    <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">
         <span class="hljs-keyword">private</span> logger : Logger
-    </span>) {
+    </span>)</span> {
     }
 
-    <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
-    <span class="hljs-keyword">get</span>() {
-        <span class="hljs-keyword">this</span>.logger.info(<span class="hljs-string">'Hello, world!'</span>);
+    <span class="hljs-meta">@Get</span>(<span class="hljs-string">&#x27;/&#x27;</span>)
+    <span class="hljs-function"><span class="hljs-title">get</span>(<span class="hljs-params"></span>)</span> {
+        <span class="hljs-built_in">this</span>.logger.info(<span class="hljs-string">&#x27;Hello, world!&#x27;</span>);
     }
 }
 
-<span class="hljs-comment">// [2019-03-05T00:12:44Z] [source="MyController"] info: Hello, world!</span></code></pre>
+<span class="hljs-comment">// [2019-03-05T00:12:44Z] [source=&quot;MyController&quot;] info: Hello, world!</span></code></pre>
 				<a href="#subloggers-source-labels" id="subloggers-source-labels" style="color: inherit; text-decoration: none;">
 					<h2>Subloggers (Source Labels)</h2>
 				</a>
 				<p>You may wish to specifically mark logs which came from a particular class (or any other programmatic unit):</p>
 				<pre><code class="language-typescript">
-<span class="hljs-keyword">import</span> { Logger } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/logging'</span>;
+<span class="hljs-keyword">import</span> { Logger } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@alterior/logging&#x27;</span>;
 <span class="hljs-comment">// ...</span>
 
 <span class="hljs-meta">@Injectable</span>()
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyService {
-    <span class="hljs-keyword">constructor</span>(<span class="hljs-params">
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyService</span> </span>{
+    <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">
         logger : Logger
-    </span>) {
-        <span class="hljs-keyword">this</span>.logger = logger.withSource(<span class="hljs-keyword">this</span>)
+    </span>)</span> {
+        <span class="hljs-built_in">this</span>.logger = logger.withSource(<span class="hljs-built_in">this</span>)
     }
 
     <span class="hljs-keyword">private</span> logger : Logger;
 
-    doSomething() {
-        <span class="hljs-keyword">this</span>.logger.info(<span class="hljs-string">'Hello, world!'</span>);
+    <span class="hljs-function"><span class="hljs-title">doSomething</span>(<span class="hljs-params"></span>)</span> {
+        <span class="hljs-built_in">this</span>.logger.info(<span class="hljs-string">&#x27;Hello, world!&#x27;</span>);
     }
 }
 
-<span class="hljs-comment">// [2019-03-05T00:12:44Z] [source="MyService"] info: Hello, world!</span></code></pre>
+<span class="hljs-comment">// [2019-03-05T00:12:44Z] [source=&quot;MyService&quot;] info: Hello, world!</span></code></pre>
 				<p>As you can see, <code>withSource(object)</code> will use the object&#39;s constructor name as the source label. You can also pass a string to set the source label to any string you wish.</p>
 				<a href="#context-tracking" id="context-tracking" style="color: inherit; text-decoration: none;">
 					<h2>Context tracking</h2>
 				</a>
 				<p>This library also provides &quot;context tracking&quot; using <code>Zone.js</code>. When using context tracking, logs which occur inside a code block will be specially marked, even if the code is asynchronous or delayed.</p>
-				<pre><code class="language-typescript">logger.withContext({ myContextData: <span class="hljs-number">123</span> }, <span class="hljs-string">`The data is 123`</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> logger.info(<span class="hljs-string">`Hello, world!`</span>), <span class="hljs-number">1000</span>);
+				<pre><code class="language-typescript">logger.withContext({ <span class="hljs-attr">myContextData</span>: <span class="hljs-number">123</span> }, <span class="hljs-string">`The data is 123`</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> logger.info(<span class="hljs-string">`Hello, world!`</span>), <span class="hljs-number">1000</span>);
 });
 
-<span class="hljs-comment">// [2019-03-05T00:12:44Z] [context="The data is 123"] info: Hello, world!</span></code></pre>
+<span class="hljs-comment">// [2019-03-05T00:12:44Z] [context=&quot;The data is 123&quot;] info: Hello, world!</span></code></pre>
 				<p>This is the mechanism that allows <code>@alterior/web-server</code> and <code>@alterior/tasks</code> to include the current request trace inside logs generated by reusable services. This results in logs that are easier to follow,
 				especially when there is heavy concurrency within a single log file (ie web servers, task runners):</p>
-				<pre><code>[<span class="hljs-number">2019</span><span class="hljs-number">-03</span><span class="hljs-number">-05</span>T00:<span class="hljs-number">12</span>:<span class="hljs-number">44</span>Z] [source=<span class="hljs-string">"MyService"</span> context=<span class="hljs-string">"GET /foo | 1443c985-c4be-47f7-9e9c-941c21913def"</span>] info: Hello, world!
-[<span class="hljs-number">2019</span><span class="hljs-number">-03</span><span class="hljs-number">-05</span>T00:<span class="hljs-number">12</span>:<span class="hljs-number">44</span>Z] [source=<span class="hljs-string">"MyService"</span> context=<span class="hljs-string">"TaskWorker | MyBackgroundWorker"</span>] info: Hello, world!</code></pre>
+				<pre><code><span class="hljs-selector-attr">[2019-03-05T00:12:44Z]</span> <span class="hljs-selector-attr">[source=<span class="hljs-string">&quot;MyService&quot;</span> context=<span class="hljs-string">&quot;GET /foo | 1443c985-c4be-47f7-9e9c-941c21913def&quot;</span>]</span> <span class="hljs-selector-tag">info</span>: <span class="hljs-selector-tag">Hello</span>, <span class="hljs-selector-tag">world</span>!
+<span class="hljs-selector-attr">[2019-03-05T00:12:44Z]</span> <span class="hljs-selector-attr">[source=<span class="hljs-string">&quot;MyService&quot;</span> context=<span class="hljs-string">&quot;TaskWorker | MyBackgroundWorker&quot;</span>]</span> <span class="hljs-selector-tag">info</span>: <span class="hljs-selector-tag">Hello</span>, <span class="hljs-selector-tag">world</span>!</code></pre>
 				<a href="#configuration" id="configuration" style="color: inherit; text-decoration: none;">
 					<h2>Configuration</h2>
 				</a>
 				<p>To configure the module, import it into your entry module and specify options in the call to <code>configure()</code>:</p>
 				<pre><code class="language-typescript"><span class="hljs-meta">@Module</span>({
-    imports: [ LoggingModule.configure({ <span class="hljs-comment">/* ... */</span> }) ]
+    <span class="hljs-attr">imports</span>: [ LoggingModule.configure({ <span class="hljs-comment">/* ... */</span> }) ]
 })
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyEntryModule { }</code></pre>
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyEntryModule</span> </span>{ }</code></pre>
 				<a href="#listeners" id="listeners" style="color: inherit; text-decoration: none;">
 					<h3><code>listeners</code></h3>
 				</a>
@@ -156,7 +156,7 @@
 				</a>
 				<p>Log messages are passed to listeners as objects conforming to the <code>LogMessage</code> interface:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> LogMessage {
-    message : <span class="hljs-built_in">string</span>;
+    <span class="hljs-attr">message</span> : <span class="hljs-built_in">string</span>;
     context : <span class="hljs-built_in">any</span>;
     contextLabel : <span class="hljs-built_in">string</span>;
     sourceLabel : <span class="hljs-built_in">string</span>;
@@ -168,7 +168,7 @@
 					<h2>Log Formatting</h2>
 				</a>
 				<p>Some built-in loggers use <code>LogFormatter</code> to handle transforming a log object into a string suitable for use on a screen, log file, etc. <code>LogFormatter</code> accepts a format string to determine how to transform the log message object into a string. Bare text is treated literally, and the fields of the <code>LogMessage</code> can be referenced by surrounding the name of the field with &#39;%&#39;. The default format for builtin listeners is:</p>
-				<pre><code>%date% [<span class="hljs-keyword">source</span>=<span class="hljs-string">"%sourceLabel%"</span> context=<span class="hljs-string">"%contextLabel%"</span>] %severity%: %message%</code></pre>
+				<pre><code>%date% [<span class="hljs-keyword">source</span>=<span class="hljs-string">&quot;%sourceLabel%&quot;</span> context=<span class="hljs-string">&quot;%contextLabel%&quot;</span>] %severity%: %message%</code></pre>
 				<a href="#available-listeners" id="available-listeners" style="color: inherit; text-decoration: none;">
 					<h2>Available Listeners</h2>
 				</a>

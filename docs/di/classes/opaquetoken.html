@@ -72,13 +72,13 @@
 					<a href="#example-live-demo" id="example-live-demo" style="color: inherit; text-decoration: none;">
 						<h3>Example (<a href="http://plnkr.co/edit/Ys9ezXpj2Mnoy3Uc8KBp?p=preview">live demo</a>)</h3>
 					</a>
-					<pre><code class="language-typescript"><span class="hljs-keyword">var</span> t = <span class="hljs-keyword">new</span> OpaqueToken(<span class="hljs-string">"value"</span>);
+					<pre><code class="language-typescript"><span class="hljs-keyword">var</span> t = <span class="hljs-keyword">new</span> OpaqueToken(<span class="hljs-string">&quot;value&quot;</span>);
 
 <span class="hljs-keyword">var</span> injector = Injector.resolveAndCreate([
-  {provide: t, useValue: <span class="hljs-string">"bindingValue"</span>}
+  {<span class="hljs-attr">provide</span>: t, <span class="hljs-attr">useValue</span>: <span class="hljs-string">&quot;bindingValue&quot;</span>}
 ]);
 
-expect(injector.get(t)).toEqual(<span class="hljs-string">"bindingValue"</span>);</code></pre>
+expect(injector.get(t)).toEqual(<span class="hljs-string">&quot;bindingValue&quot;</span>);</code></pre>
 					<p>Using an <code>OpaqueToken</code> is preferable to using strings as tokens because of possible collisions
 					caused by multiple providers using the same string as two different tokens.</p>
 					<p>Using an <code>OpaqueToken</code> is preferable to using an <code>Object</code> as tokens because it provides better
@@ -141,7 +141,7 @@ expect(injector.get(t)).toEqual(<span class="hljs-string">"bindingValue"</span>)
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/injection_token.ts#L32">packages/di/src/injection/injection_token.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/injection_token.ts#L32">packages/di/src/injection/injection_token.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -163,7 +163,7 @@ expect(injector.get(t)).toEqual(<span class="hljs-string">"bindingValue"</span>)
 					<div class="tsd-signature tsd-kind-icon">_desc<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/injection_token.ts#L33">packages/di/src/injection/injection_token.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/injection_token.ts#L33">packages/di/src/injection/injection_token.ts:33</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -180,7 +180,7 @@ expect(injector.get(t)).toEqual(<span class="hljs-string">"bindingValue"</span>)
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/injection_token.ts#L35">packages/di/src/injection/injection_token.ts:35</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/injection_token.ts#L35">packages/di/src/injection/injection_token.ts:35</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>

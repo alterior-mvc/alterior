@@ -79,12 +79,12 @@
 					</a>
 					<p>The following example creates an <code>Injector</code> configured to create <code>Engine</code> and <code>Car</code>.</p>
 					<pre><code class="language-typescript"><span class="hljs-meta">@Injectable</span>()
-<span class="hljs-keyword">class</span> Engine {
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Engine</span> </span>{
 }
 
 <span class="hljs-meta">@Injectable</span>()
-<span class="hljs-keyword">class</span> Car {
-  <span class="hljs-keyword">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> engine:Engine</span>) {}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Car</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> engine:Engine</span>)</span> {}
 }
 
 <span class="hljs-keyword">var</span> injector = ReflectiveInjector.resolveAndCreate([Car, Engine]);
@@ -158,7 +158,7 @@ expect(car.engine <span class="hljs-keyword">instanceof</span> Engine).toBe(<spa
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/reflective_injector.ts#L232">packages/di/src/injection/reflective_injector.ts:232</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_injector.ts#L232">packages/di/src/injection/reflective_injector.ts:232</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -191,7 +191,7 @@ expect(child.parent).toBe(parent);</code></pre>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/reflective_injector.ts#L288">packages/di/src/injection/reflective_injector.ts:288</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_injector.ts#L288">packages/di/src/injection/reflective_injector.ts:288</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -204,8 +204,8 @@ expect(child.parent).toBe(parent);</code></pre>
 								<a href="#example-live-demo" id="example-live-demo" style="color: inherit; text-decoration: none;">
 									<h3>Example (<a href="http://plnkr.co/edit/VhyfjN?p=preview">live demo</a>)</h3>
 								</a>
-								<pre><code class="language-typescript"><span class="hljs-keyword">class</span> ParentProvider {}
-<span class="hljs-keyword">class</span> ChildProvider {}
+								<pre><code class="language-typescript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentProvider</span> </span>{}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChildProvider</span> </span>{}
 
 <span class="hljs-keyword">var</span> parentProviders = ReflectiveInjector.resolve([ParentProvider]);
 <span class="hljs-keyword">var</span> childProviders = ReflectiveInjector.resolve([ChildProvider]);
@@ -237,7 +237,7 @@ expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));</code></pre>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/reflective_injector.ts#L342">packages/di/src/injection/reflective_injector.ts:342</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_injector.ts#L342">packages/di/src/injection/reflective_injector.ts:342</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -263,7 +263,7 @@ expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));</code></pre>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/reflective_injector.ts#L340">packages/di/src/injection/reflective_injector.ts:340</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_injector.ts#L340">packages/di/src/injection/reflective_injector.ts:340</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -275,12 +275,12 @@ expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));</code></pre>
 									<h3>Example (<a href="http://plnkr.co/edit/ptCImQ?p=preview">live demo</a>)</h3>
 								</a>
 								<pre><code class="language-typescript"><span class="hljs-meta">@Injectable</span>()
-<span class="hljs-keyword">class</span> Engine {
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Engine</span> </span>{
 }
 
 <span class="hljs-meta">@Injectable</span>()
-<span class="hljs-keyword">class</span> Car {
-  <span class="hljs-keyword">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> engine:Engine</span>) {}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Car</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> engine:Engine</span>)</span> {}
 }
 
 <span class="hljs-keyword">var</span> injector = ReflectiveInjector.resolveAndCreate([Engine]);
@@ -309,7 +309,7 @@ expect(car).not.toBe(injector.instantiateResolved(carProvider));</code></pre>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/reflective_injector.ts#L261">packages/di/src/injection/reflective_injector.ts:261</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_injector.ts#L261">packages/di/src/injection/reflective_injector.ts:261</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -323,8 +323,8 @@ expect(car).not.toBe(injector.instantiateResolved(carProvider));</code></pre>
 								<a href="#example-live-demo" id="example-live-demo" style="color: inherit; text-decoration: none;">
 									<h3>Example (<a href="http://plnkr.co/edit/opB3T4?p=preview">live demo</a>)</h3>
 								</a>
-								<pre><code class="language-typescript"><span class="hljs-keyword">class</span> ParentProvider {}
-<span class="hljs-keyword">class</span> ChildProvider {}
+								<pre><code class="language-typescript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParentProvider</span> </span>{}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChildProvider</span> </span>{}
 
 <span class="hljs-keyword">var</span> parent = ReflectiveInjector.resolveAndCreate([ParentProvider]);
 <span class="hljs-keyword">var</span> child = parent.resolveAndCreateChild([ChildProvider]);
@@ -356,7 +356,7 @@ expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));</code></pre>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/reflective_injector.ts#L314">packages/di/src/injection/reflective_injector.ts:314</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_injector.ts#L314">packages/di/src/injection/reflective_injector.ts:314</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -368,12 +368,12 @@ expect(child.get(ParentProvider)).toBe(parent.get(ParentProvider));</code></pre>
 									<h3>Example (<a href="http://plnkr.co/edit/yvVXoB?p=preview">live demo</a>)</h3>
 								</a>
 								<pre><code class="language-typescript"><span class="hljs-meta">@Injectable</span>()
-<span class="hljs-keyword">class</span> Engine {
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Engine</span> </span>{
 }
 
 <span class="hljs-meta">@Injectable</span>()
-<span class="hljs-keyword">class</span> Car {
-  <span class="hljs-keyword">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> engine:Engine</span>) {}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Car</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> engine:Engine</span>)</span> {}
 }
 
 <span class="hljs-keyword">var</span> injector = ReflectiveInjector.resolveAndCreate([Engine]);
@@ -402,7 +402,7 @@ expect(car).not.toBe(injector.resolveAndInstantiate(Car));</code></pre>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/reflective_injector.ts#L213">packages/di/src/injection/reflective_injector.ts:213</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_injector.ts#L213">packages/di/src/injection/reflective_injector.ts:213</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -414,12 +414,12 @@ expect(car).not.toBe(injector.resolveAndInstantiate(Car));</code></pre>
 									<h3>Example (<a href="http://plnkr.co/edit/KrSMci?p=preview">live demo</a>)</h3>
 								</a>
 								<pre><code class="language-typescript"><span class="hljs-meta">@Injectable</span>()
-<span class="hljs-keyword">class</span> Engine {
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Engine</span> </span>{
 }
 
 <span class="hljs-meta">@Injectable</span>()
-<span class="hljs-keyword">class</span> Car {
-  <span class="hljs-keyword">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> engine:Engine</span>) {}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Car</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> engine:Engine</span>)</span> {}
 }
 
 <span class="hljs-keyword">var</span> providers = ReflectiveInjector.resolve([Car, Engine]);
@@ -453,7 +453,7 @@ expect(injector.get(Car) <span class="hljs-keyword">instanceof</span> Car).toBe(
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/reflective_injector.ts#L133">packages/di/src/injection/reflective_injector.ts:133</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_injector.ts#L133">packages/di/src/injection/reflective_injector.ts:133</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -481,7 +481,7 @@ expect(injector.get(Car) <span class="hljs-keyword">instanceof</span> Car).toBe(
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/reflective_injector.ts#L94">packages/di/src/injection/reflective_injector.ts:94</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_injector.ts#L94">packages/di/src/injection/reflective_injector.ts:94</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -494,12 +494,12 @@ expect(injector.get(Car) <span class="hljs-keyword">instanceof</span> Car).toBe(
 									<h3>Example (<a href="http://plnkr.co/edit/AiXTHi?p=preview">live demo</a>)</h3>
 								</a>
 								<pre><code class="language-typescript"><span class="hljs-meta">@Injectable</span>()
-<span class="hljs-keyword">class</span> Engine {
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Engine</span> </span>{
 }
 
 <span class="hljs-meta">@Injectable</span>()
-<span class="hljs-keyword">class</span> Car {
-  <span class="hljs-keyword">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> engine:Engine</span>) {}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Car</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> engine:Engine</span>)</span> {}
 }
 
 <span class="hljs-keyword">var</span> providers = ReflectiveInjector.resolve([Car, [[Engine]]]);
@@ -507,11 +507,11 @@ expect(injector.get(Car) <span class="hljs-keyword">instanceof</span> Car).toBe(
 expect(providers.length).toEqual(<span class="hljs-number">2</span>);
 
 expect(providers[<span class="hljs-number">0</span>] <span class="hljs-keyword">instanceof</span> ResolvedReflectiveProvider).toBe(<span class="hljs-literal">true</span>);
-expect(providers[<span class="hljs-number">0</span>].key.displayName).toBe(<span class="hljs-string">"Car"</span>);
+expect(providers[<span class="hljs-number">0</span>].key.displayName).toBe(<span class="hljs-string">&quot;Car&quot;</span>);
 expect(providers[<span class="hljs-number">0</span>].dependencies.length).toEqual(<span class="hljs-number">1</span>);
 expect(providers[<span class="hljs-number">0</span>].factory).toBeDefined();
 
-expect(providers[<span class="hljs-number">1</span>].key.displayName).toBe(<span class="hljs-string">"Engine"</span>);
+expect(providers[<span class="hljs-number">1</span>].key.displayName).toBe(<span class="hljs-string">&quot;Engine&quot;</span>);
 });</code></pre>
 								<p>See {@link ReflectiveInjector#fromResolvedProviders} for more info.</p>
 							</div>
@@ -535,7 +535,7 @@ expect(providers[<span class="hljs-number">1</span>].key.displayName).toBe(<span
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/reflective_injector.ts#L124">packages/di/src/injection/reflective_injector.ts:124</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_injector.ts#L124">packages/di/src/injection/reflective_injector.ts:124</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -548,12 +548,12 @@ expect(providers[<span class="hljs-number">1</span>].key.displayName).toBe(<span
 									<h3>Example (<a href="http://plnkr.co/edit/ePOccA?p=preview">live demo</a>)</h3>
 								</a>
 								<pre><code class="language-typescript"><span class="hljs-meta">@Injectable</span>()
-<span class="hljs-keyword">class</span> Engine {
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Engine</span> </span>{
 }
 
 <span class="hljs-meta">@Injectable</span>()
-<span class="hljs-keyword">class</span> Car {
-  <span class="hljs-keyword">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> engine:Engine</span>) {}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Car</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> engine:Engine</span>)</span> {}
 }
 
 <span class="hljs-keyword">var</span> injector = ReflectiveInjector.resolveAndCreate([Car, Engine]);

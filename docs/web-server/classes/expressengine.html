@@ -118,15 +118,21 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Express<wbr>Engine<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="expressengine.html" class="tsd-signature-type">ExpressEngine</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Express<wbr>Engine<span class="tsd-signature-symbol">(</span>logger<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Logger</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="expressengine.html" class="tsd-signature-type">ExpressEngine</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/express-engine.ts#L5">src/express-engine.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/express-engine.ts#L16">src/express-engine.ts:16</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>logger: <span class="tsd-signature-type">Logger</span></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="expressengine.html" class="tsd-signature-type">ExpressEngine</a></h4>
 						</li>
 					</ul>
@@ -140,7 +146,7 @@
 					<div class="tsd-signature tsd-kind-icon">app<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">express.Application</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/express-engine.ts#L10">src/express-engine.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/express-engine.ts#L23">src/express-engine.ts:23</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -157,7 +163,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/express-engine.ts#L12">src/express-engine.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/express-engine.ts#L25">src/express-engine.ts:25</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -177,7 +183,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/express-engine.ts#L38">src/express-engine.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/express-engine.ts#L51">src/express-engine.ts:51</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -203,7 +209,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/express-engine.ts#L46">src/express-engine.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/express-engine.ts#L137">src/express-engine.ts:137</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -247,19 +253,19 @@
 					<a name="listen" class="tsd-anchor"></a>
 					<h3>listen</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">listen<span class="tsd-signature-symbol">(</span>port<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Server</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">listen<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><a href="../interfaces/webserveroptions.html" class="tsd-signature-type">WebServerOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Server</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/express-engine.ts#L42">src/express-engine.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/express-engine.ts#L55">src/express-engine.ts:55</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>port: <span class="tsd-signature-type">number</span></h5>
+									<h5>options: <a href="../interfaces/webserveroptions.html" class="tsd-signature-type">WebServerOptions</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Server</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -276,7 +282,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/express-engine.ts#L16">src/express-engine.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/express-engine.ts#L29">src/express-engine.ts:29</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>

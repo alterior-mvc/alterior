@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>RouteDescription | @alterior/web-server</title>
+	<title>GeneratorOptions | @alterior/web-server</title>
 	<meta name="description" content="Documentation for @alterior/web-server">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="routedescription.html">RouteDescription</a>
+					<a href="generatoroptions.html">GeneratorOptions</a>
 				</li>
 			</ul>
-			<h1>Interface RouteDescription</h1>
+			<h1>Interface GeneratorOptions</h1>
 		</div>
 	</div>
 </header>
@@ -68,7 +68,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">RouteDescription</span>
+						<span class="target">GeneratorOptions</span>
 					</li>
 				</ul>
 			</section>
@@ -79,14 +79,14 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="routedescription.html#definition" class="tsd-kind-icon">definition</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="routedescription.html#description" class="tsd-kind-icon">description</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="routedescription.html#group" class="tsd-kind-icon">group</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="routedescription.html#httpmethod" class="tsd-kind-icon">http<wbr>Method</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="routedescription.html#method" class="tsd-kind-icon">method</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="routedescription.html#parameters" class="tsd-kind-icon">parameters</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="routedescription.html#path" class="tsd-kind-icon">path</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="routedescription.html#pathprefix" class="tsd-kind-icon">path<wbr>Prefix</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="generatoroptions.html#algorithm" class="tsd-kind-icon">algorithm</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="generatoroptions.html#clientcertificate" class="tsd-kind-icon">client<wbr>Certificate</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="generatoroptions.html#clientcertificatecn" class="tsd-kind-icon">client<wbr>CertificateCN</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="generatoroptions.html#days" class="tsd-kind-icon">days</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="generatoroptions.html#extensions" class="tsd-kind-icon">extensions</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="generatoroptions.html#keypair" class="tsd-kind-icon">key<wbr>Pair</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="generatoroptions.html#keysize" class="tsd-kind-icon">key<wbr>Size</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="generatoroptions.html#pkcs7" class="tsd-kind-icon">pkcs7</a></li>
 							</ul>
 						</section>
 					</div>
@@ -95,82 +95,93 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="definition" class="tsd-anchor"></a>
-					<h3>definition</h3>
-					<div class="tsd-signature tsd-kind-icon">definition<span class="tsd-signature-symbol">:</span> <a href="routedefinition.html" class="tsd-signature-type">RouteDefinition</a></div>
+					<a name="algorithm" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> algorithm</h3>
+					<div class="tsd-signature tsd-kind-icon">algorithm<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"sha256"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/route.ts#L18">src/route.ts:18</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/certificate-generator.ts#L6">src/certificate-generator.ts:6</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="description" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> description</h3>
-					<div class="tsd-signature tsd-kind-icon">description<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="clientcertificate" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> client<wbr>Certificate</h3>
+					<div class="tsd-signature tsd-kind-icon">client<wbr>Certificate<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/route.ts#L26">src/route.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/certificate-generator.ts#L8">src/certificate-generator.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="group" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> group</h3>
-					<div class="tsd-signature tsd-kind-icon">group<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="clientcertificatecn" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> client<wbr>CertificateCN</h3>
+					<div class="tsd-signature tsd-kind-icon">client<wbr>CertificateCN<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/route.ts#L24">src/route.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/certificate-generator.ts#L9">src/certificate-generator.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="httpmethod" class="tsd-anchor"></a>
-					<h3>http<wbr>Method</h3>
-					<div class="tsd-signature tsd-kind-icon">http<wbr>Method<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="days" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> days</h3>
+					<div class="tsd-signature tsd-kind-icon">days<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/route.ts#L20">src/route.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/certificate-generator.ts#L4">src/certificate-generator.ts:4</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="method" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> method</h3>
-					<div class="tsd-signature tsd-kind-icon">method<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="extensions" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> extensions</h3>
+					<div class="tsd-signature tsd-kind-icon">extensions<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/route.ts#L21">src/route.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/certificate-generator.ts#L5">src/certificate-generator.ts:5</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="parameters" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> parameters</h3>
-					<div class="tsd-signature tsd-kind-icon">parameters<span class="tsd-signature-symbol">:</span> <a href="routeparamdescription.html" class="tsd-signature-type">RouteParamDescription</a><span class="tsd-signature-symbol">[]</span></div>
+					<a name="keypair" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> key<wbr>Pair</h3>
+					<div class="tsd-signature tsd-kind-icon">key<wbr>Pair<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>privateKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>publicKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/route.ts#L27">src/route.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/certificate-generator.ts#L11">src/certificate-generator.ts:11</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>private<wbr>Key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>public<wbr>Key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="keysize" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> key<wbr>Size</h3>
+					<div class="tsd-signature tsd-kind-icon">key<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/certificate-generator.ts#L10">src/certificate-generator.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="path" class="tsd-anchor"></a>
-					<h3>path</h3>
-					<div class="tsd-signature tsd-kind-icon">path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="pkcs7" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> pkcs7</h3>
+					<div class="tsd-signature tsd-kind-icon">pkcs7<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/route.ts#L22">src/route.ts:22</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="pathprefix" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> path<wbr>Prefix</h3>
-					<div class="tsd-signature tsd-kind-icon">path<wbr>Prefix<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/route.ts#L23">src/route.ts:23</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/certificate-generator.ts#L7">src/certificate-generator.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -189,31 +200,31 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="routedescription.html" class="tsd-kind-icon">Route<wbr>Description</a>
+						<a href="generatoroptions.html" class="tsd-kind-icon">Generator<wbr>Options</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="routedescription.html#definition" class="tsd-kind-icon">definition</a>
+								<a href="generatoroptions.html#algorithm" class="tsd-kind-icon">algorithm</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="routedescription.html#description" class="tsd-kind-icon">description</a>
+								<a href="generatoroptions.html#clientcertificate" class="tsd-kind-icon">client<wbr>Certificate</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="routedescription.html#group" class="tsd-kind-icon">group</a>
+								<a href="generatoroptions.html#clientcertificatecn" class="tsd-kind-icon">client<wbr>CertificateCN</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="routedescription.html#httpmethod" class="tsd-kind-icon">http<wbr>Method</a>
+								<a href="generatoroptions.html#days" class="tsd-kind-icon">days</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="routedescription.html#method" class="tsd-kind-icon">method</a>
+								<a href="generatoroptions.html#extensions" class="tsd-kind-icon">extensions</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="routedescription.html#parameters" class="tsd-kind-icon">parameters</a>
+								<a href="generatoroptions.html#keypair" class="tsd-kind-icon">key<wbr>Pair</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="routedescription.html#path" class="tsd-kind-icon">path</a>
+								<a href="generatoroptions.html#keysize" class="tsd-kind-icon">key<wbr>Size</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="routedescription.html#pathprefix" class="tsd-kind-icon">path<wbr>Prefix</a>
+								<a href="generatoroptions.html#pkcs7" class="tsd-kind-icon">pkcs7</a>
 							</li>
 						</ul>
 					</li>

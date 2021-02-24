@@ -77,21 +77,21 @@
 				<p>An Alterior application consists of an &quot;entry&quot; module and its dependency imports. You &quot;bootstrap&quot; the entry module which causes dependencies to be resolved, an application to be constructed, and modules to be executed.</p>
 				<p>You should define your entry module in its own file (<code>app.module.ts</code>).</p>
 				<pre><code class="language-typescript"><span class="hljs-meta">@Module</span>({
-    imports: [ LoggerModule ]
+    <span class="hljs-attr">imports</span>: [ LoggerModule ]
 })
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> AppModule {
-    <span class="hljs-keyword">constructor</span>(<span class="hljs-params">
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AppModule</span> </span>{
+    <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">
         <span class="hljs-keyword">private</span> logger : Logger
-    </span>) {
+    </span>)</span> {
     }
 
-    altOnInit() {
-        <span class="hljs-keyword">this</span>.logger.info(<span class="hljs-string">'Hello, world!'</span>);
+    <span class="hljs-function"><span class="hljs-title">altOnInit</span>(<span class="hljs-params"></span>)</span> {
+        <span class="hljs-built_in">this</span>.logger.info(<span class="hljs-string">&#x27;Hello, world!&#x27;</span>);
     }
 }</code></pre>
 				<p>A separate entrypoint file (<code>main.ts</code>) should handle bootstrapping the entry module.</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Application } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/runtime'</span>;
-<span class="hljs-keyword">import</span> { AppModule } <span class="hljs-keyword">from</span> <span class="hljs-string">'./app.module'</span>;
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Application } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@alterior/runtime&#x27;</span>;
+<span class="hljs-keyword">import</span> { AppModule } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./app.module&#x27;</span>;
 
 Application.bootstrap(AppModule);</code></pre>
 				<a href="#module-lifecycle-events" id="module-lifecycle-events" style="color: inherit; text-decoration: none;">
@@ -110,8 +110,8 @@ Application.bootstrap(AppModule);</code></pre>
 				</a>
 				<p>When an Alterior app is bootstrapped, the <code>ALT_ROLES_ONLY</code>/<code>ALT_ROLES_ALL_EXCEPT</code> environment variables are inspected to determine which roles should be started when the application starts. The variables are comma-delimited lists of role <code>identifiers</code> that should be started or ignored. By default all registered roles are started. If both variables are specified, <code>ALT_ROLES_ONLY</code> takes precedence.</p>
 				<p>Alternatively you can specify roles via the command line when the application is started using one of the following options:</p>
-				<pre><code>--roles-only,   -r [role,<span class="hljs-built_in">..</span>.]  <span class="hljs-builtin-name">Enable</span> only the specified roles
---roles-except, -R [role,<span class="hljs-built_in">..</span>.]  <span class="hljs-builtin-name">Enable</span> all roles except the specified roles</code></pre><p>For example, to enable only the <code>web-server</code> and <code>tasks</code> roles:</p>
+				<pre><code><span class="hljs-comment">--roles-only,   -r [role,...]  Enable only the specified roles</span>
+<span class="hljs-comment">--roles-except, -R [role,...]  Enable all roles except the specified roles</span></code></pre><p>For example, to enable only the <code>web-server</code> and <code>tasks</code> roles:</p>
 				<pre><code><span class="hljs-keyword">node</span> <span class="hljs-title">dist</span>/main.js -r web-server,tasks</code></pre>
 				<a href="#stopping-the-application" id="stopping-the-application" style="color: inherit; text-decoration: none;">
 					<h2>Stopping the application</h2>

@@ -98,8 +98,6 @@
 						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="annotationtargeterror.html#innererror" class="tsd-kind-icon">inner<wbr>Error</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="annotationtargeterror.html#message" class="tsd-kind-icon">message</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="annotationtargeterror.html#serializer" class="tsd-kind-icon">serializer</a></li>
 							</ul>
 						</section>
@@ -107,7 +105,9 @@
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="annotationtargeterror.html#annotationclass" class="tsd-kind-icon">annotation<wbr>Class</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="annotationtargeterror.html#innererror" class="tsd-kind-icon">inner<wbr>Error</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="annotationtargeterror.html#invalidtype" class="tsd-kind-icon">invalid<wbr>Type</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="annotationtargeterror.html#message" class="tsd-kind-icon">message</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="annotationtargeterror.html#supportedtypes" class="tsd-kind-icon">supported<wbr>Types</a></li>
 							</ul>
 						</section>
@@ -134,7 +134,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides NotSupportedError.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/annotations/src/annotations.ts#L69">src/annotations.ts:69</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/annotations/src/annotations.ts#L69">src/annotations.ts:69</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -159,28 +159,6 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="innererror" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> inner<wbr>Error</h3>
-					<div class="tsd-signature tsd-kind-icon">inner<wbr>Error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">BaseError</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="annotationtargeterror.html">AnnotationTargetError</a>.<a href="annotationtargeterror.html#innererror">innerError</a></p>
-						<ul>
-							<li>Defined in node_modules/@alterior/common/dist/errors.d.ts:8</li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="message" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> message</h3>
-					<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="annotationtargeterror.html">AnnotationTargetError</a>.<a href="annotationtargeterror.html#message">message</a></p>
-						<ul>
-							<li>Defined in node_modules/@alterior/common/dist/errors.d.ts:7</li>
-						</ul>
-					</aside>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
 					<a name="serializer" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> serializer</h3>
@@ -226,10 +204,28 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/annotations/src/annotations.ts#L90">src/annotations.ts:90</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/annotations/src/annotations.ts#L90">src/annotations.ts:90</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Function</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+					<a name="innererror" class="tsd-anchor"></a>
+					<h3>inner<wbr>Error</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> innerError<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BaseError</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="annotationtargeterror.html">AnnotationTargetError</a>.<a href="annotationtargeterror.html#innererror">innerError</a></p>
+								<ul>
+									<li>Defined in node_modules/@alterior/common/dist/errors.d.ts:8</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">BaseError</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -243,7 +239,25 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/annotations/src/annotations.ts#L82">src/annotations.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/annotations/src/annotations.ts#L82">src/annotations.ts:82</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+					<a name="message" class="tsd-anchor"></a>
+					<h3>message</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> message<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="annotationtargeterror.html">AnnotationTargetError</a>.<a href="annotationtargeterror.html#message">message</a></p>
+								<ul>
+									<li>Defined in node_modules/@alterior/common/dist/errors.d.ts:7</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -260,7 +274,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/annotations/src/annotations.ts#L86">src/annotations.ts:86</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/annotations/src/annotations.ts#L86">src/annotations.ts:86</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -356,20 +370,20 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 								<a href="annotationtargeterror.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="annotationtargeterror.html#innererror" class="tsd-kind-icon">inner<wbr>Error</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="annotationtargeterror.html#message" class="tsd-kind-icon">message</a>
-							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
 								<a href="annotationtargeterror.html#serializer" class="tsd-kind-icon">serializer</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="annotationtargeterror.html#annotationclass" class="tsd-kind-icon">annotation<wbr>Class</a>
 							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+								<a href="annotationtargeterror.html#innererror" class="tsd-kind-icon">inner<wbr>Error</a>
+							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="annotationtargeterror.html#invalidtype" class="tsd-kind-icon">invalid<wbr>Type</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+								<a href="annotationtargeterror.html#message" class="tsd-kind-icon">message</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="annotationtargeterror.html#supportedtypes" class="tsd-kind-icon">supported<wbr>Types</a>

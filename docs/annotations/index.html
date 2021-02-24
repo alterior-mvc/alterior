@@ -72,10 +72,10 @@
 					<h2>Creating annotations</h2>
 				</a>
 				<p>First, create a subclass of Annotation. You will need to assign the annotation a &quot;metadata name&quot;, which should be of the form <code>package-name:decorator-name</code> as shown below. Omitting <code>@MetadataName()</code> is an error.</p>
-				<pre><code class="language-typescript"><span class="hljs-meta">@MetadataName</span>(<span class="hljs-string">'@myorg/mypackage:Color'</span>)
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> ColorAnnotation <span class="hljs-keyword">extends</span> Annotation {
-    <span class="hljs-keyword">constructor</span>(<span class="hljs-params">readonly color : <span class="hljs-built_in">string</span></span>) {
-        <span class="hljs-keyword">super</span>();
+				<pre><code class="language-typescript"><span class="hljs-meta">@MetadataName</span>(<span class="hljs-string">&#x27;@myorg/mypackage:Color&#x27;</span>)
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ColorAnnotation</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Annotation</span> </span>{
+    <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">readonly</span> color : <span class="hljs-built_in">string</span></span>)</span> {
+        <span class="hljs-built_in">super</span>();
     }
 }</code></pre>
 				<p>Next, export your new Annotation&#39;s decorator:</p>
@@ -94,7 +94,7 @@
 				</a>
 				<p>You can enforce that your annotation&#39;s decorator can only be used on the decoration targets you expect:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> Color = ColorAnnotation.decorator({
-    validTargets: [ <span class="hljs-string">'class'</span>, <span class="hljs-string">'method'</span> ]
+    <span class="hljs-attr">validTargets</span>: [ <span class="hljs-string">&#x27;class&#x27;</span>, <span class="hljs-string">&#x27;method&#x27;</span> ]
 });</code></pre>
 				<p>Valid targets are <code>class</code>, <code>method</code>, <code>property</code>, <code>constructorParameter</code> and <code>parameter</code>. If a developer tries to decorate an invalid target with your decorator, an <code>AnnotationTargetError</code> is thrown.</p>
 				<a href="#limit-decorator-to-a-single-use-per-target" id="limit-decorator-to-a-single-use-per-target" style="color: inherit; text-decoration: none;">
@@ -102,7 +102,7 @@
 				</a>
 				<p>Sometimes it is desirable to prevent users from applying your decorator to a target more than once. Typically doing this is not an error, and Alterior can return all the annotation instances created by multiple decorators on a given target. However, Alterior can generate an error if a decorator for an annotation is used when an annotation of that type is already attached to the target, using the <code>allowMultiple: false</code> option:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> Color = ColorAnnotation.decorator({
-    allowMultiple: <span class="hljs-literal">false</span>
+    <span class="hljs-attr">allowMultiple</span>: <span class="hljs-literal">false</span>
 });</code></pre>
 				<p>By default <code>allowMultiple</code> is true and the library allows the annotation decorator to be used as many times as the user desires.</p>
 				<a href="#decorator-factories" id="decorator-factories" style="color: inherit; text-decoration: none;">
@@ -110,7 +110,7 @@
 				</a>
 				<p>Sometimes you may want to add additional behavior to be run when the decorator is being applied. To do that, you can provide a <code>factory</code> option to your decorator:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> Color = ColorAnnotation.decorator({
-    factory(site : DecoratorTarget, name : <span class="hljs-built_in">string</span>) {
+    <span class="hljs-function"><span class="hljs-title">factory</span>(<span class="hljs-params">site : DecoratorTarget, name : <span class="hljs-built_in">string</span></span>)</span> {
         <span class="hljs-comment">// do special stuff here before </span>
         <span class="hljs-comment">// returning the annotation to be attached.</span>
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ColorAnnotation(name);
@@ -121,8 +121,8 @@
 				</a>
 				<p>Sometimes you have multiple decorators that are storing the same type of metadata. For instance, perhaps many of your users use &#39;red&#39; and &#39;blue&#39; with your <code>@Color()</code> decorator, so you decide to make it so your users can use <code>@Red()</code> and <code>@Blue()</code> instead. One way you might accomplish this is:</p>
 				<pre><code class="language-typescript">    <span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> Color = ColorAnnotation.decorator();
-    <span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> Red = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> Color(<span class="hljs-string">'red'</span>);
-    <span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> Blue = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> Color(<span class="hljs-string">'red'</span>);</code></pre>
+    <span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> Red = <span class="hljs-function">() =&gt;</span> Color(<span class="hljs-string">&#x27;red&#x27;</span>);
+    <span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> Blue = <span class="hljs-function">() =&gt;</span> Color(<span class="hljs-string">&#x27;red&#x27;</span>);</code></pre>
 				<a href="#angular" id="angular" style="color: inherit; text-decoration: none;">
 					<h2>Angular</h2>
 				</a>
