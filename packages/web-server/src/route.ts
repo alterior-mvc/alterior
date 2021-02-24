@@ -162,7 +162,7 @@ export class RouteMethodParameter<T = any> {
 				let value = originalFactory(ev);
 				let number = parseFloat(value);
 				if (isNaN(number)) {
-					throw new HttpError(400, [], {
+					throw new HttpError(400, {
 						error: 'invalid-request',
 						message: `The parameter ${paramDesc.name} must be a valid number`
 					});
@@ -422,6 +422,8 @@ export class RouteInstance {
 		if (!instance) 
 			throw new ArgumentNullError('instance');
 		
+		event.controller = instance;
+
 		if (!instance[this.definition.method]) {
 			throw new ArgumentError(
 				'instance', 
