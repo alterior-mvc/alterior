@@ -8,6 +8,7 @@ import { AnnotationDecorator } from '@alterior/annotations';
 import { Logger, LoggingModule } from '@alterior/logging';
 import { WebServer } from './web-server';
 import { ControllerInstance } from './controller';
+import { ExpressEngine } from './express-engine';
 
 /**
  * Options for the web service. Available options are a superset 
@@ -38,7 +39,8 @@ export const WebService = WebServiceAnnotation.decorator({
     validTargets: [ 'class' ],
     factory: (site, options : WebServiceOptions) => {
         @Module({
-            imports: [ LoggingModule ]
+            imports: [ LoggingModule ],
+            providers: [ ExpressEngine ]
         })
         class WebServerModule {
             constructor(

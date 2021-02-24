@@ -27,10 +27,18 @@ export class WebServer {
 		this.setupServiceDescription();
 		this.setupInjector(injector);
 		this.options = options || {};
+		if (!this.options.port) {
+			if (this.options.certificate) {
+				this.options.port = 443;
+			} else {
+				this.options.port = 3000;
+			}
+		}
+
 		this._engine = this._injector.get(WebServerEngine, null);
 
 		if (!this._engine)
-			this._engine = new ExpressEngine();
+			this._engine = this._injector.get(ExpressEngine);
 
 		this.installGlobalMiddleware();
 		this.websockets = new ws.Server({ noServer: true });
@@ -144,7 +152,7 @@ export class WebServer {
 	}
 	
     async start() {
-		this.httpServer = await this.engine.listen(this.options.port || 3000);
+		this.httpServer = await this.engine.listen(this.options);
     }
 
     stop() {
