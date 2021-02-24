@@ -1,4 +1,7 @@
 import express from "express";
+import * as http from "http";
+import * as net from "net";
+
 import { RouteEvent } from "./metadata";
 import { WebServerEngine } from "./web-server-engine";
 
@@ -40,7 +43,15 @@ export class ExpressEngine implements WebServerEngine {
 	}
 
 	async listen(port : number) {
-		return this.app.listen(port);
+		let server = this.app.listen(port);
+		server.on('upgrade', (req : http.IncomingMessage, socket : net.Socket, head : Buffer) => {
+			let res = new http.ServerResponse(req);
+			req['__upgradeHead'] = head;
+			res.assignSocket(req.socket);
+			this.app(req, res);
+		});
+
+		return server;
 	}
 	
 	addRoute(method : string, path : string, handler : (event : RouteEvent) => void, middleware?) {

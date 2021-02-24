@@ -1,5 +1,6 @@
 import * as uuid from 'uuid';
 import * as http from 'http';
+import * as ws from 'ws';
 
 import { Injector, ReflectiveInjector, Module, Provider } from "@alterior/di";
 import { prepareMiddleware } from "./middleware";
@@ -32,10 +33,12 @@ export class WebServer {
 			this._engine = new ExpressEngine();
 
 		this.installGlobalMiddleware();
+		this.websockets = new ws.Server({ noServer: true });
 	}
 	
 	private _injector : Injector;
     readonly options : WebServerOptions;
+	readonly websockets : ws.Server;
     private httpServer : http.Server;
 	private _serviceDescription : ServiceDescription;
 	private _engine : WebServerEngine;
@@ -170,6 +173,33 @@ export class WebServer {
 
 			this.logger.info(`${method.toUpperCase()} ${path} » ${source}`);
 		}
+	}
+
+    async startSocket() {
+        if (!RouteEvent.current)
+            throw new Error(`WebSocket.start() can only be called while handling an incoming HTTP request`);
+        
+        if (!RouteEvent.request['__upgradeHead'])
+            throw new Error(`Client is not requesting an upgrade`);
+        
+        return await new Promise<WebSocket>((resolve, reject) => {
+            this
+                .websockets
+                .handleUpgrade(
+                    RouteEvent.request,
+                    RouteEvent.request.socket,
+                    RouteEvent.request['__upgradeHead'],
+                    socket => {
+						RouteEvent.response.detachSocket(RouteEvent.request.socket);
+                        resolve(<any>socket);
+                    }
+                )
+                ;
+        });
+    }
+
+	static async startSocket() {
+		return WebServer.for(RouteEvent.controller).startSocket();
 	}
 
 	/**

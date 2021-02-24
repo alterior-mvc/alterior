@@ -74,6 +74,7 @@ export class RouteEvent {
 
 	request : express.Request;
 	response : express.Response;
+	controller : any;
 
 	static get current(): RouteEvent {
 		return Zone.current.get('@alterior/web-server:RouteEvent.current');
@@ -81,6 +82,18 @@ export class RouteEvent {
 
 	context<T>(callback : () => T): T {
 		return RouteEvent.with(this, callback);
+	}
+
+	static get request() {
+		return this.current.request;
+	}
+
+	static get response() {
+		return this.current.response;
+	}
+
+	static get controller() {
+		return this.current.controller;
 	}
 
 	static with<T>(routeEvent : RouteEvent, callback : () => T): T {
