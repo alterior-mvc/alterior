@@ -1,12 +1,22 @@
 import express from "express";
 import * as http from "http";
+import * as https from "https";
 import * as net from "net";
+import * as spdy from "spdy";
+
+import { Logger } from '@alterior/logging';
+import { Injectable } from '@alterior/di';
 
 import { WebEvent } from "./metadata";
 import { WebServerEngine } from "./web-server-engine";
+import { WebServerOptions } from './web-server-options';
+import { CertificateGenerator } from './certificate-generator';
 
+@Injectable()
 export class ExpressEngine implements WebServerEngine {
-	constructor() {
+	constructor(
+		private logger : Logger
+	) {
 		this.app = express();
 	}
 
@@ -42,8 +52,78 @@ export class ExpressEngine implements WebServerEngine {
 		this.app.use(path, middleware);
 	}
 
-	async listen(port : number) {
-		let server = this.app.listen(port);
+	async listen(options : WebServerOptions) {
+		let server : http.Server;
+
+		type Protocol = 'h2'
+		| 'spdy/3.1'
+		| 'spdy/3'
+		| 'spdy/2'
+		| 'http/1.1'
+		| 'http/1.0';
+
+		let protocols : Protocol[];
+		
+		if (options.certificate)
+			protocols = ['h2', 'spdy/3.1', 'spdy/3', 'spdy/2', 'http/1.1', 'http/1.0'];
+		else
+			protocols = ['http/1.1', 'http/1.0'];
+
+		if (options.protocols)
+			protocols = options.protocols;
+			
+		let spdyEnabled = protocols.some(x => x.startsWith('spdy/')) || protocols.includes('h2');
+		if (spdyEnabled && !options.certificate) {
+			this.logger.info(`WebServer: Configured for HTTP2 but no certificates are provided. Generating self-signed certificates for testing...`);
+			let generator = new CertificateGenerator();
+			let certs = await generator.generate([
+				{
+	                name: 'commonName',
+	                value: 'example.org'
+	            }, {
+	                name: 'countryName',
+	                value: 'US'
+	            }, {
+	                shortName: 'ST',
+	                value: 'Virginia'
+	            }, {
+	                name: 'localityName',
+	                value: 'Blacksburg'
+	            }, {
+	                name: 'organizationName',
+	                value: 'Test'
+	            }, {
+	                shortName: 'OU',
+	                value: 'Test'
+	            }
+			]);
+			options.certificate = certs.cert;
+			options.privateKey = certs.private;
+		}
+
+		if (options.certificate) {
+			if (spdyEnabled) {
+				server = spdy.createServer({
+					cert: options.certificate,
+					key: options.privateKey,
+					spdy: {
+						protocols: options.protocols
+					}
+				}, this.app);
+
+			} else {
+				server = https.createServer({
+					cert: options.certificate,
+					key: options.privateKey
+				}, this.app);
+			}
+		} else {
+			server = http.createServer(this.app);
+		}
+		
+		this.logger.info(`WebServer: Listening on port ${options.port}`);
+		server.listen(options.port);
+
 		server.on('upgrade', (req : http.IncomingMessage, socket : net.Socket, head : Buffer) => {
 			let res = new http.ServerResponse(req);
 			req['__upgradeHead'] = head;

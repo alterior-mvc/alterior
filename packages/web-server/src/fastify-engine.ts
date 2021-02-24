@@ -2,6 +2,7 @@ import fastify from "fastify";
 import * as http from "http";
 import { WebEvent } from "./metadata";
 import { WebServerEngine } from "./web-server-engine";
+import { WebServerOptions } from './web-server-options';
 
 export class FastifyEngine implements WebServerEngine {
 	constructor() {
@@ -49,8 +50,8 @@ export class FastifyEngine implements WebServerEngine {
 		this.app.use(path, middleware);
 	}
 	
-	async listen(port : number) {
-		await this.app.listen(port);
+	async listen(options : WebServerOptions) {
+		await this.app.listen(options.port);
 		return this.app.server;
 	}
 

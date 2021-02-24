@@ -4,7 +4,7 @@
 
 A framework for building HTTP services in Typescript. Build REST APIs with this. 
 
-## Getting started
+# Getting started
 
 Install the Alterior runtime, the DI library, and the web-server module:
 
@@ -13,7 +13,7 @@ npm install reflect-metadata
 npm install @alterior/runtime @alterior/di @alterior/web-server
 ```
 
-## Configuring Typescript 
+# Configuring Typescript 
 
 You must enable `enableExperimentalDecorators` and `emitDecoratorMetadata`,
 and `esModuleInterop` Typescript compiler options to use this library. Do
@@ -29,7 +29,7 @@ this within `tsconfig.json`:
 }
 ```
 
-## A minimal example
+# A minimal example
 
 For simple use cases, you can build a web service using Alterior in a single file:
 
@@ -56,9 +56,7 @@ export class MyWebService implements OnInit {
 Application.bootstrap(MyWebService);
 ```
 
-## How do I run it?
-
-# Additional Features
+# How do I run it?
 
 Make an entry point for your application if you don't already have one:
 
@@ -81,11 +79,11 @@ node dist/main
 
 You should use NPM scripts to manage building, testing and running your application per the conventions of the Node.js community.
 
-## Mechanics of `@WebService`
+# Mechanics of `@WebService`
 
 When classes marked `@WebService()` are bootstrapped as part of an Alterior application (via `Application#bootstrap()`), a new Alterior role is registered with [`RolesService`](../runtime/README.md#roles) which is responsible for starting up and shutting down a web server using one of the supported WebEngines (currently Express and Fastify). The class itself acts both as a `@Module()` and the root `@Controller()` of the service. The class can then use `@Mount()` to add additional controllers to the service. Each `@WebService()` has its own separate server instance, which means you can host multiple web services (on different ports) within the same overall application. Each service will be given its own role which can be controlled independently.
 
-## Delegation via Mounting
+# Delegation via Mounting
 
 You can delegate parts of your web service to dedicated controllers by mounting them within your main service class. Doing so will route specific URLs to specific controllers. Any controller can `@Mount()`, providing an intuitive way to construct a complete web service from a tree of controllers:
 
@@ -260,11 +258,25 @@ export class MyController {
 }
 ```
 
-## Dependency Injection
+# WebSockets
+
+WebSocket support is built in. You can call `WebServer.startSocket()` while handling a request to upgrade the current request into a WebSocket connection.
+
+```typescript
+@Get()
+mySocket() {
+    let socket = WebServer.startSocket();
+    socket.addEventListener('message', ev => {
+        console.log(`Received message from client: ${ev.data}`);
+    });
+}
+```
+
+# Dependency Injection
 
 Modules, controllers and services all participate in dependency injection. For more information about how DI works in Alterior apps, see the documentation for [@alterior/di](../di/README.md).
 
-## Middleware
+# Middleware
 
 Alterior supports Connect middleware (as used in Express, Fastify, etc). Middleware can be connected globally or 
 declared as part of a route. 
@@ -335,7 +347,7 @@ services:
     }
 ```
 
-## Uncaught Exceptions
+# Uncaught Exceptions
 
 When an exception occurs while executing a controller route method (excluding HttpExceptions), Alterior will respond
 with an HTTP 500 error. By default, exception information will be included with the response. If the caught exception 
@@ -362,7 +374,7 @@ To do so, set `WebServerOptions.hideExceptions` to `true`. The `error` field wil
 {"message":"An exception occurred while handling this request."}
 ``` 
 
-## Sessions
+# Sessions
 
 WARNING: Generally APIs should not use cookies. If your API is used by a by a browser application (which is the main reason you would use cookies in the first place), it is essential that you restrict the allowed origins of your API using CORS to ensure that other (potentially malicious) origins cannot request your API using credentials saved in the browser of your authorized users. Known as Cross Site Request Forgery (CSRF), this is a serious security vulnerability and it should be treated with care. 
 
@@ -414,14 +426,14 @@ MySession.current.cartTotal
 
 Note that both `Session.current` and `MySession.current` only have meaning when called from within a route method while an HTTP request is being processed. 
 
-## Testing
+# Testing
 
 Use `teststrap()` to test endpoints in your web service. Since the caller and the server are in the same process, the actual HTTP server is skipped, with requests passed directly from the `teststrap()` test to an instance of your web service.
 
 `teststrap()` uses [supertest](https://github.com/visionmedia/supertest) as its core testing mechanism. The type of values returned by `teststrap()` is `supertest.Supertest<supertest.Test>`.
 
 ```typescript
-import { teststrap } from '@alterior/web-server/dist/testing`;
+import { teststrap } from '@alterior/web-server/dist/testing';
 
 @WebService()
 class ExampleService { 
@@ -475,7 +487,7 @@ await test.get('/foo')
 
 For more information about the capabilities of `teststrap()`, consult the [supertest documentation](https://github.com/visionmedia/supertest).
 
-## Accessing the Express instance
+# Accessing the Express instance
 
 Perhaps you need access to the Express (or other web engine) application object to do something Alterior doesn't support:
 
@@ -498,7 +510,7 @@ export class MyService {
 
 You can call `WebServer.for()` and pass any web service or any controller mounted within a web service. Always pass the object instance (`this`) in order to ensure you get the correct web server instance. Note that if your controller is used in multiple web services, different instances of your controller will correspond to different instances of `WebServer`. 
 
-## Deploying to a Cloud Function
+# Deploying to a Cloud Function
 
 You can deploy an Alterior web service as a Cloud Function (Google Cloud Functions, AWS Lambda, or other Function-as-a-Service (FaaS) providers) using `WebServer.bootstrapCloudFunction()`:
 
