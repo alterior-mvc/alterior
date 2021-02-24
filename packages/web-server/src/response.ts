@@ -428,7 +428,7 @@ export class Response {
 	 * Throw this response as an `HttpError`
 	 */
 	public throw() {
-		throw new HttpError(this.status, this.headers, this.body);
+		throw new HttpError(this.status, this.body, this.headers);
 	}
 
 	private _encoding : 'raw' | 'json';

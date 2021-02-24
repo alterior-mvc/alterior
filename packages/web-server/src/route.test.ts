@@ -208,7 +208,7 @@ suite(describe => {
 				@Get('/foo')
 				getX() {
 					return Promise.reject(
-						new HttpError(300, [['X-Test', 'pass']], {bar:777})
+						new HttpError(300, {bar:777}, [['X-Test', 'pass']])
 					);
 				}
 			}

@@ -151,6 +151,10 @@ export class AccessDeniedError extends SystemError {
 }
 
 export class HttpError {
-	constructor(public statusCode : number, public headers : string[][], public body : any) {
+	constructor(
+        public statusCode : number, 
+        public body : any, 
+        public headers : string[][] = []
+    ) {
 	}
 }
