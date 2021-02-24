@@ -18,12 +18,12 @@ import { ServiceDescriptionRef } from './service-description-ref';
  * Implements a web server which is comprised of a set of Controllers.
  */
 export class WebServer {
-    constructor(
-        injector : Injector,
-		options : WebServerOptions,
-		readonly logger : Logger,
-		readonly appOptions : ApplicationOptions = {}
-    ) {
+	constructor(
+		injector: Injector,
+		options: WebServerOptions,
+		readonly logger: Logger,
+		readonly appOptions: ApplicationOptions = {}
+	) {
 		this.setupServiceDescription();
 		this.setupInjector(injector);
 		this.options = options || {};
@@ -43,13 +43,13 @@ export class WebServer {
 		this.installGlobalMiddleware();
 		this.websockets = new ws.Server({ noServer: true });
 	}
-	
-	private _injector : Injector;
-    readonly options : WebServerOptions;
-	readonly websockets : ws.Server;
-    private httpServer : http.Server;
-	private _serviceDescription : ServiceDescription;
-	private _engine : WebServerEngine;
+
+	private _injector: Injector;
+	readonly options: WebServerOptions;
+	readonly websockets: ws.Server;
+	private httpServer: http.Server;
+	private _serviceDescription: ServiceDescription;
+	private _engine: WebServerEngine;
 
 	get engine() {
 		return this._engine;
@@ -57,19 +57,19 @@ export class WebServer {
 
 	private static _servers = new WeakMap<Object, WebServer>();
 
-	public static for(webService : any): WebServer {
+	public static for(webService: any): WebServer {
 		return this._servers.get(webService);
 	}
 
-	public static register(webService : any, server : WebServer) {
+	public static register(webService: any, server: WebServer) {
 		this._servers.set(webService, server);
 	}
 
-	public static bootstrapCloudFunction(entryModule : any, options? : ApplicationOptions) {
+	public static bootstrapCloudFunction(entryModule: any, options?: ApplicationOptions) {
 		let appOptionsAnnot = AppOptionsAnnotation.getForClass(entryModule);
 		@AppOptions(appOptionsAnnot ? appOptionsAnnot.options : {})
 		@Module({
-			imports: [ entryModule ],
+			imports: [entryModule],
 			providers: [
 				{ provide: WebServerEngine, useClass: ExpressEngine }
 			]
@@ -78,16 +78,16 @@ export class WebServer {
 		}
 
 		let app = Application.bootstrap(
-			EntryModule, 
-			Object.assign({}, options, { 
-				autostart: false 
+			EntryModule,
+			Object.assign({}, options, {
+				autostart: false
 			})
 		);
-		
+
 		return WebServer.for(app.injector.get(entryModule))
 			.engine.app;
 	}
-	
+
 	/**
 	 * Setup the service description which provides a view of all the routes 
 	 * registered in this web server.
@@ -115,14 +115,14 @@ export class WebServer {
 	 * 
 	 * @param injector 
 	 */
-	private setupInjector(injector : Injector) {
-		let providers : Provider[] = [
+	private setupInjector(injector: Injector) {
+		let providers: Provider[] = [
 			{
 				provide: ServiceDescriptionRef,
 				useValue: new ServiceDescriptionRef(this._serviceDescription)
 			}
 		];
-		
+
 		let ownInjector = ReflectiveInjector.resolveAndCreate(providers, injector);
 		this._injector = ownInjector;
 	}
@@ -131,9 +131,9 @@ export class WebServer {
 		return this._injector;
 	}
 
-    // public get express() {
-    //     return this.expressApp;
-    // }
+	// public get express() {
+	//     return this.expressApp;
+	// }
 
 	get serviceDescription() {
 		return this._serviceDescription;
@@ -143,28 +143,28 @@ export class WebServer {
 	 * Install the registered global middleware onto our Express 
 	 * application.
 	 */
-    private installGlobalMiddleware() {
-        let middlewares = this.options.middleware || [];
-        for (let middleware of middlewares) {
+	private installGlobalMiddleware() {
+		let middlewares = this.options.middleware || [];
+		for (let middleware of middlewares) {
 			middleware = prepareMiddleware(this.injector, middleware);
 			this.engine.addConnectMiddleware('/', middleware as any);
-        }
+		}
 	}
-	
-    async start() {
-		this.httpServer = await this.engine.listen(this.options);
-    }
 
-    stop() {
+	async start() {
+		this.httpServer = await this.engine.listen(this.options);
+	}
+
+	stop() {
 		if (!this.httpServer)
 			return;
-		
-		this.httpServer.close();
-    }
 
-	reportRequest(event : RouteEvent, source : string) {
+		this.httpServer.close();
+	}
+
+	reportRequest(event: RouteEvent, source: string) {
 		if (!this.options.silent) {
-			let req : any = event.request;
+			let req: any = event.request;
 			let method = event.request.method;
 			let path = event.request.path;
 
@@ -183,28 +183,28 @@ export class WebServer {
 		}
 	}
 
-    async startSocket() {
-        if (!RouteEvent.current)
-            throw new Error(`WebSocket.start() can only be called while handling an incoming HTTP request`);
-        
-        if (!RouteEvent.request['__upgradeHead'])
-            throw new Error(`Client is not requesting an upgrade`);
-        
-        return await new Promise<WebSocket>((resolve, reject) => {
-            this
-                .websockets
-                .handleUpgrade(
-                    RouteEvent.request,
-                    RouteEvent.request.socket,
-                    RouteEvent.request['__upgradeHead'],
-                    socket => {
+	async startSocket() {
+		if (!RouteEvent.current)
+			throw new Error(`WebSocket.start() can only be called while handling an incoming HTTP request`);
+
+		if (!RouteEvent.request['__upgradeHead'])
+			throw new Error(`Client is not requesting an upgrade`);
+
+		return await new Promise<WebSocket>((resolve, reject) => {
+			this
+				.websockets
+				.handleUpgrade(
+					RouteEvent.request,
+					RouteEvent.request.socket,
+					RouteEvent.request['__upgradeHead'],
+					socket => {
 						RouteEvent.response.detachSocket(RouteEvent.request.socket);
-                        resolve(<any>socket);
-                    }
-                )
-                ;
-        });
-    }
+						resolve(<any>socket);
+					}
+				)
+				;
+		});
+	}
 
 	static async startSocket() {
 		return WebServer.for(RouteEvent.controller).startSocket();
@@ -214,7 +214,7 @@ export class WebServer {
 	 * Installs this route into the given Express application. 
 	 * @param app 
 	 */
-	addRoute(definition : RouteDescription, method : string, path : string, handler : (event : RouteEvent) => void, middleware = []) {
+	addRoute(definition: RouteDescription, method: string, path: string, handler: (event: RouteEvent) => void, middleware = []) {
 		this.serviceDescription.routes.push(definition);
 
 		this.engine.addRoute(method, path, ev => {
@@ -225,7 +225,7 @@ export class WebServer {
 		}, middleware);
 	}
 
-	handleError(error : any, event : RouteEvent, route : RouteInstance, source : string) {
+	handleError(error: any, event: RouteEvent, route: RouteInstance, source: string) {
 
 		if (this.options.onError)
 			this.options.onError(error, event, route, source);
@@ -241,7 +241,7 @@ export class WebServer {
 			console.error(error);
 		}
 
-		let response : any = {
+		let response: any = {
 			message: 'An exception occurred while handling this request.'
 		};
 
@@ -255,7 +255,7 @@ export class WebServer {
 		event.response
 			.status(500)
 			.send(response)
-		;
+			;
 	}
 }
 
