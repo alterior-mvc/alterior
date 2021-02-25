@@ -14,7 +14,9 @@ export class WebEvent {
 	constructor(request : express.Request, response : express.Response) {
 		this.request = request;
 		this.response = response;
-		this.request.socket.on('close', () => this.connected = false);
+
+        if (this.request.socket)
+		    this.request.socket.on('close', () => this.connected = false);
 	}
 
 	request : express.Request;
