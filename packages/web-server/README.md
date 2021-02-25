@@ -179,18 +179,18 @@ public canUseRouteParams(nameOfCar : string)
 
 # Accessing the Request/Response
 
-Sometimes you need to check or set an HTTP header, interact directly with middleware, or handle parsing the request body or serializing the response body yourself. Alterior lets you do that using the `RouteEvent` class. 
+Sometimes you need to check or set an HTTP header, interact directly with middleware, or handle parsing the request body or serializing the response body yourself. Alterior lets you do that using the `WebEvent` class. 
 
 ```typescript
 @Get()
 public whoAmI() {
-    RouteEvent.response.status(200).send(`hello ${RouteEvent.request.header('user-agent')}`);
+    WebEvent.response.status(200).send(`hello ${WebEvent.request.header('user-agent')}`);
 }
 ```
 
 ## Is this done via global variables? Wouldn't that not work with async requests?
 
-`RouteEvent` uses Zone-local variables to accomplish its task, so there is no risk that you will access the wrong request/response when using it unlike when global variables are used for this purpose. 
+`WebEvent` uses Zone-local variables to accomplish its task, so there is no risk that you will access the wrong request/response when using it unlike when global variables are used for this purpose. 
 
 # Complex Responses
 
@@ -227,7 +227,7 @@ Alterior inspects the parameters of controller methods to determine what values 
 - Parameters decorated with `@QueryParam('q')` will be fulfilled with the query 
   parameter `q` if provided (`?q=...`). If the query parameter was not provided in the request, the value of the parameter will be `undefined`.
 - Parameters which are decorated with `@Body()` will be fulfilled 
-  with the value of `RouteEvent.request.body`. If the type of the method parameter is `string`, Alterior will automatically connect a text body parsing middleware (`bodyParser.text()`). If the type of the method parameter is `Buffer`, Alterior will automatically connect a raw body parsing middleware (`bodyParser.raw()`). For any other parameter type, Alterior adds a JSON body parsing middleware (`bodyParser.json()`). If you need other body parsing middleware, you can add it directly to the `middleware` property of the route decorator's `options` parameter and use `RouteEvent.request.body` directly instead.
+  with the value of `WebEvent.request.body`. If the type of the method parameter is `string`, Alterior will automatically connect a text body parsing middleware (`bodyParser.text()`). If the type of the method parameter is `Buffer`, Alterior will automatically connect a raw body parsing middleware (`bodyParser.raw()`). For any other parameter type, Alterior adds a JSON body parsing middleware (`bodyParser.json()`). If you need other body parsing middleware, you can add it directly to the `middleware` property of the route decorator's `options` parameter and use `WebEvent.request.body` directly instead.
 
 > Note: If a path parameter is defined directly in the path passed to `@Get()` 
   decorator and an (otherwise unfulfilled) parameter with the same name is 
@@ -306,7 +306,7 @@ export class MyService {
 
 # Server-Sent Events
 
-You can use `RouteEvent.sendEvent()` to send an event stream response back to the client. For more information about 
+You can use `WebEvent.sendEvent()` to send an event stream response back to the client. For more information about 
 server-sent events, see https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
 
 The `data` field is serialized into JSON for you. Note that Server-Sent Events over HTTP/1.1 is not ideal as modern 
@@ -315,9 +315,9 @@ browsers only allow a maximum of six (6) connections to a given server. However,
 ```typescript
 @Get('/sse')
 async sse() {
-    while (RouteEvent.connected) {
+    while (WebEvent.connected) {
         await timeout(1000);
-        await RouteEvent.sendEvent({ event: 'ping', data: { message: 'are you still there?' } });
+        await WebEvent.sendEvent({ event: 'ping', data: { message: 'are you still there?' } });
     }
 }
 ```

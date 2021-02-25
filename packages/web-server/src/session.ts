@@ -1,4 +1,4 @@
-import { RouteEvent } from './metadata';
+import { WebEvent } from './metadata';
 import { Constructor } from '@alterior/runtime';
 import { Injectable } from '@alterior/di';
 
@@ -11,10 +11,10 @@ export class Session {
     }
 
     get<T>(id : string, defaultValue? : T): T {
-        return RouteEvent.current.request['session'][id] ?? defaultValue;
+        return WebEvent.current.request['session'][id] ?? defaultValue;
     }
 
     set<T>(id : string, value : T) {
-        RouteEvent.current.request['session'][id] = value;
+        WebEvent.current.request['session'][id] = value;
     }
 }

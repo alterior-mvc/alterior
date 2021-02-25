@@ -4,7 +4,7 @@ import * as ws from 'ws';
 
 import { Injector, ReflectiveInjector, Module, Provider } from "@alterior/di";
 import { prepareMiddleware } from "./middleware";
-import { RouteEvent } from "./metadata";
+import { WebEvent } from "./metadata";
 import { RouteInstance, RouteDescription } from './route';
 import { ApplicationOptions, Application, AppOptionsAnnotation, AppOptions } from '@alterior/runtime';
 import { Logger } from '@alterior/logging';
@@ -162,7 +162,7 @@ export class WebServer {
 		this.httpServer.close();
 	}
 
-	reportRequest(event: RouteEvent, source: string) {
+	reportRequest(event: WebEvent, source: string) {
 		if (!this.options.silent) {
 			let req: any = event.request;
 			let method = event.request.method;
@@ -184,21 +184,21 @@ export class WebServer {
 	}
 
 	async startSocket() {
-		if (!RouteEvent.current)
+		if (!WebEvent.current)
 			throw new Error(`WebSocket.start() can only be called while handling an incoming HTTP request`);
 
-		if (!RouteEvent.request['__upgradeHead'])
+		if (!WebEvent.request['__upgradeHead'])
 			throw new Error(`Client is not requesting an upgrade`);
 
 		return await new Promise<WebSocket>((resolve, reject) => {
 			this
 				.websockets
 				.handleUpgrade(
-					RouteEvent.request,
-					RouteEvent.request.socket,
-					RouteEvent.request['__upgradeHead'],
+					WebEvent.request,
+					WebEvent.request.socket,
+					WebEvent.request['__upgradeHead'],
 					socket => {
-						RouteEvent.response.detachSocket(RouteEvent.request.socket);
+						WebEvent.response.detachSocket(WebEvent.request.socket);
 						resolve(<any>socket);
 					}
 				)
@@ -207,14 +207,14 @@ export class WebServer {
 	}
 
 	static async startSocket() {
-		return WebServer.for(RouteEvent.controller).startSocket();
+		return WebServer.for(WebEvent.controller).startSocket();
 	}
 
 	/**
 	 * Installs this route into the given Express application. 
 	 * @param app 
 	 */
-	addRoute(definition: RouteDescription, method: string, path: string, handler: (event: RouteEvent) => void, middleware = []) {
+	addRoute(definition: RouteDescription, method: string, path: string, handler: (event: WebEvent) => void, middleware = []) {
 		this.serviceDescription.routes.push(definition);
 
 		this.engine.addRoute(method, path, ev => {
@@ -225,7 +225,7 @@ export class WebServer {
 		}, middleware);
 	}
 
-	handleError(error: any, event: RouteEvent, route: RouteInstance, source: string) {
+	handleError(error: any, event: WebEvent, route: RouteInstance, source: string) {
 
 		if (this.options.onError)
 			this.options.onError(error, event, route, source);

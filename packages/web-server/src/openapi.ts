@@ -1,4 +1,4 @@
-import { Controller, Get, RouteEvent } from "./metadata";
+import { Controller, Get, WebEvent } from "./metadata";
 import { ServiceDescriptionRef } from "./service-description-ref";
 
 export interface OpenApiContact {
@@ -100,7 +100,7 @@ export class OpenApiController {
     }
 
     @Get('')
-    home(ev : RouteEvent) : OpenApiService {
+    home(ev : WebEvent) : OpenApiService {
         let desc = this.serviceDescriptionRef.description;
 
         let info : OpenApiServiceInfo = {

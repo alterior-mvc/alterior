@@ -7,7 +7,7 @@ import * as spdy from "spdy";
 import { Logger } from '@alterior/logging';
 import { Injectable } from '@alterior/di';
 
-import { RouteEvent } from "./metadata";
+import { WebEvent } from "./metadata";
 import { WebServerEngine } from "./web-server-engine";
 import { WebServerOptions } from './web-server-options';
 import { CertificateGenerator } from './certificate-generator';
@@ -26,7 +26,7 @@ export class ExpressEngine implements WebServerEngine {
 		return [];
 	}
 
-	sendJsonBody(routeEvent : RouteEvent, body : any) {
+	sendJsonBody(routeEvent : WebEvent, body : any) {
 		routeEvent.response
 			.header('Content-Type', 'application/json')
 			.send(JSON.stringify(body))
@@ -134,7 +134,7 @@ export class ExpressEngine implements WebServerEngine {
 		return server;
 	}
 	
-	addRoute(method : string, path : string, handler : (event : RouteEvent) => void, middleware?) {
+	addRoute(method : string, path : string, handler : (event : WebEvent) => void, middleware?) {
 		if (!middleware)
 			middleware = [];
 			
@@ -142,7 +142,7 @@ export class ExpressEngine implements WebServerEngine {
 			path, 
 			...middleware, 
 			(req, res) => {
-				return handler(new RouteEvent(req, res));
+				return handler(new WebEvent(req, res));
 			}
 		);
 	}

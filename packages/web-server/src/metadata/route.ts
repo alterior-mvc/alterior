@@ -1,5 +1,3 @@
-
-import * as express from 'express';
 import { shallowClone } from '@alterior/common';
 import { Provider } from '@alterior/di';
 
@@ -59,114 +57,11 @@ export interface MountOptions {
 	controllers? : Function[];
 }
 
-export interface ServerSentEvent {
-	event?: string;
-	data?: any;
-	id?: string;
-	retry?: number;
-}
-
 export interface RouteDefinition {
 	method : string;
 	httpMethod : string;
 	options : RouteOptions;
 	path : string;
-}
-
-export class RouteEvent {
-	constructor(request : express.Request, response : express.Response) {
-		this.request = request;
-		this.response = response;
-		this.request.socket.on('close', () => this.connected = false);
-	}
-
-	request : express.Request;
-	response : express.Response;
-	controller : any;
-
-	/**
-	 * Is the client still connected?
-	 */
-	connected = true;
-
-	static get current(): RouteEvent {
-		return Zone.current.get('@alterior/web-server:RouteEvent.current');
-	}
-
-	context<T>(callback : () => T): T {
-		return RouteEvent.with(this, callback);
-	}
-
-	static get request() {
-		return this.current.request;
-	}
-
-	static get response() {
-		return this.current.response;
-	}
-
-	static get controller() {
-		return this.current.controller;
-	}
-
-	/**
-	 * Send a server-sent-event to the client as part of a "text/event-stream" response
-	 * @param event 
-	 */
-	async sendEvent(event : ServerSentEvent) {
-        if (!RouteEvent.current)
-            throw new Error(`WebSocket.start() can only be called while handling an incoming HTTP request`);
-        
-		let contentType = RouteEvent.response.getHeader('content-type');
-
-		if (contentType !== 'text/event-stream' && RouteEvent.response.headersSent)
-			throw new Error(`Cannot send server-sent-event, headers are already sent and content type is not text/event-stream (it is '${contentType}')`);
-
-		if (!RouteEvent.response.headersSent) {
-			RouteEvent.response.status(200);
-			RouteEvent.response.setHeader('Content-Type', 'text/event-stream');
-			RouteEvent.response.setHeader('Cache-Control', 'no-cache');
-			RouteEvent.response.removeHeader('Transfer-Encoding');
-			RouteEvent.response.flushHeaders();
-		}
-		
-		let lines : string[] = [];
-
-		if (event.event)
-			lines.push(`event: ${event.event}`);
-		if (event.id)
-			lines.push(`id: ${event.id}`);
-		if (event.retry)
-			lines.push(`retry: ${event.retry}`);
-
-		if (event.data) {
-			lines.push(`data: ${JSON.stringify(event.data)}`);
-		}
-
-		RouteEvent.request.socket.write(`${lines.join("\n")}\n\n`);
-	}
-
-	static async sendEvent(event : ServerSentEvent) {
-		RouteEvent.current.sendEvent(event);
-	}
-
-	/**
-	 * Is the client still connected?
-	 */
-	static get connected() {
-		return this.current.connected;
-	}
-
-	static with<T>(routeEvent : RouteEvent, callback : () => T): T {
-		let zone = Zone.current.fork({
-			name: `RouteEventZone`,
-			properties: {
-				'@alterior/web-server:RouteEvent.current': routeEvent
-			}
-		});
-
-		return zone.run(callback);
-	}
 }
 
 export interface RouteOptions {

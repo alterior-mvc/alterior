@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Patch, Delete, Options, RouteEvent, Mount } from './metadata';
+import { Controller, Get, Post, Put, Patch, Delete, Options, WebEvent, Mount } from './metadata';
 import { suite } from 'razmin';
 import { expect } from 'chai';
 import * as bodyParser from 'body-parser';
@@ -27,32 +27,32 @@ function fakeAppVarietyOfMethods() {
 	})
 	class FakeApp {
 		@Get('/foo')
-		getX(ev : RouteEvent) {
+		getX(ev : WebEvent) {
 			ev.response.status(200).send(JSON.stringify({foo:"get"}));
 		}
 
 		@Post('/foo')
-		postX(ev : RouteEvent) {
+		postX(ev : WebEvent) {
 			ev.response.status(200).send(JSON.stringify({foo:"post"}));
 		}
 
 		@Put('/foo')
-		putX(ev : RouteEvent) {
+		putX(ev : WebEvent) {
 			ev.response.status(200).send(JSON.stringify({foo:"put"}));
 		}
 
 		@Patch('/foo')
-		patchX(ev : RouteEvent) {
+		patchX(ev : WebEvent) {
 			ev.response.status(200).send(JSON.stringify({foo:"patch"}));
 		}
 
 		@Delete('/foo')
-		deleteX(ev : RouteEvent) {
+		deleteX(ev : WebEvent) {
 			ev.response.status(200).send(JSON.stringify({foo:"delete"}));
 		}
 
 		@Options('/foo')
-		optionsX(ev : RouteEvent) {
+		optionsX(ev : WebEvent) {
 			ev.response.status(200).send(JSON.stringify({foo:"options"}));
 		}
 
@@ -76,7 +76,7 @@ suite(describe => {
 			@WebService()
 			class TestModule {
 				@Get('/foo')
-				foo(ev : RouteEvent) {
+				foo(ev : WebEvent) {
 					ev.response.status(200).send({foo:123});
 				}
 			}
@@ -161,7 +161,7 @@ suite(describe => {
 			@WebService()
 			class FakeApp {
 				@Get('/foo')
-				getX(ev : RouteEvent) {
+				getX(ev : WebEvent) {
 					return {foo:"we promised"};
 				}
 			}
@@ -292,7 +292,7 @@ suite(describe => {
 						}
 					]
 				})
-				getX(ev : RouteEvent) {
+				getX(ev : WebEvent) {
 					return ev.request['fun'];
 				}
 			}
@@ -357,7 +357,7 @@ suite(describe => {
 			@WebService()
 			class FakeApp {
 				@Get('/foo')
-				getX(@QueryParam('q') q : string, ev : RouteEvent) { // note they are swapped
+				getX(@QueryParam('q') q : string, ev : WebEvent) { // note they are swapped
 					observedEvent = ev;
 					observedQ = q;
 
@@ -384,7 +384,7 @@ suite(describe => {
 			@WebService()
 			class FakeApp {
 				@Get('/foo')
-				getX(@QueryParam('q') q : number, ev : RouteEvent) { // note they are swapped
+				getX(@QueryParam('q') q : number, ev : WebEvent) { // note they are swapped
 					observedEvent = ev;
 					observedQ = q;
 
@@ -411,7 +411,7 @@ suite(describe => {
 			@WebService()
 			class FakeApp {
 				@Get('/foo/:num')
-				getX(num : number, ev : RouteEvent) { // note they are swapped
+				getX(num : number, ev : WebEvent) { // note they are swapped
 					observedEvent = ev;
 					observedNum = num;
 
@@ -433,13 +433,13 @@ suite(describe => {
 
 		it('should respond with 400 when expecting a number PathParam but a string is provided', async () => {
 
-			let observedEvent : RouteEvent;
+			let observedEvent : WebEvent;
 			let observedNum : number = undefined;
 			let executed = false;
 			@WebService()
 			class FakeApp {
 				@Get('/foo/:num')
-				getX(num : number, ev : RouteEvent) { // note they are swapped
+				getX(num : number, ev : WebEvent) { // note they are swapped
 					executed = true;
 					observedEvent = ev;
 					observedNum = num;
@@ -466,7 +466,7 @@ suite(describe => {
 			@WebService()
 			class FakeApp {
 				@Get('/foo')
-				getX(@QueryParam('q') q : number, ev : RouteEvent) { // note they are swapped
+				getX(@QueryParam('q') q : number, ev : WebEvent) { // note they are swapped
 					observedEvent = ev;
 					observedQ = q;
 
@@ -924,13 +924,13 @@ suite(describe => {
 			expect(counter).to.equal(1);
 		});
 
-		it('should be able to inject RouteEvent instead of request/response', async () => {
+		it('should be able to inject WebEvent instead of request/response', async () => {
 			let observedEvent;
 
 			@WebService()
 			class FakeApp { 
 				@Post('/foo')
-				getX(ev : RouteEvent) { 
+				getX(ev : WebEvent) { 
 					observedEvent = ev;
 					return Promise.resolve({ok: true});
 				}
