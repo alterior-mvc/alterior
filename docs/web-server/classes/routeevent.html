@@ -85,8 +85,29 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="routeevent.html#connected" class="tsd-kind-icon">connected</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="routeevent.html#controller" class="tsd-kind-icon">controller</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="routeevent.html#request" class="tsd-kind-icon">request</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="routeevent.html#response" class="tsd-kind-icon">response</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Accessors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-static"><a href="routeevent.html#connected-1" class="tsd-kind-icon">connected</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-static"><a href="routeevent.html#controller-1" class="tsd-kind-icon">controller</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-static"><a href="routeevent.html#current" class="tsd-kind-icon">current</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-static"><a href="routeevent.html#request-1" class="tsd-kind-icon">request</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-static"><a href="routeevent.html#response-1" class="tsd-kind-icon">response</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="routeevent.html#context" class="tsd-kind-icon">context</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="routeevent.html#sendevent" class="tsd-kind-icon">send<wbr>Event</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="routeevent.html#sendevent-1" class="tsd-kind-icon">send<wbr>Event</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static"><a href="routeevent.html#with" class="tsd-kind-icon">with</a></li>
 							</ul>
 						</section>
 					</div>
@@ -104,7 +125,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/metadata/route.ts#L69">src/metadata/route.ts:69</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/metadata/route.ts#L76">src/metadata/route.ts:76</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -124,12 +145,37 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="connected" class="tsd-anchor"></a>
+					<h3>connected</h3>
+					<div class="tsd-signature tsd-kind-icon">connected<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/metadata/route.ts#L90">src/metadata/route.ts:90</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Is the client still connected?</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="controller" class="tsd-anchor"></a>
+					<h3>controller</h3>
+					<div class="tsd-signature tsd-kind-icon">controller<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/metadata/route.ts#L85">src/metadata/route.ts:85</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="request" class="tsd-anchor"></a>
 					<h3>request</h3>
 					<div class="tsd-signature tsd-kind-icon">request<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">express.Request</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/metadata/route.ts#L75">src/metadata/route.ts:75</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/metadata/route.ts#L83">src/metadata/route.ts:83</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -139,9 +185,243 @@
 					<div class="tsd-signature tsd-kind-icon">response<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">express.Response</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/metadata/route.ts#L76">src/metadata/route.ts:76</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/metadata/route.ts#L84">src/metadata/route.ts:84</a></li>
 						</ul>
 					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Accessors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+					<a name="connected-1" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> connected</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> connected<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/metadata/route.ts#L156">src/metadata/route.ts:156</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Is the client still connected?</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+					<a name="controller-1" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> controller</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> controller<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/metadata/route.ts#L108">src/metadata/route.ts:108</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+					<a name="current" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> current</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> current<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="routeevent.html" class="tsd-signature-type">RouteEvent</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/metadata/route.ts#L92">src/metadata/route.ts:92</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="routeevent.html" class="tsd-signature-type">RouteEvent</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+					<a name="request-1" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> request</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> request<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Request</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ParamsDictionary</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ParsedQs</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/metadata/route.ts#L100">src/metadata/route.ts:100</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Request</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ParamsDictionary</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ParsedQs</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+					<a name="response-1" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> response</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> response<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/metadata/route.ts#L104">src/metadata/route.ts:104</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+					<a name="context" class="tsd-anchor"></a>
+					<h3>context</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">context&lt;T&gt;<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/metadata/route.ts#L96">src/metadata/route.ts:96</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>callback: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">T</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-signature">
+											<ul class="tsd-signatures tsd-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="sendevent" class="tsd-anchor"></a>
+					<h3>send<wbr>Event</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">send<wbr>Event<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><a href="../interfaces/serversentevent.html" class="tsd-signature-type">ServerSentEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/metadata/route.ts#L116">src/metadata/route.ts:116</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Send a server-sent-event to the client as part of a &quot;text/event-stream&quot; response</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>event: <a href="../interfaces/serversentevent.html" class="tsd-signature-type">ServerSentEvent</a></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="sendevent-1" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> send<wbr>Event</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">send<wbr>Event<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><a href="../interfaces/serversentevent.html" class="tsd-signature-type">ServerSentEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/metadata/route.ts#L149">src/metadata/route.ts:149</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>event: <a href="../interfaces/serversentevent.html" class="tsd-signature-type">ServerSentEvent</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
+					<a name="with" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> with</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">with&lt;T&gt;<span class="tsd-signature-symbol">(</span>routeEvent<span class="tsd-signature-symbol">: </span><a href="routeevent.html" class="tsd-signature-type">RouteEvent</a>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/metadata/route.ts#L160">src/metadata/route.ts:160</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>routeEvent: <a href="routeevent.html" class="tsd-signature-type">RouteEvent</a></h5>
+								</li>
+								<li>
+									<h5>callback: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">T</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-signature">
+											<ul class="tsd-signatures tsd-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -164,10 +444,43 @@
 								<a href="routeevent.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="routeevent.html#connected" class="tsd-kind-icon">connected</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="routeevent.html#controller" class="tsd-kind-icon">controller</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="routeevent.html#request" class="tsd-kind-icon">request</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="routeevent.html#response" class="tsd-kind-icon">response</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+								<a href="routeevent.html#connected-1" class="tsd-kind-icon">connected</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+								<a href="routeevent.html#controller-1" class="tsd-kind-icon">controller</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+								<a href="routeevent.html#current" class="tsd-kind-icon">current</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+								<a href="routeevent.html#request-1" class="tsd-kind-icon">request</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
+								<a href="routeevent.html#response-1" class="tsd-kind-icon">response</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+								<a href="routeevent.html#context" class="tsd-kind-icon">context</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="routeevent.html#sendevent" class="tsd-kind-icon">send<wbr>Event</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="routeevent.html#sendevent-1" class="tsd-kind-icon">send<wbr>Event</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
+								<a href="routeevent.html#with" class="tsd-kind-icon">with</a>
 							</li>
 						</ul>
 					</li>

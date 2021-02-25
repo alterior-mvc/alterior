@@ -74,25 +74,25 @@
 					Injectors provide the dependencies specified when they are resolved
 					and if no matching dependency is found, the request is forwarded
 				to the parent injector.</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { ReflectiveInjector, Injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/di'</span>;
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { ReflectiveInjector, Injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@alterior/di&#x27;</span>;
 
 <span class="hljs-meta">@Injectable</span>()
-<span class="hljs-keyword">class</span> TestService {
-    <span class="hljs-keyword">constructor</span>(<span class="hljs-params">readonly date : <span class="hljs-built_in">Date</span></span>) {
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TestService</span> </span>{
+    <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">readonly</span> date : <span class="hljs-built_in">Date</span></span>)</span> {
     }
 
-    hello() {
-        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Hello! The time is <span class="hljs-subst">${<span class="hljs-keyword">this</span>.date.toString()}</span>`</span>);
+    <span class="hljs-function"><span class="hljs-title">hello</span>(<span class="hljs-params"></span>)</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Hello! The time is <span class="hljs-subst">${<span class="hljs-built_in">this</span>.date.toString()}</span>`</span>);
     }
 }
 
 <span class="hljs-keyword">let</span> injector = ReflectiveInjector.resolveAndCreate([
-    { provide: <span class="hljs-string">'Test'</span>, useValue: <span class="hljs-number">123</span> },
-    { provide: <span class="hljs-built_in">Date</span>, useValue: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>() },
+    { <span class="hljs-attr">provide</span>: <span class="hljs-string">&#x27;Test&#x27;</span>, <span class="hljs-attr">useValue</span>: <span class="hljs-number">123</span> },
+    { <span class="hljs-attr">provide</span>: <span class="hljs-built_in">Date</span>, <span class="hljs-attr">useValue</span>: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>() },
     TestService
 ]);
 
-<span class="hljs-built_in">console</span>.log(injector.get(<span class="hljs-string">'Test'</span>));
+<span class="hljs-built_in">console</span>.log(injector.get(<span class="hljs-string">&#x27;Test&#x27;</span>));
 <span class="hljs-built_in">console</span>.log(injector.get(<span class="hljs-built_in">Date</span>));
 injector.get(TestService).hello();</code></pre>
 				<a href="#injectors" id="injectors" style="color: inherit; text-decoration: none;">
@@ -146,7 +146,7 @@ injector.get(TestService).hello();</code></pre>
 				<p>If <code>MyClass</code> is not provided by the injector (or any of its parents)
 					an exception will be thrown. You can change this behavior by passing
 				a second parameter to <code>get()</code>:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> <span class="hljs-built_in">number</span> = injector.get(<span class="hljs-string">'SomeNumber'</span>, <span class="hljs-number">999</span>);</code></pre>
+				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> <span class="hljs-built_in">number</span> = injector.get(<span class="hljs-string">&#x27;SomeNumber&#x27;</span>, <span class="hljs-number">999</span>);</code></pre>
 				<p>Here <code>number</code> will be <code>999</code> if <code>injector</code> does not provide <code>&#39;SomeNumber&#39;</code>.
 				You can use this to avoid throwing an exception if the value is not present:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> instance = injector.get(MyClass, <span class="hljs-literal">null</span>);</code></pre>

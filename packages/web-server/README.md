@@ -306,7 +306,7 @@ export class MyService {
 
 # Server-Sent Events
 
-You can use `RouteEvent.sendEvent()` to send an event stream response back to the client. For more information about 
+You can use `WebEvent.sendEvent()` to send an event stream response back to the client. For more information about 
 server-sent events, see https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
 
 The `data` field is serialized into JSON for you. Note that Server-Sent Events over HTTP/1.1 is not ideal as modern 
@@ -315,9 +315,9 @@ browsers only allow a maximum of six (6) connections to a given server. However,
 ```typescript
 @Get('/sse')
 async sse() {
-    while (RouteEvent.connected) {
+    while (WebEvent.connected) {
         await timeout(1000);
-        await RouteEvent.sendEvent({ event: 'ping', data: { message: 'are you still there?' } });
+        await WebEvent.sendEvent({ event: 'ping', data: { message: 'are you still there?' } });
     }
 }
 ```

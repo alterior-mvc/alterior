@@ -924,7 +924,7 @@ suite(describe => {
 			expect(counter).to.equal(1);
 		});
 
-		it('should be able to inject RouteEvent instead of request/response', async () => {
+		it('should be able to inject WebEvent instead of request/response', async () => {
 			let observedEvent;
 
 			@WebService()

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ExpressRef | @alterior/web-server</title>
+	<title>CertificateGenerator | @alterior/web-server</title>
 	<meta name="description" content="Documentation for @alterior/web-server">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="expressref.html">ExpressRef</a>
+					<a href="certificategenerator.html">CertificateGenerator</a>
 				</li>
 			</ul>
-			<h1>Class ExpressRef</h1>
+			<h1>Class CertificateGenerator</h1>
 		</div>
 	</div>
 </header>
@@ -68,7 +68,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ExpressRef</span>
+						<span class="target">CertificateGenerator</span>
 					</li>
 				</ul>
 			</section>
@@ -77,25 +77,41 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="expressref.html#application" class="tsd-kind-icon">application</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="certificategenerator.html#generate" class="tsd-kind-icon">generate</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="application" class="tsd-anchor"></a>
-					<h3>application</h3>
-					<div class="tsd-signature tsd-kind-icon">application<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">express.Application</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/web-server/src/express-ref.ts#L4">src/express-ref.ts:4</a></li>
-						</ul>
-					</aside>
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="generate" class="tsd-anchor"></a>
+					<h3>generate</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">generate<span class="tsd-signature-symbol">(</span>attrs<span class="tsd-signature-symbol">: </span><a href="../globals.html#certattributes" class="tsd-signature-type">CertAttributes</a>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/generatoroptions.html" class="tsd-signature-type">GeneratorOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/generatedcertificate.html" class="tsd-signature-type">GeneratedCertificate</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/web-server/src/certificate-generator.ts#L47">src/certificate-generator.ts:47</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>attrs: <a href="../globals.html#certattributes" class="tsd-signature-type">CertAttributes</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <a href="../interfaces/generatoroptions.html" class="tsd-signature-type">GeneratorOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/generatedcertificate.html" class="tsd-signature-type">GeneratedCertificate</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -112,10 +128,10 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
-						<a href="expressref.html" class="tsd-kind-icon">Express<wbr>Ref</a>
+						<a href="certificategenerator.html" class="tsd-kind-icon">Certificate<wbr>Generator</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="expressref.html#application" class="tsd-kind-icon">application</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="certificategenerator.html#generate" class="tsd-kind-icon">generate</a>
 							</li>
 						</ul>
 					</li>

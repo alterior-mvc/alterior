@@ -83,7 +83,7 @@
 					it, so you must ensure your app loads it. In earlier versions you can skip this
 				step.</p>
 				<p>To enable this add the following in <code>polyfills.ts</code>:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> <span class="hljs-string">'reflect-metadata'</span>;</code></pre>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> <span class="hljs-string">&#x27;reflect-metadata&#x27;</span>;</code></pre>
 				<p>Alterior modules cannot be directly used as Angular modules.</p>
 				<ul>
 					<li>Alterior has its own lifecycle hooks that Angular does not understand</li>
@@ -91,10 +91,10 @@
 					<li>Angular&#39;s module system is not built in a way that allows for direct compatibility with other frameworks (something we&#39;d love to work with them on) </li>
 				</ul>
 				<p>Instead, <code>@alterior/platform-angular</code> provides a way to bootstrap one or more Alterior modules and export the resulting dependency injection providers in a format that Angular can understand. </p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { AngularPlatform } <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/platform-angular'</span>;
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { AngularPlatform } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@alterior/platform-angular&#x27;</span>;
 
 <span class="hljs-meta">@NgModule</span>({
-    providers: [ <span class="hljs-comment">// &lt;-- *not* imports</span>
+    <span class="hljs-attr">providers</span>: [ <span class="hljs-comment">// &lt;-- *not* imports</span>
         AngularPlatform.bridge(
             MyAlteriorModule1,
             MyAlteriorModule2,
@@ -102,32 +102,32 @@
         )
     ]
 })
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> AppModule {
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AppModule</span> </span>{
 }</code></pre>
 				<p>This will bootstrap a dynamic Alterior app module which <code>imports</code> the given modules and passes back its injectable dependencies so that your Angular module can register them. </p>
 				<p>Because Alterior is bootstrapped just like it is on the server-side, all
 				defined lifecycle events work as they do normally.</p>
 				<p><code>AngularPlatform.bridge()</code> also provides all of Alterior&#39;s base services to
 				your Angular app, so you can, for instance, start (<code>altOnStart()</code>) all the Alterior modules you&#39;ve loaded:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Component, OnInit } <span class="hljs-keyword">from</span> <span class="hljs-string">'@angular/core'</span>;
-<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> AltRuntime <span class="hljs-keyword">from</span> <span class="hljs-string">'@alterior/runtime'</span>;
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Component, OnInit } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@angular/core&#x27;</span>;
+<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> AltRuntime <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@alterior/runtime&#x27;</span>;
 
 <span class="hljs-meta">@Component</span>(<span class="hljs-comment">/* ... */</span>)
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> AppComponent <span class="hljs-keyword">extends</span> OnInit {
-    <span class="hljs-keyword">constructor</span>(<span class="hljs-params">
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AppComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">OnInit</span> </span>{
+    <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">
         <span class="hljs-keyword">private</span> altApp : AltRuntime.Application
-    </span>) {
+    </span>)</span> {
 
     }
 
-    ngOnInit() {
-        <span class="hljs-keyword">this</span>.altApp.start();
+    <span class="hljs-function"><span class="hljs-title">ngOnInit</span>(<span class="hljs-params"></span>)</span> {
+        <span class="hljs-built_in">this</span>.altApp.start();
     }
 
     <span class="hljs-comment">// you can also stop the Alterior app:</span>
     <span class="hljs-comment">// - presumably connected to some button in the template</span>
-    onStopButtonClicked() {
-        <span class="hljs-keyword">this</span>.altApp.stop();
+    <span class="hljs-function"><span class="hljs-title">onStopButtonClicked</span>(<span class="hljs-params"></span>)</span> {
+        <span class="hljs-built_in">this</span>.altApp.stop();
     }
 }</code></pre>
 			</div>

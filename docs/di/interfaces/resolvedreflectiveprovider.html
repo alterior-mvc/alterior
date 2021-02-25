@@ -74,10 +74,10 @@
 					<a href="#example-live-demo" id="example-live-demo" style="color: inherit; text-decoration: none;">
 						<h3>Example (<a href="http://plnkr.co/edit/RfEnhh8kUEI0G3qsnIeT?p%3Dpreview&amp;p=preview">live demo</a>)</h3>
 					</a>
-					<pre><code class="language-typescript"><span class="hljs-keyword">var</span> resolvedProviders = Injector.resolve([{ provide: <span class="hljs-string">'message'</span>, useValue: <span class="hljs-string">'Hello'</span> }]);
+					<pre><code class="language-typescript"><span class="hljs-keyword">var</span> resolvedProviders = Injector.resolve([{ <span class="hljs-attr">provide</span>: <span class="hljs-string">&#x27;message&#x27;</span>, <span class="hljs-attr">useValue</span>: <span class="hljs-string">&#x27;Hello&#x27;</span> }]);
 <span class="hljs-keyword">var</span> injector = Injector.fromResolvedProviders(resolvedProviders);
 
-expect(injector.get(<span class="hljs-string">'message'</span>)).toEqual(<span class="hljs-string">'Hello'</span>);</code></pre>
+expect(injector.get(<span class="hljs-string">&#x27;message&#x27;</span>)).toEqual(<span class="hljs-string">&#x27;Hello&#x27;</span>);</code></pre>
 					<dl class="tsd-comment-tags">
 						<dt>experimental</dt>
 						<dd></dd>
@@ -121,7 +121,7 @@ expect(injector.get(<span class="hljs-string">'message'</span>)).toEqual(<span c
 					<div class="tsd-signature tsd-kind-icon">key<span class="tsd-signature-symbol">:</span> <a href="../classes/reflectivekey.html" class="tsd-signature-type">ReflectiveKey</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/reflective_provider.ts#L58">packages/di/src/injection/reflective_provider.ts:58</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_provider.ts#L58">packages/di/src/injection/reflective_provider.ts:58</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -136,7 +136,7 @@ expect(injector.get(<span class="hljs-string">'message'</span>)).toEqual(<span c
 					<div class="tsd-signature tsd-kind-icon">multi<wbr>Provider<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/reflective_provider.ts#L68">packages/di/src/injection/reflective_provider.ts:68</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_provider.ts#L68">packages/di/src/injection/reflective_provider.ts:68</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -151,7 +151,7 @@ expect(injector.get(<span class="hljs-string">'message'</span>)).toEqual(<span c
 					<div class="tsd-signature tsd-kind-icon">resolved<wbr>Factories<span class="tsd-signature-symbol">:</span> <a href="../classes/resolvedreflectivefactory.html" class="tsd-signature-type">ResolvedReflectiveFactory</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/9241837/packages/di/src/injection/reflective_provider.ts#L63">packages/di/src/injection/reflective_provider.ts:63</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_provider.ts#L63">packages/di/src/injection/reflective_provider.ts:63</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">

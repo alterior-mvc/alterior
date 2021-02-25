@@ -27,7 +27,7 @@ export class WebEvent {
 	connected = true;
 
 	static get current(): WebEvent {
-		return Zone.current.get('@alterior/web-server:RouteEvent.current');
+		return Zone.current.get('@alterior/web-server:WebEvent.current');
 	}
 
 	context<T>(callback : () => T): T {
@@ -96,9 +96,9 @@ export class WebEvent {
 
 	static with<T>(routeEvent : WebEvent, callback : () => T): T {
 		let zone = Zone.current.fork({
-			name: `RouteEventZone`,
+			name: `WebEventZone`,
 			properties: {
-				'@alterior/web-server:RouteEvent.current': routeEvent
+				'@alterior/web-server:WebEvent.current': routeEvent
 			}
 		});
 
