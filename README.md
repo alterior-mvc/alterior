@@ -1,4 +1,4 @@
-# ![Alterior](./logo.svg) [![CircleCI](https://circleci.com/gh/alterior-mvc/alterior/tree/4.x.svg?style=shield)](https://circleci.com/gh/alterior-mvc/alterior/tree/4.x) [![Join the chat at https://gitter.im/alterior-mvc/Lobby](https://badges.gitter.im/alterior-core/Lobby.svg)](https://gitter.im/alterior-mvc/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![License](https://img.shields.io/npm/l/@alterior/runtime.svg)
+# ![Alterior](./logo.svg) [![CircleCI](https://circleci.com/gh/alterior-mvc/alterior/tree/main.svg?style=shield)](https://circleci.com/gh/alterior-mvc/alterior/tree/main) [![Join the chat at https://gitter.im/alterior-mvc/Lobby](https://badges.gitter.im/alterior-core/Lobby.svg)](https://gitter.im/alterior-mvc/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![License](https://img.shields.io/npm/l/@alterior/runtime.svg)
 
 [NPM](https://www.npmjs.com/org/alterior) | [Github](https://github.com/alterior-mvc/alterior) | [API reference](https://alterior-mvc.github.io/alterior/index.html?)
 
@@ -6,10 +6,8 @@ A framework for building well-structured applications and isomorphic libraries i
 
 # Status
 
-Alterior has three major versions.
-- (**`unsupported`**) [v2.x](https://github.com/alterior-mvc/alterior/tree/2.x) is now retired.
-- (**`beta`**) [v3.x](https://github.com/alterior-mvc/alterior/tree/main) is the current stable version, but it has been in a beta semver holding pattern as final details are worked out and the library is battle tested on internal projects at Astronaut Labs and elsewhere. Final production release is imminent and 3.x will be officially recommended for production use.
-- (**`next`**) [v4.x](https://github.com/alterior-mvc/alterior/tree/4.x) development started in Feb 2021. 4.x APIs builds on the architecture of 3.x with small (but backwards incompatible) changes to enable [Transparent Services](https://github.com/alterior-mvc/alterior/wiki/TransparentServicesPlanning). 4.x also requires use of a custom build process handled by a new CLI tool called `alt`.
+> **Note:**  
+> Alterior is in **`beta`**, though it is approaching a final release soon.
 
 # Overview
 
@@ -64,7 +62,7 @@ For more information on building web services with Alterior, see [@alterior/web-
 
 ## Consuming your web service
 
-A web service built with Alterior 4 can be consumed on the client transparently. This is an example of a [Transparent Service](https://github.com/alterior-mvc/alterior/wiki/TransparentServicesPlanning)
+A web service built with Alterior can be consumed on the client transparently. This is an example of a [Transparent Service](https://github.com/alterior-mvc/alterior/wiki/TransparentServicesPlanning)
 
 ```typescript
 import { MyWebService } from '@example/my-backend';
@@ -121,6 +119,14 @@ npm publish
 ```
 
 Alterior automatically handles everything needed to build and publish your application, including removing your actual backend code if you have asked for that.
+
+## Do I have to use the CLI?
+
+You can build an Alterior project using `tsc` (or any other Typescript compiler) if you wish, but not all of Alterior's features will be available. Transparent Services in particular are enabled via the Alterior CLI build process, so much of the benefits of that feature would be unavailable without additional work.
+
+Additionally, Alterior's builtin build process emits runtime type reflection information for all elements, even when there are no decorators present. Typescript itself only emits type metadata for decorated elements, so you may have to add decorators where there are none are needed when Alterior is built by its own CLI. 
+
+If you choose not to use Alterior CLI's build step, you may want to use the [ttypescript](https://github.com/cevek/ttypescript) frontend instead of `tsc` and add a transform for emitting all type metadata. The one that Alterior uses is currently built-in to `@alterior/cli`, but we plan to roll it out as a standalone transformer in the near future.
 
 # Mechanics
 
