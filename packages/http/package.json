@@ -45,7 +45,7 @@
     "rxjs": "^6.5.5",
     "xhr2": "^0.1.4"
   },
-  "gitHead": "48a32c2d232db270e1b4c4db5a373c28f1b48347",
+  "gitHead": "29b7c6e1b53dc5fa667c2e22cd34d3e16bdce69d",
   "devDependencies": {
     "razmin": "^0.6.18",
     "rimraf": "^3.0.2",
