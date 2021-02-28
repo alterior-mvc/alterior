@@ -144,7 +144,7 @@ export class ServiceGenerator extends Generator {
                 @WebService()
                 export class ${capitalize(this.projectName)} {
                     @Get()
-                    info() {
+                    async info() {
                         return { 
                             service: PKG.name,
                             version: PKG.version
