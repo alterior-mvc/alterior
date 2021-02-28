@@ -13,6 +13,7 @@ import { ExpressEngine } from './express-engine';
 import { WebServerOptions } from './web-server-options';
 import { ServiceDescription } from './service-description';
 import { ServiceDescriptionRef } from './service-description-ref';
+import { WebConduit } from './web-conduit';
 
 /**
  * Implements a web server which is comprised of a set of Controllers.
@@ -183,6 +184,10 @@ export class WebServer {
 		}
 	}
 
+	async startConduit() {
+		return new WebConduit(await this.startSocket());
+	}
+
 	async startSocket() {
 		if (!WebEvent.current)
 			throw new Error(`WebSocket.start() can only be called while handling an incoming HTTP request`);
@@ -208,6 +213,10 @@ export class WebServer {
 
 	static async startSocket() {
 		return WebServer.for(WebEvent.controller).startSocket();
+	}
+
+	static async startConduit() {
+		return WebServer.for(WebEvent.controller).startConduit();
 	}
 
 	/**
