@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "exit 0"
   },
+  "private": true,
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@alterior/common": "^3.0.0-beta.76",
     "@alterior/runtime": "^3.0.0-beta.76",
     "@alterior/web-server": "^3.0.0-beta.76"
-  }
+  },
+  "gitHead": "29b7c6e1b53dc5fa667c2e22cd34d3e16bdce69d"
 }
