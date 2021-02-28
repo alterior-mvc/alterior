@@ -24,7 +24,7 @@ export class ServiceGenerator extends Generator {
             '@alterior/web-server',
             '@alterior/logging',
             '@alterior/di',
-            //'@alterior/cli',
+            '@alterior/cli',
             'express-ws',
             'node-fetch',
             'ws',
@@ -76,8 +76,8 @@ export class ServiceGenerator extends Generator {
         if (!pkgJson.scripts)
             pkgJson.scripts = {};
 
-        pkgJson.scripts.build = "npm run clean && tsc --incremental";
-        pkgJson.scripts.rebuild = "tsc --incremental";
+        pkgJson.scripts.build = "npm run clean && alt build";
+        pkgJson.scripts.rebuild = "alt build";
         pkgJson.scripts.test = "npm run build && node dist/test";
         pkgJson.scripts.start = "npm run build && node dist/main";
         pkgJson.scripts.clean = "rimraf dist .tsbuildinfo";
@@ -185,6 +185,14 @@ export class ServiceGenerator extends Generator {
             unindent(
                 `
                 export * from './${this.projectName}.module';
+                `
+            )
+        );
+        await writeTextFile(
+            path.join('src', 'index.ts'), 
+            unindent(
+                `
+                export { ${capitalize(this.projectName)} } from './${this.projectName}';
                 `
             )
         );
