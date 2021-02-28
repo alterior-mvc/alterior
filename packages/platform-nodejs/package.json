@@ -1,6 +1,6 @@
 {
   "name": "@alterior/platform-nodejs",
-  "version": "3.0.0-beta.75",
+  "version": "3.0.0-beta.76",
   "description": "Smoother experience for Alterior on Node.js",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -12,7 +12,9 @@
   "bugs": {
     "url": "https://github.com/alterior-mvc/alterior/issues"
   },
-  "keywords": ["nodejs"],
+  "keywords": [
+    "nodejs"
+  ],
   "main": "dist/index.js",
   "module": "dist.esm/index.js",
   "types": "dist/index.d.ts",

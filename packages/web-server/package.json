@@ -1,6 +1,6 @@
 {
   "name": "@alterior/web-server",
-  "version": "3.0.0-beta.75",
+  "version": "3.0.0-beta.76",
   "description": "Declarative framework for building REST services",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -41,11 +41,11 @@
     "docs": "typedoc ."
   },
   "dependencies": {
-    "@alterior/annotations": "^3.0.0-beta.75",
-    "@alterior/common": "^3.0.0-beta.75",
-    "@alterior/di": "^3.0.0-beta.75",
-    "@alterior/logging": "^3.0.0-beta.75",
-    "@alterior/runtime": "^3.0.0-beta.75",
+    "@alterior/annotations": "^3.0.0-beta.76",
+    "@alterior/common": "^3.0.0-beta.76",
+    "@alterior/di": "^3.0.0-beta.76",
+    "@alterior/logging": "^3.0.0-beta.76",
+    "@alterior/runtime": "^3.0.0-beta.76",
     "@avejidah/get-parameter-names": "^0.3.2",
     "@types/supertest": "^2.0.9",
     "body-parser": "^1.19.0",

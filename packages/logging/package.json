@@ -1,6 +1,6 @@
 {
   "name": "@alterior/logging",
-  "version": "3.0.0-beta.75",
+  "version": "3.0.0-beta.76",
   "description": "Configurable context-aware logging",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -12,7 +12,12 @@
   "bugs": {
     "url": "https://github.com/alterior-mvc/alterior/issues"
   },
-  "keywords": ["logging", "configurable", "DI", "zone"],
+  "keywords": [
+    "logging",
+    "configurable",
+    "DI",
+    "zone"
+  ],
   "main": "dist/index.js",
   "module": "dist.esm/index.js",
   "types": "dist/index.d.ts",
@@ -33,10 +38,10 @@
     "docs": "typedoc ."
   },
   "dependencies": {
-    "@alterior/annotations": "^3.0.0-beta.75",
-    "@alterior/common": "^3.0.0-beta.75",
-    "@alterior/di": "^3.0.0-beta.75",
-    "@alterior/runtime": "^3.0.0-beta.75",
+    "@alterior/annotations": "^3.0.0-beta.76",
+    "@alterior/common": "^3.0.0-beta.76",
+    "@alterior/di": "^3.0.0-beta.76",
+    "@alterior/runtime": "^3.0.0-beta.76",
     "dotenv": "^6.0.0",
     "rxjs": "^6.5.5"
   },
