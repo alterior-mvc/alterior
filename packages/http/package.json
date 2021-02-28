@@ -1,6 +1,6 @@
 {
   "name": "@alterior/http",
-  "version": "3.0.0-beta.77",
+  "version": "3.0.0-beta.78",
   "description": "Flexible and configurable HTTP client",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -39,9 +39,9 @@
     "docs": "typedoc ."
   },
   "dependencies": {
-    "@alterior/common": "^3.0.0-beta.77",
-    "@alterior/di": "^3.0.0-beta.77",
-    "@alterior/runtime": "^3.0.0-beta.77",
+    "@alterior/common": "^3.0.0-beta.78",
+    "@alterior/di": "^3.0.0-beta.78",
+    "@alterior/runtime": "^3.0.0-beta.78",
     "rxjs": "^6.5.5",
     "xhr2": "^0.1.4"
   },
