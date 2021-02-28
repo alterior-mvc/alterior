@@ -1,15 +1,21 @@
 {
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "target": "ES2016",
-        "module": "CommonJS",
-        "moduleResolution": "Node",
-        "declaration": true,
-        "sourceMap": true,
-        "outDir": "dist",
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
+        "rootDir": "./src",
+        "outDir": "./dist"
     },
-    "include": [
-        "src/**/*.ts"
-    ]
+    "include": [ "./src/**/*.ts" ],
+    "typedocOptions": {
+		"mode": "file",
+		"out": "../../docs/di",
+		"target": "ES5",
+		"excludeExternals": true,
+		"excludePrivate": true,
+		"externalPattern": "**/node_modules/**",
+		"exclude": "**/node_modules/**,**/dist*/**,**/example/**,**/*.test.ts",
+		"categoryOrder": [
+		  "Entrypoint",
+		  "*"
+		]
+	}
 }

@@ -1,9 +1,9 @@
-import * as rimraf from "rimraf";
+import rimraf from "rimraf";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import * as process from "process";
-import mkdirp = require("mkdirp");
+import mkdirp from "mkdirp";
 import * as readline from 'readline';
 import { resolve } from "path";
 

@@ -3,6 +3,9 @@
   "version": "3.0.0-beta.79",
   "description": "Tools for building command line tools using Alterior",
   "main": "dist/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "clean": "rimraf dist dist.esm",
     "build": "npm run clean && npm run build:cjs && npm run build:esm",

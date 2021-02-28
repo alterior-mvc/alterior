@@ -23,7 +23,7 @@ export interface ProcessStartInfo {
 export class Process {
     constructor(readonly handle : childProcess.ChildProcess) {
         handle.on('exit', (code, signal) => {
-            this._exited.next({ code, signal });
+            this._exited.next({ code, signal: <NodeJS.Signals>signal });
             this._exited.complete();
         });
 
