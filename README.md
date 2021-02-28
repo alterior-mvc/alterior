@@ -212,7 +212,7 @@ packages as you need them.
 - **[@alterior/common](packages/common/README.md)** Provides many smaller quality-of-life utilities which can save you
 time while you build your applications.  
 
-- **[@alterior/cli](packages/command-line/README.md)** Command line arguments handling  
+- **[@alterior/command-line](packages/command-line/README.md)** Command line arguments handling  
 
 - **[@alterior/cli](packages/cli/README.md)** The Alterior CLI tool  
 
