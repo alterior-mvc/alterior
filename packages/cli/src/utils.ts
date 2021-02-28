@@ -72,8 +72,8 @@ export function removeAll(path : string) : Promise<void> {
     );
 }
 
-export function makeDirectory(path : string): Promise<void> {
-    return new Promise<void>((resolve, reject) => mkdirp(path, err => err ? reject(err) : resolve()));
+export async function makeDirectory(path : string) {
+    await mkdirp(path);
 }
 
 export function fileExists(path : string) : Promise<boolean> {
