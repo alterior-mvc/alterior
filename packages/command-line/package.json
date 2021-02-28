@@ -1,6 +1,7 @@
 {
   "name": "@alterior/command-line",
   "version": "3.0.0-beta.78",
+  "private": true,
   "description": "Tools for building command line tools using Alterior",
   "main": "dist/index.js",
   "scripts": {
@@ -27,5 +28,5 @@
     "@types/node": "^14.14.25",
     "razmin": "^1.0.2"
   },
-  "gitHead": "11e7928eccb88ca50b7eadc77607e34a797f0852"
+  "gitHead": "d5d6ba9e21d280a23f056a5b983f51903be58120"
 }

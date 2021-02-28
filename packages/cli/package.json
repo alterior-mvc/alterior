@@ -3,6 +3,7 @@
   "version": "3.0.0-beta.78",
   "description": "Provides the `alt` command line tool for managing Alterior projects.",
   "main": "dist/index.js",
+  "private": true,
   "scripts": {
     "build": "tsc -p .",
     "start": "npm run build && node dist/main",
@@ -34,5 +35,5 @@
     "reflect-metadata": "^0.1.13",
     "typescript": "^4.1.3"
   },
-  "gitHead": "11e7928eccb88ca50b7eadc77607e34a797f0852"
+  "gitHead": "d5d6ba9e21d280a23f056a5b983f51903be58120"
 }
