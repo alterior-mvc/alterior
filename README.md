@@ -207,71 +207,30 @@ For more information about lifecycle management, see [the Roles section of the @
 Alterior consists of the following individual NPM packages. You can pull in 
 packages as you need them.
 
-- **[@alterior/annotations](packages/annotations/README.md)**  
-  A system for decorating and introspecting standardized metadata on programmatic elements in Typescript  
-  [![Version](https://img.shields.io/npm/v/@alterior/annotations.svg)](https://www.npmjs.com/package/@alterior/annotations)
-  ![Size](https://img.shields.io/bundlephobia/min/@alterior/annotations.svg)
+- **[@alterior/annotations](packages/annotations/README.md)** A system for decorating and introspecting standardized metadata on programmatic elements in Typescript  
   
-- **[@alterior/common](packages/common/README.md)**  
-  Provides many smaller quality-of-life utilities which can save you
+- **[@alterior/common](packages/common/README.md)** Provides many smaller quality-of-life utilities which can save you
 time while you build your applications.  
-  [![Version](https://img.shields.io/npm/v/@alterior/common.svg)](https://www.npmjs.com/package/@alterior/common)
-  ![Size](https://img.shields.io/bundlephobia/min/@alterior/common.svg)
 
-- **[@alterior/cli](packages/command-line/README.md)**  
-  Command line arguments handling
-  [![Version](https://img.shields.io/npm/v/@alterior/command-line.svg)](https://www.npmjs.com/package/@alterior/command-line)
-  ![Size](https://img.shields.io/bundlephobia/min/@alterior/command-line.svg)
+- **[@alterior/cli](packages/command-line/README.md)** Command line arguments handling  
 
-- **[@alterior/cli](packages/cli/README.md)**  
-  The Alterior CLI tool
-  [![Version](https://img.shields.io/npm/v/@alterior/cli.svg)](https://www.npmjs.com/package/@alterior/cli)
-  ![Size](https://img.shields.io/bundlephobia/min/@alterior/cli.svg)
+- **[@alterior/cli](packages/cli/README.md)** The Alterior CLI tool  
 
-- **[@alterior/di](packages/di/README.md)**  
-  Provides a flexible Angular-style dependency injection framework based on `injection-js`  
-  [![Version](https://img.shields.io/npm/v/@alterior/di.svg)](https://www.npmjs.com/package/@alterior/di)
-  ![Size](https://img.shields.io/bundlephobia/min/@alterior/di.svg)
+- **[@alterior/di](packages/di/README.md)** Provides a flexible Angular-style dependency injection framework based on `injection-js`  
 
-- **[@alterior/http](packages/http/README.md)**  
-  HTTP client library as an Alterior module (ported from `@angular/http`)  
-  [![Version](https://img.shields.io/npm/v/@alterior/http.svg)](https://www.npmjs.com/package/@alterior/http)
-  ![Size](https://img.shields.io/bundlephobia/min/@alterior/http.svg)
+- **[@alterior/http](packages/http/README.md)** HTTP client library as an Alterior module (ported from `@angular/http`)  
   
-- **[@alterior/logging](packages/logging/README.md)**  
-  A logging library which supports pluggable listeners and context-tracked logging using `Zone.js`  
-  [![Version](https://img.shields.io/npm/v/@alterior/logging.svg)](https://www.npmjs.com/package/@alterior/logging)
-  ![Size](https://img.shields.io/bundlephobia/min/@alterior/logging.svg)
+- **[@alterior/logging](packages/logging/README.md)** A logging library which supports pluggable listeners and context-tracked logging using `Zone.js`  
 
-- **[@alterior/platform-angular](packages/platform-angular/README.md)**
-  Provides support for loading Alterior modules into an Angular app, including 
-  the ability to access Alterior injectable services from Angular components 
-  and services. Use this to consume isomorphic libraries from within frontend 
-  apps written in Angular.
-  [![Version](https://img.shields.io/npm/v/@alterior/platform-angular.svg)](https://www.npmjs.com/package/@alterior/platform-angular)
-  ![Size](https://img.shields.io/bundlephobia/min/@alterior/platform-angular.svg)
+- **[@alterior/platform-angular](packages/platform-angular/README.md)** Provides support for loading Alterior modules into an Angular app, including the ability to access Alterior injectable services from Angular components and services. Use this to consume isomorphic libraries from within frontend apps written in Angular.
 
-- **[@alterior/platform-nodejs](packages/platform-nodejs/README.md)**
-  Provides support for bootstrapping an Alterior application within the 
-  Node.js server environment.
-  [![Version](https://img.shields.io/npm/v/@alterior/platform-nodejs.svg)](https://www.npmjs.com/package/@alterior/platform-nodejs)
-  ![Size](https://img.shields.io/bundlephobia/min/@alterior/platform-nodejs.svg)
+- **[@alterior/platform-nodejs](packages/platform-nodejs/README.md)** Provides support for bootstrapping an Alterior application within the Node.js server environment.  
 
-- **[@alterior/runtime](packages/runtime/README.md)**  
-  An module-based dependency injection and lifecycle event system similar to 
-  that of Angular, suitable for use in Alterior libraries and applications.
-  [![Version](https://img.shields.io/npm/v/@alterior/runtime.svg)](https://www.npmjs.com/package/@alterior/runtime)
-  ![Size](https://img.shields.io/bundlephobia/min/@alterior/runtime.svg)
+- **[@alterior/runtime](packages/runtime/README.md)** An module-based dependency injection and lifecycle event system similar to that of Angular, suitable for use in Alterior libraries and applications.  
 
-- **[@alterior/tasks](packages/tasks/README.md)**  
-  A system for enqueuing and processing tasks using Redis as it's backing store (based on `bull` queue)  
-  [![Version](https://img.shields.io/npm/v/@alterior/tasks.svg)](https://www.npmjs.com/package/@alterior/tasks)
-  ![Size](https://img.shields.io/bundlephobia/min/@alterior/tasks.svg)
+- **[@alterior/tasks](packages/tasks/README.md)** A system for enqueuing and processing tasks using Redis as it's backing store (based on `bull` queue)
 
-- **[@alterior/web-server](packages/web-server/README.md)**  
-  A system for building RESTful web services declaratively using classes & decorators  
-  [![Version](https://img.shields.io/npm/v/@alterior/web-server.svg)](https://www.npmjs.com/package/@alterior/web-server)
-  ![Size](https://img.shields.io/bundlephobia/min/@alterior/web-server.svg)
+- **[@alterior/web-server](packages/web-server/README.md)** A system for building RESTful web services declaratively using classes & decorators
 
 ## Compatibility
 
