@@ -212,6 +212,16 @@ time while you build your applications.
   [![Version](https://img.shields.io/npm/v/@alterior/common.svg)](https://www.npmjs.com/package/@alterior/common)
   ![Size](https://img.shields.io/bundlephobia/min/@alterior/common.svg)
 
+- **[@alterior/cli](packages/command-line/README.md)**  
+  Command line arguments handling
+  [![Version](https://img.shields.io/npm/v/@alterior/command-line.svg)](https://www.npmjs.com/package/@alterior/command-line)
+  ![Size](https://img.shields.io/bundlephobia/min/@alterior/command-line.svg)
+
+- **[@alterior/cli](packages/cli/README.md)**  
+  The Alterior CLI tool
+  [![Version](https://img.shields.io/npm/v/@alterior/cli.svg)](https://www.npmjs.com/package/@alterior/cli)
+  ![Size](https://img.shields.io/bundlephobia/min/@alterior/cli.svg)
+
 - **[@alterior/di](packages/di/README.md)**  
   Provides a flexible Angular-style dependency injection framework based on `injection-js`  
   [![Version](https://img.shields.io/npm/v/@alterior/di.svg)](https://www.npmjs.com/package/@alterior/di)
