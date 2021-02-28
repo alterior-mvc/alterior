@@ -32,7 +32,7 @@ export class TableRenderer {
     }
 
     rightPad(str : string, length : number) {
-        while (str.length < length)
+        while (`${str}`.length < length)
             str += ' ';
 
         return str;
@@ -43,7 +43,7 @@ export class TableRenderer {
         let columnLengths = [];
 
         for (let column = 0; column < columnCount; ++column) {
-            columnLengths.push(this._rows.reduce((pv, cv) => Math.max(pv, cv[column].length) + 3, 0));
+            columnLengths.push(this._rows.reduce((pv, cv) => Math.max(pv, `${cv[column]}`.length) + 3, 0));
         }
 
         for (let row of this.rows) {

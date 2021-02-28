@@ -1,29 +1,8 @@
 import { Terminal } from "./terminal";
-import * as path from 'path';
+import { CommandLineOption } from "./command-line-option";
+import { CommandLine } from "./command-line";
+import { CommandInfo } from "./command-info";
 
-export interface CommandLineOption {
-    id : string;
-    description : string;
-    short? : string;
-    valueHint? : string;
-    values? : string[];
-    value? : string;
-    present? : boolean;
-    handler? : () => void;
-}
-
-export interface ProgramInfo {
-    executable? : string;
-    description? : string;
-    argumentUsage? : string;
-    version? : string;
-    copyright? : string;
-}
-
-export interface CommandInfo {
-    description? : string;
-    argumentUsage? : string;
-}
 
 export class CommandLineProcessor {
     constructor(readonly parent? : CommandLineProcessor) {
@@ -39,6 +18,10 @@ export class CommandLineProcessor {
 
     handleHelp() {
         this.showHelp();
+        this.exit(0);
+    }
+
+    exit(code : number) {
         process.exit(0);
     }
 
@@ -111,7 +94,7 @@ export class CommandLineProcessor {
 
         if (this._commands.length > 0) {
             this.term.writeLine(`Commands:`);
-            this.term.table(this._commands.map(command => [`  ${command.id}`, command.description]));
+            this.term.table(this._commands.map(command => [`  ${command.id}`, command.description || '' ]));
         }
 
         this.term.writeLine();
@@ -221,13 +204,13 @@ export class CommandLineProcessor {
                 if (!option) {
                     term.writeLine(`Unknown option: ${arg}`);
                     term.writeLine(JSON.stringify(this._options));
-                    process.exit(1);
+                    this.exit(1);
                 }
             } else if (arg.startsWith('-')) {
                 option = this._options.find(x => x.short === arg.slice(1));
                 if (!option) {
                     term.writeLine(`Unknown option: ${arg}`);
-                    process.exit(1);
+                    this.exit(1);
                 }
             }
 
@@ -240,7 +223,7 @@ export class CommandLineProcessor {
                     value = args[++i];
                     if (value === undefined) {
                         term.writeLine(`Missing argument: ${arg} <${option.valueHint}>`);
-                        process.exit(1);
+                        this.exit(1);
                     }
                 }
 
@@ -258,7 +241,7 @@ export class CommandLineProcessor {
                         return;
                     } else {
                         term.writeLine(`No such command: ${arg}`);
-                        process.exit(1);
+                        this.exit(1);
                     }
                 }
 
@@ -271,68 +254,6 @@ export class CommandLineProcessor {
         }
 
         return this;
-    }
-}
-
-export class CommandLine extends CommandLineProcessor {
-    constructor() {
-        super();
-
-        this.option({
-            id: 'version',
-            description: 'Show version information',
-            handler: () => this.handleVersion()
-        })
-    }
-
-    private _info : ProgramInfo = {};
-
-    get commandName() {
-        return `${this._info.executable || path.basename(process.argv[1])}`;
-    }
-
-    info(info : ProgramInfo) {
-        this._info = info;
-        return this;
-    }
-
-    showHelp() {
-        super.showHelp();
-        
-        let info = [];
-
-        if (this._info.version)
-            info.push(`Version ${this._info.version}`);
-        if (this._info.copyright)
-            info.push(`© ${this._info.copyright}`);
-        
-        if (info.length > 0) {
-            this.term.writeLine(info.join("\n"));
-            this.term.writeLine();
-        }
-    }
-
-    get description() {
-        return this._info?.description;
-    }
-
-    get argumentUsage() {
-        return this._info.argumentUsage;
-    }
-
-    handleVersion() {
-        this.showVersion();
-        process.exit(0);
-    }
-
-    showVersion() {
-        this.term.writeLine(`${this.commandName} ${this._info.version || ''}`);
-
-        if (this._info.copyright) {
-            this.term.writeLine(`© ${this._info.copyright}`);
-        }
-
-        this.term.writeLine();
     }
 }
 

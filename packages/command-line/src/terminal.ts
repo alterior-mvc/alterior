@@ -10,12 +10,48 @@ export class NodeTerminalDriver implements TerminalDriver {
     }
 }
 
+export class StringTerminalDriver implements TerminalDriver {
+    buffer : string;
+    write(message: string) {
+        this.buffer += message;
+    }
+}
+
+export class TeeTerminalDriver extends StringTerminalDriver {
+    constructor(private underlyingDriver : TerminalDriver) {
+        super();
+    }
+
+    write(message : string) {
+        super.write(message);
+        this.underlyingDriver.write(message);
+    }
+}
+
+export class MultiplexedTerminalDriver implements TerminalDriver {
+    constructor(private drivers : TerminalDriver[]) {
+    }
+
+    write(message : string) {
+        this.drivers.forEach(d => d.write(message));
+    }
+}
+
 export class TerminalDriverSelector {
+    private static _default : TerminalDriver;
+
     public static get default() {
+        if (this._default)
+            return this._default;
+           
         if (typeof process !== 'undefined')
             return new NodeTerminalDriver();
         else
             return new StandardTerminalDriver();
+    }
+
+    public static set default(value : TerminalDriver) {
+        this._default = value;
     }
 }
 
@@ -49,12 +85,13 @@ export class Terminal {
     driver : TerminalDriver;
 
     write(message : string) {
+        this.driver.write(message);
         if (typeof process !== 'undefined')
             process.stdout.write(message);
     }
 
     writeLine(message? : string) {
-        process.stdout.write(`${message || ''}\n`);
+        this.driver.write(`${message || ''}\n`);
     }
 
     table(rows : string[][]) {
