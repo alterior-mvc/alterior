@@ -25,6 +25,7 @@ export class ServiceGenerator extends Generator {
             '@alterior/logging',
             '@alterior/di',
             '@alterior/cli',
+            '@alterior/platform-nodejs',
             'express-ws',
             'node-fetch',
             'ws',
@@ -119,9 +120,7 @@ export class ServiceGenerator extends Generator {
             path.join('src', 'main.ts'), 
             unindent(
                 `
-                import 'source-map-support/register';
-                import 'reflect-metadata';
-                import 'zone.js';
+                import '@alterior/platform-nodejs';
 
                 import { Application } from '@alterior/runtime';
                 import { ${capitalize(this.projectName)} } from './${this.projectName}';
