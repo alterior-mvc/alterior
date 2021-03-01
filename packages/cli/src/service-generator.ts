@@ -24,17 +24,11 @@ export class ServiceGenerator extends Generator {
             '@alterior/web-server',
             '@alterior/logging',
             '@alterior/di',
-            '@alterior/cli',
-            '@alterior/platform-nodejs',
-            'express-ws',
-            'node-fetch',
-            'ws',
-            'zone.js',
-            'reflect-metadata',
-            'source-map-support'
+            '@alterior/platform-nodejs'
         ];
 
         let devDependencies = [
+            '@alterior/cli',
             'typescript',
             'razmin',
             'chai',

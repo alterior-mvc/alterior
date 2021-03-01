@@ -7,7 +7,7 @@ import { CommandRunner } from "./command-runner";
 import { ANNOTATIONS_KEY, CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY, PROPERTY_ANNOTATIONS_KEY, METHOD_PARAMETER_ANNOTATIONS_KEY } from "@alterior/annotations";
 import * as ts from 'typescript';
 import { readJsonFile } from "./utils";
-import { rttiTransformer } from './rtti-transformer';
+import { rttiTransformer } from '@alterior/rtti';
 
 export class BuildError extends ApplicationError {
 
