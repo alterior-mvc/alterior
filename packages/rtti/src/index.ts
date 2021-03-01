@@ -1,9 +1,12 @@
+/// <reference types="reflect-metadata" />
 /**
  * RTTI Transformer
  * 
  * This Typescript transformer does two things:
- * 1. Emits Typescript's "design:*" metadata on all syntactic elements processed during a compilation,
- *    regardless of whether a decorator is originally present on the element
+ * 1. When emitDecoratorMetadata is enabled, this emits Typescript's "design:*" metadata on all syntactic 
+ *    elements processed during a compilation, regardless of whether a decorator is originally present on the element.
+ *    NOTE: You may not want this, because design:* has a number of flaws. If you disable emitDecoratorMetadata this
+ *    transformer will still output the rt:* metadata items instead.
  * 2. Emits an "rt:f" metadata on each syntactic element which describes compile-time semantics of an element,
  *    including element type, public, private, protected, abstract, readonly
  * 
@@ -21,11 +24,18 @@
  * 
  */
 
+import { F_ABSTRACT, F_CLASS, F_METHOD, F_OPTIONAL, F_PRIVATE, F_PROPERTY, F_PROTECTED, F_PUBLIC, F_READONLY, getVisibility, isAbstract, isReadOnly } from './flags';
+import { forwardRef } from './forward-ref';
+import { metadataDecorator } from './metadata-decorator';
+import { rtHelper } from './rt-helper';
+import { serialize } from './serialize';
 import * as ts from 'typescript';
+import { cloneEntityNameAsExpr, getRootNameOfEntityName } from './utils';
 
 interface TypeImport {
     importDeclaration : ts.ImportDeclaration;
     refName : string;
+    modulePath : string;
     isNamespace : boolean;
     referenced? : boolean;
     name : string;
@@ -42,126 +52,21 @@ const transformer: (program : ts.Program) => ts.TransformerFactory<ts.SourceFile
             return { $__isTSNode: true, node };
         }
 
-        function serialize(object : any): ts.Expression {
-            if (object === null)
-                return ts.factory.createNull();
-            if (object === undefined)
-                return ts.factory.createVoidZero();
-            
-            if (object instanceof Array)
-                return ts.factory.createArrayLiteralExpression(object.map(x => serialize(x)));
-            if (typeof object === 'string')
-                return ts.factory.createStringLiteral(object);
-            if (typeof object === 'number')
-                return ts.factory.createNumericLiteral(object);
-            if (typeof object === 'boolean')
-                return object ? ts.factory.createTrue() : ts.factory.createFalse();
-            if (typeof object === 'function')
-                throw new Error(`Cannot serialize a function`);
-            if (object.$__isTSNode)
-                return object.node;
-            
-            let props : ts.ObjectLiteralElementLike[] = [];
-            for (let key of Object.keys(object))
-                props.push(ts.factory.createPropertyAssignment(key, serialize(object[key])));
-
-            return ts.factory.createObjectLiteralExpression(props, false);
-        }
-
-        function nothingDecorator() {
-            return [ts.factory.createDecorator(
-                ts.factory.createCallExpression(
-                    ts.factory.createParenthesizedExpression(
-                        ts.factory.createArrowFunction(
-                            [], [], [], null, 
-                            ts.factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken), 
-                            ts.factory.createBlock([]))
-                    ), [], []
-                )
-            )]
-        }
-
-        function forwardRef(expr : ts.Expression) {
-            if (!expr)
-                throw new Error(`Cannot make forwardRef without an expression`);
-            return ts.factory.createArrowFunction(
-                [], [], [], null, 
-                ts.factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken), 
-                expr
-            );
-        }
-
-        function metadataDecorator(key : string, object : any) {
-            let metadataFuncExpr : ts.Expression = ts.factory.createPropertyAccessExpression(
-                ts.factory.createIdentifier('Reflect'),
-                ts.factory.createIdentifier('metadata')
-            );
-
-            return ts.factory.createDecorator(
-                ts.factory.createCallExpression(
-                    metadataFuncExpr, [],
-                    [
-                        ts.factory.createStringLiteral(key),
-                        serialize(object)
-                    ]
-                )
-            )
-        }
-
-        function getVisibility(modifiers : ts.ModifiersArray) {
-            if (modifiers) {
-                if (modifiers.some(x => x.kind === ts.SyntaxKind.PublicKeyword))
-                    return '$';
-                if (modifiers.some(x => x.kind === ts.SyntaxKind.PrivateKeyword))
-                    return '#';
-                if (modifiers.some(x => x.kind === ts.SyntaxKind.ProtectedKeyword))
-                    return '@';
-            }
-
-            return '$';
-        }
-
-        function isReadOnly(modifiers : ts.ModifiersArray) {
-            if (!modifiers)
-                return '';
-            
-            return modifiers.some(x => x.kind === ts.SyntaxKind.ReadonlyKeyword) ? 'R' : '';
-        }
-
-        function isAbstract(modifiers : ts.ModifiersArray) {
-            if (!modifiers)
-                return '';
-            
-            return modifiers.some(x => x.kind === ts.SyntaxKind.AbstractKeyword) ? 'A' : '';
-        }
-
-
         let trace = false;
 
         return sourceFile => {
+            sourceFile = ts.factory.updateSourceFile(
+                sourceFile, 
+                [ rtHelper(), ...sourceFile.statements ], 
+                sourceFile.isDeclarationFile, 
+                sourceFile.referencedFiles,
+                sourceFile.typeReferenceDirectives,
+                sourceFile.hasNoDefaultLib,
+                sourceFile.libReferenceDirectives
+            );
+    
             let importMap = new Map<string,TypeImport>();
         
-            function extractPropertyMetadata(property : ts.PropertyDeclaration) {
-                return [
-                    metadataDecorator('rt:f', `P${getVisibility(property.modifiers)}${isReadOnly(property.modifiers)}`)
-                ];
-            }
-        
-            function getRootNameOfQualifiedName(qualifiedName : ts.QualifiedName) {
-                if (ts.isQualifiedName(qualifiedName.left))
-                    return getRootNameOfQualifiedName(qualifiedName.left);
-                else if (ts.isIdentifier(qualifiedName.left))
-                    return qualifiedName.left.text;
-            }
-
-            function getRootNameOfEntityName(entityName : ts.EntityName) {
-                if (ts.isQualifiedName(entityName)) {
-                    return getRootNameOfQualifiedName(entityName);
-                } else if (ts.isIdentifier(entityName)) {
-                    return entityName.text;
-                }
-            }
-
             function assureTypeAvailable(entityName : ts.EntityName) {
                 let rootName = getRootNameOfEntityName(entityName);
                 let impo = importMap.get(rootName);
@@ -170,80 +75,220 @@ const transformer: (program : ts.Program) => ts.TransformerFactory<ts.SourceFile
                     return impo.localName;
                 }
 
-                return null;
+                return rootName;
             }
 
-            function cloneQualifiedName(qualifiedName : ts.QualifiedName, rootName? : string) {
-                let left : ts.Expression;
-                if (ts.isIdentifier(qualifiedName.left)) {
-                    left = ts.factory.createIdentifier(rootName);
+            function propertyPrepend(expr : ts.Expression, propAccess : ts.PropertyAccessExpression | ts.Identifier) {
+                if (ts.isIdentifier(propAccess)) {
+                    return ts.factory.createPropertyAccessExpression(expr, propAccess);
+                } else if (ts.isPropertyAccessExpression(propAccess.expression)) {
+                    return ts.factory.createPropertyAccessExpression(propertyPrepend(expr, propAccess.expression), propAccess.name);
                 } else {
-                    left = cloneEntityNameAsExpr(qualifiedName.left, rootName)   
+                    throw new Error(`Unsupported expression type '${ts.SyntaxKind[propAccess.kind]}'`);
                 }
-                return ts.factory.createPropertyAccessExpression(left, cloneEntityNameAsExpr(qualifiedName.right));
             }
 
-            function cloneEntityNameAsExpr(entityName : ts.EntityName, rootName? : string) {
-                if (ts.isQualifiedName(entityName))
-                    return cloneQualifiedName(entityName, rootName);
-                else if (ts.isIdentifier(entityName))
-                    return ts.factory.createIdentifier(entityName.text);
-            }
-
-            function serializeTypeRef(typeNode : ts.Node): ts.Expression {
+            function serializeTypeRef(typeNode : ts.Node, extended): ts.Expression {
                 if (!typeNode)
                     return ts.factory.createVoidZero();
                 
                 if (ts.isTypeReferenceNode(typeNode)) {
-                    return cloneEntityNameAsExpr(typeNode.typeName, assureTypeAvailable(typeNode.typeName));
+                    let expr : ts.PropertyAccessExpression | ts.Identifier;
+
+
+                    if (context.getCompilerOptions().module === ts.ModuleKind.CommonJS) {
+                        let origName = getRootNameOfEntityName(typeNode.typeName);
+                        let impo = importMap.get(origName);
+                        
+                        if (ts.isIdentifier(typeNode.typeName)) {
+                            expr = ts.factory.createIdentifier(origName);
+                        } else {
+                            expr = cloneEntityNameAsExpr(typeNode.typeName, origName);
+                        }
+
+                        if (impo) {
+                            impo.referenced = true;
+                            if (!impo.isNamespace) {
+                                expr = propertyPrepend(
+                                    ts.factory.createCallExpression(
+                                        ts.factory.createIdentifier('require'),
+                                        [], [ ts.factory.createStringLiteral(impo.modulePath) ]
+                                    ), expr
+                                );
+                            } else {
+                                let rootName = assureTypeAvailable(typeNode.typeName);
+                                if (ts.isIdentifier(typeNode.typeName)) {
+                                    expr = ts.factory.createIdentifier(rootName);
+                                } else {
+                                    expr = cloneEntityNameAsExpr(typeNode.typeName, rootName);
+                                }
+                            }
+                        }
+                        
+                    } else {
+                        let rootName = assureTypeAvailable(typeNode.typeName);
+                        if (ts.isIdentifier(typeNode.typeName)) {
+                            expr = ts.factory.createIdentifier(rootName);
+                        } else {
+                            expr = cloneEntityNameAsExpr(typeNode.typeName, rootName);
+                        }
+                    }
+
+                    return expr;
                 }
 
-                throw new Error(`Failed to serializeTypeRef for kind ${ts.SyntaxKind[typeNode.kind]}!`);
+                if (typeNode.kind === ts.SyntaxKind.StringKeyword)
+                    return ts.factory.createIdentifier('String');
+                else if (typeNode.kind === ts.SyntaxKind.NumberKeyword)
+                    return ts.factory.createIdentifier('Number');
+                else if (typeNode.kind === ts.SyntaxKind.BooleanKeyword)
+                    return ts.factory.createIdentifier('Boolean');
+                else if (typeNode.kind === ts.SyntaxKind.BigIntKeyword)
+                    return ts.factory.createIdentifier('BigInt');
+                else if (ts.isArrayTypeNode(typeNode)) {
+                    if (extended)
+                        return ts.factory.createArrayLiteralExpression([serializeTypeRef(typeNode.elementType, true)]);
+                    else
+                        return ts.factory.createIdentifier('Array');
+                }
+
+                /// ??
+
+                if (extended) {
+                    throw new Error(`Failed to serializeTypeRef for kind ${ts.SyntaxKind[typeNode.kind]}!`);
+                } else {
+                    return ts.factory.createIdentifier('Object');
+                }
             }
 
+            //////////////////////////////////////////////////////////
+            
             function extractClassMetadata(klass : ts.ClassDeclaration) {
                 let decs : ts.Decorator[] = [];
 
                 let constructor = klass.members.find(x => ts.isConstructorDeclaration(x)) as ts.ConstructorDeclaration;
-                
                 if (constructor) {
-                    let serializedParamTypes : ts.Expression[] = [];
-                    for (let param of constructor.parameters) {
-                        let paramType = serializeTypeRef(param.type);
-                        if (!paramType) {
-                            console.error(`Failed to serialize parameter type for param ${param.name.getText()}:`)
-                            console.dir(param.type);
-                            throw new Error(`Could not serialize parameter type`);
-                        }
-                        serializedParamTypes.push(paramType);
-                    }
-
-                    decs.push(metadataDecorator('rt:t', serializedParamTypes.map(t => literalNode(forwardRef(t)))));
-                    if (emitStandardMetadata) {
-                        decs.push(metadataDecorator('design:paramtypes', serializedParamTypes.map(t => literalNode(t))));
-                    }
+                    decs.push(...extractParamsMetadata(constructor));
                 }
 
-                decs.push(metadataDecorator('rt:f', `C${getVisibility(klass.modifiers)}${isAbstract(klass.modifiers)}`));
+                decs.push(metadataDecorator('rt:f', `${F_CLASS}${getVisibility(klass.modifiers)}${isAbstract(klass.modifiers)}`));
 
                 return decs;
+            }
+
+            function extractPropertyMetadata(property : ts.PropertyDeclaration) {
+                return [
+                    ...extractTypeMetadata(property.type, 'type'),
+                    metadataDecorator('rt:f', `${F_PROPERTY}${getVisibility(property.modifiers)}${isReadOnly(property.modifiers)}`)
+                ];
+            }
+
+            function typeToTypeRef(type : ts.Type): ts.Expression {
+                if ((type.flags & ts.TypeFlags.String) !== 0) {
+                    return ts.factory.createIdentifier('String');
+                } else if ((type.flags & ts.TypeFlags.Number) !== 0) {
+                    return ts.factory.createIdentifier('Number');
+                } else if ((type.flags & ts.TypeFlags.Boolean) !== 0) { 
+                    return ts.factory.createIdentifier('Boolean');
+                } else if ((type.flags & ts.TypeFlags.Void) !== 0) {
+                    return ts.factory.createVoidZero();
+                } else if ((type.flags & ts.TypeFlags.BigInt) !== 0) {
+                    return ts.factory.createIdentifier('BigInt');
+                } else if ((type.flags & ts.TypeFlags.Object) !== 0) {
+                    return ts.factory.createIdentifier('Object');
+                }
+
+                // No idea
+                return ts.factory.createIdentifier('Object');
             }
         
             function extractMethodMetadata(method : ts.MethodDeclaration) {
                 let decs : ts.Decorator[] = [];
-                
-                let typeRef = serializeTypeRef(method.type);
-                if (typeRef) {
-                    decs.push(metadataDecorator('rt:t', literalNode(forwardRef(typeRef))));
+
+                if (emitStandardMetadata)
+                    decs.push(metadataDecorator('design:type', literalNode(ts.factory.createIdentifier('Function'))));
+                                
+                decs.push(...extractParamsMetadata(method));
+                decs.push(metadataDecorator('rt:f', `${F_METHOD}${getVisibility(method.modifiers)}${isAbstract(method.modifiers)}`));
+
+                let returnType : ts.Expression;
+                if (method.type) {
+                    returnType = serializeTypeRef(method.type, true);
+                    decs.push(...extractTypeMetadata(method.type, 'returntype'));
+                } else {
+                    let signature = program.getTypeChecker().getSignatureFromDeclaration(method);
+                    let returnT = typeToTypeRef(signature.getReturnType());
+                    decs.push(metadataDecorator('rt:t', literalNode(forwardRef(returnT))));
+
                     if (emitStandardMetadata)
-                        decs.push(metadataDecorator('design:returntype', literalNode(typeRef)));
+                        decs.push(metadataDecorator('design:returntype', literalNode(ts.factory.createVoidZero())));
                 }
-                
-                decs.push(metadataDecorator('rt:f', `M${getVisibility(method.modifiers)}${isAbstract(method.modifiers)}`));
+
 
                 return decs;
             }
             
+            //////////////////////////////////////////////////////////
+
+            function extractTypeMetadata(type : ts.TypeNode, standardName : string) {
+                let decs : ts.Decorator[] = [];
+                decs.push(metadataDecorator('rt:t', literalNode(forwardRef(serializeTypeRef(type, true)))));
+                if (emitStandardMetadata)
+                    decs.push(metadataDecorator(`design:${standardName}`, literalNode(serializeTypeRef(type, false))));
+                return decs;
+            }
+
+            function extractParamsMetadata(method : ts.FunctionLikeDeclaration) {
+                let decs : ts.Decorator[] = [];
+                let standardParamTypes : ts.Expression[] = [];
+                let serializedParamMeta : any[] = [];
+
+                for (let param of method.parameters) {
+                    let expr = serializeTypeRef(param.type, false);
+                    standardParamTypes.push(expr);
+
+                    let f : string[] = [];
+
+                    if (param.modifiers) {
+                        for (let modifier of Array.from(param.modifiers)) {
+                            if (modifier.kind === ts.SyntaxKind.ReadonlyKeyword)
+                                f.push(F_READONLY);
+                            if (modifier.kind === ts.SyntaxKind.PrivateKeyword)
+                                f.push(F_PRIVATE);
+                            if (modifier.kind === ts.SyntaxKind.PublicKeyword)
+                                f.push(F_PUBLIC);
+                            if (modifier.kind === ts.SyntaxKind.ProtectedKeyword)
+                                f.push(F_PROTECTED);
+                        }
+                    }
+
+                    if (param.questionToken)
+                        f.push(F_OPTIONAL)
+
+                    let meta : Record<string,any> = {
+                        n: param.name.getText(),
+                        t: literalNode(forwardRef(serializeTypeRef(param.type, true)))
+                    };
+
+                    if (f.length > 0)
+                        meta.f = f.join('');
+                    
+                    serializedParamMeta.push(literalNode(serialize(meta)));
+                }
+
+                decs.push(metadataDecorator('rt:p', serializedParamMeta));
+                if (emitStandardMetadata) {
+                    decs.push(metadataDecorator('design:paramtypes', standardParamTypes.map(t => {
+                        
+                        return literalNode(t);
+                    })));
+                }
+                
+                return decs;
+            }
+        
+            ////////////////////////////////////////////////////////////////////////////
+
             const visitor = (node : ts.Node) => {
                 if (!node)
                     return;
@@ -257,6 +302,7 @@ const transformer: (program : ts.Program) => ts.TransformerFactory<ts.SourceFile
                                     name: binding.name.text,
                                     localName: `${binding.propertyName?.text ?? binding.name.text}Φ`,
                                     refName: binding.name.text,
+                                    modulePath: (<ts.StringLiteral>node.moduleSpecifier).text,
                                     isNamespace: false,
                                     importDeclaration: node
                                 });
@@ -265,6 +311,7 @@ const transformer: (program : ts.Program) => ts.TransformerFactory<ts.SourceFile
                             importMap.set(bindings.name.text, {
                                 name: bindings.name.text,
                                 localName: `${bindings.name.text}Φ`,
+                                modulePath: (<ts.StringLiteral>node.moduleSpecifier).text,
                                 refName: bindings.name.text,
                                 isNamespace: true,
                                 importDeclaration: node
@@ -320,8 +367,17 @@ const transformer: (program : ts.Program) => ts.TransformerFactory<ts.SourceFile
 
             function generateImports(statements : ts.Statement[]): ts.Statement[] {
                 let imports : ts.ImportDeclaration[] = [];
+                let isCommonJS = context.getCompilerOptions().module === ts.ModuleKind.CommonJS;
+
                 for (let impo of importMap.values()) {
                     if (!impo.referenced)
+                        continue;
+
+                    // for commonjs we only add extra imports for namespace imports 
+                    // (ie import * as x from 'y'). regular bound imports are handled
+                    // with a direct require anyway.
+
+                    if (isCommonJS && !impo.isNamespace)
                         continue;
                        
                     let ownedImpo = ts.factory.createImportDeclaration(
@@ -358,7 +414,6 @@ const transformer: (program : ts.Program) => ts.TransformerFactory<ts.SourceFile
             }
 
             sourceFile = ts.visitNode(sourceFile, visitor);
-
             sourceFile = ts.factory.updateSourceFile(
                 sourceFile, 
                 generateImports(Array.from(sourceFile.statements)), 
