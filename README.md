@@ -226,6 +226,8 @@ time while you build your applications.
 
 - **[@alterior/platform-nodejs](packages/platform-nodejs/README.md)** Provides support for bootstrapping an Alterior application within the Node.js server environment.  
 
+- **[@alterior/rtti](packages/rtti/README.md)** A Typescript transformer for emitting comprehensive runtime type information (RTTI)
+
 - **[@alterior/runtime](packages/runtime/README.md)** An module-based dependency injection and lifecycle event system similar to that of Angular, suitable for use in Alterior libraries and applications.  
 
 - **[@alterior/tasks](packages/tasks/README.md)** A system for enqueuing and processing tasks using Redis as it's backing store (based on `bull` queue)
