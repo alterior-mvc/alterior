@@ -206,6 +206,17 @@ const transformer: (program : ts.Program) => ts.TransformerFactory<ts.SourceFile
                         details.methodNames.push(node.name.getText())
                     } else if (ts.isMethodDeclaration(node)) {
                         details.methodNames.push(node.name.getText())
+                    } else if (ts.isConstructorDeclaration(node)) {
+                        for (let param of node.parameters) {
+                            let isProperty = 
+                                param.modifiers.some(x => x.kind === ts.SyntaxKind.PublicKeyword)
+                                || param.modifiers.some(x => x.kind === ts.SyntaxKind.ProtectedKeyword)
+                                || param.modifiers.some(x => x.kind === ts.SyntaxKind.PrivateKeyword)
+                                || param.modifiers.some(x => x.kind === ts.SyntaxKind.ReadonlyKeyword)
+
+                            if (isProperty)
+                                details.propertyNames.push(param.name.getText());
+                        }
                     } else {
                         ts.visitEachChild(node, visitor, context);
                     }

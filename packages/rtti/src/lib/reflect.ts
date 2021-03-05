@@ -1,4 +1,3 @@
-import { timingSafeEqual } from 'crypto';
 import * as Flags from '../common/flags';
 
 function Flag(value : string) {
@@ -38,20 +37,64 @@ export class ReflectedFlags {
 
 export type Visibility = 'public' | 'private' | 'protected';
 
-export class ReflectedMethod {
+export interface RawParameterMetadata {
+    n : string;
+    t : Function;
+    f? : string;
+}
+
+/**
+ * Reflection data for a parameter
+ */
+export class ReflectedParameter {
     constructor(
-        reflectedClass : ReflectedClass,
-        readonly name : string
+        readonly rawMetadata : RawParameterMetadata
     ) {
-        this._flags = new ReflectedFlags(Reflect.getMetadata('rt:f', reflectedClass.class.prototype, name));
+    }
+
+    get name() {
+        return this.rawMetadata.n;
+    }
+
+    get type() {
+        return this.rawMetadata.t;
+    }
+
+    private _flags : ReflectedFlags;
+
+    get flags() {
+        if (this._flags)
+            return this._flags;
+
+        return this._flags = new ReflectedFlags(this.rawMetadata.f)
+    }
+}
+
+/**
+ * Reflection data for a method parameter
+ */
+export class ReflectedMethodParameter extends ReflectedParameter {
+    constructor(
+        readonly method : ReflectedMethod,
+        readonly rawMetadata : RawParameterMetadata
+    ) {
+        super(rawMetadata);
+    }
+}
+
+/**
+ * Reflection data for a constructor parameter
+ */
+export class ReflectedConstructorParameter extends ReflectedParameter {
+    constructor(
+        readonly reflectedClass : ReflectedClass,
+        readonly rawMetadata : RawParameterMetadata
+    ) {
+        super(rawMetadata);
+        this._class = reflectedClass;
     }
 
     private _class : ReflectedClass;
-    private _flags : ReflectedFlags;
-
-    get flags(): Readonly<ReflectedFlags> {
-        return this._flags;
-    }
 
     get class() {
         return this._class;
@@ -61,12 +104,64 @@ export class ReflectedMethod {
         return this.flags.isReadonly;
     }
 
-    get isAbstract() {
-        return this.flags.isAbstract;
+    get isPublic() {
+        return this.flags.isPublic;
     }
 
-    get isAsync() {
-        return this.flags.isAsync;
+    get isProtected() {
+        return this.flags.isProtected;
+    }
+
+    get isPrivate() {
+        return this.flags.isPrivate;
+    }
+
+    /**
+     * Get visibility of this constructor parameter. If the constructor
+     * parameter has no visibility modifiers, this is null.
+     */
+    get visibility(): Visibility {
+        return this.isPublic ? 'public' 
+             : this.isProtected ? 'protected' 
+             : this.isPrivate ? 'private' 
+             : null;
+    }
+
+    /**
+     * True if the constructor parameter is also a property.
+     */
+    get isProperty() {
+        return this.visibility !== null || this.isReadonly;
+    }
+}
+
+/**
+ * Reflection data for a class member
+ */
+export class ReflectedMember {
+    constructor(
+        reflectedClass : ReflectedClass,
+        readonly name : string
+    ) {
+        this._class = reflectedClass;
+    }
+
+    private _class : ReflectedClass;
+    private _flags : ReflectedFlags;
+
+    get class() {
+        return this._class;
+    }
+    
+    get flags(): Readonly<ReflectedFlags> {
+        if (this._flags)
+            return this._flags;
+        
+        return this._flags = new ReflectedFlags(Reflect.getMetadata('rt:f', this.class.prototype, this.name));
+    }
+
+    get isAbstract() {
+        return this.flags.isAbstract;
     }
 
     get isPrivate() {
@@ -89,7 +184,50 @@ export class ReflectedMethod {
     }
 
     get isOptional() {
-        return this._flags.isOptional;
+        return this.flags.isOptional;
+    }
+}
+
+/**
+ * Reflection data for a class method
+ */
+export class ReflectedMethod extends ReflectedMember {
+    private _returnType : Function;
+    private _rawParameterMetadata : RawParameterMetadata[];
+
+    get rawParameterMetadata(): RawParameterMetadata[] {
+        if (this._rawParameterMetadata)
+            return this._rawParameterMetadata;
+        
+        return this._rawParameterMetadata = Reflect.getMetadata('rt:p', this.class.prototype, this.name);
+    }
+
+    private _parameters : ReflectedMethodParameter[];
+
+    get parameterNames() {
+        return this.rawParameterMetadata.map(x => x.n);
+    }
+
+    get parameterTypes() {
+        return this.rawParameterMetadata.map(x => x.t);
+    }
+
+    get parameters() {
+        if (this._parameters)
+            return this._parameters;
+        
+        return this._parameters = this._rawParameterMetadata.map(x => new ReflectedMethodParameter(this, x));
+    }
+
+    get returnType(): Function {
+        if (this._returnType)
+            return this._returnType;
+
+        return this._returnType = Reflect.getMetadata('rt:t', this.class.prototype, this.name);
+    }
+
+    get isAsync() {
+        return this.flags.isAsync;
     }
 }
 
@@ -97,59 +235,18 @@ export interface Constructor<T> extends Function {
     new(...args) : T;
 }
 
-export class ReflectedProperty {
-    constructor(
-        reflectedClass : ReflectedClass,
-        readonly name : string
-    ) {
-    }
-
-    private _flags : ReflectedFlags;
-    private _class : ReflectedClass;
+export class ReflectedProperty extends ReflectedMember {
     private _type : Function;
 
     get type(): Function {
         if (this._type)
             return this._type;
 
-        return this._type = Reflect.getMetadata('rt:t', this.class.class.prototype, this.name);
-    }
-
-    get flags(): Readonly<ReflectedFlags> {
-        if (this._flags)
-            return this._flags;
-        return this._flags = new ReflectedFlags(Reflect.getMetadata('rt:f', this.class.class.prototype, this.name));
-    }
-
-    get class() {
-        return this._class;
-    }
-
-    get isAbstract() {
-        return this.flags.isAbstract;
+        return this._type = Reflect.getMetadata('rt:t', this.class.prototype, this.name);
     }
 
     get isReadonly() {
         return this.flags.isReadonly;
-    }
-
-    get isPrivate() {
-        return this.flags.isPrivate;
-    }
-
-    get isPublic() {
-        return this.flags.isPublic;
-    }
-
-    get isProtected() {
-        return this.flags.isProtected;
-    }
-
-    get visibility(): Visibility {
-        return this.isPublic ? 'public' 
-             : this.isProtected ? 'protected' 
-             : this.isPrivate ? 'private' 
-             : 'public';
     }
 }
 
@@ -157,11 +254,14 @@ export class ReflectedClass<ClassT = Function> {
     constructor(
         klass : Constructor<ClassT>
     ) {
-
     }
 
     _class : Constructor<ClassT>;
     _isAbstract : boolean;
+
+    get prototype() {
+        return this._class.prototype;
+    }
 
     get class() {
         return this._class;
@@ -245,5 +345,31 @@ export class ReflectedClass<ClassT = Function> {
             return this._methods = this.super.methods.concat(this.methods);
         else
             return this._methods = this.ownMethods;
+    }
+
+    private _rawParameterMetadata : RawParameterMetadata[];
+
+    get rawParameterMetadata(): RawParameterMetadata[] {
+        if (this._rawParameterMetadata)
+            return this._rawParameterMetadata;
+        
+        return this._rawParameterMetadata = Reflect.getMetadata('rt:p', this.class.prototype);
+    }
+
+    private _parameters : ReflectedConstructorParameter[];
+
+    get parameterNames() {
+        return this.rawParameterMetadata.map(x => x.n);
+    }
+
+    get parameterTypes() {
+        return this.rawParameterMetadata.map(x => x.t);
+    }
+
+    get parameters() {
+        if (this._parameters)
+            return this._parameters;
+        
+        return this._parameters = this._rawParameterMetadata.map(x => new ReflectedConstructorParameter(this, x));
     }
 }
