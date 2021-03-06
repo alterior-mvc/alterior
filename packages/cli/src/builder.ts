@@ -7,7 +7,7 @@ import { CommandRunner } from "./command-runner";
 import { ANNOTATIONS_KEY, CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY, PROPERTY_ANNOTATIONS_KEY, METHOD_PARAMETER_ANNOTATIONS_KEY } from "@alterior/annotations";
 import * as ts from 'typescript';
 import { readJsonFile } from "./utils";
-import { rttiTransformer } from '@alterior/rtti';
+import rttiTransformer from 'typescript-rtti/dist/transformer';
 
 export class BuildError extends ApplicationError {
 
@@ -368,7 +368,7 @@ export class BackendBuilder {
                     if (!customTransformers.before)
                         customTransformers.before = [];
 
-                    customTransformers.before.push(rttiTransformer);
+                    customTransformers.before.push(rttiTransformer(program.getProgram()));
                     
                     return origEmit.apply(program, [
                         targetSourceFile,
