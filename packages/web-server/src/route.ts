@@ -160,6 +160,12 @@ export class RouteMethodParameter<T = any> {
 			let originalFactory = factory;
 			factory = ev => {
 				let value = originalFactory(ev);
+
+				// Do not try to validate `undefined` (ie the parameter is not present)
+				
+				if (value === void 0)
+					return value;
+				
 				let number = parseFloat(value);
 				if (isNaN(number)) {
 					throw new HttpError(400, {
