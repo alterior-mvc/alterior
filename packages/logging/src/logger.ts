@@ -78,19 +78,22 @@ export interface FormatSegment {
 }
 
 export class LogFormatter {
-    constructor(readonly formatString : string) {
+    constructor(readonly logFormat : LogFormat) {
         this.compile();
     }
 
     private compile() {
+        if (typeof this.logFormat === 'function')
+            return;
+
         let segment = '';
         let segments : FormatSegment[] = [];
 
-        for (let i = 0, max = this.formatString.length; i < max; ++i) {
-            let char = this.formatString[i];
+        for (let i = 0, max = this.logFormat.length; i < max; ++i) {
+            let char = this.logFormat[i];
 
             if (char == '%') {
-                let lookAhead = this.formatString.substr(i + 1);
+                let lookAhead = this.logFormat.substr(i + 1);
 
                 if (lookAhead.includes('%')) {
 
@@ -138,13 +141,16 @@ export class LogFormatter {
     }
 
     public format(message : LogEvent) : string {
+        if (typeof this.logFormat === 'function')
+            return this.logFormat(message);
+           
         return this.segments.map(x => x.type == 'parameter' ? this.formatParameter(x.value, message[x.value]) : x.value).join('');
     }
 }
 
 export class ConsoleLogger implements LogListener {
     constructor(
-        readonly format : string
+        readonly format : LogFormat
     ) {
         this.formatter = new LogFormatter(format);
     }
@@ -177,9 +183,11 @@ export class ConsoleLogger implements LogListener {
     }
 }
 
+export type LogFormat = string | ((event : LogEvent) => string);
+
 export class FileLogger implements LogListener {
     constructor(
-        readonly format : string,
+        readonly format : LogFormat,
         readonly filename : string
     ) {
         this.formatter = new LogFormatter(format);
@@ -196,7 +204,7 @@ export class FileLogger implements LogListener {
         if (this._fdReady)
             return await this._fdReady;
 
-        await (this._fdReady = new Promise((res, rej) => {
+        return await (this._fdReady = new Promise((res, rej) => {
             fs.open(this.filename, 'a', (err, fd) => {
                 if (err)
                     rej(err);
@@ -405,5 +413,11 @@ export class Logger extends ZonedLogger {
     }
 }
 
-export const DEFAULT_FORMAT = '%date% [%contextSummary%] %severity%: %message%';
+export const DEFAULT_FORMAT : LogFormat = (event : LogEvent) => {
+    if (event.contextSummary)
+        return `${event.date.toISOString()} [${event.contextSummary}] ${event.severity}: ${event.message}`;
+    else
+        return `${event.date.toISOString()} ${event.severity}: ${event.message}`;
+};
+
 export const DEFAULT_LISTENERS : LogListener[] = [ new ConsoleLogger(DEFAULT_FORMAT) ];
