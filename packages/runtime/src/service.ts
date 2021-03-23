@@ -4,6 +4,7 @@ import { Type } from '@alterior/di';
 export interface MethodShimParam {
     name : string;
     type : Type;
+    default? : any;
 }
 
 export interface MethodShim {

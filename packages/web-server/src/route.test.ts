@@ -483,6 +483,56 @@ suite(describe => {
 			expect(observedQ).to.be.undefined;
 		});
 
+		it('should return 200 when number QueryParam is not present', async () => {
+
+			let observedEvent;
+			let observedQ;
+
+			@WebService()
+			class FakeApp {
+				@Get('/foo')
+				getX(@QueryParam('q') q : number, ev : WebEvent) { // note they are swapped
+					observedEvent = ev;
+					observedQ = q;
+
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			await teststrap(FakeApp)
+				.get('/foo')
+				.expect(200)
+			;
+			
+			expect(observedEvent).to.exist;
+			expect(observedQ).to.be.undefined;
+		});
+
+		it('QueryParam should allow for default values', async () => {
+
+			let observedEvent;
+			let observedQ;
+
+			@WebService()
+			class FakeApp {
+				@Get('/foo')
+				getX(@QueryParam('q', { default: 123 }) q : number, ev : WebEvent) { // note they are swapped
+					observedEvent = ev;
+					observedQ = q;
+
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			await teststrap(FakeApp)
+				.get('/foo')
+				.expect(200)
+			;
+			
+			expect(observedEvent).to.exist;
+			expect(observedQ).to.equal(123);
+		});
+
 		it('should provide parameters that are inherited via controller mounting', async () => {
 			let observedTopicID;
 			let observedMessageID;

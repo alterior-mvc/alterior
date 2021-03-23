@@ -112,6 +112,11 @@ export class RouteMethodParameter<T = any> {
 			if (!this.route.pathParameterMap[inputName])
 				this.route.pathParameterMap[inputName] = paramDesc;
 
+			if (inputAnnotation.default !== void 0) {
+				let originalFactory = factory;
+				factory = (ev : WebEvent) => originalFactory(ev) ?? inputAnnotation.default;
+			}
+
 		} else if (paramType === WebEvent) {
 			factory = ev => ev;
 		} 
