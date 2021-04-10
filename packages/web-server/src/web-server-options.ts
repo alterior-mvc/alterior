@@ -52,6 +52,14 @@ export interface WebServerOptions {
 	silentErrors? : boolean;
 
 	/**
+	 * Specify the default handler for a request when no other 
+	 * route matches (aka 404). When explicitly set to `null`, 
+	 * no default handler will be used (useful when chaining the
+	 * Alterior application into a larger application)
+	 */
+	defaultHandler? : (ev : WebEvent) => void;
+
+	/**
 	 * A handler which is run when an error occurs while processing
 	 * a request. After the handler is completed, the default error handling
 	 * will proceed.
