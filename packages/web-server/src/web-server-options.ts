@@ -39,12 +39,6 @@ export interface WebServerOptions {
     hideExceptions? : boolean;
 
 	/**
-	 * Has no effect
-	 * @deprecated
-	 */
-    verbose? : boolean;
-
-	/**
 	 * By default the requests being processed are reported via the logger.
 	 * When silent is true, this is suppressed.
 	 */
