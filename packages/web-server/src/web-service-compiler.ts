@@ -21,7 +21,7 @@ export class WebServiceCompiler extends ServiceCompiler {
             let input = (inputs[index] || [])[0];
             if (input) {
                 if (input.type === 'query') {
-                    mutators.push(`queryParams['${input.name}'] = ${param.name};`);
+                    mutators.push(`queryParams['${input.name}'] = ${param.name} ?? ${JSON.stringify(param.default)};`);
                 } else if (input.type === 'session') {
                     throw new Error(`Transparent service cannot have a @Session() parameter`);
                 } else if (input.type === 'request') {
