@@ -32,12 +32,7 @@ export class RouteReflector {
 		this.mounts.forEach(mount => {
 			let definedMountPath = mount.path || '';
 			mount.path = `${basePath}/${definedMountPath.replace(/^\/*/, '')}`
-			
-			if (!mount.controllers)
-				mount.controllers = [];
-
-			if (mount.options && mount.options.controllers)
-				mount.controllers.push(...mount.options.controllers);
+			mount.controller = Reflect.getMetadata('design:type', type.prototype, mount.propertyKey);
 		});
 	}
 
@@ -47,7 +42,7 @@ export class RouteReflector {
 
 export interface MountDefinition {
 	path : string;
-	controllers : Function[];
+	controller : Function;
 	options : MountOptions;
 	
 	propertyKey? : string;
@@ -55,7 +50,6 @@ export interface MountDefinition {
 
 export interface MountOptions {
 	providers? : Provider[];
-	controllers? : Function[];
 }
 
 export interface RouteDefinition {

@@ -781,6 +781,58 @@ suite(describe => {
 			expect(observedZoom).to.equal(123);
 		});
 
+		it('instance of mounted controller should be placed into the parent controller field slot', async () => {
+			let wasPresent = false;
+
+			@Controller()
+			class TestController { present = true; }
+
+			@WebService()
+			class FakeApp { 
+				@Mount() test : TestController;
+				altOnInit() { wasPresent = this.test.present; }
+			}
+
+			await teststrap(FakeApp).get('/');
+			expect(wasPresent).to.be.true;
+		});
+
+		it('globally provided instance of mounted controller should be reused', async () => {
+			let matched = false;
+
+			@Controller()
+			class TestController { present = true; }
+
+			@WebService({ providers: [ TestController ] })
+			class FakeApp { 
+				constructor(private injectedController : TestController) {}
+				@Mount() test : TestController;
+				altOnInit() { matched = this.test === this.injectedController;}
+			}
+
+			await teststrap(FakeApp).get('/');
+			expect(matched).to.be.true;
+		});
+
+		it('globally provided instance of mounted controller should obey mount prefixes', async () => {
+			let matched = false;
+
+			@Controller()
+			class TestController { @Get() get() { return 123; } }
+
+			@WebService({ providers: [ TestController ] })
+			class FakeApp { 
+				constructor(private injectedController : TestController) {}
+				@Mount('/test1') test2 : TestController;
+				@Mount('/test2') test1 : TestController;
+				altOnInit() { matched = this.test1 === this.injectedController && this.test2 === this.injectedController; }
+			}
+
+			await teststrap(FakeApp).get('/test1').expect(200, '123');
+			await teststrap(FakeApp).get('/test2').expect(200, '123');
+			expect(matched).to.be.true;
+		});
+
 		it('all paths under a controller should execute middleware', async () => {
 			interface MyRequestType {
 				zoom : number;

@@ -97,41 +97,43 @@ export class ControllerInstance {
 		this._options = controllerOptions;
 
 		for (let mount of routeReflector.mounts) {
+			let controller = mount.controller;
+			let mountInjector = this.injector;
 			let providers : Provider[] = (mount.options || {} as MountOptions).providers || [];
-			let controllers = (mount.controllers || []).slice();
-			let controllerType = Reflect.getMetadata('design:type', this.type.prototype, mount.propertyKey);
-			
-			if (typeof controllerType === 'function' && controllerType !== Object)
-				controllers.push(controllerType);
+			let existingInstance = mountInjector.get(controller, null);
 
-			providers.push(...(controllers as Provider[]));
+			// If the controller is not provided by the injector, or if the mounter has customized the providers,
+			// then create a new injector that can provide the controller 
 
-			let mountInjector : ReflectiveInjector;
-			
-			try {
-				mountInjector = ReflectiveInjector.resolveAndCreate(providers, this.injector);
-			} catch (e) {
-				console.error(`Failed to resolve and create dependency injector for mount with path '${mount.path}'`);
-				console.error(e);
-				throw e;
+			if (!existingInstance || providers.length > 0) {
+				providers.push(controller as Provider);
+				try {
+					mountInjector = ReflectiveInjector.resolveAndCreate(providers, this.injector);
+				} catch (e) {
+					console.error(`Failed to resolve and create dependency injector for mount with path '${mount.path}'`);
+					console.error(e);
+					throw e;
+				}
 			}
 
-			for (let controller of controllers) {
-				let subPrefix = this.combinePaths(
-					this.context.pathPrefix, 
-					this._options.basePath,
-					mount.path
-				);
-				this.controllers.push(new ControllerInstance(
-					this.server, 
-					controller, 
-					mountInjector, 
-					this.routeTable, 
-					{
-						pathPrefix: subPrefix
-					}
-				));
-			}
+			let subPrefix = this.combinePaths(
+				this.context.pathPrefix, 
+				this._options.basePath,
+				mount.path
+			);
+
+			let instance = new ControllerInstance(
+				this.server, 
+				controller, 
+				mountInjector, 
+				this.routeTable, 
+				{
+					pathPrefix: subPrefix
+				}
+			);
+
+			this.controllers.push(instance);
+			this.instance[mount.propertyKey] = instance.instance;
 		}
 
 		// Register all of our routes with Express
