@@ -293,8 +293,15 @@ export class Runtime {
         let metadata = this.getMetadataForModule(module);
         
         if (metadata && metadata.imports) {
+            let position = 0;
+
             for (let importedModule of metadata.imports) {
+                if (!importedModule) {
+                    throw new Error(`Failed to resolve module referenced in position ${position} by ${module.toString()}`);
+                }
+
                 this.resolveModule(importedModule);
+                ++position;
             }
         }
         
