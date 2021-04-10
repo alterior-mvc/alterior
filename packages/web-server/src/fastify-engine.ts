@@ -66,4 +66,8 @@ export class FastifyEngine implements WebServerEngine {
 			}
 		);
 	}
+
+	addAnyRoute(handler : (event : WebEvent) => void) {
+		this.app.use((req, res) => handler(new WebEvent(<any>req, <any>res)));
+	}
 }

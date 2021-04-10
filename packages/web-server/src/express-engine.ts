@@ -139,11 +139,12 @@ export class ExpressEngine implements WebServerEngine {
 			middleware = [];
 			
 		this.app[this.getRegistrarName(method)](
-			path, 
-			...middleware, 
-			(req, res) => {
-				return handler(new WebEvent(req, res));
-			}
+			path, ...middleware, 
+			(req, res) => handler(new WebEvent(req, res))
 		);
+	}
+
+	addAnyRoute(handler : (event : WebEvent) => void) {
+		this.app.use((req, res) => handler(new WebEvent(req, res)));
 	}
 }

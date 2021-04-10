@@ -66,6 +66,9 @@ export const WebService = WebServiceAnnotation.decorator({
 
                 serviceInstance.initialize();
                 serviceInstance.mount(webserver);
+                webserver.engine.addAnyRoute(ev => {
+                    ev.response.status(404).send({ error: 'not-found' });
+                });
                 
                 this.rolesService.registerRole({
                     identifier: 'web-server',

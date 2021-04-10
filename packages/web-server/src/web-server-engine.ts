@@ -8,6 +8,7 @@ export abstract class WebServerEngine {
 	readonly providers : Provider[];
 	abstract addConnectMiddleware(path : string, middleware : Function);
 	abstract addRoute(method : string, path : string, handler : (event : WebEvent) => void, middleware?);
+	abstract addAnyRoute(handler : (event : WebEvent) => void);
 	abstract listen(options : WebServerOptions) : Promise<http.Server>;
 	abstract sendJsonBody(routeEvent : WebEvent, body : any);
 }
