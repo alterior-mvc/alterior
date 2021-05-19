@@ -134,9 +134,18 @@ export async function writeFileLines(filename : string, lines : string[]): Promi
 
 export async function readJsonFile<T = any>(filename : string) : Promise<T> {
     return await new Promise((res, rej) => 
-        fs.readFile(filename, (err, buf) => 
-            err ? rej(err) : res(JSON.parse(buf.toString('utf-8')))
-        )
+        fs.readFile(filename, (err, buf) => {
+            if (err) {
+                rej(new Error(`Failed to read JSON file '${filename}': ${err.message}`)); 
+                return;
+            }
+
+            try {
+                res(JSON.parse(buf.toString('utf-8')));
+            } catch (e) {
+                rej(new Error(`Failed to read JSON file '${filename}': ${e.message} -- JSON was ${buf.toString('utf-8')}`));
+            }
+        })
     );
 }
 
