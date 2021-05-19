@@ -277,10 +277,6 @@ export class ClientBuilder {
             throw new BuildError(`must be run in your package's root directory`);
         }
 
-        if (!await fileExists(pathCombine(dir, 'src', 'main.ts'))) {
-            throw new BuildError(`cannot find main entrypoint src/main.ts: Is this an Alterior package?`);
-        }
-
         if (!await fileExists(pathCombine(dir, 'src', 'index.ts'))) {
             throw new BuildError(`cannot find library entrypoint src/index.ts: Is this an Alterior package?`);
         }
