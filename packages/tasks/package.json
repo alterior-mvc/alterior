@@ -1,6 +1,6 @@
 {
   "name": "@alterior/tasks",
-  "version": "3.0.0-beta.92",
+  "version": "3.0.0-beta.98",
   "description": "Flexible background task system",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -40,11 +40,11 @@
     "docs": "typedoc ."
   },
   "dependencies": {
-    "@alterior/annotations": "^3.0.0-beta.79",
-    "@alterior/common": "^3.0.0-beta.79",
-    "@alterior/di": "^3.0.0-beta.79",
-    "@alterior/logging": "^3.0.0-beta.92",
-    "@alterior/runtime": "^3.0.0-beta.92",
+    "@alterior/annotations": "^3.0.0-beta.98",
+    "@alterior/common": "^3.0.0-beta.98",
+    "@alterior/di": "^3.0.0-beta.98",
+    "@alterior/logging": "^3.0.0-beta.98",
+    "@alterior/runtime": "^3.0.0-beta.98",
     "@avejidah/get-parameter-names": "^0.3.2",
     "@types/ejs": "^2.7.0",
     "bull": "^3.18.0",
