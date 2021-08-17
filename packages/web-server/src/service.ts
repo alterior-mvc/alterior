@@ -11,7 +11,7 @@ import { ControllerInstance } from './controller';
 import { ExpressEngine } from './express-engine';
 import { RouteDefinition } from './metadata/route';
 import { Body, InputAnnotation, PathParam, QueryParam } from "./input";
-const getParameterNames = require('@avejidah/get-parameter-names');
+import { getParameterNames } from "@alterior/common";
 
 export type RestClient<T> = {
     [P in keyof T as T[P] extends ((...args) => any) ? P : never]: 

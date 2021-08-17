@@ -1,8 +1,7 @@
-const getParameterNames = require('@avejidah/get-parameter-names');
 import { isConstructor, getWorkingDirectory, changeWorkingDirectory, makeDirectory, pathCombine, unindent, 
     writeTextFile, fileExists, removeAll, isPropertyPrivate, pathResolve } from "./utils";
 import { ServiceAnnotation, ExposureReflector, ServiceCompiler, MethodShim } from "@alterior/runtime";
-import { ApplicationError } from "@alterior/common";
+import { ApplicationError, getParameterNames } from "@alterior/common";
 import { CommandRunner } from "./command-runner";
 import { ANNOTATIONS_KEY, CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY, PROPERTY_ANNOTATIONS_KEY, METHOD_PARAMETER_ANNOTATIONS_KEY } from "@alterior/annotations";
 import * as ts from 'typescript';

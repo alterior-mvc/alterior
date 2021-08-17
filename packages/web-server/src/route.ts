@@ -1,4 +1,3 @@
-const getParameterNames = require('@avejidah/get-parameter-names');
 import * as express from 'express';
 import * as uuid from 'uuid';
 import * as bodyParser from 'body-parser';
@@ -10,7 +9,7 @@ import { prepareMiddleware } from "./middleware";
 import { Annotations } from "@alterior/annotations";
 import { WebServer } from "./web-server";
 import { WebServerSetupError } from "./web-server-setup-error";
-import { HttpError, ArgumentError, ArgumentNullError } from "@alterior/common";
+import { HttpError, ArgumentError, ArgumentNullError, getParameterNames } from "@alterior/common";
 import { Response } from './response';
 import { Logger } from '@alterior/logging';
 

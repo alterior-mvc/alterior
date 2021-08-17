@@ -1,5 +1,5 @@
 import { Annotation, Annotations, IAnnotation } from "@alterior/annotations";
-const getParameterNames = require('@avejidah/get-parameter-names');
+import { getParameterNames } from "@alterior/common";
 
 export interface Constructor<T> {
     new(...args) : T;
