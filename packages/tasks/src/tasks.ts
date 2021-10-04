@@ -44,6 +44,7 @@ export const Task = TaskAnnotation.decorator();
 
 export abstract class Worker {
     abstract get name() : string;
+    get options() : JobOptions { return undefined; }
 
     protected get currentJob() : QueueJob<TaskJob> {
         return Zone.current.get('workerStateJob');
@@ -61,6 +62,8 @@ export type RemoteService<T> = {
             // fields
             : never
     ;
+} & {
+    withOptions(options : JobOptions) : RemoteService<T>;
 }
 
 export type RemoteWorker<T> = {
@@ -72,6 +75,8 @@ export type RemoteWorker<T> = {
             // fields
             : never
     ;
+} & {
+    withOptions(options : JobOptions) : RemoteWorker<T>;
 };
 
 export type QueueOptions = BullQueue.QueueOptions;
@@ -94,15 +99,25 @@ export class TaskWorkerProxy {
         })
     }
 
-    static createAsync<T extends Worker>(queueClient : TaskQueueClient, id : string): RemoteWorker<T> {
+    static createAsync<T extends Worker>(queueClient : TaskQueueClient, id : string, options? : JobOptions): RemoteWorker<T> {
         return this.create(
-            (method, ...args) => queueClient.enqueue({ id, method, args })
+            (method, ...args) => {
+                if (method === 'withOptions')
+                    return TaskWorkerProxy.createAsync(queueClient, id, Object.assign({}, options, args[0]));
+                else
+                    return queueClient.enqueue({ id, method, args }, options)
+            }
         );
     }
     
-    static createSync<T extends Worker>(queueClient : TaskQueueClient, id : string): RemoteService<T> {
+    static createSync<T extends Worker>(queueClient : TaskQueueClient, id : string, options? : JobOptions): RemoteService<T> {
         return this.create( 
-            async (method, ...args) => (await queueClient.enqueue({ id, method, args })).finished
+            (method, ...args) => {
+                if (method === 'withOptions')
+                    return TaskWorkerProxy.createSync(queueClient, id, Object.assign({}, options, args[0]));
+                else
+                    return queueClient.enqueue({ id, method, args }, options).then(v => v.finished);
+            }
         );
     }
 }
@@ -184,8 +199,8 @@ export class TaskWorkerRegistry {
         this._entries[id] = {
             type: <any> taskClass,
             local: instance,
-            sync: TaskWorkerProxy.createSync(this.client, id),
-            async: TaskWorkerProxy.createAsync(this.client, id)
+            sync: TaskWorkerProxy.createSync(this.client, id, instance.options),
+            async: TaskWorkerProxy.createAsync(this.client, id, instance.options)
         };
     }
 
