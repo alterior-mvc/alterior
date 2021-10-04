@@ -43,9 +43,10 @@
     "@alterior/di": "^3.0.0-beta.99",
     "@alterior/runtime": "^3.0.0-beta.99",
     "rxjs": "^6.5.5",
+    "tslib": "^2.3.1",
     "xhr2": "^0.1.4"
   },
-  "gitHead": "1b0298b55d7803b04410b07a680369cd6287bd5d",
+  "gitHead": "853d0470b31cc4aa0b27fd04e2f743f3f1ec9efc",
   "devDependencies": {
     "razmin": "^0.6.18",
     "rimraf": "^3.0.2",

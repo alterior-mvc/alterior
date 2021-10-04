@@ -40,7 +40,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "source-map-support": "^0.5.19",
-    "typescript": "^4.1.3",
+    "tslib": "^2.3.1",
+    "typescript": "^4.1.5",
     "typescript-rtti": "^0.0.17"
   },
   "devDependencies": {
@@ -48,5 +49,5 @@
     "@types/node": "^14.14.25",
     "razmin": "^1.0.4"
   },
-  "gitHead": "1b0298b55d7803b04410b07a680369cd6287bd5d"
+  "gitHead": "853d0470b31cc4aa0b27fd04e2f743f3f1ec9efc"
 }

@@ -59,6 +59,7 @@
     "reflect-metadata": "^0.1.12",
     "spdy": "^4.0.2",
     "supertest": "^4.0.2",
+    "tslib": "^2.3.1",
     "uuid": "^3.4.0",
     "ws": "^7.4.3"
   },
@@ -82,5 +83,5 @@
     "typescript": "^4.1.5",
     "wtfnode": "^0.8.1"
   },
-  "gitHead": "1b0298b55d7803b04410b07a680369cd6287bd5d"
+  "gitHead": "853d0470b31cc4aa0b27fd04e2f743f3f1ec9efc"
 }
