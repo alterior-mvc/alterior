@@ -1,6 +1,6 @@
 {
   "name": "@alterior/cli",
-  "version": "3.0.0-beta.99",
+  "version": "3.0.0-beta.100",
   "description": "Provides the `alt` command line tool for managing Alterior projects.",
   "main": "dist/index.js",
   "module": "dist.esm/index.js",
@@ -31,10 +31,10 @@
   },
   "homepage": "https://github.com/alterior-mvc/alterior#readme",
   "dependencies": {
-    "@alterior/annotations": "^3.0.0-beta.99",
+    "@alterior/annotations": "^3.0.0-beta.100",
     "@alterior/command-line": "^3.0.0-beta.85",
-    "@alterior/common": "^3.0.0-beta.99",
-    "@alterior/runtime": "^3.0.0-beta.99",
+    "@alterior/common": "^3.0.0-beta.100",
+    "@alterior/runtime": "^3.0.0-beta.100",
     "@avejidah/get-parameter-names": "^0.3.2",
     "mkdirp": "^1.0.4",
     "reflect-metadata": "^0.1.13",
