@@ -33,6 +33,13 @@ export class RouteReflector {
 			let definedMountPath = mount.path || '';
 			mount.path = `${basePath}/${definedMountPath.replace(/^\/*/, '')}`
 			mount.controller = Reflect.getMetadata('design:type', type.prototype, mount.propertyKey);
+			if (!mount.controller) {
+				throw new Error(
+					`Failed to determine class for @Mount(${definedMountPath || ''}) in class ${type.name}. ` 
+					+ `Make sure that emitDecoratorMetadata is enabled and the class is decorated. ` 
+					+ `Make sure there are no circular dependencies. If the controller type is declared in ` 
+					+ `the same file where @Mount() is make sure the controller is defined first.`
+				);
 		});
 	}
 
