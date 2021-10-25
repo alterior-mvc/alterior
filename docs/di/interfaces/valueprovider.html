@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>BuildConfig | @alterior/cli</title>
-	<meta name="description" content="Documentation for @alterior/cli">
+	<title>ValueProvider | @alterior/di</title>
+	<meta name="description" content="Documentation for @alterior/di">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
 </head>
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">@alterior/cli</a>
+					<a href="../index.html" class="title">@alterior/di</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -54,21 +54,46 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="buildconfig.html">BuildConfig</a>
+					<a href="valueprovider.html">ValueProvider</a>
 				</li>
 			</ul>
-			<h1>Interface BuildConfig</h1>
+			<h1>Interface ValueProvider</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<dl class="tsd-comment-tags">
+						<dt>whatitdoes</dt>
+						<dd><p>Configures the <a href="../classes/injector.html">Injector</a> to return a value for a token.</p>
+						</dd>
+						<dt>howtouse</dt>
+						<dd><pre><code>const <span class="hljs-attr">provider:</span> ValueProvider = {<span class="hljs-attr">provide:</span> <span class="hljs-string">&#x27;someToken&#x27;</span>, <span class="hljs-attr">useValue:</span> <span class="hljs-string">&#x27;someValue&#x27;</span>};</code></pre></dd>
+						<dt>description</dt>
+						<dd><p>For more details, see the {@linkDocs guide/dependency-injection &quot;Dependency Injection Guide&quot;}.</p>
+							<a href="#example" id="example" style="color: inherit; text-decoration: none;">
+								<h3>Example</h3>
+							</a>
+							<p>{@example core/di/ts/provider_spec.ts region=&#39;ValueProvider&#39;}</p>
+						</dd>
+						<dt>stable</dt>
+						<dd></dd>
+					</dl>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">BuildConfig</span>
+						<span class="target">ValueProvider</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<a href="normalizedprovider.html" class="tsd-signature-type">NormalizedProvider</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -79,9 +104,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="buildconfig.html#packageaccess" class="tsd-kind-icon">package<wbr>Access</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="buildconfig.html#projecttype" class="tsd-kind-icon">project<wbr>Type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="buildconfig.html#publishbackend" class="tsd-kind-icon">publish<wbr>Backend</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="valueprovider.html#multi" class="tsd-kind-icon">multi</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="valueprovider.html#provide" class="tsd-kind-icon">provide</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="valueprovider.html#usevalue" class="tsd-kind-icon">use<wbr>Value</a></li>
 							</ul>
 						</section>
 					</div>
@@ -90,52 +115,52 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="packageaccess" class="tsd-anchor"></a>
-					<h3>package<wbr>Access</h3>
-					<div class="tsd-signature tsd-kind-icon">package<wbr>Access<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"public"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"private"</span></div>
+					<a name="multi" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> multi</h3>
+					<div class="tsd-signature tsd-kind-icon">multi<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/build-config.ts#L20">src/build-config.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/210d18f/packages/di/src/injection/provider.ts#L72">packages/di/src/injection/provider.ts:72</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>When publishing your project to NPM, should the package be published publically or privately?
-							Note that publishing private packages requires an NPM subscription.</p>
+							<p>If true, then injector returns an array of instances. This is useful to allow multiple
+							providers spread across many files to provide configuration information to a common token.</p>
+						</div>
+						<a href="#example" id="example" style="color: inherit; text-decoration: none;">
+							<h3>Example</h3>
+						</a>
+						<p>{@example core/di/ts/provider_spec.ts region=&#39;MultiProviderAspect&#39;}</p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="provide" class="tsd-anchor"></a>
+					<h3>provide</h3>
+					<div class="tsd-signature tsd-kind-icon">provide<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/210d18f/packages/di/src/injection/provider.ts#L57">packages/di/src/injection/provider.ts:57</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>An injection token. (Typically an instance of <code>Type</code> or <code>InjectionToken</code>, but can be <code>any</code>).</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="projecttype" class="tsd-anchor"></a>
-					<h3>project<wbr>Type</h3>
-					<div class="tsd-signature tsd-kind-icon">project<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"service"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"library"</span></div>
+					<a name="usevalue" class="tsd-anchor"></a>
+					<h3>use<wbr>Value</h3>
+					<div class="tsd-signature tsd-kind-icon">use<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/build-config.ts#L6">src/build-config.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/210d18f/packages/di/src/injection/provider.ts#L62">packages/di/src/injection/provider.ts:62</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>What type of project is this? A &quot;service&quot; is a backend application that runs on a server,
-							and exposes it&#39;s API as a client library.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="publishbackend" class="tsd-anchor"></a>
-					<h3>publish<wbr>Backend</h3>
-					<div class="tsd-signature tsd-kind-icon">publish<wbr>Backend<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/build-config.ts#L14">src/build-config.ts:14</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>When publishing your project to NPM, should the backend code be included?
-								If false, only the frontend code (the client portion) will be published to NPM.
-								If true, both the frontend and the backend code will be published, allowing your backend
-							to be run from the package itself.</p>
+							<p>The value to inject.</p>
 						</div>
 					</div>
 				</section>
@@ -154,16 +179,16 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="buildconfig.html" class="tsd-kind-icon">Build<wbr>Config</a>
+						<a href="valueprovider.html" class="tsd-kind-icon">Value<wbr>Provider</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="buildconfig.html#packageaccess" class="tsd-kind-icon">package<wbr>Access</a>
+								<a href="valueprovider.html#multi" class="tsd-kind-icon">multi</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="buildconfig.html#projecttype" class="tsd-kind-icon">project<wbr>Type</a>
+								<a href="valueprovider.html#provide" class="tsd-kind-icon">provide</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="buildconfig.html#publishbackend" class="tsd-kind-icon">publish<wbr>Backend</a>
+								<a href="valueprovider.html#usevalue" class="tsd-kind-icon">use<wbr>Value</a>
 							</li>
 						</ul>
 					</li>
@@ -179,6 +204,11 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
@@ -193,7 +223,7 @@
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
 			</ul>
 		</div>
 	</div>

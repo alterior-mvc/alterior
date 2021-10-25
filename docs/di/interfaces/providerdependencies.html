@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ProcessStartInfo | @alterior/cli</title>
-	<meta name="description" content="Documentation for @alterior/cli">
+	<title>ProviderDependencies | @alterior/di</title>
+	<meta name="description" content="Documentation for @alterior/di">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
 </head>
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">@alterior/cli</a>
+					<a href="../index.html" class="title">@alterior/di</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -54,10 +54,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="processstartinfo.html">ProcessStartInfo</a>
+					<a href="providerdependencies.html">ProviderDependencies</a>
 				</li>
 			</ul>
-			<h1>Interface ProcessStartInfo</h1>
+			<h1>Interface ProviderDependencies</h1>
 		</div>
 	</div>
 </header>
@@ -68,7 +68,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ProcessStartInfo</span>
+						<span class="target">ProviderDependencies</span>
 					</li>
 				</ul>
 			</section>
@@ -79,10 +79,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="processstartinfo.html#args" class="tsd-kind-icon">args</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="processstartinfo.html#command" class="tsd-kind-icon">command</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="processstartinfo.html#shell" class="tsd-kind-icon">shell</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="processstartinfo.html#stdio" class="tsd-kind-icon">stdio</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="providerdependencies.html#deps" class="tsd-kind-icon">deps</a></li>
 							</ul>
 						</section>
 					</div>
@@ -91,42 +88,12 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="args" class="tsd-anchor"></a>
-					<h3>args</h3>
-					<div class="tsd-signature tsd-kind-icon">args<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<a name="deps" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> deps</h3>
+					<div class="tsd-signature tsd-kind-icon">deps<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/process.ts#L18">src/process.ts:18</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="command" class="tsd-anchor"></a>
-					<h3>command</h3>
-					<div class="tsd-signature tsd-kind-icon">command<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/process.ts#L17">src/process.ts:17</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="shell" class="tsd-anchor"></a>
-					<h3>shell</h3>
-					<div class="tsd-signature tsd-kind-icon">shell<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/process.ts#L19">src/process.ts:19</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="stdio" class="tsd-anchor"></a>
-					<h3>stdio</h3>
-					<div class="tsd-signature tsd-kind-icon">stdio<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">childProcess.StdioOptions</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/process.ts#L20">src/process.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/210d18f/packages/di/src/injection/provider.ts#L222">packages/di/src/injection/provider.ts:222</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -145,19 +112,10 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="processstartinfo.html" class="tsd-kind-icon">Process<wbr>Start<wbr>Info</a>
+						<a href="providerdependencies.html" class="tsd-kind-icon">Provider<wbr>Dependencies</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="processstartinfo.html#args" class="tsd-kind-icon">args</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="processstartinfo.html#command" class="tsd-kind-icon">command</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="processstartinfo.html#shell" class="tsd-kind-icon">shell</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="processstartinfo.html#stdio" class="tsd-kind-icon">stdio</a>
+								<a href="providerdependencies.html#deps" class="tsd-kind-icon">deps</a>
 							</li>
 						</ul>
 					</li>
@@ -173,6 +131,11 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
@@ -187,7 +150,7 @@
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
 			</ul>
 		</div>
 	</div>

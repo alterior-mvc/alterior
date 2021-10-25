@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>@alterior/cli</title>
-	<meta name="description" content="Documentation for @alterior/cli">
+	<title>@alterior/di</title>
+	<meta name="description" content="Documentation for @alterior/di">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
 </head>
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">@alterior/cli</a>
+					<a href="index.html" class="title">@alterior/di</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -54,7 +54,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1>@alterior/cli</h1>
+			<h1>@alterior/di</h1>
 		</div>
 	</div>
 </header>
@@ -62,29 +62,97 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<a href="#cli" id="cli" style="color: inherit; text-decoration: none;">
-					<h1>@/cli</h1>
+				<a href="#alteriordi" id="alteriordi" style="color: inherit; text-decoration: none;">
+					<h1>@alterior/di</h1>
 				</a>
-				<p>Provides the <code>alt</code> command line tool for managing Alterior projects.</p>
-				<a href="#commands" id="commands" style="color: inherit; text-decoration: none;">
-					<h2>Commands</h2>
+				<p><a href="https://www.npmjs.com/package/@alterior/di"><img src="https://img.shields.io/npm/v/@alterior/di.svg" alt="Version"></a></p>
+				<p>Alterior supports dependency injection using the same patterns as in
+					Angular applications. <code>@alterior/di</code> is responsible for providing the
+				underlying dependency injection mechanism.</p>
+				<p>Injectors created via this library are <em>heirarchical</em>. This is an
+					important concept which is used throughout the Alterior framework.
+					Injectors provide the dependencies specified when they are resolved
+					and if no matching dependency is found, the request is forwarded
+				to the parent injector.</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { ReflectiveInjector, Injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@alterior/di&#x27;</span>;
+
+<span class="hljs-meta">@Injectable</span>()
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TestService</span> </span>{
+    <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">readonly</span> date : <span class="hljs-built_in">Date</span></span>)</span> {
+    }
+
+    <span class="hljs-function"><span class="hljs-title">hello</span>(<span class="hljs-params"></span>)</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Hello! The time is <span class="hljs-subst">${<span class="hljs-built_in">this</span>.date.toString()}</span>`</span>);
+    }
+}
+
+<span class="hljs-keyword">let</span> injector = ReflectiveInjector.resolveAndCreate([
+    { <span class="hljs-attr">provide</span>: <span class="hljs-string">&#x27;Test&#x27;</span>, <span class="hljs-attr">useValue</span>: <span class="hljs-number">123</span> },
+    { <span class="hljs-attr">provide</span>: <span class="hljs-built_in">Date</span>, <span class="hljs-attr">useValue</span>: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>() },
+    TestService
+]);
+
+<span class="hljs-built_in">console</span>.log(injector.get(<span class="hljs-string">&#x27;Test&#x27;</span>));
+<span class="hljs-built_in">console</span>.log(injector.get(<span class="hljs-built_in">Date</span>));
+injector.get(TestService).hello();</code></pre>
+				<a href="#injectors" id="injectors" style="color: inherit; text-decoration: none;">
+					<h2>Injectors</h2>
 				</a>
-				<a href="#alt-new-service-ltnamegt" id="alt-new-service-ltnamegt" style="color: inherit; text-decoration: none;">
-					<h3><code>alt new service &lt;name&gt;</code></h3>
+				<p>The <code>Injector</code> class is abstract. It has exactly one exposed method:
+					<code>get(token : any) : any</code>. The library ships with <code>ReflectiveInjector</code>
+					which uses Typescript&#39;s runtime type reflection (requires <code>emitDecoratorMetadata</code>) in order to determine which dependencies are
+					requested by a constructor function. Because Typescript only emits
+					type metadata for elements which are annotated with a decorator, you
+					must decorate any class that participates in DI with the <code>@Injectable()</code>
+					decorator. Since the mere presence of a decorator causes metadata to be
+					emitted, you do not need <code>@Injectable()</code> if there is any other decorator
+				already applied, but it is good practice to include it nonetheless.</p>
+				<a href="#providers" id="providers" style="color: inherit; text-decoration: none;">
+					<h2>Providers</h2>
 				</a>
-				<p>Generates a new service project in a new folder called <code>&lt;name&gt;</code> in the current directory</p>
-				<a href="#alt-build" id="alt-build" style="color: inherit; text-decoration: none;">
-					<h3><code>alt build</code></h3>
+				<p>An Injector is defined by a set of Providers. A Provider specifies an
+					injection token to be provided as well as the value which should be
+				injected when the framework encounters the injection token. </p>
+				<p>There are a number of Provider types:</p>
+				<ul>
+					<li><p><strong>Value</strong>: Specify an existing value that should be provided
+						<code>{ provide: &#39;TOKEN&#39;, useValue: 123 }</code></p>
+					</li>
+					<li><p><strong>Factory</strong>: Define a factory function that will be called in order to create the value that should be provided
+						<code>{ provide: &#39;TOKEN&#39;, useFactory: () =&gt; 123 }</code></p>
+					</li>
+					<li><p><strong>Existing</strong>: Define the provided value by specifying another injection token to resolve
+						<code>{ provide: &#39;TOKEN&#39;, useExisting: &#39;ANOTHERTOKEN&#39; }</code></p>
+					</li>
+					<li><p><strong>Class</strong>: The injector will instantiate the given class and use the new instance as the provided value
+						<code>{ provide: &#39;TOKEN&#39;, useClass: MyClass }</code></p>
+					</li>
+				</ul>
+				<p>As a shortcut, you can pass a constructor function (class) without wrapping
+				it in a useClass Provider object. Doing so with class <code>ABC</code> is the equivalent of specifying <code>{ provide: ABC, useClass: ABC }</code></p>
+				<a href="#creating-injectors" id="creating-injectors" style="color: inherit; text-decoration: none;">
+					<h2>Creating Injectors</h2>
 				</a>
-				<p>Builds an Alterior project.</p>
-				<a href="#alt-lint" id="alt-lint" style="color: inherit; text-decoration: none;">
-					<h3><code>alt lint</code></h3>
+				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> injector = ReflectiveInjector.resolveAndCreate([ <span class="hljs-comment">/* providers */</span> ], parent?);</code></pre>
+				<p>Use <code>resolveAndCreate()</code> to create a new injector. If you passed a parent
+					injector to <code>resolveAndCreate()</code> then the tokens provided by the parent
+					injector become available in the new injector (assuming they are not
+				overridden).</p>
+				<a href="#getting-values" id="getting-values" style="color: inherit; text-decoration: none;">
+					<h2>Getting Values</h2>
 				</a>
-				<p>Checks an Alterior project for issues and reports them.</p>
-				<a href="#alt-publish" id="alt-publish" style="color: inherit; text-decoration: none;">
-					<h3><code>alt publish</code></h3>
-				</a>
-				<p>Prepares a project for publishing and calls NPM to handle publishing the package</p>
+				<p>Once you&#39;ve obtained an <code>Injector</code> you can use <code>Injector#get()</code> to obtain the value for a particular injection token:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> instance = injector.get(MyClass);</code></pre>
+				<p>If <code>MyClass</code> is not provided by the injector (or any of its parents)
+					an exception will be thrown. You can change this behavior by passing
+				a second parameter to <code>get()</code>:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> <span class="hljs-built_in">number</span> = injector.get(<span class="hljs-string">&#x27;SomeNumber&#x27;</span>, <span class="hljs-number">999</span>);</code></pre>
+				<p>Here <code>number</code> will be <code>999</code> if <code>injector</code> does not provide <code>&#39;SomeNumber&#39;</code>.
+				You can use this to avoid throwing an exception if the value is not present:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> instance = injector.get(MyClass, <span class="hljs-literal">null</span>);</code></pre>
+				<p>Here <code>instance</code> will be <code>null</code> if <code>injector</code> does not provide <code>MyClass</code>.
+					Note: You cannot pass <code>undefined</code> here as <code>get()</code> will act as if you
+				did not pass the second parameter at all. Use <code>null</code> instead.</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -98,139 +166,310 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class">
-						<a href="classes/backendbuilder.html" class="tsd-kind-icon">Backend<wbr>Builder</a>
+						<a href="classes/debugcontext.html" class="tsd-kind-icon">Debug<wbr>Context</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/buildcommand.html" class="tsd-kind-icon">Build<wbr>Command</a>
+						<a href="classes/hostannotation.html" class="tsd-kind-icon">Host<wbr>Annotation</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/builderror.html" class="tsd-kind-icon">Build<wbr>Error</a>
+						<a href="classes/injectannotation.html" class="tsd-kind-icon">Inject<wbr>Annotation</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/builder.html" class="tsd-kind-icon">Builder</a>
+						<a href="classes/injectableannotation.html" class="tsd-kind-icon">Injectable<wbr>Annotation</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/injectiontoken.html" class="tsd-kind-icon">Injection<wbr>Token</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/clientbuilder.html" class="tsd-kind-icon">Client<wbr>Builder</a>
+						<a href="classes/injector.html" class="tsd-kind-icon">Injector</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/commandrunner.html" class="tsd-kind-icon">Command<wbr>Runner</a>
+						<a href="classes/moduleannotation.html" class="tsd-kind-icon">Module<wbr>Annotation</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/generator.html" class="tsd-kind-icon">Generator</a>
+						<a href="classes/opaquetoken.html" class="tsd-kind-icon">Opaque<wbr>Token</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/generatorcanceled.html" class="tsd-kind-icon">Generator<wbr>Canceled</a>
+						<a href="classes/optionalannotation.html" class="tsd-kind-icon">Optional<wbr>Annotation</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/generatorerror.html" class="tsd-kind-icon">Generator<wbr>Error</a>
+						<a href="classes/reflectioncapabilities.html" class="tsd-kind-icon">Reflection<wbr>Capabilities</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/librarygenerator.html" class="tsd-kind-icon">Library<wbr>Generator</a>
+						<a href="classes/reflectivedependency.html" class="tsd-kind-icon">Reflective<wbr>Dependency</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/lintcommand.html" class="tsd-kind-icon">Lint<wbr>Command</a>
+						<a href="classes/reflectiveinjector.html" class="tsd-kind-icon">Reflective<wbr>Injector</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/newcommand.html" class="tsd-kind-icon">New<wbr>Command</a>
+						<a href="classes/reflectiveinjector_.html" class="tsd-kind-icon">Reflective<wbr>Injector_</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/packageconfiguration.html" class="tsd-kind-icon">Package<wbr>Configuration</a>
+						<a href="classes/reflectivekey.html" class="tsd-kind-icon">Reflective<wbr>Key</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/preparecommand.html" class="tsd-kind-icon">Prepare<wbr>Command</a>
+						<a href="classes/reflector.html" class="tsd-kind-icon">Reflector</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/process.html" class="tsd-kind-icon">Process</a>
+						<a href="classes/reflectorreader.html" class="tsd-kind-icon">Reflector<wbr>Reader</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/servicegenerator.html" class="tsd-kind-icon">Service<wbr>Generator</a>
+						<a href="classes/resolvedreflectivefactory.html" class="tsd-kind-icon">Resolved<wbr>Reflective<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/resolvedreflectiveprovider_.html" class="tsd-kind-icon">Resolved<wbr>Reflective<wbr>Provider_</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/selfannotation.html" class="tsd-kind-icon">Self<wbr>Annotation</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/skipselfannotation.html" class="tsd-kind-icon">Skip<wbr>Self<wbr>Annotation</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/_nullinjector.html" class="tsd-kind-icon">_<wbr>Null<wbr>Injector</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/buildconfig.html" class="tsd-kind-icon">Build<wbr>Config</a>
+						<a href="interfaces/browsernodeglobal.html" class="tsd-kind-icon">Browser<wbr>Node<wbr>Global</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/processexitedevent.html" class="tsd-kind-icon">Process<wbr>Exited<wbr>Event</a>
+						<a href="interfaces/classprovider.html" class="tsd-kind-icon">Class<wbr>Provider</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/processresult.html" class="tsd-kind-icon">Process<wbr>Result</a>
+						<a href="interfaces/configuredmodule.html" class="tsd-kind-icon">Configured<wbr>Module</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/processstartinfo.html" class="tsd-kind-icon">Process<wbr>Start<wbr>Info</a>
+						<a href="interfaces/existingprovider.html" class="tsd-kind-icon">Existing<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/factoryprovider.html" class="tsd-kind-icon">Factory<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/forwardreffn.html" class="tsd-kind-icon">Forward<wbr>Ref<wbr>Fn</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/injectionerror.html" class="tsd-kind-icon">Injection<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/moduleoptions.html" class="tsd-kind-icon">Module<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/normalizedprovider.html" class="tsd-kind-icon">Normalized<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/platformreflectioncapabilities.html" class="tsd-kind-icon">Platform<wbr>Reflection<wbr>Capabilities</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/providerdependencies.html" class="tsd-kind-icon">Provider<wbr>Dependencies</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/resolvedreflectiveprovider.html" class="tsd-kind-icon">Resolved<wbr>Reflective<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/type.html" class="tsd-kind-icon">Type</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/typeprovider.html" class="tsd-kind-icon">Type<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/valueprovider.html" class="tsd-kind-icon">Value<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#getterfn" class="tsd-kind-icon">Getter<wbr>Fn</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#methodfn" class="tsd-kind-icon">Method<wbr>Fn</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#modulelike" class="tsd-kind-icon">Module<wbr>Like</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#provider" class="tsd-kind-icon">Provider</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#providerwithdependencies" class="tsd-kind-icon">Provider<wbr>With<wbr>Dependencies</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#setterfn" class="tsd-kind-icon">Setter<wbr>Fn</a>
 					</li>
 					<li class=" tsd-kind-variable">
-						<a href="globals.html#pkg" class="tsd-kind-icon">PKG</a>
+						<a href="globals.html#delegate_ctor" class="tsd-kind-icon">DELEGATE_<wbr>CTOR</a>
 					</li>
 					<li class=" tsd-kind-variable">
-						<a href="globals.html#line" class="tsd-kind-icon">line</a>
+						<a href="globals.html#error_component_type" class="tsd-kind-icon">ERROR_<wbr>COMPONENT_<wbr>TYPE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#error_debug_context" class="tsd-kind-icon">ERROR_<wbr>DEBUG_<wbr>CONTEXT</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#error_logger" class="tsd-kind-icon">ERROR_<wbr>LOGGER</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#error_original_error" class="tsd-kind-icon">ERROR_<wbr>ORIGINAL_<wbr>ERROR</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#error_type" class="tsd-kind-icon">ERROR_<wbr>TYPE</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#host" class="tsd-kind-icon">Host</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#injector_key" class="tsd-kind-icon">INJECTOR_<wbr>KEY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#inject" class="tsd-kind-icon">Inject</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#injectable" class="tsd-kind-icon">Injectable</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#module" class="tsd-kind-icon">Module</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#optional" class="tsd-kind-icon">Optional</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#self" class="tsd-kind-icon">Self</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#skipself" class="tsd-kind-icon">Skip<wbr>Self</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#throw_if_not_found" class="tsd-kind-icon">THROW_<wbr>IF_<wbr>NOT_<wbr>FOUND</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#type" class="tsd-kind-icon">Type</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#undefined" class="tsd-kind-icon">UNDEFINED</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#workerglobalscope" class="tsd-kind-icon">Worker<wbr>Global<wbr>Scope</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#_empty_list" class="tsd-kind-icon">_EMPTY_<wbr>LIST</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#_throw_if_not_found" class="tsd-kind-icon">_THROW_<wbr>IF_<wbr>NOT_<wbr>FOUND</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#_global" class="tsd-kind-icon">_global</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#_globalkeyregistry" class="tsd-kind-icon">_global<wbr>Key<wbr>Registry</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#global" class="tsd-kind-icon">global</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#globalscope" class="tsd-kind-icon">global<wbr>Scope</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#reflector" class="tsd-kind-icon">reflector</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#ask" class="tsd-kind-icon">ask</a>
+						<a href="globals.html#_createdependency" class="tsd-kind-icon">_create<wbr>Dependency</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#askboolean" class="tsd-kind-icon">ask<wbr>Boolean</a>
+						<a href="globals.html#_dependenciesfor" class="tsd-kind-icon">_dependencies<wbr>For</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#capitalize" class="tsd-kind-icon">capitalize</a>
+						<a href="globals.html#_extracttoken" class="tsd-kind-icon">_extract<wbr>Token</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#changeworkingdirectory" class="tsd-kind-icon">change<wbr>Working<wbr>Directory</a>
+						<a href="globals.html#_mapproviders" class="tsd-kind-icon">_map<wbr>Providers</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#fileexists" class="tsd-kind-icon">file<wbr>Exists</a>
+						<a href="globals.html#_normalizeproviders" class="tsd-kind-icon">_normalize<wbr>Providers</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#getworkingdirectory" class="tsd-kind-icon">get<wbr>Working<wbr>Directory</a>
+						<a href="globals.html#addkey" class="tsd-kind-icon">add<wbr>Key</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#isconstructor" class="tsd-kind-icon">is<wbr>Constructor</a>
+						<a href="globals.html#configuremodule" class="tsd-kind-icon">configure<wbr>Module</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#ispropertyprivate" class="tsd-kind-icon">is<wbr>Property<wbr>Private</a>
+						<a href="globals.html#constructdependencies" class="tsd-kind-icon">construct<wbr>Dependencies</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#linerangetagend" class="tsd-kind-icon">line<wbr>Range<wbr>Tag<wbr>End</a>
+						<a href="globals.html#constructresolvingpath" class="tsd-kind-icon">construct<wbr>Resolving<wbr>Path</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#linerangetagstart" class="tsd-kind-icon">line<wbr>Range<wbr>Tag<wbr>Start</a>
+						<a href="globals.html#converttsickledecoratorintometadata" class="tsd-kind-icon">convert<wbr>Tsickle<wbr>Decorator<wbr>Into<wbr>Metadata</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#makedirectory" class="tsd-kind-icon">make<wbr>Directory</a>
+						<a href="globals.html#cyclicdependencyerror" class="tsd-kind-icon">cyclic<wbr>Dependency<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#pathcombine" class="tsd-kind-icon">path<wbr>Combine</a>
+						<a href="globals.html#defaulterrorlogger" class="tsd-kind-icon">default<wbr>Error<wbr>Logger</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#pathresolve" class="tsd-kind-icon">path<wbr>Resolve</a>
+						<a href="globals.html#findfirstclosedcycle" class="tsd-kind-icon">find<wbr>First<wbr>Closed<wbr>Cycle</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#readfilelines" class="tsd-kind-icon">read<wbr>File<wbr>Lines</a>
+						<a href="globals.html#forwardref" class="tsd-kind-icon">forward<wbr>Ref</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getdebugcontext" class="tsd-kind-icon">get<wbr>Debug<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#geterrorlogger" class="tsd-kind-icon">get<wbr>Error<wbr>Logger</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getoriginalerror" class="tsd-kind-icon">get<wbr>Original<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#getparentctor" class="tsd-kind-icon">get<wbr>Parent<wbr>Ctor</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#gettype" class="tsd-kind-icon">get<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#injectionerror" class="tsd-kind-icon">injection<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#instantiationerror" class="tsd-kind-icon">instantiation<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#invalidprovidererror" class="tsd-kind-icon">invalid<wbr>Provider<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="globals.html#readjsonfile" class="tsd-kind-icon">read<wbr>Json<wbr>File</a>
+						<a href="globals.html#ispresent" class="tsd-kind-icon">is<wbr>Present</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#readtextfile" class="tsd-kind-icon">read<wbr>Text<wbr>File</a>
+						<a href="globals.html#istype" class="tsd-kind-icon">is<wbr>Type</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#removeall" class="tsd-kind-icon">remove<wbr>All</a>
+						<a href="globals.html#mergeresolvedreflectiveproviders" class="tsd-kind-icon">merge<wbr>Resolved<wbr>Reflective<wbr>Providers</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#removetaggedlinerange" class="tsd-kind-icon">remove<wbr>Tagged<wbr>Line<wbr>Range</a>
+						<a href="globals.html#mixingmultiproviderswithregularproviderserror" class="tsd-kind-icon">mixing<wbr>Multi<wbr>Providers<wbr>With<wbr>Regular<wbr>Providers<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#replacetaggedlinerange" class="tsd-kind-icon">replace<wbr>Tagged<wbr>Line<wbr>Range</a>
+						<a href="globals.html#noannotationerror" class="tsd-kind-icon">no<wbr>Annotation<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#unindent" class="tsd-kind-icon">unindent</a>
+						<a href="globals.html#noprovidererror" class="tsd-kind-icon">no<wbr>Provider<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#writefilelines" class="tsd-kind-icon">write<wbr>File<wbr>Lines</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="globals.html#writejsonfile" class="tsd-kind-icon">write<wbr>Json<wbr>File</a>
+						<a href="globals.html#outofboundserror" class="tsd-kind-icon">out<wbr>OfBounds<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#writetextfile" class="tsd-kind-icon">write<wbr>Text<wbr>File</a>
+						<a href="globals.html#resolveforwardref" class="tsd-kind-icon">resolve<wbr>Forward<wbr>Ref</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#resolvereflectivefactory" class="tsd-kind-icon">resolve<wbr>Reflective<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#resolvereflectiveprovider" class="tsd-kind-icon">resolve<wbr>Reflective<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#resolvereflectiveproviders" class="tsd-kind-icon">resolve<wbr>Reflective<wbr>Providers</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#stringify" class="tsd-kind-icon">stringify</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#wrappederror" class="tsd-kind-icon">wrapped<wbr>Error</a>
 					</li>
 				</ul>
 			</nav>
@@ -241,6 +480,11 @@
 	<div class="container">
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
@@ -256,7 +500,7 @@
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
 			</ul>
 		</div>
 	</div>

@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>BackendBuilder | @alterior/cli</title>
-	<meta name="description" content="Documentation for @alterior/cli">
+	<title>ModuleOptions | @alterior/di</title>
+	<meta name="description" content="Documentation for @alterior/di">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
 </head>
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">@alterior/cli</a>
+					<a href="../index.html" class="title">@alterior/di</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -54,10 +54,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="backendbuilder.html">BackendBuilder</a>
+					<a href="moduleoptions.html">ModuleOptions</a>
 				</li>
 			</ul>
-			<h1>Class BackendBuilder</h1>
+			<h1>Interface ModuleOptions</h1>
 		</div>
 	</div>
 </header>
@@ -68,8 +68,19 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">BackendBuilder</span>
+						<span class="target">ModuleOptions</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<a href="configuredmodule.html" class="tsd-signature-type">ConfiguredModule</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implemented by</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../classes/moduleannotation.html" class="tsd-signature-type">ModuleAnnotation</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -77,83 +88,47 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Constructors</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="backendbuilder.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="backendbuilder.html#projectdir" class="tsd-kind-icon">project<wbr>Dir</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Methods</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="backendbuilder.html#build" class="tsd-kind-icon">build</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="moduleoptions.html#imports" class="tsd-kind-icon">imports</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="moduleoptions.html#providers" class="tsd-kind-icon">providers</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="moduleoptions.html#tasks" class="tsd-kind-icon">tasks</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Backend<wbr>Builder<span class="tsd-signature-symbol">(</span>projectDir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="backendbuilder.html" class="tsd-signature-type">BackendBuilder</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/builder.ts#L322">src/builder.ts:322</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>projectDir: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="backendbuilder.html" class="tsd-signature-type">BackendBuilder</a></h4>
-						</li>
-					</ul>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="projectdir" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> project<wbr>Dir</h3>
-					<div class="tsd-signature tsd-kind-icon">project<wbr>Dir<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="imports" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> imports</h3>
+					<div class="tsd-signature tsd-kind-icon">imports<span class="tsd-signature-symbol">:</span> <a href="../globals.html#modulelike" class="tsd-signature-type">ModuleLike</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/builder.ts#L324">src/builder.ts:324</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/210d18f/packages/di/src/modules.ts#L25">packages/di/src/modules.ts:25</a></li>
 						</ul>
 					</aside>
 				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="build" class="tsd-anchor"></a>
-					<h3>build</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">build<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/builder.ts#L332">src/builder.ts:332</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="providers" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> providers</h3>
+					<div class="tsd-signature tsd-kind-icon">providers<span class="tsd-signature-symbol">:</span> <a href="../globals.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/210d18f/packages/di/src/modules.ts#L26">packages/di/src/modules.ts:26</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="tasks" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> tasks</h3>
+					<div class="tsd-signature tsd-kind-icon">tasks<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/210d18f/packages/di/src/modules.ts#L24">packages/di/src/modules.ts:24</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -169,17 +144,17 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-class">
-						<a href="backendbuilder.html" class="tsd-kind-icon">Backend<wbr>Builder</a>
+					<li class="current tsd-kind-interface">
+						<a href="moduleoptions.html" class="tsd-kind-icon">Module<wbr>Options</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="backendbuilder.html#constructor" class="tsd-kind-icon">constructor</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="moduleoptions.html#imports" class="tsd-kind-icon">imports</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="backendbuilder.html#projectdir" class="tsd-kind-icon">project<wbr>Dir</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="moduleoptions.html#providers" class="tsd-kind-icon">providers</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="backendbuilder.html#build" class="tsd-kind-icon">build</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="moduleoptions.html#tasks" class="tsd-kind-icon">tasks</a>
 							</li>
 						</ul>
 					</li>
@@ -195,6 +170,11 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
@@ -209,7 +189,7 @@
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
 			</ul>
 		</div>
 	</div>
