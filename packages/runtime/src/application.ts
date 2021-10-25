@@ -193,6 +193,11 @@ export class Application {
 			if (options.autostart)
 				runtime.start();
 	
+			if (runtime.selfTest) {
+				console.log(`[Self Test] ✔ Looks good!`);
+				process.exit(0);
+			}
+
 			return executionContext.application = runtime.getService(Application);
 		});
 	}

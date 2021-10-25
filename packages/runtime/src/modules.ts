@@ -99,6 +99,15 @@ export class Runtime {
         }
     }
 
+    private _selfTest = false;
+
+    /**
+     * True if the `--self-test` option was used to launch the application.
+     */
+    get selfTest() {
+        return this._selfTest;
+    }
+
     processCommandLine(args : string[]) {
         let rolesService = this.injector.get(RolesService);
         let argIndex = 0;
@@ -122,7 +131,9 @@ export class Runtime {
         for (; argIndex < args.length; ++argIndex) {
             let arg = args[argIndex];
 
-            if (arg == '-r' || arg == '--roles-only') {
+            if (arg === '--self-test') {
+                this._selfTest = true;
+            } else if (arg == '-r' || arg == '--roles-only') {
                 let value = getArgumentValue();
 
                 let roles = value.split(',')
