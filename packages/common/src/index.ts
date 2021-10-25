@@ -14,3 +14,4 @@ export * from './locks';
 export * from './presentation';
 export * from './time';
 export * from './get-param-names';
+export * from './lazy-subject';

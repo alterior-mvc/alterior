@@ -382,3 +382,11 @@ export class ApiMovie extends Presentation<Movie> {
      @Expose({ defaultValue: '(Not available)' }) audienceRating : string;
 }
 ```
+
+## `lazySubject({ start:..., stop:... })`
+
+Returns an observable which causes the provided `start` function to be called when the observable transitions from having
+no subscribers to having subscribers, and calls the provided `stop` function when the last subscriber unsubscribes.
+
+This can be useful to implement lazy loading and other "connect on demand" strategies. If no one is around to subscribe
+to a tree observable in the forest, does anyone hear it fall?
