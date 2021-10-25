@@ -38,7 +38,7 @@
     "ejs": "^2.7.4",
     "express": "^4.17.1",
     "kind-of": ">=6.0.3",
-    "lerna": "^3.22.1",
+    "lerna": "^4.0.0",
     "lodash": ">=4.17.19",
     "mkdirp": "^0.5.5",
     "reflect-metadata": "^0.1.8",
