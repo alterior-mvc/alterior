@@ -95,7 +95,7 @@ export class Runtime {
         } 
 
         if (typeof process !== 'undefined' && process.argv) {
-            this.processCommandLine(process.argv.splice(2));
+            this.processCommandLine(process.argv.slice(2));
         }
     }
 
