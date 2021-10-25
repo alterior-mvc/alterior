@@ -92,13 +92,13 @@
 					<a name="createasync" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> create<wbr>Async</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Async&lt;T&gt;<span class="tsd-signature-symbol">(</span>queueClient<span class="tsd-signature-symbol">: </span><a href="taskqueueclient.html" class="tsd-signature-type">TaskQueueClient</a>, id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../globals.html#remoteworker" class="tsd-signature-type">RemoteWorker</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Async&lt;T&gt;<span class="tsd-signature-symbol">(</span>queueClient<span class="tsd-signature-symbol">: </span><a href="taskqueueclient.html" class="tsd-signature-type">TaskQueueClient</a>, id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">JobOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../globals.html#remoteworker" class="tsd-signature-type">RemoteWorker</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/tasks/src/tasks.ts#L97">src/tasks.ts:97</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/tasks/src/tasks.ts#L102">src/tasks.ts:102</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -114,6 +114,9 @@
 								</li>
 								<li>
 									<h5>id: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-type">JobOptions</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../globals.html#remoteworker" class="tsd-signature-type">RemoteWorker</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -124,13 +127,13 @@
 					<a name="createsync" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> create<wbr>Sync</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Sync&lt;T&gt;<span class="tsd-signature-symbol">(</span>queueClient<span class="tsd-signature-symbol">: </span><a href="taskqueueclient.html" class="tsd-signature-type">TaskQueueClient</a>, id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../globals.html#remoteservice" class="tsd-signature-type">RemoteService</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Sync&lt;T&gt;<span class="tsd-signature-symbol">(</span>queueClient<span class="tsd-signature-symbol">: </span><a href="taskqueueclient.html" class="tsd-signature-type">TaskQueueClient</a>, id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">JobOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../globals.html#remoteservice" class="tsd-signature-type">RemoteService</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/tasks/src/tasks.ts#L103">src/tasks.ts:103</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/tasks/src/tasks.ts#L113">src/tasks.ts:113</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -146,6 +149,9 @@
 								</li>
 								<li>
 									<h5>id: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-type">JobOptions</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../globals.html#remoteservice" class="tsd-signature-type">RemoteService</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>

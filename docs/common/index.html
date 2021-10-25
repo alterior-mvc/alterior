@@ -372,6 +372,13 @@ zone.invoke(<span class="hljs-function">() =&gt;</span> myCode());</code></pre>
 				<pre><code class="language-typescript"><span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ApiMovie</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Presentation</span>&lt;<span class="hljs-title">Movie</span>&gt; </span>{
      <span class="hljs-meta">@Expose</span>({ <span class="hljs-attr">defaultValue</span>: <span class="hljs-string">&#x27;(Not available)&#x27;</span> }) audienceRating : <span class="hljs-built_in">string</span>;
 }</code></pre>
+				<a href="#lazysubject-start-stop-" id="lazysubject-start-stop-" style="color: inherit; text-decoration: none;">
+					<h2><code>lazySubject({ start:..., stop:... })</code></h2>
+				</a>
+				<p>Returns an observable which causes the provided <code>start</code> function to be called when the observable transitions from having
+				no subscribers to having subscribers, and calls the provided <code>stop</code> function when the last subscriber unsubscribes.</p>
+				<p>This can be useful to implement lazy loading and other &quot;connect on demand&quot; strategies. If no one is around to subscribe
+				to a tree observable in the forest, does anyone hear it fall?</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -477,6 +484,9 @@ zone.invoke(<span class="hljs-function">() =&gt;</span> myCode());</code></pre>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/fetchoptions.html" class="tsd-kind-icon">Fetch<wbr>Options</a>
 					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/lazysubjectoptions.html" class="tsd-kind-icon">Lazy<wbr>Subject<wbr>Options</a>
+					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/presentedproperty.html" class="tsd-kind-icon">Presented<wbr>Property</a>
 					</li>
@@ -490,13 +500,31 @@ zone.invoke(<span class="hljs-function">() =&gt;</span> myCode());</code></pre>
 						<a href="globals.html#colorlibrary" class="tsd-kind-icon">Color<wbr>Library</a>
 					</li>
 					<li class=" tsd-kind-variable">
+						<a href="globals.html#after_closing_paren" class="tsd-kind-icon">AFTER_<wbr>CLOSING_<wbr>PAREN</a>
+					</li>
+					<li class=" tsd-kind-variable">
 						<a href="globals.html#base64_key" class="tsd-kind-icon">BASE64_<wbr>KEY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#before_opening_paren" class="tsd-kind-icon">BEFORE_<wbr>OPENING_<wbr>PAREN</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#comments" class="tsd-kind-icon">COMMENTS</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#consolecolors" class="tsd-kind-icon">Console<wbr>Colors</a>
 					</li>
 					<li class=" tsd-kind-variable">
+						<a href="globals.html#default_params" class="tsd-kind-icon">DEFAULT_<wbr>PARAMS</a>
+					</li>
+					<li class=" tsd-kind-variable">
 						<a href="globals.html#expose_prototype_storage_key" class="tsd-kind-icon">EXPOSE_<wbr>PROTOTYPE_<wbr>STORAGE_<wbr>KEY</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#fat_arrows" class="tsd-kind-icon">FAT_<wbr>ARROWS</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#spaces" class="tsd-kind-icon">SPACES</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#expose" class="tsd-kind-icon">Expose</a>
@@ -520,6 +548,9 @@ zone.invoke(<span class="hljs-function">() =&gt;</span> myCode());</code></pre>
 						<a href="globals.html#formatconsole" class="tsd-kind-icon">format<wbr>Console</a>
 					</li>
 					<li class=" tsd-kind-function">
+						<a href="globals.html#getparameternames" class="tsd-kind-icon">get<wbr>Parameter<wbr>Names</a>
+					</li>
+					<li class=" tsd-kind-function">
 						<a href="globals.html#indentconsole" class="tsd-kind-icon">indent<wbr>Console</a>
 					</li>
 					<li class=" tsd-kind-function">
@@ -527,6 +558,9 @@ zone.invoke(<span class="hljs-function">() =&gt;</span> myCode());</code></pre>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#interval" class="tsd-kind-icon">interval</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#lazysubject" class="tsd-kind-icon">lazy<wbr>Subject</a>
 					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
 						<a href="globals.html#objectlibrary" class="tsd-kind-icon">object<wbr>Library</a>

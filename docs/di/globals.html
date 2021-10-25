@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>@alterior/di</title>
-	<meta name="description" content="Documentation for @alterior/di">
+	<title>@alterior/cli</title>
+	<meta name="description" content="Documentation for @alterior/cli">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
 </head>
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">@alterior/di</a>
+					<a href="index.html" class="title">@alterior/cli</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -54,7 +54,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1>@alterior/di</h1>
+			<h1>@alterior/cli</h1>
 		</div>
 	</div>
 </header>
@@ -68,944 +68,162 @@
 						<section class="tsd-index-section ">
 							<h3>Classes</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class"><a href="classes/debugcontext.html" class="tsd-kind-icon">Debug<wbr>Context</a></li>
-								<li class="tsd-kind-class"><a href="classes/hostannotation.html" class="tsd-kind-icon">Host<wbr>Annotation</a></li>
-								<li class="tsd-kind-class"><a href="classes/injectannotation.html" class="tsd-kind-icon">Inject<wbr>Annotation</a></li>
-								<li class="tsd-kind-class"><a href="classes/injectableannotation.html" class="tsd-kind-icon">Injectable<wbr>Annotation</a></li>
-								<li class="tsd-kind-class tsd-has-type-parameter"><a href="classes/injectiontoken.html" class="tsd-kind-icon">Injection<wbr>Token</a></li>
-								<li class="tsd-kind-class"><a href="classes/injector.html" class="tsd-kind-icon">Injector</a></li>
-								<li class="tsd-kind-class"><a href="classes/moduleannotation.html" class="tsd-kind-icon">Module<wbr>Annotation</a></li>
-								<li class="tsd-kind-class"><a href="classes/opaquetoken.html" class="tsd-kind-icon">Opaque<wbr>Token</a></li>
-								<li class="tsd-kind-class"><a href="classes/optionalannotation.html" class="tsd-kind-icon">Optional<wbr>Annotation</a></li>
-								<li class="tsd-kind-class"><a href="classes/reflectioncapabilities.html" class="tsd-kind-icon">Reflection<wbr>Capabilities</a></li>
-								<li class="tsd-kind-class"><a href="classes/reflectivedependency.html" class="tsd-kind-icon">Reflective<wbr>Dependency</a></li>
-								<li class="tsd-kind-class"><a href="classes/reflectiveinjector.html" class="tsd-kind-icon">Reflective<wbr>Injector</a></li>
-								<li class="tsd-kind-class"><a href="classes/reflectiveinjector_.html" class="tsd-kind-icon">Reflective<wbr>Injector_</a></li>
-								<li class="tsd-kind-class"><a href="classes/reflectivekey.html" class="tsd-kind-icon">Reflective<wbr>Key</a></li>
-								<li class="tsd-kind-class"><a href="classes/reflector.html" class="tsd-kind-icon">Reflector</a></li>
-								<li class="tsd-kind-class"><a href="classes/reflectorreader.html" class="tsd-kind-icon">Reflector<wbr>Reader</a></li>
-								<li class="tsd-kind-class"><a href="classes/resolvedreflectivefactory.html" class="tsd-kind-icon">Resolved<wbr>Reflective<wbr>Factory</a></li>
-								<li class="tsd-kind-class"><a href="classes/resolvedreflectiveprovider_.html" class="tsd-kind-icon">Resolved<wbr>Reflective<wbr>Provider_</a></li>
-								<li class="tsd-kind-class"><a href="classes/selfannotation.html" class="tsd-kind-icon">Self<wbr>Annotation</a></li>
-								<li class="tsd-kind-class"><a href="classes/skipselfannotation.html" class="tsd-kind-icon">Skip<wbr>Self<wbr>Annotation</a></li>
-								<li class="tsd-kind-class"><a href="classes/_nullinjector.html" class="tsd-kind-icon">_<wbr>Null<wbr>Injector</a></li>
+								<li class="tsd-kind-class"><a href="classes/backendbuilder.html" class="tsd-kind-icon">Backend<wbr>Builder</a></li>
+								<li class="tsd-kind-class"><a href="classes/buildcommand.html" class="tsd-kind-icon">Build<wbr>Command</a></li>
+								<li class="tsd-kind-class"><a href="classes/builderror.html" class="tsd-kind-icon">Build<wbr>Error</a></li>
+								<li class="tsd-kind-class"><a href="classes/builder.html" class="tsd-kind-icon">Builder</a></li>
+								<li class="tsd-kind-class"><a href="classes/clientbuilder.html" class="tsd-kind-icon">Client<wbr>Builder</a></li>
+								<li class="tsd-kind-class"><a href="classes/commandrunner.html" class="tsd-kind-icon">Command<wbr>Runner</a></li>
+								<li class="tsd-kind-class"><a href="classes/generator.html" class="tsd-kind-icon">Generator</a></li>
+								<li class="tsd-kind-class"><a href="classes/generatorcanceled.html" class="tsd-kind-icon">Generator<wbr>Canceled</a></li>
+								<li class="tsd-kind-class"><a href="classes/generatorerror.html" class="tsd-kind-icon">Generator<wbr>Error</a></li>
+								<li class="tsd-kind-class"><a href="classes/librarygenerator.html" class="tsd-kind-icon">Library<wbr>Generator</a></li>
+								<li class="tsd-kind-class"><a href="classes/lintcommand.html" class="tsd-kind-icon">Lint<wbr>Command</a></li>
+								<li class="tsd-kind-class"><a href="classes/newcommand.html" class="tsd-kind-icon">New<wbr>Command</a></li>
+								<li class="tsd-kind-class"><a href="classes/packageconfiguration.html" class="tsd-kind-icon">Package<wbr>Configuration</a></li>
+								<li class="tsd-kind-class"><a href="classes/preparecommand.html" class="tsd-kind-icon">Prepare<wbr>Command</a></li>
+								<li class="tsd-kind-class"><a href="classes/process.html" class="tsd-kind-icon">Process</a></li>
+								<li class="tsd-kind-class"><a href="classes/servicegenerator.html" class="tsd-kind-icon">Service<wbr>Generator</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface"><a href="interfaces/browsernodeglobal.html" class="tsd-kind-icon">Browser<wbr>Node<wbr>Global</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/classprovider.html" class="tsd-kind-icon">Class<wbr>Provider</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/configuredmodule.html" class="tsd-kind-icon">Configured<wbr>Module</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/existingprovider.html" class="tsd-kind-icon">Existing<wbr>Provider</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/factoryprovider.html" class="tsd-kind-icon">Factory<wbr>Provider</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/forwardreffn.html" class="tsd-kind-icon">Forward<wbr>Ref<wbr>Fn</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/injectionerror.html" class="tsd-kind-icon">Injection<wbr>Error</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/moduleoptions.html" class="tsd-kind-icon">Module<wbr>Options</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/normalizedprovider.html" class="tsd-kind-icon">Normalized<wbr>Provider</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/platformreflectioncapabilities.html" class="tsd-kind-icon">Platform<wbr>Reflection<wbr>Capabilities</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/providerdependencies.html" class="tsd-kind-icon">Provider<wbr>Dependencies</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/resolvedreflectiveprovider.html" class="tsd-kind-icon">Resolved<wbr>Reflective<wbr>Provider</a></li>
-								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/type.html" class="tsd-kind-icon">Type</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/typeprovider.html" class="tsd-kind-icon">Type<wbr>Provider</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/valueprovider.html" class="tsd-kind-icon">Value<wbr>Provider</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Type aliases</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-type-alias"><a href="globals.html#getterfn" class="tsd-kind-icon">Getter<wbr>Fn</a></li>
-								<li class="tsd-kind-type-alias"><a href="globals.html#methodfn" class="tsd-kind-icon">Method<wbr>Fn</a></li>
-								<li class="tsd-kind-type-alias"><a href="globals.html#modulelike" class="tsd-kind-icon">Module<wbr>Like</a></li>
-								<li class="tsd-kind-type-alias"><a href="globals.html#provider" class="tsd-kind-icon">Provider</a></li>
-								<li class="tsd-kind-type-alias"><a href="globals.html#providerwithdependencies" class="tsd-kind-icon">Provider<wbr>With<wbr>Dependencies</a></li>
-								<li class="tsd-kind-type-alias"><a href="globals.html#setterfn" class="tsd-kind-icon">Setter<wbr>Fn</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/buildconfig.html" class="tsd-kind-icon">Build<wbr>Config</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/processexitedevent.html" class="tsd-kind-icon">Process<wbr>Exited<wbr>Event</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/processresult.html" class="tsd-kind-icon">Process<wbr>Result</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/processstartinfo.html" class="tsd-kind-icon">Process<wbr>Start<wbr>Info</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable"><a href="globals.html#delegate_ctor" class="tsd-kind-icon">DELEGATE_<wbr>CTOR</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#error_component_type" class="tsd-kind-icon">ERROR_<wbr>COMPONENT_<wbr>TYPE</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#error_debug_context" class="tsd-kind-icon">ERROR_<wbr>DEBUG_<wbr>CONTEXT</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#error_logger" class="tsd-kind-icon">ERROR_<wbr>LOGGER</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#error_original_error" class="tsd-kind-icon">ERROR_<wbr>ORIGINAL_<wbr>ERROR</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#error_type" class="tsd-kind-icon">ERROR_<wbr>TYPE</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#host" class="tsd-kind-icon">Host</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#injector_key" class="tsd-kind-icon">INJECTOR_<wbr>KEY</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#inject" class="tsd-kind-icon">Inject</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#injectable" class="tsd-kind-icon">Injectable</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#module" class="tsd-kind-icon">Module</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#optional" class="tsd-kind-icon">Optional</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#self" class="tsd-kind-icon">Self</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#skipself" class="tsd-kind-icon">Skip<wbr>Self</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#throw_if_not_found" class="tsd-kind-icon">THROW_<wbr>IF_<wbr>NOT_<wbr>FOUND</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#type" class="tsd-kind-icon">Type</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#undefined" class="tsd-kind-icon">UNDEFINED</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#workerglobalscope" class="tsd-kind-icon">Worker<wbr>Global<wbr>Scope</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#_empty_list" class="tsd-kind-icon">_EMPTY_<wbr>LIST</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#_throw_if_not_found" class="tsd-kind-icon">_THROW_<wbr>IF_<wbr>NOT_<wbr>FOUND</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#_global" class="tsd-kind-icon">_global</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#_globalkeyregistry" class="tsd-kind-icon">_global<wbr>Key<wbr>Registry</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#global" class="tsd-kind-icon">global</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#globalscope" class="tsd-kind-icon">global<wbr>Scope</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#reflector" class="tsd-kind-icon">reflector</a></li>
+								<li class="tsd-kind-variable"><a href="globals.html#pkg" class="tsd-kind-icon">PKG</a></li>
+								<li class="tsd-kind-variable"><a href="globals.html#line" class="tsd-kind-icon">line</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function"><a href="globals.html#_createdependency" class="tsd-kind-icon">_create<wbr>Dependency</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#_dependenciesfor" class="tsd-kind-icon">_dependencies<wbr>For</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#_extracttoken" class="tsd-kind-icon">_extract<wbr>Token</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#_mapproviders" class="tsd-kind-icon">_map<wbr>Providers</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#_normalizeproviders" class="tsd-kind-icon">_normalize<wbr>Providers</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#addkey" class="tsd-kind-icon">add<wbr>Key</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#configuremodule" class="tsd-kind-icon">configure<wbr>Module</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#constructdependencies" class="tsd-kind-icon">construct<wbr>Dependencies</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#constructresolvingpath" class="tsd-kind-icon">construct<wbr>Resolving<wbr>Path</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#converttsickledecoratorintometadata" class="tsd-kind-icon">convert<wbr>Tsickle<wbr>Decorator<wbr>Into<wbr>Metadata</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#cyclicdependencyerror" class="tsd-kind-icon">cyclic<wbr>Dependency<wbr>Error</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#defaulterrorlogger" class="tsd-kind-icon">default<wbr>Error<wbr>Logger</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#findfirstclosedcycle" class="tsd-kind-icon">find<wbr>First<wbr>Closed<wbr>Cycle</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#forwardref" class="tsd-kind-icon">forward<wbr>Ref</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#getdebugcontext" class="tsd-kind-icon">get<wbr>Debug<wbr>Context</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#geterrorlogger" class="tsd-kind-icon">get<wbr>Error<wbr>Logger</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#getoriginalerror" class="tsd-kind-icon">get<wbr>Original<wbr>Error</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#getparentctor" class="tsd-kind-icon">get<wbr>Parent<wbr>Ctor</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#gettype" class="tsd-kind-icon">get<wbr>Type</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#injectionerror" class="tsd-kind-icon">injection<wbr>Error</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#instantiationerror" class="tsd-kind-icon">instantiation<wbr>Error</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#invalidprovidererror" class="tsd-kind-icon">invalid<wbr>Provider<wbr>Error</a></li>
-								<li class="tsd-kind-function tsd-has-type-parameter"><a href="globals.html#ispresent" class="tsd-kind-icon">is<wbr>Present</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#istype" class="tsd-kind-icon">is<wbr>Type</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#mergeresolvedreflectiveproviders" class="tsd-kind-icon">merge<wbr>Resolved<wbr>Reflective<wbr>Providers</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#mixingmultiproviderswithregularproviderserror" class="tsd-kind-icon">mixing<wbr>Multi<wbr>Providers<wbr>With<wbr>Regular<wbr>Providers<wbr>Error</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#noannotationerror" class="tsd-kind-icon">no<wbr>Annotation<wbr>Error</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#noprovidererror" class="tsd-kind-icon">no<wbr>Provider<wbr>Error</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#outofboundserror" class="tsd-kind-icon">out<wbr>OfBounds<wbr>Error</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#resolveforwardref" class="tsd-kind-icon">resolve<wbr>Forward<wbr>Ref</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#resolvereflectivefactory" class="tsd-kind-icon">resolve<wbr>Reflective<wbr>Factory</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#resolvereflectiveprovider" class="tsd-kind-icon">resolve<wbr>Reflective<wbr>Provider</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#resolvereflectiveproviders" class="tsd-kind-icon">resolve<wbr>Reflective<wbr>Providers</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#stringify" class="tsd-kind-icon">stringify</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#wrappederror" class="tsd-kind-icon">wrapped<wbr>Error</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#ask" class="tsd-kind-icon">ask</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#askboolean" class="tsd-kind-icon">ask<wbr>Boolean</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#capitalize" class="tsd-kind-icon">capitalize</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#changeworkingdirectory" class="tsd-kind-icon">change<wbr>Working<wbr>Directory</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#fileexists" class="tsd-kind-icon">file<wbr>Exists</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#getworkingdirectory" class="tsd-kind-icon">get<wbr>Working<wbr>Directory</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#isconstructor" class="tsd-kind-icon">is<wbr>Constructor</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#ispropertyprivate" class="tsd-kind-icon">is<wbr>Property<wbr>Private</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#linerangetagend" class="tsd-kind-icon">line<wbr>Range<wbr>Tag<wbr>End</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#linerangetagstart" class="tsd-kind-icon">line<wbr>Range<wbr>Tag<wbr>Start</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#makedirectory" class="tsd-kind-icon">make<wbr>Directory</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#pathcombine" class="tsd-kind-icon">path<wbr>Combine</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#pathresolve" class="tsd-kind-icon">path<wbr>Resolve</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#readfilelines" class="tsd-kind-icon">read<wbr>File<wbr>Lines</a></li>
+								<li class="tsd-kind-function tsd-has-type-parameter"><a href="globals.html#readjsonfile" class="tsd-kind-icon">read<wbr>Json<wbr>File</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#readtextfile" class="tsd-kind-icon">read<wbr>Text<wbr>File</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#removeall" class="tsd-kind-icon">remove<wbr>All</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#removetaggedlinerange" class="tsd-kind-icon">remove<wbr>Tagged<wbr>Line<wbr>Range</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#replacetaggedlinerange" class="tsd-kind-icon">replace<wbr>Tagged<wbr>Line<wbr>Range</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#unindent" class="tsd-kind-icon">unindent</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#writefilelines" class="tsd-kind-icon">write<wbr>File<wbr>Lines</a></li>
+								<li class="tsd-kind-function tsd-has-type-parameter"><a href="globals.html#writejsonfile" class="tsd-kind-icon">write<wbr>Json<wbr>File</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#writetextfile" class="tsd-kind-icon">write<wbr>Text<wbr>File</a></li>
 							</ul>
 						</section>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Type aliases</h2>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias">
-					<a name="getterfn" class="tsd-anchor"></a>
-					<h3>Getter<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Getter<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">any</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflection/types.ts#L10">packages/di/src/injection/reflection/types.ts:10</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-signature">
-								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5>obj: <span class="tsd-signature-type">any</span></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias">
-					<a name="methodfn" class="tsd-anchor"></a>
-					<h3>Method<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Method<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">any</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflection/types.ts#L11">packages/di/src/injection/reflection/types.ts:11</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-signature">
-								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5>obj: <span class="tsd-signature-type">any</span></h5>
-											</li>
-											<li>
-												<h5>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias">
-					<a name="modulelike" class="tsd-anchor"></a>
-					<h3>Module<wbr>Like</h3>
-					<div class="tsd-signature tsd-kind-icon">Module<wbr>Like<span class="tsd-signature-symbol">:</span> <a href="interfaces/type.html#function" class="tsd-signature-type">Function</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/configuredmodule.html" class="tsd-signature-type">ConfiguredModule</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/modules.ts#L21">packages/di/src/modules.ts:21</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias">
-					<a name="provider" class="tsd-anchor"></a>
-					<h3>Provider</h3>
-					<div class="tsd-signature tsd-kind-icon">Provider<span class="tsd-signature-symbol">:</span> <a href="interfaces/typeprovider.html" class="tsd-signature-type">TypeProvider</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/valueprovider.html" class="tsd-signature-type">ValueProvider</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/classprovider.html" class="tsd-signature-type">ClassProvider</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/existingprovider.html" class="tsd-signature-type">ExistingProvider</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/factoryprovider.html" class="tsd-signature-type">FactoryProvider</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/provider.ts#L219">packages/di/src/injection/provider.ts:219</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>whatitdoes</dt>
-							<dd><p>Describes how the <a href="classes/injector.html">Injector</a> should be configured.</p>
-							</dd>
-							<dt>howtouse</dt>
-							<dd><p>See <a href="interfaces/typeprovider.html">TypeProvider</a>, <a href="interfaces/valueprovider.html">ValueProvider</a>, <a href="interfaces/classprovider.html">ClassProvider</a>, <a href="interfaces/existingprovider.html">ExistingProvider</a>,
-								<a href="interfaces/factoryprovider.html">FactoryProvider</a>.</p>
-							</dd>
-							<dt>description</dt>
-							<dd><p>For more details, see the {@linkDocs guide/dependency-injection &quot;Dependency Injection Guide&quot;}.</p>
-							</dd>
-							<dt>stable</dt>
-							<dd></dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias">
-					<a name="providerwithdependencies" class="tsd-anchor"></a>
-					<h3>Provider<wbr>With<wbr>Dependencies</h3>
-					<div class="tsd-signature tsd-kind-icon">Provider<wbr>With<wbr>Dependencies<span class="tsd-signature-symbol">:</span> <a href="globals.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol"> &amp; </span><a href="interfaces/providerdependencies.html" class="tsd-signature-type">ProviderDependencies</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/provider.ts#L225">packages/di/src/injection/provider.ts:225</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias">
-					<a name="setterfn" class="tsd-anchor"></a>
-					<h3>Setter<wbr>Fn</h3>
-					<div class="tsd-signature tsd-kind-icon">Setter<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflection/types.ts#L9">packages/di/src/injection/reflection/types.ts:9</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>license</dt>
-							<dd><p>Copyright Google Inc. All Rights Reserved.</p>
-								<p>Use of this source code is governed by an MIT-style license that can be
-								found in the LICENSE file at <a href="https://angular.io/license">https://angular.io/license</a></p>
-							</dd>
-						</dl>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-signature">
-								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5>obj: <span class="tsd-signature-type">any</span></h5>
-											</li>
-											<li>
-												<h5>value: <span class="tsd-signature-type">any</span></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-									</li>
-								</ul>
-							</li>
-						</ul>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Variables</h2>
 				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="delegate_ctor" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> DELEGATE_<wbr>CTOR</h3>
-					<div class="tsd-signature tsd-kind-icon">DELEGATE_<wbr>CTOR<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> = /^function\s+\S+\(\)\s*{[\s\S]+\.apply\(this,\s*arguments\)/</span></div>
+					<a name="pkg" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> PKG</h3>
+					<div class="tsd-signature tsd-kind-icon">PKG<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = require(&#x27;../package.json&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflection/reflection_capabilities.ts#L20">packages/di/src/injection/reflection/reflection_capabilities.ts:20</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Attention: This regex has to hold even if the code is minified!</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="error_component_type" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> ERROR_<wbr>COMPONENT_<wbr>TYPE</h3>
-					<div class="tsd-signature tsd-kind-icon">ERROR_<wbr>COMPONENT_<wbr>TYPE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"ngComponentType"</span><span class="tsd-signature-symbol"> = &quot;ngComponentType&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/errors.ts#L11">packages/di/src/injection/facade/errors.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/main.ts#L13">src/main.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="error_debug_context" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> ERROR_<wbr>DEBUG_<wbr>CONTEXT</h3>
-					<div class="tsd-signature tsd-kind-icon">ERROR_<wbr>DEBUG_<wbr>CONTEXT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"ngDebugContext"</span><span class="tsd-signature-symbol"> = &quot;ngDebugContext&quot;</span></div>
+					<a name="line" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagLet">Let</span> line</h3>
+					<div class="tsd-signature tsd-kind-icon">line<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">CommandLine</span><span class="tsd-signature-symbol"> = new CommandLine().info({executable: &#x27;alt&#x27;,description: &#x27;Create and manage Alterior projects&#x27;,copyright: &#x27;Copyright 2021 William Lahti&#x27;,version: PKG.version}).command(&#x27;new&#x27;, cmd &#x3D;&gt; {cmd .info({description: &#x27;Create a new project&#x27;,argumentUsage: &#x27;[service|library] &lt;folder&gt;&#x27;}).run(async args &#x3D;&gt; await new NewCommand().run(args));}).command(&#x27;lint&#x27;, cmd &#x3D;&gt; {cmd .info({description: &#x27;Check a project for problems&#x27;,argumentUsage: &#x27;&#x27;}).run(async args &#x3D;&gt; await new LintCommand().run(args));}).command(&#x27;build&#x27;, cmd &#x3D;&gt; {cmd.info({description: &#x27;Build a project&#x27;,argumentUsage: &#x27;[&lt;folder&gt;]&#x27;}).run(async args &#x3D;&gt; await new BuildCommand().run(args))}).command(&#x27;prepare&#x27;, cmd &#x3D;&gt; {cmd.info({description: &#x27;Prepare a project for publishing to NPM&#x27;,argumentUsage: &#x27;&#x27;}).run(async args &#x3D;&gt; await new PrepareCommand().run(args))}).run(args &#x3D;&gt; line.showHelp())</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/errors.ts#L12">packages/di/src/injection/facade/errors.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/main.ts#L15">src/main.ts:15</a></li>
 						</ul>
 					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="error_logger" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> ERROR_<wbr>LOGGER</h3>
-					<div class="tsd-signature tsd-kind-icon">ERROR_<wbr>LOGGER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"ngErrorLogger"</span><span class="tsd-signature-symbol"> = &quot;ngErrorLogger&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/errors.ts#L14">packages/di/src/injection/facade/errors.ts:14</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="error_original_error" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> ERROR_<wbr>ORIGINAL_<wbr>ERROR</h3>
-					<div class="tsd-signature tsd-kind-icon">ERROR_<wbr>ORIGINAL_<wbr>ERROR<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"ngOriginalError"</span><span class="tsd-signature-symbol"> = &quot;ngOriginalError&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/errors.ts#L13">packages/di/src/injection/facade/errors.ts:13</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="error_type" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> ERROR_<wbr>TYPE</h3>
-					<div class="tsd-signature tsd-kind-icon">ERROR_<wbr>TYPE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"ngType"</span><span class="tsd-signature-symbol"> = &quot;ngType&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/errors.ts#L10">packages/di/src/injection/facade/errors.ts:10</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>license</dt>
-							<dd><p>Copyright Google Inc. All Rights Reserved.</p>
-								<p>Use of this source code is governed by an MIT-style license that can be
-								found in the LICENSE file at <a href="https://angular.io/license">https://angular.io/license</a></p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="host" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> Host</h3>
-					<div class="tsd-signature tsd-kind-icon">Host<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = HostAnnotation.decorator({validTargets: [&#x27;parameter&#x27;]})</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/metadata/decorators.ts#L164">packages/di/src/injection/metadata/decorators.ts:164</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>whatitdoes</dt>
-							<dd><p>Specifies that an injector should retrieve a dependency from any injector until
-								reaching the host element of the current component.</p>
-							</dd>
-							<dt>howtouse</dt>
-							<dd><pre><code><span class="hljs-variable">@Injectable</span>()
-class Car {
-  <span class="hljs-selector-tag">constructor</span>(<span class="hljs-variable">@Host</span>() public <span class="hljs-attribute">engine</span>:Engine) {}
-}</code></pre></dd>
-							<dt>description</dt>
-							<dd><p>For more details, see the {@linkDocs guide/dependency-injection &quot;Dependency Injection Guide&quot;}.</p>
-								<a href="#example" id="example" style="color: inherit; text-decoration: none;">
-									<h3>Example</h3>
-								</a>
-								<p>{@example core/di/ts/metadata_spec.ts region=&#39;Host&#39;}</p>
-							</dd>
-							<dt>stable</dt>
-							<dd></dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="injector_key" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> INJECTOR_<wbr>KEY</h3>
-					<div class="tsd-signature tsd-kind-icon">INJECTOR_<wbr>KEY<span class="tsd-signature-symbol">:</span> <a href="classes/reflectivekey.html" class="tsd-signature-type">ReflectiveKey</a><span class="tsd-signature-symbol"> = ReflectiveKey.get(Injector)</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_injector.ts#L534">packages/di/src/injection/reflective_injector.ts:534</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="inject" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> Inject</h3>
-					<div class="tsd-signature tsd-kind-icon">Inject<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = InjectAnnotation.decorator({validTargets: [&#x27;parameter&#x27;, &#x27;property&#x27;]})</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/metadata/decorators.ts#L94">packages/di/src/injection/metadata/decorators.ts:94</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>whatitdoes</dt>
-							<dd><p>A parameter decorator that specifies a dependency.</p>
-							</dd>
-							<dt>howtouse</dt>
-							<dd><pre><code><span class="hljs-variable">@Injectable</span>()
-class Car {
-  <span class="hljs-selector-tag">constructor</span>(<span class="hljs-variable">@Inject</span>(<span class="hljs-string">&quot;MyEngine&quot;</span>) public <span class="hljs-attribute">engine</span>:Engine) {}
-}</code></pre></dd>
-							<dt>description</dt>
-							<dd><p>For more details, see the {@linkDocs guide/dependency-injection &quot;Dependency Injection Guide&quot;}.</p>
-								<a href="#example" id="example" style="color: inherit; text-decoration: none;">
-									<h3>Example</h3>
-								</a>
-								<p>{@example core/di/ts/metadata_spec.ts region=&#39;Inject&#39;}</p>
-								<p>When <code>@Inject()</code> is not present, <a href="classes/injector.html">Injector</a> will use the type annotation of the
-								parameter.</p>
-								<a href="#example-1" id="example-1" style="color: inherit; text-decoration: none;">
-									<h3>Example</h3>
-								</a>
-								<p>{@example core/di/ts/metadata_spec.ts region=&#39;InjectWithoutDecorator&#39;}</p>
-							</dd>
-							<dt>stable</dt>
-							<dd></dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="injectable" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> Injectable</h3>
-					<div class="tsd-signature tsd-kind-icon">Injectable<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = InjectableAnnotation.decorator({validTargets: [&#x27;class&#x27;],/*** Allow multiple because this decorator is usually applied to both superclasses* and subclasses. TODO: if we change semantics on super/subclass duplicate definitions* this should be revisited and probably removed.*/allowMultiple: true})</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/metadata/decorators.ts#L33">packages/di/src/injection/metadata/decorators.ts:33</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>whatitdoes</dt>
-							<dd><p>A marker metadata that marks a class as available to <a href="classes/injector.html">Injector</a> for creation.</p>
-							</dd>
-							<dt>howtouse</dt>
-							<dd><pre><code><span class="hljs-meta">@Injectable()</span>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Car</span> </span>{}</code></pre></dd>
-							<dt>description</dt>
-							<dd><p>For more details, see the {@linkDocs guide/dependency-injection &quot;Dependency Injection Guide&quot;}.</p>
-								<a href="#example" id="example" style="color: inherit; text-decoration: none;">
-									<h3>Example</h3>
-								</a>
-								<p>{@example core/di/ts/metadata_spec.ts region=&#39;Injectable&#39;}</p>
-								<p><a href="classes/injector.html">Injector</a> will throw {@link NoAnnotationError} when trying to instantiate a class that
-								does not have <code>@Injectable</code> marker, as shown in the example below.</p>
-								<p>{@example core/di/ts/metadata_spec.ts region=&#39;InjectableThrows&#39;}</p>
-							</dd>
-							<dt>stable</dt>
-							<dd></dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="module" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> Module</h3>
-					<div class="tsd-signature tsd-kind-icon">Module<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><a href="interfaces/moduleoptions.html" class="tsd-signature-type">ModuleOptions</a><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ModuleAnnotation.decorator()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/modules.ts#L53">packages/di/src/modules.ts:53</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="optional" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> Optional</h3>
-					<div class="tsd-signature tsd-kind-icon">Optional<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = OptionalAnnotation.decorator({validTargets: [&#x27;parameter&#x27;]})</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/metadata/decorators.ts#L64">packages/di/src/injection/metadata/decorators.ts:64</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>whatitdoes</dt>
-							<dd><p>A parameter metadata that marks a dependency as optional.
-								<a href="classes/injector.html">Injector</a> provides <code>null</code> if the dependency is not found.</p>
-							</dd>
-							<dt>howtouse</dt>
-							<dd><pre><code><span class="hljs-variable">@Injectable</span>()
-class Car {
-  <span class="hljs-selector-tag">constructor</span>(<span class="hljs-variable">@Optional</span>() public <span class="hljs-attribute">engine</span>:Engine) {}
-}</code></pre></dd>
-							<dt>description</dt>
-							<dd><p>For more details, see the {@linkDocs guide/dependency-injection &quot;Dependency Injection Guide&quot;}.</p>
-								<a href="#example" id="example" style="color: inherit; text-decoration: none;">
-									<h3>Example</h3>
-								</a>
-								<p>{@example core/di/ts/metadata_spec.ts region=&#39;Optional&#39;}</p>
-							</dd>
-							<dt>stable</dt>
-							<dd></dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="self" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> Self</h3>
-					<div class="tsd-signature tsd-kind-icon">Self<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = SelfAnnotation.decorator({validTargets: [&#x27;parameter&#x27;]})</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/metadata/decorators.ts#L117">packages/di/src/injection/metadata/decorators.ts:117</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>whatitdoes</dt>
-							<dd><p>Specifies that an <a href="classes/injector.html">Injector</a> should retrieve a dependency only from itself.</p>
-							</dd>
-							<dt>howtouse</dt>
-							<dd><pre><code><span class="hljs-variable">@Injectable</span>()
-class Car {
-  <span class="hljs-selector-tag">constructor</span>(<span class="hljs-variable">@Self</span>() public <span class="hljs-attribute">engine</span>:Engine) {}
-}</code></pre></dd>
-							<dt>description</dt>
-							<dd><p>For more details, see the {@linkDocs guide/dependency-injection &quot;Dependency Injection Guide&quot;}.</p>
-								<a href="#example" id="example" style="color: inherit; text-decoration: none;">
-									<h3>Example</h3>
-								</a>
-								<p>{@example core/di/ts/metadata_spec.ts region=&#39;Self&#39;}</p>
-							</dd>
-							<dt>stable</dt>
-							<dd></dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="skipself" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> Skip<wbr>Self</h3>
-					<div class="tsd-signature tsd-kind-icon">Skip<wbr>Self<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = SkipSelfAnnotation.decorator({validTargets: [&#x27;parameter&#x27;]})</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/metadata/decorators.ts#L140">packages/di/src/injection/metadata/decorators.ts:140</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>whatitdoes</dt>
-							<dd><p>Specifies that the dependency resolution should start from the parent injector.</p>
-							</dd>
-							<dt>howtouse</dt>
-							<dd><pre><code><span class="hljs-variable">@Injectable</span>()
-class Car {
-  <span class="hljs-selector-tag">constructor</span>(<span class="hljs-variable">@SkipSelf</span>() public <span class="hljs-attribute">engine</span>:Engine) {}
-}</code></pre></dd>
-							<dt>description</dt>
-							<dd><p>For more details, see the {@linkDocs guide/dependency-injection &quot;Dependency Injection Guide&quot;}.</p>
-								<a href="#example" id="example" style="color: inherit; text-decoration: none;">
-									<h3>Example</h3>
-								</a>
-								<p>{@example core/di/ts/metadata_spec.ts region=&#39;SkipSelf&#39;}</p>
-							</dd>
-							<dt>stable</dt>
-							<dd></dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="throw_if_not_found" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> THROW_<wbr>IF_<wbr>NOT_<wbr>FOUND</h3>
-					<div class="tsd-signature tsd-kind-icon">THROW_<wbr>IF_<wbr>NOT_<wbr>FOUND<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol"> = _THROW_IF_NOT_FOUND</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/injector.ts#L15">packages/di/src/injection/injector.ts:15</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="type" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> Type</h3>
-					<div class="tsd-signature tsd-kind-icon">Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">FunctionConstructor</span><span class="tsd-signature-symbol"> = Function</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/type.ts#L19">packages/di/src/injection/facade/type.ts:19</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>whatitdoes</dt>
-							<dd><p>Represents a type that a Component or other object is instances of.</p>
-							</dd>
-							<dt>description</dt>
-							<dd><p>An example of a <code>Type</code> is <code>MyCustomComponent</code> class, which in JavaScript is be represented by
-								the <code>MyCustomComponent</code> constructor function.</p>
-							</dd>
-							<dt>stable</dt>
-							<dd></dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="undefined" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> UNDEFINED</h3>
-					<div class="tsd-signature tsd-kind-icon">UNDEFINED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol"> = new Object()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_injector.ts#L23">packages/di/src/injection/reflective_injector.ts:23</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="workerglobalscope" class="tsd-anchor"></a>
-					<h3>Worker<wbr>Global<wbr>Scope</h3>
-					<div class="tsd-signature tsd-kind-icon">Worker<wbr>Global<wbr>Scope<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/lang.ts#L33">packages/di/src/injection/facade/lang.ts:33</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="_empty_list" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> _EMPTY_<wbr>LIST</h3>
-					<div class="tsd-signature tsd-kind-icon">_EMPTY_<wbr>LIST<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_provider.ts#L34">packages/di/src/injection/reflective_provider.ts:34</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="_throw_if_not_found" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> _THROW_<wbr>IF_<wbr>NOT_<wbr>FOUND</h3>
-					<div class="tsd-signature tsd-kind-icon">_THROW_<wbr>IF_<wbr>NOT_<wbr>FOUND<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol"> = new Object()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/injector.ts#L14">packages/di/src/injection/injector.ts:14</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="_global" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> _global</h3>
-					<div class="tsd-signature tsd-kind-icon">_global<span class="tsd-signature-symbol">:</span> <a href="interfaces/browsernodeglobal.html" class="tsd-signature-type">BrowserNodeGlobal</a><span class="tsd-signature-symbol"> = globalScope</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/lang.ts#L53">packages/di/src/injection/facade/lang.ts:53</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="_globalkeyregistry" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> _global<wbr>Key<wbr>Registry</h3>
-					<div class="tsd-signature tsd-kind-icon">_global<wbr>Key<wbr>Registry<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">KeyRegistry</span><span class="tsd-signature-symbol"> = new KeyRegistry()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_key.ts#L86">packages/di/src/injection/reflective_key.ts:86</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="global" class="tsd-anchor"></a>
-					<h3>global</h3>
-					<div class="tsd-signature tsd-kind-icon">global<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/lang.ts#L37">packages/di/src/injection/facade/lang.ts:37</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="globalscope" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagLet">Let</span> global<wbr>Scope</h3>
-					<div class="tsd-signature tsd-kind-icon">global<wbr>Scope<span class="tsd-signature-symbol">:</span> <a href="interfaces/browsernodeglobal.html" class="tsd-signature-type">BrowserNodeGlobal</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/lang.ts#L39">packages/di/src/injection/facade/lang.ts:39</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="reflector" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> reflector</h3>
-					<div class="tsd-signature tsd-kind-icon">reflector<span class="tsd-signature-symbol">:</span> <a href="classes/reflector.html" class="tsd-signature-type">Reflector</a><span class="tsd-signature-symbol"> = new Reflector(new ReflectionCapabilities())</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflection/reflection.ts#L18">packages/di/src/injection/reflection/reflection.ts:18</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The <a href="classes/reflector.html">Reflector</a> used internally in Angular to access metadata
-							about symbols.</p>
-						</div>
-					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="_createdependency" class="tsd-anchor"></a>
-					<h3>_create<wbr>Dependency</h3>
+					<a name="ask" class="tsd-anchor"></a>
+					<h3>ask</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">_create<wbr>Dependency<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, optional<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, visibility<span class="tsd-signature-symbol">: </span><a href="classes/selfannotation.html" class="tsd-signature-type">SelfAnnotation</a><span class="tsd-signature-symbol"> | </span><a href="classes/skipselfannotation.html" class="tsd-signature-type">SkipSelfAnnotation</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="classes/reflectivedependency.html" class="tsd-signature-type">ReflectiveDependency</a></li>
+						<li class="tsd-signature tsd-kind-icon">ask<span class="tsd-signature-symbol">(</span>prompt<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_provider.ts#L261">packages/di/src/injection/reflective_provider.ts:261</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L46">src/utils.ts:46</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>token: <span class="tsd-signature-type">any</span></h5>
-								</li>
-								<li>
-									<h5>optional: <span class="tsd-signature-type">boolean</span></h5>
-								</li>
-								<li>
-									<h5>visibility: <a href="classes/selfannotation.html" class="tsd-signature-type">SelfAnnotation</a><span class="tsd-signature-symbol"> | </span><a href="classes/skipselfannotation.html" class="tsd-signature-type">SkipSelfAnnotation</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
+									<h5>prompt: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="classes/reflectivedependency.html" class="tsd-signature-type">ReflectiveDependency</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="_dependenciesfor" class="tsd-anchor"></a>
-					<h3>_dependencies<wbr>For</h3>
+					<a name="askboolean" class="tsd-anchor"></a>
+					<h3>ask<wbr>Boolean</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">_dependencies<wbr>For<span class="tsd-signature-symbol">(</span>typeOrFunc<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="classes/reflectivedependency.html" class="tsd-signature-type">ReflectiveDependency</a><span class="tsd-signature-symbol">[]</span></li>
+						<li class="tsd-signature tsd-kind-icon">ask<wbr>Boolean<span class="tsd-signature-symbol">(</span>prompt<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_provider.ts#L206">packages/di/src/injection/reflective_provider.ts:206</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L28">src/utils.ts:28</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>typeOrFunc: <span class="tsd-signature-type">any</span></h5>
+									<h5>prompt: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> defaultValue: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="classes/reflectivedependency.html" class="tsd-signature-type">ReflectiveDependency</a><span class="tsd-signature-symbol">[]</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="_extracttoken" class="tsd-anchor"></a>
-					<h3>_extract<wbr>Token</h3>
+					<a name="capitalize" class="tsd-anchor"></a>
+					<h3>capitalize</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">_extract<wbr>Token<span class="tsd-signature-symbol">(</span>typeOrFunc<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span>, params<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="classes/reflectivedependency.html" class="tsd-signature-type">ReflectiveDependency</a></li>
+						<li class="tsd-signature tsd-kind-icon">capitalize<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_provider.ts#L219">packages/di/src/injection/reflective_provider.ts:219</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L65">src/utils.ts:65</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>typeOrFunc: <span class="tsd-signature-type">any</span></h5>
-								</li>
-								<li>
-									<h5>metadata: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span></h5>
-								</li>
-								<li>
-									<h5>params: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="classes/reflectivedependency.html" class="tsd-signature-type">ReflectiveDependency</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="_mapproviders" class="tsd-anchor"></a>
-					<h3>_map<wbr>Providers</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">_map<wbr>Providers<span class="tsd-signature-symbol">(</span>injector<span class="tsd-signature-symbol">: </span><a href="classes/reflectiveinjector_.html" class="tsd-signature-type">ReflectiveInjector_</a>, fn<span class="tsd-signature-symbol">: </span><a href="interfaces/type.html#function" class="tsd-signature-type">Function</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_injector.ts#L536">packages/di/src/injection/reflective_injector.ts:536</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>injector: <a href="classes/reflectiveinjector_.html" class="tsd-signature-type">ReflectiveInjector_</a></h5>
-								</li>
-								<li>
-									<h5>fn: <a href="interfaces/type.html#function" class="tsd-signature-type">Function</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="_normalizeproviders" class="tsd-anchor"></a>
-					<h3>_normalize<wbr>Providers</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">_normalize<wbr>Providers<span class="tsd-signature-symbol">(</span>providers<span class="tsd-signature-symbol">: </span><a href="globals.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">[]</span>, res<span class="tsd-signature-symbol">: </span><a href="globals.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/normalizedprovider.html" class="tsd-signature-type">NormalizedProvider</a><span class="tsd-signature-symbol">[]</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_provider.ts#L181">packages/di/src/injection/reflective_provider.ts:181</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>providers: <a href="globals.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-								<li>
-									<h5>res: <a href="globals.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/normalizedprovider.html" class="tsd-signature-type">NormalizedProvider</a><span class="tsd-signature-symbol">[]</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="addkey" class="tsd-anchor"></a>
-					<h3>add<wbr>Key</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Key<span class="tsd-signature-symbol">(</span>this<span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html" class="tsd-signature-type">InjectionError</a>, injector<span class="tsd-signature-symbol">: </span><a href="classes/reflectiveinjector.html" class="tsd-signature-type">ReflectiveInjector</a>, key<span class="tsd-signature-symbol">: </span><a href="classes/reflectivekey.html" class="tsd-signature-type">ReflectiveKey</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_errors.ts#L62">packages/di/src/injection/reflective_errors.ts:62</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>this: <a href="interfaces/injectionerror.html" class="tsd-signature-type">InjectionError</a></h5>
-								</li>
-								<li>
-									<h5>injector: <a href="classes/reflectiveinjector.html" class="tsd-signature-type">ReflectiveInjector</a></h5>
-								</li>
-								<li>
-									<h5>key: <a href="classes/reflectivekey.html" class="tsd-signature-type">ReflectiveKey</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="configuremodule" class="tsd-anchor"></a>
-					<h3>configure<wbr>Module</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">configure<wbr>Module<span class="tsd-signature-symbol">(</span>module<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, providers<span class="tsd-signature-symbol">: </span><a href="globals.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/configuredmodule.html" class="tsd-signature-type">ConfiguredModule</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/modules.ts#L13">packages/di/src/modules.ts:13</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>module: <span class="tsd-signature-type">any</span></h5>
-								</li>
-								<li>
-									<h5>providers: <a href="globals.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/configuredmodule.html" class="tsd-signature-type">ConfiguredModule</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="constructdependencies" class="tsd-anchor"></a>
-					<h3>construct<wbr>Dependencies</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">construct<wbr>Dependencies<span class="tsd-signature-symbol">(</span>typeOrFunc<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, dependencies<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="classes/reflectivedependency.html" class="tsd-signature-type">ReflectiveDependency</a><span class="tsd-signature-symbol">[]</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_provider.ts#L197">packages/di/src/injection/reflective_provider.ts:197</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>typeOrFunc: <span class="tsd-signature-type">any</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> dependencies: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="classes/reflectivedependency.html" class="tsd-signature-type">ReflectiveDependency</a><span class="tsd-signature-symbol">[]</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="constructresolvingpath" class="tsd-anchor"></a>
-					<h3>construct<wbr>Resolving<wbr>Path</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">construct<wbr>Resolving<wbr>Path<span class="tsd-signature-symbol">(</span>keys<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_errors.ts#L29">packages/di/src/injection/reflective_errors.ts:29</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>keys: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -1013,89 +231,22 @@ class Car {
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="converttsickledecoratorintometadata" class="tsd-anchor"></a>
-					<h3>convert<wbr>Tsickle<wbr>Decorator<wbr>Into<wbr>Metadata</h3>
+					<a name="changeworkingdirectory" class="tsd-anchor"></a>
+					<h3>change<wbr>Working<wbr>Directory</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">convert<wbr>Tsickle<wbr>Decorator<wbr>Into<wbr>Metadata<span class="tsd-signature-symbol">(</span>decoratorInvocations<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></li>
+						<li class="tsd-signature tsd-kind-icon">change<wbr>Working<wbr>Directory<span class="tsd-signature-symbol">(</span>dir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflection/reflection_capabilities.ts#L180">packages/di/src/injection/reflection/reflection_capabilities.ts:180</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L24">src/utils.ts:24</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>decoratorInvocations: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="cyclicdependencyerror" class="tsd-anchor"></a>
-					<h3>cyclic<wbr>Dependency<wbr>Error</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">cyclic<wbr>Dependency<wbr>Error<span class="tsd-signature-symbol">(</span>injector<span class="tsd-signature-symbol">: </span><a href="classes/reflectiveinjector.html" class="tsd-signature-type">ReflectiveInjector</a>, key<span class="tsd-signature-symbol">: </span><a href="classes/reflectivekey.html" class="tsd-signature-type">ReflectiveKey</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html" class="tsd-signature-type">InjectionError</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_errors.ts#L105">packages/di/src/injection/reflective_errors.ts:105</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Thrown when dependencies form a cycle.</p>
-								</div>
-								<a href="#example-live-demo" id="example-live-demo" style="color: inherit; text-decoration: none;">
-									<h3>Example (<a href="http://plnkr.co/edit/wYQdNos0Tzql3ei1EV9j?p=info">live demo</a>)</h3>
-								</a>
-								<pre><code class="language-typescript"><span class="hljs-keyword">var</span> injector = Injector.resolveAndCreate([
-  {<span class="hljs-attr">provide</span>: <span class="hljs-string">&quot;one&quot;</span>, <span class="hljs-attr">useFactory</span>: <span class="hljs-function">(<span class="hljs-params">two</span>) =&gt;</span> <span class="hljs-string">&quot;two&quot;</span>, <span class="hljs-attr">deps</span>: [[<span class="hljs-keyword">new</span> Inject(<span class="hljs-string">&quot;two&quot;</span>)]]},
-  {<span class="hljs-attr">provide</span>: <span class="hljs-string">&quot;two&quot;</span>, <span class="hljs-attr">useFactory</span>: <span class="hljs-function">(<span class="hljs-params">one</span>) =&gt;</span> <span class="hljs-string">&quot;one&quot;</span>, <span class="hljs-attr">deps</span>: [[<span class="hljs-keyword">new</span> Inject(<span class="hljs-string">&quot;one&quot;</span>)]]}
-]);
-
-expect(<span class="hljs-function">() =&gt;</span> injector.get(<span class="hljs-string">&quot;one&quot;</span>)).toThrowError();</code></pre>
-								<p>Retrieving <code>A</code> or <code>B</code> throws a <code>CyclicDependencyError</code> as the graph above cannot be constructed.</p>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>injector: <a href="classes/reflectiveinjector.html" class="tsd-signature-type">ReflectiveInjector</a></h5>
-								</li>
-								<li>
-									<h5>key: <a href="classes/reflectivekey.html" class="tsd-signature-type">ReflectiveKey</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/injectionerror.html" class="tsd-signature-type">InjectionError</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="defaulterrorlogger" class="tsd-anchor"></a>
-					<h3>default<wbr>Error<wbr>Logger</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">default<wbr>Error<wbr>Logger<span class="tsd-signature-symbol">(</span>console<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Console</span>, <span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/errors.ts#L28">packages/di/src/injection/facade/errors.ts:28</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>console: <span class="tsd-signature-type">Console</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5>dir: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1103,355 +254,248 @@ expect(<span class="hljs-function">() =&gt;</span> injector.get(<span class="hlj
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="findfirstclosedcycle" class="tsd-anchor"></a>
-					<h3>find<wbr>First<wbr>Closed<wbr>Cycle</h3>
+					<a name="fileexists" class="tsd-anchor"></a>
+					<h3>file<wbr>Exists</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">find<wbr>First<wbr>Closed<wbr>Cycle<span class="tsd-signature-symbol">(</span>keys<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></li>
+						<li class="tsd-signature tsd-kind-icon">file<wbr>Exists<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_errors.ts#L17">packages/di/src/injection/reflective_errors.ts:17</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L79">src/utils.ts:79</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>keys: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5>path: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="forwardref" class="tsd-anchor"></a>
-					<h3>forward<wbr>Ref</h3>
+					<a name="getworkingdirectory" class="tsd-anchor"></a>
+					<h3>get<wbr>Working<wbr>Directory</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">forward<wbr>Ref<span class="tsd-signature-symbol">(</span>forwardRefFn<span class="tsd-signature-symbol">: </span><a href="interfaces/forwardreffn.html" class="tsd-signature-type">ForwardRefFn</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/type.html" class="tsd-signature-type">Type</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Working<wbr>Directory<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/forward_ref.ts#L36">packages/di/src/injection/forward_ref.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L61">src/utils.ts:61</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="isconstructor" class="tsd-anchor"></a>
+					<h3>is<wbr>Constructor</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Constructor<span class="tsd-signature-symbol">(</span>f<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L175">src/utils.ts:175</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Allows to refer to references which are not yet defined.</p>
+									<p><a href="https://stackoverflow.com/a/46759625/1995204">https://stackoverflow.com/a/46759625/1995204</a></p>
 								</div>
-								<p>For instance, <code>forwardRef</code> is used when the <code>token</code> which we need to refer to for the purposes of
-									DI is declared,
-									but not yet defined. It is also used when the <code>token</code> which we use when creating a query is not
-								yet defined.</p>
-								<a href="#example" id="example" style="color: inherit; text-decoration: none;">
-									<h3>Example</h3>
-								</a>
-								<p>{@example core/di/ts/forward_ref/forward_ref_spec.ts region=&#39;forward_ref&#39;}</p>
-								<dl class="tsd-comment-tags">
-									<dt>experimental</dt>
-									<dd></dd>
-								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>forwardRefFn: <a href="interfaces/forwardreffn.html" class="tsd-signature-type">ForwardRefFn</a></h5>
+									<h5>f: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/type.html" class="tsd-signature-type">Type</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="getdebugcontext" class="tsd-anchor"></a>
-					<h3>get<wbr>Debug<wbr>Context</h3>
+					<a name="ispropertyprivate" class="tsd-anchor"></a>
+					<h3>is<wbr>Property<wbr>Private</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Debug<wbr>Context<span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="classes/debugcontext.html" class="tsd-signature-type">DebugContext</a></li>
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Property<wbr>Private<span class="tsd-signature-symbol">(</span>target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, propertyName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/errors.ts#L20">packages/di/src/injection/facade/errors.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L56">src/utils.ts:56</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>error: <a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></h5>
+									<h5>target: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>propertyName: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="classes/debugcontext.html" class="tsd-signature-type">DebugContext</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="geterrorlogger" class="tsd-anchor"></a>
-					<h3>get<wbr>Error<wbr>Logger</h3>
+					<a name="linerangetagend" class="tsd-anchor"></a>
+					<h3>line<wbr>Range<wbr>Tag<wbr>End</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Error<wbr>Logger<span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>console<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Console</span>, <span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">line<wbr>Range<wbr>Tag<wbr>End<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/errors.ts#L32">packages/di/src/injection/facade/errors.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L91">src/utils.ts:91</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>error: <a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></h5>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">(</span>console<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Console</span>, <span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h4>
-							<ul class="tsd-parameters">
-								<li class="tsd-parameter-signature">
-									<ul class="tsd-signatures tsd-kind-type-literal">
-										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>console<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Console</span>, <span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-									</ul>
-									<ul class="tsd-descriptions">
-										<li class="tsd-description">
-											<h4 class="tsd-parameters-title">Parameters</h4>
-											<ul class="tsd-parameters">
-												<li>
-													<h5>console: <span class="tsd-signature-type">Console</span></h5>
-												</li>
-												<li>
-													<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>values: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
-												</li>
-											</ul>
-											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-										</li>
-									</ul>
-								</li>
-							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="getoriginalerror" class="tsd-anchor"></a>
-					<h3>get<wbr>Original<wbr>Error</h3>
+					<a name="linerangetagstart" class="tsd-anchor"></a>
+					<h3>line<wbr>Range<wbr>Tag<wbr>Start</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Original<wbr>Error<span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></li>
+						<li class="tsd-signature tsd-kind-icon">line<wbr>Range<wbr>Tag<wbr>Start<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/errors.ts#L24">packages/di/src/injection/facade/errors.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L87">src/utils.ts:87</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>error: <a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></h5>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="getparentctor" class="tsd-anchor"></a>
-					<h3>get<wbr>Parent<wbr>Ctor</h3>
+					<a name="makedirectory" class="tsd-anchor"></a>
+					<h3>make<wbr>Directory</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Parent<wbr>Ctor<span class="tsd-signature-symbol">(</span>ctor<span class="tsd-signature-symbol">: </span><a href="interfaces/type.html#function" class="tsd-signature-type">Function</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/type.html" class="tsd-signature-type">Type</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">make<wbr>Directory<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflection/reflection_capabilities.ts#L192">packages/di/src/injection/reflection/reflection_capabilities.ts:192</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L75">src/utils.ts:75</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ctor: <a href="interfaces/type.html#function" class="tsd-signature-type">Function</a></h5>
+									<h5>path: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/type.html" class="tsd-signature-type">Type</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="gettype" class="tsd-anchor"></a>
-					<h3>get<wbr>Type</h3>
+					<a name="pathcombine" class="tsd-anchor"></a>
+					<h3>path<wbr>Combine</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Type<span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/type.html#function" class="tsd-signature-type">Function</a></li>
+						<li class="tsd-signature tsd-kind-icon">path<wbr>Combine<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>paths<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/errors.ts#L16">packages/di/src/injection/facade/errors.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L20">src/utils.ts:20</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>error: <a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></h5>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>paths: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/type.html#function" class="tsd-signature-type">Function</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="injectionerror" class="tsd-anchor"></a>
-					<h3>injection<wbr>Error</h3>
+					<a name="pathresolve" class="tsd-anchor"></a>
+					<h3>path<wbr>Resolve</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">injection<wbr>Error<span class="tsd-signature-symbol">(</span>injector<span class="tsd-signature-symbol">: </span><a href="classes/reflectiveinjector.html" class="tsd-signature-type">ReflectiveInjector</a>, key<span class="tsd-signature-symbol">: </span><a href="classes/reflectivekey.html" class="tsd-signature-type">ReflectiveKey</a>, constructResolvingMessage<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>this<span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html" class="tsd-signature-type">InjectionError</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">string</span>, originalError<span class="tsd-signature-symbol">?: </span><a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html" class="tsd-signature-type">InjectionError</a></li>
+						<li class="tsd-signature tsd-kind-icon">path<wbr>Resolve<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>paths<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_errors.ts#L46">packages/di/src/injection/reflective_errors.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L16">src/utils.ts:16</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>injector: <a href="classes/reflectiveinjector.html" class="tsd-signature-type">ReflectiveInjector</a></h5>
-								</li>
-								<li>
-									<h5>key: <a href="classes/reflectivekey.html" class="tsd-signature-type">ReflectiveKey</a></h5>
-								</li>
-								<li>
-									<h5>constructResolvingMessage: <span class="tsd-signature-symbol">(</span>this<span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html" class="tsd-signature-type">InjectionError</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">string</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-signature">
-											<ul class="tsd-signatures tsd-kind-type-literal">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>this<span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html" class="tsd-signature-type">InjectionError</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5>this: <a href="interfaces/injectionerror.html" class="tsd-signature-type">InjectionError</a></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
-												</li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> originalError: <a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></h5>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>paths: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/injectionerror.html" class="tsd-signature-type">InjectionError</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="instantiationerror" class="tsd-anchor"></a>
-					<h3>instantiation<wbr>Error</h3>
+					<a name="readfilelines" class="tsd-anchor"></a>
+					<h3>read<wbr>File<wbr>Lines</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">instantiation<wbr>Error<span class="tsd-signature-symbol">(</span>injector<span class="tsd-signature-symbol">: </span><a href="classes/reflectiveinjector.html" class="tsd-signature-type">ReflectiveInjector</a>, originalException<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, originalStack<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, key<span class="tsd-signature-symbol">: </span><a href="classes/reflectivekey.html" class="tsd-signature-type">ReflectiveKey</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html" class="tsd-signature-type">InjectionError</a></li>
+						<li class="tsd-signature tsd-kind-icon">read<wbr>File<wbr>Lines<span class="tsd-signature-symbol">(</span>filename<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_errors.ts#L137">packages/di/src/injection/reflective_errors.ts:137</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L83">src/utils.ts:83</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Thrown when a constructing type returns with an Error.</p>
-								</div>
-								<p>The <code>InstantiationError</code> class contains the original error plus the dependency graph which caused
-								this object to be instantiated.</p>
-								<a href="#example-live-demo" id="example-live-demo" style="color: inherit; text-decoration: none;">
-									<h3>Example (<a href="http://plnkr.co/edit/7aWYdcqTQsP0eNqEdUAf?p=preview">live demo</a>)</h3>
-								</a>
-								<pre><code class="language-typescript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">A</span> </span>{
-  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"></span>)</span> {
-    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">&#x27;message&#x27;</span>);
-  }
-}
-
-<span class="hljs-keyword">var</span> injector = Injector.resolveAndCreate([A]);
-
-<span class="hljs-keyword">try</span> {
-  injector.get(A);
-} <span class="hljs-keyword">catch</span> (e) {
-  expect(e <span class="hljs-keyword">instanceof</span> InstantiationError).toBe(<span class="hljs-literal">true</span>);
-  expect(e.originalException.message).toEqual(<span class="hljs-string">&quot;message&quot;</span>);
-  expect(e.originalStack).toBeDefined();
-}</code></pre>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>injector: <a href="classes/reflectiveinjector.html" class="tsd-signature-type">ReflectiveInjector</a></h5>
-								</li>
-								<li>
-									<h5>originalException: <span class="tsd-signature-type">any</span></h5>
-								</li>
-								<li>
-									<h5>originalStack: <span class="tsd-signature-type">any</span></h5>
-								</li>
-								<li>
-									<h5>key: <a href="classes/reflectivekey.html" class="tsd-signature-type">ReflectiveKey</a></h5>
+									<h5>filename: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/injectionerror.html" class="tsd-signature-type">InjectionError</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="invalidprovidererror" class="tsd-anchor"></a>
-					<h3>invalid<wbr>Provider<wbr>Error</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">invalid<wbr>Provider<wbr>Error<span class="tsd-signature-symbol">(</span>provider<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_errors.ts#L164">packages/di/src/injection/reflective_errors.ts:164</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Thrown when an object other then <a href="globals.html#provider">Provider</a> (or <code>Type</code>) is passed to <a href="classes/injector.html">Injector</a>
-									creation.</p>
-								</div>
-								<a href="#example-live-demo" id="example-live-demo" style="color: inherit; text-decoration: none;">
-									<h3>Example (<a href="http://plnkr.co/edit/YatCFbPAMCL0JSSQ4mvH?p=preview">live demo</a>)</h3>
-								</a>
-								<pre><code class="language-typescript">expect(<span class="hljs-function">() =&gt;</span> Injector.resolveAndCreate([<span class="hljs-string">&quot;not a type&quot;</span>])).toThrowError();</code></pre>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>provider: <span class="tsd-signature-type">any</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-has-type-parameter">
-					<a name="ispresent" class="tsd-anchor"></a>
-					<h3>is<wbr>Present</h3>
+					<a name="readjsonfile" class="tsd-anchor"></a>
+					<h3>read<wbr>Json<wbr>File</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">is<wbr>Present&lt;T&gt;<span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">obj</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">NonNullable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">read<wbr>Json<wbr>File&lt;T&gt;<span class="tsd-signature-symbol">(</span>filename<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/lang.ts#L57">packages/di/src/injection/facade/lang.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L135">src/utils.ts:135</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1463,381 +507,131 @@ expect(<span class="hljs-function">() =&gt;</span> injector.get(<span class="hlj
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>obj: <span class="tsd-signature-type">T</span></h5>
+									<h5>filename: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">obj</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">NonNullable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="istype" class="tsd-anchor"></a>
-					<h3>is<wbr>Type</h3>
+					<a name="readtextfile" class="tsd-anchor"></a>
+					<h3>read<wbr>Text<wbr>File</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">is<wbr>Type<span class="tsd-signature-symbol">(</span>v<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">v</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">Type</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">read<wbr>Text<wbr>File<span class="tsd-signature-symbol">(</span>filename<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/type.ts#L21">packages/di/src/injection/facade/type.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L152">src/utils.ts:152</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>v: <span class="tsd-signature-type">any</span></h5>
+									<h5>filename: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">v</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">Type</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="mergeresolvedreflectiveproviders" class="tsd-anchor"></a>
-					<h3>merge<wbr>Resolved<wbr>Reflective<wbr>Providers</h3>
+					<a name="removeall" class="tsd-anchor"></a>
+					<h3>remove<wbr>All</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">merge<wbr>Resolved<wbr>Reflective<wbr>Providers<span class="tsd-signature-symbol">(</span>providers<span class="tsd-signature-symbol">: </span><a href="interfaces/resolvedreflectiveprovider.html" class="tsd-signature-type">ResolvedReflectiveProvider</a><span class="tsd-signature-symbol">[]</span>, normalizedProvidersMap<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="interfaces/resolvedreflectiveprovider.html" class="tsd-signature-type">ResolvedReflectiveProvider</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="interfaces/resolvedreflectiveprovider.html" class="tsd-signature-type">ResolvedReflectiveProvider</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>All<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_provider.ts#L150">packages/di/src/injection/reflective_provider.ts:150</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L69">src/utils.ts:69</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Merges a list of ResolvedProviders into a list where
-										each key is contained exactly once and multi providers
-									have been merged.</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>providers: <a href="interfaces/resolvedreflectiveprovider.html" class="tsd-signature-type">ResolvedReflectiveProvider</a><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-								<li>
-									<h5>normalizedProvidersMap: <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="interfaces/resolvedreflectiveprovider.html" class="tsd-signature-type">ResolvedReflectiveProvider</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>path: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="interfaces/resolvedreflectiveprovider.html" class="tsd-signature-type">ResolvedReflectiveProvider</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="mixingmultiproviderswithregularproviderserror" class="tsd-anchor"></a>
-					<h3>mixing<wbr>Multi<wbr>Providers<wbr>With<wbr>Regular<wbr>Providers<wbr>Error</h3>
+					<a name="removetaggedlinerange" class="tsd-anchor"></a>
+					<h3>remove<wbr>Tagged<wbr>Line<wbr>Range</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">mixing<wbr>Multi<wbr>Providers<wbr>With<wbr>Regular<wbr>Providers<wbr>Error<span class="tsd-signature-symbol">(</span>provider1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, provider2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></li>
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Tagged<wbr>Line<wbr>Range<span class="tsd-signature-symbol">(</span>content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, tag<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_errors.ts#L250">packages/di/src/injection/reflective_errors.ts:250</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L108">src/utils.ts:108</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Thrown when a multi provider and a regular provider are bound to the same token.</p>
-								</div>
-								<a href="#example" id="example" style="color: inherit; text-decoration: none;">
-									<h3>Example</h3>
-								</a>
-								<pre><code class="language-typescript">expect(<span class="hljs-function">() =&gt;</span> Injector.resolveAndCreate([
-  { <span class="hljs-attr">provide</span>: <span class="hljs-string">&quot;Strings&quot;</span>, <span class="hljs-attr">useValue</span>: <span class="hljs-string">&quot;string1&quot;</span>, <span class="hljs-attr">multi</span>: <span class="hljs-literal">true</span>},
-  { <span class="hljs-attr">provide</span>: <span class="hljs-string">&quot;Strings&quot;</span>, <span class="hljs-attr">useValue</span>: <span class="hljs-string">&quot;string2&quot;</span>, <span class="hljs-attr">multi</span>: <span class="hljs-literal">false</span>}
-])).toThrowError();</code></pre>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>provider1: <span class="tsd-signature-type">any</span></h5>
+									<h5>content: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 								<li>
-									<h5>provider2: <span class="tsd-signature-type">any</span></h5>
+									<h5>tag: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="noannotationerror" class="tsd-anchor"></a>
-					<h3>no<wbr>Annotation<wbr>Error</h3>
+					<a name="replacetaggedlinerange" class="tsd-anchor"></a>
+					<h3>replace<wbr>Tagged<wbr>Line<wbr>Range</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">no<wbr>Annotation<wbr>Error<span class="tsd-signature-symbol">(</span>typeOrFunc<span class="tsd-signature-symbol">: </span><a href="interfaces/type.html" class="tsd-signature-type">Type</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><a href="interfaces/type.html#function" class="tsd-signature-type">Function</a>, params<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></li>
+						<li class="tsd-signature tsd-kind-icon">replace<wbr>Tagged<wbr>Line<wbr>Range<span class="tsd-signature-symbol">(</span>content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, tagName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, lines<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_errors.ts#L197">packages/di/src/injection/reflective_errors.ts:197</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L95">src/utils.ts:95</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Thrown when the class has no annotation information.</p>
-								</div>
-								<p>Lack of annotation information prevents the <a href="classes/injector.html">Injector</a> from determining which dependencies
-								need to be injected into the constructor.</p>
-								<a href="#example-live-demo" id="example-live-demo" style="color: inherit; text-decoration: none;">
-									<h3>Example (<a href="http://plnkr.co/edit/rHnZtlNS7vJOPQ6pcVkm?p=preview">live demo</a>)</h3>
-								</a>
-								<pre><code class="language-typescript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">A</span> </span>{
-  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">b</span>)</span> {}
-}
-
-expect(<span class="hljs-function">() =&gt;</span> Injector.resolveAndCreate([A])).toThrowError();</code></pre>
-								<p>This error is also thrown when the class not marked with <a href="globals.html#injectable">Injectable</a> has parameter types.</p>
-								<pre><code class="language-typescript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">B</span> </span>{}
-
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">A</span> </span>{
-  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">b:B</span>)</span> {} <span class="hljs-comment">// no information about the parameter types of A is available at runtime.</span>
-}
-
-expect(<span class="hljs-function">() =&gt;</span> Injector.resolveAndCreate([A,B])).toThrowError();</code></pre>
-								<dl class="tsd-comment-tags">
-									<dt>stable</dt>
-									<dd></dd>
-								</dl>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>typeOrFunc: <a href="interfaces/type.html" class="tsd-signature-type">Type</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><a href="interfaces/type.html#function" class="tsd-signature-type">Function</a></h5>
+									<h5>content: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 								<li>
-									<h5>params: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5>tagName: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>lines: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="noprovidererror" class="tsd-anchor"></a>
-					<h3>no<wbr>Provider<wbr>Error</h3>
+					<a name="unindent" class="tsd-anchor"></a>
+					<h3>unindent</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">no<wbr>Provider<wbr>Error<span class="tsd-signature-symbol">(</span>injector<span class="tsd-signature-symbol">: </span><a href="classes/reflectiveinjector.html" class="tsd-signature-type">ReflectiveInjector</a>, key<span class="tsd-signature-symbol">: </span><a href="classes/reflectivekey.html" class="tsd-signature-type">ReflectiveKey</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html" class="tsd-signature-type">InjectionError</a></li>
+						<li class="tsd-signature tsd-kind-icon">unindent<span class="tsd-signature-symbol">(</span>str<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_errors.ts#L82">packages/di/src/injection/reflective_errors.ts:82</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Thrown when trying to retrieve a dependency by key from <a href="classes/injector.html">Injector</a>, but the
-									<a href="classes/injector.html">Injector</a> does not have a <a href="globals.html#provider">Provider</a> for the given key.</p>
-								</div>
-								<a href="#example-live-demo" id="example-live-demo" style="color: inherit; text-decoration: none;">
-									<h3>Example (<a href="http://plnkr.co/edit/vq8D3FRB9aGbnWJqtEPE?p=preview">live demo</a>)</h3>
-								</a>
-								<pre><code class="language-typescript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">A</span> </span>{
-  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">b:B</span>)</span> {}
-}
-
-expect(<span class="hljs-function">() =&gt;</span> Injector.resolveAndCreate([A])).toThrowError();</code></pre>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>injector: <a href="classes/reflectiveinjector.html" class="tsd-signature-type">ReflectiveInjector</a></h5>
-								</li>
-								<li>
-									<h5>key: <a href="classes/reflectivekey.html" class="tsd-signature-type">ReflectiveKey</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/injectionerror.html" class="tsd-signature-type">InjectionError</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="outofboundserror" class="tsd-anchor"></a>
-					<h3>out<wbr>OfBounds<wbr>Error</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">out<wbr>OfBounds<wbr>Error<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_errors.ts#L233">packages/di/src/injection/reflective_errors.ts:233</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Thrown when getting an object by index.</p>
-								</div>
-								<a href="#example-live-demo" id="example-live-demo" style="color: inherit; text-decoration: none;">
-									<h3>Example (<a href="http://plnkr.co/edit/bRs0SX2OTQiJzqvjgl8P?p=preview">live demo</a>)</h3>
-								</a>
-								<pre><code class="language-typescript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">A</span> </span>{}
-
-<span class="hljs-keyword">var</span> injector = Injector.resolveAndCreate([A]);
-
-expect(<span class="hljs-function">() =&gt;</span> injector.getAt(<span class="hljs-number">100</span>)).toThrowError();</code></pre>
-								<dl class="tsd-comment-tags">
-									<dt>stable</dt>
-									<dd></dd>
-								</dl>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>index: <span class="tsd-signature-type">number</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="resolveforwardref" class="tsd-anchor"></a>
-					<h3>resolve<wbr>Forward<wbr>Ref</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">resolve<wbr>Forward<wbr>Ref<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/forward_ref.ts#L56">packages/di/src/injection/forward_ref.ts:56</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Lazily retrieves the reference value from a forwardRef.</p>
-								</div>
-								<p>Acts as the identity function when given a non-forward-ref value.</p>
-								<a href="#example-live-demo" id="example-live-demo" style="color: inherit; text-decoration: none;">
-									<h3>Example (<a href="http://plnkr.co/edit/GU72mJrk1fiodChcmiDR?p=preview">live demo</a>)</h3>
-								</a>
-								<p>{@example core/di/ts/forward_ref/forward_ref_spec.ts region=&#39;resolve_forward_ref&#39;}</p>
-								<p>See: <a href="globals.html#forwardref">forwardRef</a></p>
-								<dl class="tsd-comment-tags">
-									<dt>experimental</dt>
-									<dd></dd>
-								</dl>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>type: <span class="tsd-signature-type">any</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="resolvereflectivefactory" class="tsd-anchor"></a>
-					<h3>resolve<wbr>Reflective<wbr>Factory</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">resolve<wbr>Reflective<wbr>Factory<span class="tsd-signature-symbol">(</span>provider<span class="tsd-signature-symbol">: </span><a href="interfaces/normalizedprovider.html" class="tsd-signature-type">NormalizedProvider</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="classes/resolvedreflectivefactory.html" class="tsd-signature-type">ResolvedReflectiveFactory</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_provider.ts#L101">packages/di/src/injection/reflective_provider.ts:101</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Resolve a single provider.</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>provider: <a href="interfaces/normalizedprovider.html" class="tsd-signature-type">NormalizedProvider</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="classes/resolvedreflectivefactory.html" class="tsd-signature-type">ResolvedReflectiveFactory</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="resolvereflectiveprovider" class="tsd-anchor"></a>
-					<h3>resolve<wbr>Reflective<wbr>Provider</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">resolve<wbr>Reflective<wbr>Provider<span class="tsd-signature-symbol">(</span>provider<span class="tsd-signature-symbol">: </span><a href="interfaces/normalizedprovider.html" class="tsd-signature-type">NormalizedProvider</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/resolvedreflectiveprovider.html" class="tsd-signature-type">ResolvedReflectiveProvider</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_provider.ts#L127">packages/di/src/injection/reflective_provider.ts:127</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Converts the <a href="globals.html#provider">Provider</a> into {@link ResolvedProvider}.</p>
-								</div>
-								<p><a href="classes/injector.html">Injector</a> internally only uses {@link ResolvedProvider}, <a href="globals.html#provider">Provider</a> contains
-								convenience provider syntax.</p>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>provider: <a href="interfaces/normalizedprovider.html" class="tsd-signature-type">NormalizedProvider</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/resolvedreflectiveprovider.html" class="tsd-signature-type">ResolvedReflectiveProvider</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="resolvereflectiveproviders" class="tsd-anchor"></a>
-					<h3>resolve<wbr>Reflective<wbr>Providers</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">resolve<wbr>Reflective<wbr>Providers<span class="tsd-signature-symbol">(</span>providers<span class="tsd-signature-symbol">: </span><a href="globals.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/resolvedreflectiveprovider.html" class="tsd-signature-type">ResolvedReflectiveProvider</a><span class="tsd-signature-symbol">[]</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/reflective_provider.ts#L138">packages/di/src/injection/reflective_provider.ts:138</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Resolve a list of Providers.</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>providers: <a href="globals.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/resolvedreflectiveprovider.html" class="tsd-signature-type">ResolvedReflectiveProvider</a><span class="tsd-signature-symbol">[]</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="stringify" class="tsd-anchor"></a>
-					<h3>stringify</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">stringify<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/lang.ts#L61">packages/di/src/injection/facade/lang.ts:61</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L10">src/utils.ts:10</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>token: <span class="tsd-signature-type">any</span></h5>
+									<h5>str: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -1845,28 +639,86 @@ expect(<span class="hljs-function">() =&gt;</span> injector.getAt(<span class="h
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="wrappederror" class="tsd-anchor"></a>
-					<h3>wrapped<wbr>Error</h3>
+					<a name="writefilelines" class="tsd-anchor"></a>
+					<h3>write<wbr>File<wbr>Lines</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">wrapped<wbr>Error<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, originalError<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></li>
+						<li class="tsd-signature tsd-kind-icon">write<wbr>File<wbr>Lines<span class="tsd-signature-symbol">(</span>filename<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, lines<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/di/src/injection/facade/errors.ts#L36">packages/di/src/injection/facade/errors.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L131">src/utils.ts:131</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>message: <span class="tsd-signature-type">string</span></h5>
+									<h5>filename: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5>originalError: <span class="tsd-signature-type">any</span></h5>
+									<h5>lines: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/injectionerror.html#error" class="tsd-signature-type">Error</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-has-type-parameter">
+					<a name="writejsonfile" class="tsd-anchor"></a>
+					<h3>write<wbr>Json<wbr>File</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">write<wbr>Json<wbr>File&lt;T&gt;<span class="tsd-signature-symbol">(</span>filename<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L160">src/utils.ts:160</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>filename: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>content: <span class="tsd-signature-type">T</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="writetextfile" class="tsd-anchor"></a>
+					<h3>write<wbr>Text<wbr>File</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">write<wbr>Text<wbr>File<span class="tsd-signature-symbol">(</span>filename<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/cli/src/utils.ts#L166">src/utils.ts:166</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>filename: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>content: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1883,310 +735,139 @@ expect(<span class="hljs-function">() =&gt;</span> injector.getAt(<span class="h
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class">
-						<a href="classes/debugcontext.html" class="tsd-kind-icon">Debug<wbr>Context</a>
+						<a href="classes/backendbuilder.html" class="tsd-kind-icon">Backend<wbr>Builder</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/hostannotation.html" class="tsd-kind-icon">Host<wbr>Annotation</a>
+						<a href="classes/buildcommand.html" class="tsd-kind-icon">Build<wbr>Command</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/injectannotation.html" class="tsd-kind-icon">Inject<wbr>Annotation</a>
+						<a href="classes/builderror.html" class="tsd-kind-icon">Build<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/injectableannotation.html" class="tsd-kind-icon">Injectable<wbr>Annotation</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/injectiontoken.html" class="tsd-kind-icon">Injection<wbr>Token</a>
+						<a href="classes/builder.html" class="tsd-kind-icon">Builder</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/injector.html" class="tsd-kind-icon">Injector</a>
+						<a href="classes/clientbuilder.html" class="tsd-kind-icon">Client<wbr>Builder</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/moduleannotation.html" class="tsd-kind-icon">Module<wbr>Annotation</a>
+						<a href="classes/commandrunner.html" class="tsd-kind-icon">Command<wbr>Runner</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/opaquetoken.html" class="tsd-kind-icon">Opaque<wbr>Token</a>
+						<a href="classes/generator.html" class="tsd-kind-icon">Generator</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/optionalannotation.html" class="tsd-kind-icon">Optional<wbr>Annotation</a>
+						<a href="classes/generatorcanceled.html" class="tsd-kind-icon">Generator<wbr>Canceled</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/reflectioncapabilities.html" class="tsd-kind-icon">Reflection<wbr>Capabilities</a>
+						<a href="classes/generatorerror.html" class="tsd-kind-icon">Generator<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/reflectivedependency.html" class="tsd-kind-icon">Reflective<wbr>Dependency</a>
+						<a href="classes/librarygenerator.html" class="tsd-kind-icon">Library<wbr>Generator</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/reflectiveinjector.html" class="tsd-kind-icon">Reflective<wbr>Injector</a>
+						<a href="classes/lintcommand.html" class="tsd-kind-icon">Lint<wbr>Command</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/reflectiveinjector_.html" class="tsd-kind-icon">Reflective<wbr>Injector_</a>
+						<a href="classes/newcommand.html" class="tsd-kind-icon">New<wbr>Command</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/reflectivekey.html" class="tsd-kind-icon">Reflective<wbr>Key</a>
+						<a href="classes/packageconfiguration.html" class="tsd-kind-icon">Package<wbr>Configuration</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/reflector.html" class="tsd-kind-icon">Reflector</a>
+						<a href="classes/preparecommand.html" class="tsd-kind-icon">Prepare<wbr>Command</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/reflectorreader.html" class="tsd-kind-icon">Reflector<wbr>Reader</a>
+						<a href="classes/process.html" class="tsd-kind-icon">Process</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/resolvedreflectivefactory.html" class="tsd-kind-icon">Resolved<wbr>Reflective<wbr>Factory</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/resolvedreflectiveprovider_.html" class="tsd-kind-icon">Resolved<wbr>Reflective<wbr>Provider_</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/selfannotation.html" class="tsd-kind-icon">Self<wbr>Annotation</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/skipselfannotation.html" class="tsd-kind-icon">Skip<wbr>Self<wbr>Annotation</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/_nullinjector.html" class="tsd-kind-icon">_<wbr>Null<wbr>Injector</a>
+						<a href="classes/servicegenerator.html" class="tsd-kind-icon">Service<wbr>Generator</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/browsernodeglobal.html" class="tsd-kind-icon">Browser<wbr>Node<wbr>Global</a>
+						<a href="interfaces/buildconfig.html" class="tsd-kind-icon">Build<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/classprovider.html" class="tsd-kind-icon">Class<wbr>Provider</a>
+						<a href="interfaces/processexitedevent.html" class="tsd-kind-icon">Process<wbr>Exited<wbr>Event</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/configuredmodule.html" class="tsd-kind-icon">Configured<wbr>Module</a>
+						<a href="interfaces/processresult.html" class="tsd-kind-icon">Process<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/existingprovider.html" class="tsd-kind-icon">Existing<wbr>Provider</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/factoryprovider.html" class="tsd-kind-icon">Factory<wbr>Provider</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/forwardreffn.html" class="tsd-kind-icon">Forward<wbr>Ref<wbr>Fn</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/injectionerror.html" class="tsd-kind-icon">Injection<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/moduleoptions.html" class="tsd-kind-icon">Module<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/normalizedprovider.html" class="tsd-kind-icon">Normalized<wbr>Provider</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/platformreflectioncapabilities.html" class="tsd-kind-icon">Platform<wbr>Reflection<wbr>Capabilities</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/providerdependencies.html" class="tsd-kind-icon">Provider<wbr>Dependencies</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/resolvedreflectiveprovider.html" class="tsd-kind-icon">Resolved<wbr>Reflective<wbr>Provider</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-has-type-parameter">
-						<a href="interfaces/type.html" class="tsd-kind-icon">Type</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/typeprovider.html" class="tsd-kind-icon">Type<wbr>Provider</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/valueprovider.html" class="tsd-kind-icon">Value<wbr>Provider</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#getterfn" class="tsd-kind-icon">Getter<wbr>Fn</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#methodfn" class="tsd-kind-icon">Method<wbr>Fn</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#modulelike" class="tsd-kind-icon">Module<wbr>Like</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#provider" class="tsd-kind-icon">Provider</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#providerwithdependencies" class="tsd-kind-icon">Provider<wbr>With<wbr>Dependencies</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#setterfn" class="tsd-kind-icon">Setter<wbr>Fn</a>
+						<a href="interfaces/processstartinfo.html" class="tsd-kind-icon">Process<wbr>Start<wbr>Info</a>
 					</li>
 					<li class=" tsd-kind-variable">
-						<a href="globals.html#delegate_ctor" class="tsd-kind-icon">DELEGATE_<wbr>CTOR</a>
+						<a href="globals.html#pkg" class="tsd-kind-icon">PKG</a>
 					</li>
 					<li class=" tsd-kind-variable">
-						<a href="globals.html#error_component_type" class="tsd-kind-icon">ERROR_<wbr>COMPONENT_<wbr>TYPE</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#error_debug_context" class="tsd-kind-icon">ERROR_<wbr>DEBUG_<wbr>CONTEXT</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#error_logger" class="tsd-kind-icon">ERROR_<wbr>LOGGER</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#error_original_error" class="tsd-kind-icon">ERROR_<wbr>ORIGINAL_<wbr>ERROR</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#error_type" class="tsd-kind-icon">ERROR_<wbr>TYPE</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#host" class="tsd-kind-icon">Host</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#injector_key" class="tsd-kind-icon">INJECTOR_<wbr>KEY</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#inject" class="tsd-kind-icon">Inject</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#injectable" class="tsd-kind-icon">Injectable</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#module" class="tsd-kind-icon">Module</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#optional" class="tsd-kind-icon">Optional</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#self" class="tsd-kind-icon">Self</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#skipself" class="tsd-kind-icon">Skip<wbr>Self</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#throw_if_not_found" class="tsd-kind-icon">THROW_<wbr>IF_<wbr>NOT_<wbr>FOUND</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#type" class="tsd-kind-icon">Type</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#undefined" class="tsd-kind-icon">UNDEFINED</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#workerglobalscope" class="tsd-kind-icon">Worker<wbr>Global<wbr>Scope</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#_empty_list" class="tsd-kind-icon">_EMPTY_<wbr>LIST</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#_throw_if_not_found" class="tsd-kind-icon">_THROW_<wbr>IF_<wbr>NOT_<wbr>FOUND</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#_global" class="tsd-kind-icon">_global</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#_globalkeyregistry" class="tsd-kind-icon">_global<wbr>Key<wbr>Registry</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#global" class="tsd-kind-icon">global</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#globalscope" class="tsd-kind-icon">global<wbr>Scope</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#reflector" class="tsd-kind-icon">reflector</a>
+						<a href="globals.html#line" class="tsd-kind-icon">line</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#_createdependency" class="tsd-kind-icon">_create<wbr>Dependency</a>
+						<a href="globals.html#ask" class="tsd-kind-icon">ask</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#_dependenciesfor" class="tsd-kind-icon">_dependencies<wbr>For</a>
+						<a href="globals.html#askboolean" class="tsd-kind-icon">ask<wbr>Boolean</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#_extracttoken" class="tsd-kind-icon">_extract<wbr>Token</a>
+						<a href="globals.html#capitalize" class="tsd-kind-icon">capitalize</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#_mapproviders" class="tsd-kind-icon">_map<wbr>Providers</a>
+						<a href="globals.html#changeworkingdirectory" class="tsd-kind-icon">change<wbr>Working<wbr>Directory</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#_normalizeproviders" class="tsd-kind-icon">_normalize<wbr>Providers</a>
+						<a href="globals.html#fileexists" class="tsd-kind-icon">file<wbr>Exists</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#addkey" class="tsd-kind-icon">add<wbr>Key</a>
+						<a href="globals.html#getworkingdirectory" class="tsd-kind-icon">get<wbr>Working<wbr>Directory</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#configuremodule" class="tsd-kind-icon">configure<wbr>Module</a>
+						<a href="globals.html#isconstructor" class="tsd-kind-icon">is<wbr>Constructor</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#constructdependencies" class="tsd-kind-icon">construct<wbr>Dependencies</a>
+						<a href="globals.html#ispropertyprivate" class="tsd-kind-icon">is<wbr>Property<wbr>Private</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#constructresolvingpath" class="tsd-kind-icon">construct<wbr>Resolving<wbr>Path</a>
+						<a href="globals.html#linerangetagend" class="tsd-kind-icon">line<wbr>Range<wbr>Tag<wbr>End</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#converttsickledecoratorintometadata" class="tsd-kind-icon">convert<wbr>Tsickle<wbr>Decorator<wbr>Into<wbr>Metadata</a>
+						<a href="globals.html#linerangetagstart" class="tsd-kind-icon">line<wbr>Range<wbr>Tag<wbr>Start</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#cyclicdependencyerror" class="tsd-kind-icon">cyclic<wbr>Dependency<wbr>Error</a>
+						<a href="globals.html#makedirectory" class="tsd-kind-icon">make<wbr>Directory</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#defaulterrorlogger" class="tsd-kind-icon">default<wbr>Error<wbr>Logger</a>
+						<a href="globals.html#pathcombine" class="tsd-kind-icon">path<wbr>Combine</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#findfirstclosedcycle" class="tsd-kind-icon">find<wbr>First<wbr>Closed<wbr>Cycle</a>
+						<a href="globals.html#pathresolve" class="tsd-kind-icon">path<wbr>Resolve</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#forwardref" class="tsd-kind-icon">forward<wbr>Ref</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#getdebugcontext" class="tsd-kind-icon">get<wbr>Debug<wbr>Context</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#geterrorlogger" class="tsd-kind-icon">get<wbr>Error<wbr>Logger</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#getoriginalerror" class="tsd-kind-icon">get<wbr>Original<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#getparentctor" class="tsd-kind-icon">get<wbr>Parent<wbr>Ctor</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#gettype" class="tsd-kind-icon">get<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#injectionerror" class="tsd-kind-icon">injection<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#instantiationerror" class="tsd-kind-icon">instantiation<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#invalidprovidererror" class="tsd-kind-icon">invalid<wbr>Provider<wbr>Error</a>
+						<a href="globals.html#readfilelines" class="tsd-kind-icon">read<wbr>File<wbr>Lines</a>
 					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="globals.html#ispresent" class="tsd-kind-icon">is<wbr>Present</a>
+						<a href="globals.html#readjsonfile" class="tsd-kind-icon">read<wbr>Json<wbr>File</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#istype" class="tsd-kind-icon">is<wbr>Type</a>
+						<a href="globals.html#readtextfile" class="tsd-kind-icon">read<wbr>Text<wbr>File</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#mergeresolvedreflectiveproviders" class="tsd-kind-icon">merge<wbr>Resolved<wbr>Reflective<wbr>Providers</a>
+						<a href="globals.html#removeall" class="tsd-kind-icon">remove<wbr>All</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#mixingmultiproviderswithregularproviderserror" class="tsd-kind-icon">mixing<wbr>Multi<wbr>Providers<wbr>With<wbr>Regular<wbr>Providers<wbr>Error</a>
+						<a href="globals.html#removetaggedlinerange" class="tsd-kind-icon">remove<wbr>Tagged<wbr>Line<wbr>Range</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#noannotationerror" class="tsd-kind-icon">no<wbr>Annotation<wbr>Error</a>
+						<a href="globals.html#replacetaggedlinerange" class="tsd-kind-icon">replace<wbr>Tagged<wbr>Line<wbr>Range</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#noprovidererror" class="tsd-kind-icon">no<wbr>Provider<wbr>Error</a>
+						<a href="globals.html#unindent" class="tsd-kind-icon">unindent</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#outofboundserror" class="tsd-kind-icon">out<wbr>OfBounds<wbr>Error</a>
+						<a href="globals.html#writefilelines" class="tsd-kind-icon">write<wbr>File<wbr>Lines</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#writejsonfile" class="tsd-kind-icon">write<wbr>Json<wbr>File</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#resolveforwardref" class="tsd-kind-icon">resolve<wbr>Forward<wbr>Ref</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#resolvereflectivefactory" class="tsd-kind-icon">resolve<wbr>Reflective<wbr>Factory</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#resolvereflectiveprovider" class="tsd-kind-icon">resolve<wbr>Reflective<wbr>Provider</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#resolvereflectiveproviders" class="tsd-kind-icon">resolve<wbr>Reflective<wbr>Providers</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#stringify" class="tsd-kind-icon">stringify</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#wrappederror" class="tsd-kind-icon">wrapped<wbr>Error</a>
+						<a href="globals.html#writetextfile" class="tsd-kind-icon">write<wbr>Text<wbr>File</a>
 					</li>
 				</ul>
 			</nav>
@@ -2197,11 +878,6 @@ expect(<span class="hljs-function">() =&gt;</span> injector.getAt(<span class="h
 	<div class="container">
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
@@ -2217,7 +893,7 @@ expect(<span class="hljs-function">() =&gt;</span> injector.getAt(<span class="h
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
 			</ul>
 		</div>
 	</div>

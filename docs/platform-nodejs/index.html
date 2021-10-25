@@ -97,6 +97,7 @@ Application.bootstrap(MyModule);</code></pre>
 					source maps (this avoids seeing compiled JS files in stack traces, instead showing the original source file locations).</li>
 					<li>Loads <code>dotenv/config</code> as early as possible to ensure that
 					any <code>dotenv</code> files are properly accounted for within <code>process.env</code>.</li>
+					<li>Makes <code>fetch()</code> available globally (when not already provided). Does this with <code>globalThis.fetch = require(&#39;node-fetch&#39;)</code></li>
 				</ul>
 			</div>
 		</div>

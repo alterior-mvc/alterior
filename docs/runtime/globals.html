@@ -74,6 +74,7 @@
 								<li class="tsd-kind-class"><a href="classes/applicationoptionsref.html" class="tsd-kind-icon">Application<wbr>Options<wbr>Ref</a></li>
 								<li class="tsd-kind-class tsd-has-type-parameter"><a href="classes/constructormethod.html" class="tsd-kind-icon">Constructor<wbr>Method</a></li>
 								<li class="tsd-kind-class"><a href="classes/executioncontext.html" class="tsd-kind-icon">Execution<wbr>Context</a></li>
+								<li class="tsd-kind-class"><a href="classes/exposurereflector.html" class="tsd-kind-icon">Exposure<wbr>Reflector</a></li>
 								<li class="tsd-kind-class tsd-has-type-parameter"><a href="classes/field.html" class="tsd-kind-icon">Field</a></li>
 								<li class="tsd-kind-class tsd-has-type-parameter"><a href="classes/method.html" class="tsd-kind-icon">Method</a></li>
 								<li class="tsd-kind-class"><a href="classes/moduledefinition.html" class="tsd-kind-icon">Module<wbr>Definition</a></li>
@@ -83,6 +84,8 @@
 								<li class="tsd-kind-class"><a href="classes/reflector.html" class="tsd-kind-icon">Reflector</a></li>
 								<li class="tsd-kind-class"><a href="classes/rolesservice.html" class="tsd-kind-icon">Roles<wbr>Service</a></li>
 								<li class="tsd-kind-class"><a href="classes/runtime.html" class="tsd-kind-icon">Runtime</a></li>
+								<li class="tsd-kind-class"><a href="classes/serviceannotation.html" class="tsd-kind-icon">Service<wbr>Annotation</a></li>
+								<li class="tsd-kind-class"><a href="classes/servicecompiler.html" class="tsd-kind-icon">Service<wbr>Compiler</a></li>
 								<li class="tsd-kind-class tsd-has-type-parameter"><a href="classes/type.html" class="tsd-kind-icon">Type</a></li>
 							</ul>
 						</section>
@@ -91,12 +94,17 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-interface"><a href="interfaces/applicationoptions.html" class="tsd-kind-icon">Application<wbr>Options</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/constructor.html" class="tsd-kind-icon">Constructor</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/exposeoptions.html" class="tsd-kind-icon">Expose<wbr>Options</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/exposure.html" class="tsd-kind-icon">Exposure</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/methodshim.html" class="tsd-kind-icon">Method<wbr>Shim</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/methodshimparam.html" class="tsd-kind-icon">Method<wbr>Shim<wbr>Param</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/oninit.html" class="tsd-kind-icon">On<wbr>Init</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/onstart.html" class="tsd-kind-icon">On<wbr>Start</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/onstop.html" class="tsd-kind-icon">On<wbr>Stop</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/roleconfiguration.html" class="tsd-kind-icon">Role<wbr>Configuration</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/roleregistration.html" class="tsd-kind-icon">Role<wbr>Registration</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/rolestate.html" class="tsd-kind-icon">Role<wbr>State</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/serviceoptions.html" class="tsd-kind-icon">Service<wbr>Options</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -110,9 +118,16 @@
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-variable"><a href="globals.html#appoptions" class="tsd-kind-icon">App<wbr>Options</a></li>
+								<li class="tsd-kind-variable"><a href="globals.html#exposures_property" class="tsd-kind-icon">EXPOSURES_<wbr>PROPERTY</a></li>
 								<li class="tsd-kind-variable"><a href="globals.html#supported_role_modes" class="tsd-kind-icon">SUPPORTED_<wbr>ROLE_<wbr>MODES</a></li>
-								<li class="tsd-kind-variable"><a href="globals.html#getparameternames" class="tsd-kind-icon">get<wbr>Parameter<wbr>Names</a></li>
+								<li class="tsd-kind-variable"><a href="globals.html#service" class="tsd-kind-icon">Service</a></li>
 								<li class="tsd-kind-variable"><a href="globals.html#module" class="tsd-kind-icon">module</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function"><a href="globals.html#expose" class="tsd-kind-icon">Expose</a></li>
 							</ul>
 						</section>
 					</div>
@@ -126,7 +141,7 @@
 					<div class="tsd-signature tsd-kind-icon">Role<wbr>Configuration<wbr>Mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"all-except"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"only"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/runtime/src/roles.service.ts#L5">src/roles.service.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/runtime/src/roles.service.ts#L5">src/roles.service.ts:5</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -136,7 +151,7 @@
 					<div class="tsd-signature tsd-kind-icon">Visibility<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"private"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"public"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"protected"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/runtime/src/reflector.ts#L8">src/reflector.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/runtime/src/reflector.ts#L8">src/reflector.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -149,7 +164,7 @@
 					<div class="tsd-signature tsd-kind-icon">App<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><a href="interfaces/applicationoptions.html" class="tsd-signature-type">ApplicationOptions</a><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = AppOptionsAnnotation.decorator({validTargets: [&#x27;class&#x27;]})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/runtime/src/app-options.ts#L70">src/app-options.ts:70</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/runtime/src/app-options.ts#L70">src/app-options.ts:70</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -160,22 +175,32 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable">
+					<a name="exposures_property" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> EXPOSURES_<wbr>PROPERTY</h3>
+					<div class="tsd-signature tsd-kind-icon">EXPOSURES_<wbr>PROPERTY<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"alterior:service:exposures"</span><span class="tsd-signature-symbol"> = &quot;alterior:service:exposures&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/runtime/src/expose.ts#L11">src/expose.ts:11</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable">
 					<a name="supported_role_modes" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> SUPPORTED_<wbr>ROLE_<wbr>MODES</h3>
 					<div class="tsd-signature tsd-kind-icon">SUPPORTED_<wbr>ROLE_<wbr>MODES<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = [&#x27;all-except&#x27;,  &#x27;only&#x27; ]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/runtime/src/roles.service.ts#L4">src/roles.service.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/runtime/src/roles.service.ts#L4">src/roles.service.ts:4</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="getparameternames" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> get<wbr>Parameter<wbr>Names</h3>
-					<div class="tsd-signature tsd-kind-icon">get<wbr>Parameter<wbr>Names<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = require(&#x27;@avejidah/get-parameter-names&#x27;)</span></div>
+					<a name="service" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Service</h3>
+					<div class="tsd-signature tsd-kind-icon">Service<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AnnotationDecorator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><a href="interfaces/serviceoptions.html" class="tsd-signature-type">ServiceOptions</a><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ServiceAnnotation.decorator()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/runtime/src/reflector.ts#L2">src/reflector.ts:2</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/runtime/src/service.ts#L34">src/service.ts:34</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -185,9 +210,29 @@
 					<div class="tsd-signature tsd-kind-icon">module<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">never</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/runtime/src/application.ts#L11">src/application.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/runtime/src/application.ts#L11">src/application.ts:11</a></li>
 						</ul>
 					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="expose" class="tsd-anchor"></a>
+					<h3>Expose</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">Expose<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/runtime/src/expose.ts#L13">src/expose.ts:13</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -219,6 +264,9 @@
 					<li class=" tsd-kind-class">
 						<a href="classes/executioncontext.html" class="tsd-kind-icon">Execution<wbr>Context</a>
 					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/exposurereflector.html" class="tsd-kind-icon">Exposure<wbr>Reflector</a>
+					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="classes/field.html" class="tsd-kind-icon">Field</a>
 					</li>
@@ -246,6 +294,12 @@
 					<li class=" tsd-kind-class">
 						<a href="classes/runtime.html" class="tsd-kind-icon">Runtime</a>
 					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/serviceannotation.html" class="tsd-kind-icon">Service<wbr>Annotation</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/servicecompiler.html" class="tsd-kind-icon">Service<wbr>Compiler</a>
+					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="classes/type.html" class="tsd-kind-icon">Type</a>
 					</li>
@@ -254,6 +308,18 @@
 					</li>
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
 						<a href="interfaces/constructor.html" class="tsd-kind-icon">Constructor</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/exposeoptions.html" class="tsd-kind-icon">Expose<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/exposure.html" class="tsd-kind-icon">Exposure</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/methodshim.html" class="tsd-kind-icon">Method<wbr>Shim</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/methodshimparam.html" class="tsd-kind-icon">Method<wbr>Shim<wbr>Param</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/oninit.html" class="tsd-kind-icon">On<wbr>Init</a>
@@ -273,6 +339,9 @@
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/rolestate.html" class="tsd-kind-icon">Role<wbr>State</a>
 					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/serviceoptions.html" class="tsd-kind-icon">Service<wbr>Options</a>
+					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#roleconfigurationmode" class="tsd-kind-icon">Role<wbr>Configuration<wbr>Mode</a>
 					</li>
@@ -283,13 +352,19 @@
 						<a href="globals.html#appoptions" class="tsd-kind-icon">App<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-variable">
+						<a href="globals.html#exposures_property" class="tsd-kind-icon">EXPOSURES_<wbr>PROPERTY</a>
+					</li>
+					<li class=" tsd-kind-variable">
 						<a href="globals.html#supported_role_modes" class="tsd-kind-icon">SUPPORTED_<wbr>ROLE_<wbr>MODES</a>
 					</li>
 					<li class=" tsd-kind-variable">
-						<a href="globals.html#getparameternames" class="tsd-kind-icon">get<wbr>Parameter<wbr>Names</a>
+						<a href="globals.html#service" class="tsd-kind-icon">Service</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#module" class="tsd-kind-icon">module</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#expose" class="tsd-kind-icon">Expose</a>
 					</li>
 				</ul>
 			</nav>

@@ -211,15 +211,15 @@ Application.bootstrap(MyWebService);</code></pre>
 				<a href="#accessing-the-requestresponse" id="accessing-the-requestresponse" style="color: inherit; text-decoration: none;">
 					<h1>Accessing the Request/Response</h1>
 				</a>
-				<p>Sometimes you need to check or set an HTTP header, interact directly with middleware, or handle parsing the request body or serializing the response body yourself. Alterior lets you do that using the <code>RouteEvent</code> class. </p>
+				<p>Sometimes you need to check or set an HTTP header, interact directly with middleware, or handle parsing the request body or serializing the response body yourself. Alterior lets you do that using the <code>WebEvent</code> class. </p>
 				<pre><code class="language-typescript"><span class="hljs-meta">@Get</span>()
 <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-title">whoAmI</span>(<span class="hljs-params"></span>)</span> {
-    RouteEvent.response.status(<span class="hljs-number">200</span>).send(<span class="hljs-string">`hello <span class="hljs-subst">${RouteEvent.request.header(<span class="hljs-string">&#x27;user-agent&#x27;</span>)}</span>`</span>);
+    WebEvent.response.status(<span class="hljs-number">200</span>).send(<span class="hljs-string">`hello <span class="hljs-subst">${WebEvent.request.header(<span class="hljs-string">&#x27;user-agent&#x27;</span>)}</span>`</span>);
 }</code></pre>
 				<a href="#is-this-done-via-global-variables-wouldn39t-that-not-work-with-async-requests" id="is-this-done-via-global-variables-wouldn39t-that-not-work-with-async-requests" style="color: inherit; text-decoration: none;">
 					<h2>Is this done via global variables? Wouldn&#39;t that not work with async requests?</h2>
 				</a>
-				<p><code>RouteEvent</code> uses Zone-local variables to accomplish its task, so there is no risk that you will access the wrong request/response when using it unlike when global variables are used for this purpose. </p>
+				<p><code>WebEvent</code> uses Zone-local variables to accomplish its task, so there is no risk that you will access the wrong request/response when using it unlike when global variables are used for this purpose. </p>
 				<a href="#complex-responses" id="complex-responses" style="color: inherit; text-decoration: none;">
 					<h1>Complex Responses</h1>
 				</a>
@@ -249,7 +249,7 @@ Application.bootstrap(MyWebService);</code></pre>
 					<li>Parameters decorated with <code>@QueryParam(&#39;q&#39;)</code> will be fulfilled with the query
 					parameter <code>q</code> if provided (<code>?q=...</code>). If the query parameter was not provided in the request, the value of the parameter will be <code>undefined</code>.</li>
 					<li>Parameters which are decorated with <code>@Body()</code> will be fulfilled
-					with the value of <code>RouteEvent.request.body</code>. If the type of the method parameter is <code>string</code>, Alterior will automatically connect a text body parsing middleware (<code>bodyParser.text()</code>). If the type of the method parameter is <code>Buffer</code>, Alterior will automatically connect a raw body parsing middleware (<code>bodyParser.raw()</code>). For any other parameter type, Alterior adds a JSON body parsing middleware (<code>bodyParser.json()</code>). If you need other body parsing middleware, you can add it directly to the <code>middleware</code> property of the route decorator&#39;s <code>options</code> parameter and use <code>RouteEvent.request.body</code> directly instead.</li>
+					with the value of <code>WebEvent.request.body</code>. If the type of the method parameter is <code>string</code>, Alterior will automatically connect a text body parsing middleware (<code>bodyParser.text()</code>). If the type of the method parameter is <code>Buffer</code>, Alterior will automatically connect a raw body parsing middleware (<code>bodyParser.raw()</code>). For any other parameter type, Alterior adds a JSON body parsing middleware (<code>bodyParser.json()</code>). If you need other body parsing middleware, you can add it directly to the <code>middleware</code> property of the route decorator&#39;s <code>options</code> parameter and use <code>WebEvent.request.body</code> directly instead.</li>
 				</ul>
 				<blockquote>
 					<p>Note: If a path parameter is defined directly in the path passed to <code>@Get()</code>
@@ -317,15 +317,15 @@ Application.bootstrap(MyWebService);</code></pre>
 				<a href="#server-sent-events" id="server-sent-events" style="color: inherit; text-decoration: none;">
 					<h1>Server-Sent Events</h1>
 				</a>
-				<p>You can use <code>RouteEvent.sendEvent()</code> to send an event stream response back to the client. For more information about
+				<p>You can use <code>WebEvent.sendEvent()</code> to send an event stream response back to the client. For more information about
 				server-sent events, see <a href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events">https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events</a></p>
 				<p>The <code>data</code> field is serialized into JSON for you. Note that Server-Sent Events over HTTP/1.1 is not ideal as modern
 				browsers only allow a maximum of six (6) connections to a given server. However, <a href="#http2">with HTTP/2</a> this is not an issue.</p>
 				<pre><code class="language-typescript"><span class="hljs-meta">@Get</span>(<span class="hljs-string">&#x27;/sse&#x27;</span>)
 <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-title">sse</span>(<span class="hljs-params"></span>)</span> {
-    <span class="hljs-keyword">while</span> (RouteEvent.connected) {
+    <span class="hljs-keyword">while</span> (WebEvent.connected) {
         <span class="hljs-keyword">await</span> timeout(<span class="hljs-number">1000</span>);
-        <span class="hljs-keyword">await</span> RouteEvent.sendEvent({ <span class="hljs-attr">event</span>: <span class="hljs-string">&#x27;ping&#x27;</span>, <span class="hljs-attr">data</span>: { <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;are you still there?&#x27;</span> } });
+        <span class="hljs-keyword">await</span> WebEvent.sendEvent({ <span class="hljs-attr">event</span>: <span class="hljs-string">&#x27;ping&#x27;</span>, <span class="hljs-attr">data</span>: { <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;are you still there?&#x27;</span> } });
     }
 }</code></pre>
 				<a href="#dependency-injection" id="dependency-injection" style="color: inherit; text-decoration: none;">
@@ -557,7 +557,7 @@ suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt
 						<a href="classes/response.html" class="tsd-kind-icon">Response</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="classes/routeevent.html" class="tsd-kind-icon">Route<wbr>Event</a>
+						<a href="classes/restclienterror.html" class="tsd-kind-icon">Rest<wbr>Client<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/routeinstance.html" class="tsd-kind-icon">Route<wbr>Instance</a>
@@ -578,6 +578,12 @@ suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt
 						<a href="classes/session.html" class="tsd-kind-icon">Session</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="classes/webconduit.html" class="tsd-kind-icon">Web<wbr>Conduit</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/webevent.html" class="tsd-kind-icon">Web<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/webserver.html" class="tsd-kind-icon">Web<wbr>Server</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -591,6 +597,12 @@ suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/webserviceannotation.html" class="tsd-kind-icon">Web<wbr>Service<wbr>Annotation</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/webservicecompiler.html" class="tsd-kind-icon">Web<wbr>Service<wbr>Compiler</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/clientoptions.html" class="tsd-kind-icon">Client<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/controllercontext.html" class="tsd-kind-icon">Controller<wbr>Context</a>
@@ -662,6 +674,12 @@ suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt
 						<a href="interfaces/openapitag.html" class="tsd-kind-icon">Open<wbr>Api<wbr>Tag</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="interfaces/queryparamoptions.html" class="tsd-kind-icon">Query<wbr>Param<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/restclientconstructor.html" class="tsd-kind-icon">Rest<wbr>Client<wbr>Constructor</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/routedefinition.html" class="tsd-kind-icon">Route<wbr>Definition</a>
 					</li>
 					<li class=" tsd-kind-interface">
@@ -692,6 +710,9 @@ suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt
 						<a href="interfaces/webserveroptions.html" class="tsd-kind-icon">Web<wbr>Server<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="interfaces/webservicedecorator.html" class="tsd-kind-icon">Web<wbr>Service<wbr>Decorator</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/webserviceoptions.html" class="tsd-kind-icon">Web<wbr>Service<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
@@ -706,6 +727,9 @@ suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#protocol" class="tsd-kind-icon">Protocol</a>
 					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="globals.html#restclient" class="tsd-kind-icon">Rest<wbr>Client</a>
+					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#controller_classes" class="tsd-kind-icon">CONTROLLER_<wbr>CLASSES</a>
 					</li>
@@ -717,9 +741,6 @@ suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#webservice" class="tsd-kind-icon">Web<wbr>Service</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#getparameternames" class="tsd-kind-icon">get<wbr>Parameter<wbr>Names</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#body" class="tsd-kind-icon">Body</a>
@@ -785,6 +806,11 @@ suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
@@ -795,10 +821,7 @@ suite(<span class="hljs-function"><span class="hljs-params">describe</span> =&gt
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 		</div>

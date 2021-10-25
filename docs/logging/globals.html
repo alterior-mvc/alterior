@@ -91,13 +91,13 @@
 						<section class="tsd-index-section ">
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias"><a href="globals.html#logformat" class="tsd-kind-icon">Log<wbr>Format</a></li>
 								<li class="tsd-kind-type-alias"><a href="globals.html#logseverity" class="tsd-kind-icon">Log<wbr>Severity</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable"><a href="globals.html#default_format" class="tsd-kind-icon">DEFAULT_<wbr>FORMAT</a></li>
 								<li class="tsd-kind-variable"><a href="globals.html#default_listeners" class="tsd-kind-icon">DEFAULT_<wbr>LISTENERS</a></li>
 								<li class="tsd-kind-variable"><a href="globals.html#enabled" class="tsd-kind-icon">ENABLED</a></li>
 							</ul>
@@ -105,6 +105,7 @@
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-function"><a href="globals.html#default_format" class="tsd-kind-icon">DEFAULT_<wbr>FORMAT</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#reportexceptionstoconsole" class="tsd-kind-icon">Report<wbr>Exceptions<wbr>ToConsole</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#trace" class="tsd-kind-icon">Trace</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#arraytohash" class="tsd-kind-icon">array<wbr>ToHash</a></li>
@@ -145,12 +146,22 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Type aliases</h2>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
+					<a name="logformat" class="tsd-anchor"></a>
+					<h3>Log<wbr>Format</h3>
+					<div class="tsd-signature tsd-kind-icon">Log<wbr>Format<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><a href="interfaces/logevent.html" class="tsd-signature-type">LogEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/logger.ts#L186">src/logger.ts:186</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias">
 					<a name="logseverity" class="tsd-anchor"></a>
 					<h3>Log<wbr>Severity</h3>
 					<div class="tsd-signature tsd-kind-icon">Log<wbr>Severity<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"debug"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"info"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"warning"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"error"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"fatal"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/logger.ts#L4">src/logger.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/logger.ts#L4">src/logger.ts:4</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -158,22 +169,12 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Variables</h2>
 				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="default_format" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> DEFAULT_<wbr>FORMAT</h3>
-					<div class="tsd-signature tsd-kind-icon">DEFAULT_<wbr>FORMAT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"%date% [%contextSummary%] %severity%: %message%"</span><span class="tsd-signature-symbol"> = &quot;%date% [%contextSummary%] %severity%: %message%&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/logger.ts#L408">src/logger.ts:408</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable">
 					<a name="default_listeners" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> DEFAULT_<wbr>LISTENERS</h3>
 					<div class="tsd-signature tsd-kind-icon">DEFAULT_<wbr>LISTENERS<span class="tsd-signature-symbol">:</span> <a href="interfaces/loglistener.html" class="tsd-signature-type">LogListener</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = [ new ConsoleLogger(DEFAULT_FORMAT) ]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/logger.ts#L409">src/logger.ts:409</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/logger.ts#L423">src/logger.ts:423</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -183,13 +184,36 @@
 					<div class="tsd-signature tsd-kind-icon">ENABLED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/trace.ts#L9">src/trace.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/trace.ts#L9">src/trace.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="default_format" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> DEFAULT_<wbr>FORMAT</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">DEFAULT_<wbr>FORMAT<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><a href="interfaces/logevent.html" class="tsd-signature-type">LogEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/logger.ts#L416">src/logger.ts:416</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>event: <a href="interfaces/logevent.html" class="tsd-signature-type">LogEvent</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
 					<a name="reportexceptionstoconsole" class="tsd-anchor"></a>
 					<h3>Report<wbr>Exceptions<wbr>ToConsole</h3>
@@ -200,7 +224,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/trace.ts#L198">src/trace.ts:198</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/trace.ts#L198">src/trace.ts:198</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -243,7 +267,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/trace.ts#L69">src/trace.ts:69</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/trace.ts#L69">src/trace.ts:69</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -326,7 +350,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L127">src/inspect.ts:127</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L127">src/inspect.ts:127</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -351,7 +375,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L137">src/inspect.ts:137</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L137">src/inspect.ts:137</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -386,7 +410,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L156">src/inspect.ts:156</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L156">src/inspect.ts:156</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -409,7 +433,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L350">src/inspect.ts:350</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L350">src/inspect.ts:350</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -435,7 +459,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L276">src/inspect.ts:276</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L276">src/inspect.ts:276</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -473,7 +497,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L160">src/inspect.ts:160</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L160">src/inspect.ts:160</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -502,7 +526,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/trace.ts#L11">src/trace.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/trace.ts#L11">src/trace.ts:11</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -519,7 +543,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L102">src/inspect.ts:102</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L102">src/inspect.ts:102</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -545,7 +569,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L25">src/inspect.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L25">src/inspect.ts:25</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -588,7 +612,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L69">src/inspect.ts:69</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L69">src/inspect.ts:69</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -611,7 +635,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L119">src/inspect.ts:119</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L119">src/inspect.ts:119</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -634,7 +658,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L114">src/inspect.ts:114</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L114">src/inspect.ts:114</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -657,7 +681,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L86">src/inspect.ts:86</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L86">src/inspect.ts:86</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -680,7 +704,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L98">src/inspect.ts:98</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L98">src/inspect.ts:98</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -703,7 +727,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L94">src/inspect.ts:94</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L94">src/inspect.ts:94</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -726,7 +750,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L110">src/inspect.ts:110</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L110">src/inspect.ts:110</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -749,7 +773,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L106">src/inspect.ts:106</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L106">src/inspect.ts:106</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -772,7 +796,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L90">src/inspect.ts:90</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L90">src/inspect.ts:90</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -795,7 +819,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L73">src/inspect.ts:73</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L73">src/inspect.ts:73</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -818,7 +842,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L123">src/inspect.ts:123</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L123">src/inspect.ts:123</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -841,7 +865,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L368">src/inspect.ts:368</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L368">src/inspect.ts:368</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -870,7 +894,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/trace.ts#L15">src/trace.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/trace.ts#L15">src/trace.ts:15</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -893,7 +917,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L65">src/inspect.ts:65</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L65">src/inspect.ts:65</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -924,7 +948,7 @@ Error: Uh oh
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L81">src/inspect.ts:81</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L81">src/inspect.ts:81</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -955,7 +979,7 @@ Error: Uh oh
 					<div class="tsd-signature tsd-kind-icon">CONSOLE_<wbr>COLOR_<wbr>STYLES<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L50">src/inspect.ts:50</a></li>
+							<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L50">src/inspect.ts:50</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -964,7 +988,7 @@ Error: Uh oh
 						<div class="tsd-signature tsd-kind-icon">boolean<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;yellow&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L53">src/inspect.ts:53</a></li>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L53">src/inspect.ts:53</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -974,7 +998,7 @@ Error: Uh oh
 						<div class="tsd-signature tsd-kind-icon">date<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;magenta&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L57">src/inspect.ts:57</a></li>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L57">src/inspect.ts:57</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -984,7 +1008,7 @@ Error: Uh oh
 						<div class="tsd-signature tsd-kind-icon">null<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;bold&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L55">src/inspect.ts:55</a></li>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L55">src/inspect.ts:55</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -994,7 +1018,7 @@ Error: Uh oh
 						<div class="tsd-signature tsd-kind-icon">number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;yellow&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L52">src/inspect.ts:52</a></li>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L52">src/inspect.ts:52</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -1004,7 +1028,7 @@ Error: Uh oh
 						<div class="tsd-signature tsd-kind-icon">regexp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;red&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L59">src/inspect.ts:59</a></li>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L59">src/inspect.ts:59</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -1014,7 +1038,7 @@ Error: Uh oh
 						<div class="tsd-signature tsd-kind-icon">special<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;cyan&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L51">src/inspect.ts:51</a></li>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L51">src/inspect.ts:51</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -1024,7 +1048,7 @@ Error: Uh oh
 						<div class="tsd-signature tsd-kind-icon">string<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;green&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L56">src/inspect.ts:56</a></li>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L56">src/inspect.ts:56</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -1034,7 +1058,7 @@ Error: Uh oh
 						<div class="tsd-signature tsd-kind-icon">undefined<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;grey&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/a4cd975/packages/logging/src/inspect.ts#L54">src/inspect.ts:54</a></li>
+								<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/cb13158/packages/logging/src/inspect.ts#L54">src/inspect.ts:54</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -1091,16 +1115,19 @@ Error: Uh oh
 						<a href="interfaces/loggingoptions.html" class="tsd-kind-icon">Logging<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#logseverity" class="tsd-kind-icon">Log<wbr>Severity</a>
+						<a href="globals.html#logformat" class="tsd-kind-icon">Log<wbr>Format</a>
 					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#default_format" class="tsd-kind-icon">DEFAULT_<wbr>FORMAT</a>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#logseverity" class="tsd-kind-icon">Log<wbr>Severity</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#default_listeners" class="tsd-kind-icon">DEFAULT_<wbr>LISTENERS</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#enabled" class="tsd-kind-icon">ENABLED</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#default_format" class="tsd-kind-icon">DEFAULT_<wbr>FORMAT</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#reportexceptionstoconsole" class="tsd-kind-icon">Report<wbr>Exceptions<wbr>ToConsole</a>
