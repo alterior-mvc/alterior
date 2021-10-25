@@ -7,7 +7,11 @@ import { Logger, LoggingOptions, LoggingOptionsRef } from "./logger";
     ]
 })
 export class LoggingModule {
-    static configure(options : LoggingOptions) {
+    static configure(options : LoggingOptions = {}) {
+        return LoggingModule.forRoot(options);
+    }
+
+    static forRoot(options : LoggingOptions = {}) {
         return { 
             $module: LoggingModule, 
             providers: [
