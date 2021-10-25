@@ -40,6 +40,7 @@ export class RouteReflector {
 					+ `Make sure there are no circular dependencies. If the controller type is declared in ` 
 					+ `the same file where @Mount() is make sure the controller is defined first.`
 				);
+			}
 		});
 	}
 
