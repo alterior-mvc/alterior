@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@angular/core": "^9.1.9",
-    "razmin": "^1.0.4",
+    "razmin": "^1.1.6",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.5",
     "tslib": "^2.3.1",
