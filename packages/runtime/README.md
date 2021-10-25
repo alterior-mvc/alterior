@@ -82,4 +82,7 @@ You can programmatically trigger custom lifecycle events by calling `Runtime.fir
 
 `eventName` should be an UpperCamelCase string. The method executed on modules will be `alt${eventName}`, so if you specify `DoSomething`, then the method `altDoSomething()` will be executed on each module which implements it.
 
-## 
+## Self Test
+
+Passing `--self-test` to your application will cause Alterior to stop after the application is bootstrapped and perform a successful exit.
+This can be used as a sanity check to make sure that your service starts correctly while building.
