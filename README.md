@@ -7,7 +7,7 @@ A framework for building well-structured applications and isomorphic libraries i
 # Status
 
 > **Note:**  
-> Alterior is in **`beta`**, though it is approaching a final release soon.
+> Alterior is in **`release candidate`** for version 3.0.
 
 # Overview
 
