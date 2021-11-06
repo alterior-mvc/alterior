@@ -1,4 +1,7 @@
 
+/**
+ * @hidden
+ */
 const BASE64_KEY = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
 /**
