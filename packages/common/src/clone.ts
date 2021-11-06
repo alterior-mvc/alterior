@@ -13,6 +13,8 @@ export function clone<T = any>(obj : T): T {
 }
 
 export function deepClone(o) {
+	if (o === null)
+		return null;
 	if (!Array.isArray(o) && typeof o !== 'object')
 		return o;
 	

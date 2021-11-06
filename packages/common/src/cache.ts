@@ -104,6 +104,15 @@ export class Cache<T> {
 
     private outstandingFetches = new Map<string, Promise<any>>();
 
+    public get(key : string) {
+        let entry = this.entries[key];
+        return entry ? deepClone(entry.value) : undefined;
+    }
+
+    public getEntry(key : string) {
+        return this.entries[key];
+    }
+
     public async fetch(key : string, fetcher? : CacheFetcher<T>, options : FetchOptions = {}): Promise<T> {
         let existingFetch = this.outstandingFetches.get(key);
         if (existingFetch)
@@ -129,7 +138,9 @@ export class Cache<T> {
                 let value : T;
                 try {
                     value = await fetcher();
-                    this.insertItem(key, value, options.timeToLive);
+
+                    if (value !== undefined)
+                        this.insertItem(key, value, options.timeToLive);
                     resolve(value);
                 } catch (e) {
                     console.error(`Failed to fetch item ${key}:`);
