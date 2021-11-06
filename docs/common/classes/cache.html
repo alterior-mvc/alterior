@@ -101,6 +101,8 @@
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="cache.html#fetch" class="tsd-kind-icon">fetch</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="cache.html#get" class="tsd-kind-icon">get</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="cache.html#getentry" class="tsd-kind-icon">get<wbr>Entry</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="cache.html#getoldestentry" class="tsd-kind-icon">get<wbr>Oldest<wbr>Entry</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="cache.html#insertitem" class="tsd-kind-icon">insert<wbr>Item</a></li>
 							</ul>
@@ -120,7 +122,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/210d18f/packages/common/src/cache.ts#L39">packages/common/src/cache.ts:39</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/017e993/packages/common/src/cache.ts#L39">packages/common/src/cache.ts:39</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -161,22 +163,106 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/210d18f/packages/common/src/cache.ts#L107">packages/common/src/cache.ts:107</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/017e993/packages/common/src/cache.ts#L150">packages/common/src/cache.ts:150</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Fetch a value from the cache, calling the given function to
+										generate the value if it is not present or it is expired.
+									The result of the function is then cached for future calls.</p>
+								</div>
+								<p>Use <code>options.missStrategy</code> to control the revalidation behavior. The default value (&quot;fulfill&quot;) will
+									wait until the fetch operation completes to return a value in the case where a cache miss occurs,
+									even if an expired cache value is present. The &quot;stale-revalidate&quot; option will instead return the
+									value found in the cache even when expired, executing the fetch operation if the value is expired
+								and saving the resulting value back into the cache for future calls.</p>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>key: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The key to fetch</p>
+									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> fetcher: <a href="../interfaces/cachefetcher.html" class="tsd-signature-type">CacheFetcher</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>A function to define the value of the key if a cache miss occurs</p>
+									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <a href="../interfaces/fetchoptions.html" class="tsd-signature-type">FetchOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Options for doing the caching.</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="lazypromise.html#promise" class="tsd-signature-type">Promise</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="get" class="tsd-anchor"></a>
+					<h3>get</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/017e993/packages/common/src/cache.ts#L122">packages/common/src/cache.ts:122</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the value present in the cache for the given key regardless
+									of the cache entry&#39;s expiration status.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>key: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The key to get</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getentry" class="tsd-anchor"></a>
+					<h3>get<wbr>Entry</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Entry<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/cacheentry.html" class="tsd-signature-type">CacheEntry</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/017e993/packages/common/src/cache.ts#L131">packages/common/src/cache.ts:131</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the cache entry for the given key.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>key: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The key to get</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/cacheentry.html" class="tsd-signature-type">CacheEntry</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -190,7 +276,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/210d18f/packages/common/src/cache.ts#L76">packages/common/src/cache.ts:76</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/017e993/packages/common/src/cache.ts#L76">packages/common/src/cache.ts:76</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/cacheentry.html" class="tsd-signature-type">CacheEntry</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -207,19 +293,35 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/210d18f/packages/common/src/cache.ts#L88">packages/common/src/cache.ts:88</a></li>
+									<li>Defined in <a href="https://github.com/alterior-mvc/alterior/blob/017e993/packages/common/src/cache.ts#L97">packages/common/src/cache.ts:97</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Insert the specified item into the cache under the given key,
+										optionally specifying a custom time-to-live. If no time-to-live
+									is specified, the class-wide default is used.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>key: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The key for the cache entry</p>
+									</div>
 								</li>
 								<li>
 									<h5>value: <span class="tsd-signature-type">T</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The value to cache</p>
+									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> timeToLive: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>How long the value should remain valid for before revalidation</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -248,6 +350,12 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="cache.html#fetch" class="tsd-kind-icon">fetch</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="cache.html#get" class="tsd-kind-icon">get</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="cache.html#getentry" class="tsd-kind-icon">get<wbr>Entry</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="cache.html#getoldestentry" class="tsd-kind-icon">get<wbr>Oldest<wbr>Entry</a>
