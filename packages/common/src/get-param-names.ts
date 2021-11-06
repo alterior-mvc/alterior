@@ -1,10 +1,28 @@
 // Originally from https://github.com/goatslacker/get-parameter-names
 
+/**
+ * @hidden
+ */
 let COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+/**
+ * @hidden
+ */
 let DEFAULT_PARAMS = /=[^,)]+/mg;
+/**
+ * @hidden
+ */
 let FAT_ARROWS = /=>.*$/mg;
+/**
+ * @hidden
+ */
 let SPACES = /\s/mg;
+/**
+ * @hidden
+ */
 let BEFORE_OPENING_PAREN = /^[^(]*\(/mg;
+  /**
+   * @hidden
+   */
 let AFTER_CLOSING_PAREN = /^([^)]*)\).*$/mg;
 
 /**
