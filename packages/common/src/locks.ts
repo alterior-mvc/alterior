@@ -1,5 +1,9 @@
 import { AsyncZone } from "./zones";
 
+/**
+ * Provides a mechanism for ensuring that multiple function calls do not overlap, even if they are asynchronous.
+ * NOTE: This does not include macrotasks (ie setTimeout/setInterval/etc). If you require that, see ZoneLock.
+ */
 export class Lock {
     constructor() {
     }
@@ -62,6 +66,11 @@ export class Lock {
     }
 }
 
+/**
+ * Provides a mechanism for ensuring that multiple function calls do not overlap, even if they are asynchronous
+ * or they spin off macrotasks (ie setTimeout/setInterval/etc). Zone.js is used to accomplish this. For a lighter
+ * lock that does not track macrotasks see Lock.
+ */
 export class ZoneLock extends Lock {
     constructor() {
         super();

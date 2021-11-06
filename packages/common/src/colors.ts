@@ -70,4 +70,7 @@ function objectLibrary<T>(codes : T): ColorLibrary<T> {
     return library;
 }
 
+/**
+ * Provides methods for colorizing strings
+ */
 export const ConsoleColors = objectLibrary(CONSOLE_COLORS);

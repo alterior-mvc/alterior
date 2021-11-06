@@ -3,7 +3,11 @@ import { CommandLineOption } from "./command-line-option";
 import { CommandLine } from "./command-line";
 import { CommandInfo } from "./command-info";
 
-
+/**
+ * Provides core command line processing functionality.
+ * Can represent both the top level command line as 
+ * well as nested (ie subcommand) command lines.
+ */
 export class CommandLineProcessor {
     constructor(readonly parent? : CommandLineProcessor) {
         this.option({
@@ -16,7 +20,7 @@ export class CommandLineProcessor {
 
     protected term = new Terminal();
 
-    handleHelp() {
+    private handleHelp() {
         this.showHelp();
         this.exit(0);
     }
@@ -82,6 +86,9 @@ export class CommandLineProcessor {
         this.term.writeLine();
     }
 
+    /**
+     * Show the help screen for this command. You can override this to customize the output.
+     */
     showHelp() {
         this.showUsage();
         this.term.table(
@@ -105,26 +112,45 @@ export class CommandLineProcessor {
     private _processed = false;
     private _commands : Command[] = [];
 
-    prepareOnDemand() {
+    private prepareOnDemand() {
         if (!this._processed)
             this.process(process.argv.slice(2));
     }
 
+    /**
+     * Get the options that are defined for this command line processor,
+     * including those defined by the parent command line processor, if any.
+     */
     get definedOptions(): CommandLineOption[] {
         this.prepareOnDemand();
         return (this.parent?.definedOptions || []).filter(x => !this._options.some(y => y.id === x.id)).concat(this._options);
     }
 
+    /**
+     * Get the options that are present given the processed command line.
+     */
     get options() {
         return this._options.filter(x => x.present);
     }
 
+    /**
+     * Get the arguments that are present given the processed command line.
+     */
     get arguments() {
         this.prepareOnDemand();
         return this._arguments.slice();
     }
 
+    /**
+     * Get an option by its ID
+     * @param id ID of the option to return
+     */
     option(id : string) : CommandLineOption
+
+    /**
+     * Define an option.
+     * @param option The option to define
+     */
     option(option : CommandLineOption) : CommandLine
     option(...args : any[]) : any {
         if (args.length === 1 && typeof args[0] === 'string') {
@@ -142,6 +168,12 @@ export class CommandLineProcessor {
         }
     }
 
+    /**
+     * Define a subcommand.
+     * 
+     * @param id The ID for the subcommand
+     * @param definer A function that defines the available command line options and commands for the subcommand.
+     */
     command(id : string, definer : (line : Command) => void) {
         let command = new Command(id, this);
         definer(command);
@@ -150,16 +182,28 @@ export class CommandLineProcessor {
         return this;
     }
 
+    /**
+     * Get the first value of an option
+     * @param id 
+     */
     one(id : string) : string {
         this.prepareOnDemand();
         return this.option(id).value;
     }
 
+    /**
+     * Get all values defined by multiple usages of a single option
+     * @param id 
+     */
     multiple(id : string) : string[] {
         this.prepareOnDemand();
         return this.option(id).values;
     }
 
+    /**
+     * Get a boolean value for a specific option (ie a "flag")
+     * @param id 
+     */
     flag(id : string) : boolean {
         this.prepareOnDemand();
         let value = this.option(id).value;
@@ -170,17 +214,31 @@ export class CommandLineProcessor {
         return !!value;
     }
 
+    /**
+     * Get the description of this command line processor.
+     */
     get description() {
         return '';
     }
 
     private _runners : ((args : string[]) => void)[] = [];
 
+    /**
+     * Define a function that should be run when this instance processes a command line.
+     * The function will be passed the set of (non-option) arguments parsed from the overall args.
+     * Multiple functions can be defined to run per instance.
+     * 
+     * @param handler The function to call.
+     */
     run(handler : (args : string[]) => void) {
         this._runners.push(handler);
         return this;
     }
 
+    /**
+     * Process the given command line arguments and run any attached runners (see run()).
+     * @param args 
+     */
     process(args? : string[]) {
         if (!args)
             args = process.argv.slice(2);
@@ -257,6 +315,9 @@ export class CommandLineProcessor {
     }
 }
 
+/**
+ * Represents a Command defined via the command() method.
+ */
 export class Command extends CommandLineProcessor {
     constructor(readonly id : string, readonly parent : CommandLineProcessor) {
         super(parent);

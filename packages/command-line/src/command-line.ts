@@ -2,6 +2,11 @@ import { CommandLineProcessor } from "./command-line-processor";
 import { ProgramInfo } from "./program-info";
 import * as path from "path";
 
+/**
+ * Process the command line providing an application-like CLI experience 
+ * including showing version information (providied via the info() fluent method)
+ * and defining `--version` option for showing the application's version.
+ */
 export class CommandLine extends CommandLineProcessor {
     constructor() {
         super();

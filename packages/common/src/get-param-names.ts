@@ -7,7 +7,11 @@ let SPACES = /\s/mg;
 let BEFORE_OPENING_PAREN = /^[^(]*\(/mg;
 let AFTER_CLOSING_PAREN = /^([^)]*)\).*$/mg;
 
-export function getParameterNames(fn) {
+/**
+ * Get the names of the parameters of the given function.
+ * @param fn 
+ */
+export function getParameterNames(fn): string[] {
   let code = fn.toString()
     .replace(SPACES, '')
     .replace(COMMENTS, '')

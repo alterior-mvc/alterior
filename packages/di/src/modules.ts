@@ -50,4 +50,7 @@ export class ModuleAnnotation extends Annotation implements ModuleOptions {
     providers: Provider[];
 }
 
+/**
+ * Annotation that denotes an Alterior module class.
+ */
 export const Module = ModuleAnnotation.decorator();

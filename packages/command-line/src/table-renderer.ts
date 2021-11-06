@@ -1,5 +1,8 @@
 import { Terminal } from "./terminal";
 
+/**
+ * Renders data into a table format on the command line.
+ */
 export class TableRenderer {
     constructor(private _terminal : Terminal) {
 

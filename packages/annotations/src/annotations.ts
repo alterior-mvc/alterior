@@ -475,6 +475,13 @@ export class Annotation implements IAnnotation {
         return Annotations.applyToConstructorParameter(this, target, index);
     }
 
+    /**
+     * Filter the given list of annotations for the ones which match this annotation class
+     * based on matching $metadataName.
+     * 
+     * @param this 
+     * @param annotations 
+     */
     public static filter<T extends Annotation, TS extends any[]>(
         this : AnnotationConstructor<T, TS>,
         annotations : IAnnotation[]
@@ -484,6 +491,13 @@ export class Annotation implements IAnnotation {
         ) as T[];
     }
 
+    /**
+     * Get all instances of this annotation class attached to the given class.
+     * If called on a subclass of Annotation, it returns only annotations that match 
+     * that subclass.
+     * @param this 
+     * @param type The class to check
+     */
     public static getAllForClass<T extends Annotation, TS extends any[]>(
         this : AnnotationConstructor<T, TS>, 
         type : any
@@ -493,6 +507,14 @@ export class Annotation implements IAnnotation {
         ;
     }
 
+    /**
+     * Get a single instance of this annotation class attached to the given class.
+     * If called on a subclass of Annotation, it returns only annotations that match 
+     * that subclass.
+     * 
+     * @param this 
+     * @param type 
+     */
     public static getForClass<T extends Annotation, TS extends any[]>(
         this : AnnotationConstructor<T, TS>, 
         type : any
@@ -500,6 +522,15 @@ export class Annotation implements IAnnotation {
         return (this as any).getAllForClass(type)[0];
     }
 
+    /**
+     * Get all instances of this annotation class attached to the given method.
+     * If called on a subclass of Annotation, it returns only annotations that match 
+     * that subclass.
+     * 
+     * @param this 
+     * @param type The class where the method is defined
+     * @param methodName The name of the method to check
+     */
     public static getAllForMethod<T extends Annotation, TS extends any[]>(
         this : AnnotationConstructor<T, TS>, 
         type : any, 
@@ -510,6 +541,15 @@ export class Annotation implements IAnnotation {
         ;
     }
 
+    /**
+     * Get one instance of this annotation class attached to the given method.
+     * If called on a subclass of Annotation, it returns only annotations that match 
+     * that subclass.
+     * 
+     * @param this 
+     * @param type The class where the method is defined
+     * @param methodName The name of the method to check
+     */
     public static getForMethod<T extends Annotation, TS extends any[]>(
         this : AnnotationConstructor<T, TS>, 
         type : any,
@@ -518,6 +558,15 @@ export class Annotation implements IAnnotation {
         return (this as any).getAllForMethod(type, methodName)[0];
     }
     
+    /**
+     * Get all instances of this annotation class attached to the given property.
+     * If called on a subclass of Annotation, it returns only annotations that match 
+     * that subclass.
+     * 
+     * @param this 
+     * @param type The class where the property is defined
+     * @param propertyName The name of the property to check
+     */
     public static getAllForProperty<T extends Annotation, TS extends any[]>(
         this : AnnotationConstructor<T, TS>, 
         type : any, 
@@ -528,6 +577,15 @@ export class Annotation implements IAnnotation {
         ;
     }
 
+    /**
+     * Get one instance of this annotation class attached to the given property.
+     * If called on a subclass of Annotation, it returns only annotations that match 
+     * that subclass.
+     * 
+     * @param this 
+     * @param type The class where the property is defined
+     * @param propertyName The name of the property to check
+     */
     public static getForProperty<T extends Annotation, TS extends any[]>(
         this : AnnotationConstructor<T, TS>, 
         type : any,
@@ -536,6 +594,15 @@ export class Annotation implements IAnnotation {
         return (this as any).getAllForProperty(type, propertyName)[0];
     }
     
+    /**
+     * Get all instances of this annotation class attached to the parameters of the given method.
+     * If called on a subclass of Annotation, it returns only annotations that match 
+     * that subclass.
+     * 
+     * @param this 
+     * @param type The class where the method is defined
+     * @param methodName The name of the method where parameter annotations should be checked for
+     */
     public static getAllForParameters<T extends Annotation, TS extends any[]>(
         this : AnnotationConstructor<T, TS>, 
         type : any, 
@@ -546,6 +613,15 @@ export class Annotation implements IAnnotation {
         ;
     }
 
+    /**
+     * Get all instances of this annotation class attached to the parameters of the constructor
+     * for the given class.
+     * If called on a subclass of Annotation, it returns only annotations that match 
+     * that subclass.
+     * 
+     * @param this 
+     * @param type The class where constructor parameter annotations should be checked for
+     */
     public static getAllForConstructorParameters<T extends Annotation, TS extends any[]>(
         this : AnnotationConstructor<T, TS>, 
         type : any
@@ -563,12 +639,16 @@ export class Annotation implements IAnnotation {
     }
 }
 
-export interface ObjectMap<T> {
-    [key : string]: T;
-}
-
+/**
+ * A helper class for managing annotations
+ */
 export class Annotations {
 
+    /**
+     * Copy the annotations defined for one class onto another.
+     * @param from The class to copy annotations from
+     * @param to The class to copy annotations to
+     */
     public static copyClassAnnotations(from : Function, to : Function) {
         let annotations = Annotations.getClassAnnotations(from);
         annotations.forEach(x => Annotations.applyToClass(x, to));
@@ -754,6 +834,10 @@ export class Annotations {
             .map(set => set ? set.map(anno => this.clone(anno)) : []);
     }
 
+    /**
+     * Get a list of annotations for the given class.
+     * @param target 
+     */
     private static getListForClass(target : Object): IAnnotation[] {
         if (!target)
             return [];
@@ -771,6 +855,10 @@ export class Annotations {
         return combinedSet;
     }
 
+    /**
+     * Get a list of own annotations for the given class, or create that list.
+     * @param target 
+     */
     private static getOrCreateListForClass(target : Object): IAnnotation[] {
         if (!target.hasOwnProperty(ANNOTATIONS_KEY))
             Object.defineProperty(target, ANNOTATIONS_KEY, { enumerable: false, value: [] });
@@ -781,7 +869,7 @@ export class Annotations {
      * Gets a map of the annotations defined on all properties of the given class/function. To get the annotations of instance fields,
      * make sure to use `Class.prototype`, otherwise static annotations are returned.
      */
-    public static getMapForClassProperties(target : Object, mapToPopulate? : ObjectMap<IAnnotation[]>): ObjectMap<IAnnotation[]> {
+    public static getMapForClassProperties(target : Object, mapToPopulate? : Record<string,IAnnotation[]>): Record<string,IAnnotation[]> {
         let combinedSet = mapToPopulate || {};
         if (!target || target === Function)
             return combinedSet;
@@ -789,7 +877,7 @@ export class Annotations {
         this.getMapForClassProperties(Object.getPrototypeOf(target), combinedSet);
 
         if (target.hasOwnProperty(PROPERTY_ANNOTATIONS_KEY)) {
-            let ownMap : ObjectMap<IAnnotation[]> = target[PROPERTY_ANNOTATIONS_KEY] || {};
+            let ownMap : Record<string,IAnnotation[]> = target[PROPERTY_ANNOTATIONS_KEY] || {};
             for (let key of Object.keys(ownMap))
                 combinedSet[key] = (combinedSet[key] || []).concat(ownMap[key]);
         }
@@ -797,7 +885,7 @@ export class Annotations {
         return combinedSet;
     }
 
-    private static getOrCreateMapForClassProperties(target : Object): ObjectMap<IAnnotation[]> {
+    private static getOrCreateMapForClassProperties(target : Object): Record<string,IAnnotation[]> {
         if (!target.hasOwnProperty(PROPERTY_ANNOTATIONS_KEY))
             Object.defineProperty(target, PROPERTY_ANNOTATIONS_KEY, { enumerable: false, value: [] });
         return target[PROPERTY_ANNOTATIONS_KEY];
@@ -832,7 +920,7 @@ export class Annotations {
      * Get a map of the annotations defined on all parameters of all methods of the given class/function.
      * To get instance methods, make sure to pass `Class.prototype`, otherwise the results are for static fields.
      */
-    public static getMapForMethodParameters(target : Object, mapToPopulate? : ObjectMap<IAnnotation[][]>): ObjectMap<IAnnotation[][]> {
+    public static getMapForMethodParameters(target : Object, mapToPopulate? : Record<string,IAnnotation[][]>): Record<string,IAnnotation[][]> {
         let combinedMap = mapToPopulate || {};
 
         if (!target || target === Function)
@@ -842,7 +930,7 @@ export class Annotations {
         this.getMapForMethodParameters(Object.getPrototypeOf(target), combinedMap);
         
         if (target.hasOwnProperty(METHOD_PARAMETER_ANNOTATIONS_KEY)) {
-            let ownMap : ObjectMap<IAnnotation[][]> = target[METHOD_PARAMETER_ANNOTATIONS_KEY] || {};
+            let ownMap : Record<string,IAnnotation[][]> = target[METHOD_PARAMETER_ANNOTATIONS_KEY] || {};
 
             for (let methodName of Object.keys(ownMap)) {
                 let parameters = ownMap[methodName];
@@ -894,31 +982,9 @@ export class Annotations {
 }
 
 /**
- * Query annotations for a given target type including only Angular ones
+ * An annotation for attaching a label to a programmatic element. 
+ * Can be queried with LabelAnnotation.getForClass() for example.
  */
-export class AngularAnnotations {
-    static getClassAnnotations(target : any) : IAnnotation[] {
-        return Annotations.getClassAnnotations(target).filter(x => x['ngMetadataName']);
-    }
-    
-    static getMethodAnnotations(target : any, methodName : string) : IAnnotation[] {
-        return Annotations.getMethodAnnotations(target, methodName).filter(x => x['ngMetadataName']);
-    }
-
-    static getPropertyAnnotations(target : any, name : string) : IAnnotation[] {
-        return Annotations.getPropertyAnnotations(target, name).filter(x => x['ngMetadataName']);
-    }
-    
-    static getParameterAnnotations(target : any, methodName : string) : IAnnotation[][] {
-        return Annotations.getParameterAnnotations(target, methodName)
-            .map(paramList => (paramList || []).filter(x => x['ngMetadataName']));
-    }
-}
-
-export function NgMetadataName(name : string) {
-    return target => Object.defineProperty(target, 'ngMetadataName', { value: name });
-}
-
 @MetadataName('alterior:Label')
 export class LabelAnnotation extends Annotation {
     constructor(readonly text : string) {

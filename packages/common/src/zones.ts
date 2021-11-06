@@ -9,6 +9,11 @@
 
 import { Observable, Subject } from 'rxjs';
 
+/**
+ * Provides a zone that checks for zone stability and emits events when the zone's stability
+ * changes. This is useful for running code when asynchronous code has completely finished executing,
+ * and no further execution is possible.
+ */
 export class AsyncZone {
     public constructor(name : string, properties : any = {}) {
         let self = this;

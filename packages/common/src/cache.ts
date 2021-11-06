@@ -24,7 +24,7 @@ interface FetchOptions {
 
     /**
      * What kind of cache miss strategy should be used here.
-     * - "fulfill": 
+     * - "fulfill" [default]: 
      *   If the cache misses for any reason, wait until the new value is fetched and return it.
      * - "stale-revalidate":
      *   If the cache misses due to an expired value, return the expired (stale) value
@@ -85,6 +85,15 @@ export class Cache<T> {
         return selectedEntry;
     }
 
+    /**
+     * Insert the specified item into the cache under the given key,
+     * optionally specifying a custom time-to-live. If no time-to-live
+     * is specified, the class-wide default is used.
+     * 
+     * @param key The key for the cache entry
+     * @param value The value to cache
+     * @param timeToLive How long the value should remain valid for before revalidation
+     */
     public insertItem(key : string, value : T, timeToLive? : number) {
         if (timeToLive === undefined)
             timeToLive = this.timeToLive;
@@ -104,15 +113,40 @@ export class Cache<T> {
 
     private outstandingFetches = new Map<string, Promise<any>>();
 
-    public get(key : string) {
+    /**
+     * Get the value present in the cache for the given key regardless 
+     * of the cache entry's expiration status.
+     * 
+     * @param key The key to get
+     */
+    public get(key : string): T {
         let entry = this.entries[key];
         return entry ? deepClone(entry.value) : undefined;
     }
 
-    public getEntry(key : string) {
+    /**
+     * Get the cache entry for the given key.
+     * @param key The key to get
+     */
+    public getEntry(key : string): CacheEntry<T> {
         return this.entries[key];
     }
 
+    /**
+     * Fetch a value from the cache, calling the given function to 
+     * generate the value if it is not present or it is expired.
+     * The result of the function is then cached for future calls.
+     * 
+     * Use `options.missStrategy` to control the revalidation behavior. The default value ("fulfill") will
+     * wait until the fetch operation completes to return a value in the case where a cache miss occurs,
+     * even if an expired cache value is present. The "stale-revalidate" option will instead return the 
+     * value found in the cache even when expired, executing the fetch operation if the value is expired 
+     * and saving the resulting value back into the cache for future calls.
+     * 
+     * @param key The key to fetch
+     * @param fetcher A function to define the value of the key if a cache miss occurs
+     * @param options Options for doing the caching.
+     */
     public async fetch(key : string, fetcher? : CacheFetcher<T>, options : FetchOptions = {}): Promise<T> {
         let existingFetch = this.outstandingFetches.get(key);
         if (existingFetch)
@@ -127,6 +161,9 @@ export class Cache<T> {
             stale = entry.expiresAt < now;
         }
         
+        if (!options.missStrategy)
+            options.missStrategy = 'fulfill';
+           
         if (options.missStrategy === 'fulfill')
             entry = stale ? undefined : entry;
 

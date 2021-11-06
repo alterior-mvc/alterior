@@ -1,5 +1,5 @@
 /**
- * Return the first defined value out of the passed parameters.
+ * Return the first value that is not undefined of the passed parameters.
  * @param values 
  */
 export function coalesce(...values: any[]) {

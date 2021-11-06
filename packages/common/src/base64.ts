@@ -2,14 +2,14 @@
 const BASE64_KEY = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
 /**
- *
- *  Base64 encode / decode
- *  http://www.webtoolkit.info/
- *
- **/
+ * Lightweight base64 encode / decode
+ */
 export class Base64 {
-	// public method for encoding
-	public static encode(input) {
+	/**
+	 * Encode a string using base64.
+	 * @param input The string to encode
+	 */
+	public static encode(input : string): string {
 
         input = input.replace(/ /g, ' ');
 
@@ -45,8 +45,11 @@ export class Base64 {
 		return output;
 	}
  
-	// public method for decoding
-	public static decode(input) {
+	/**
+	 * Decode a base64 encoded string to raw format.
+	 * @param input The base64 encoded string
+	 */
+	public static decode(input : string): string {
 		var output = "";
 		var chr1, chr2, chr3;
 		var enc1, enc2, enc3, enc4;
