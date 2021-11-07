@@ -180,6 +180,15 @@ export class RouteMethodParameter<T = any> {
 
 				return number;
 			}
+		} else if (paramType === Boolean) {
+			let originalFactory = factory;
+			factory = ev => {
+				let value = originalFactory(ev);
+				if (value === void 0)
+					return value;
+				
+				return !['', 'no', '0', 'false', 'off'].includes(`${value}`.toLowerCase());
+			}
 		}
 
 		if (paramType === String) {
