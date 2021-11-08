@@ -190,13 +190,13 @@ export class Application {
 			runtime.fireEvent('OnInit');
 			runtime.configure();
 	
-			if (options.autostart)
-				runtime.start();
-	
 			if (runtime.selfTest) {
 				console.log(`[Self Test] ✔ Looks good!`);
 				process.exit(0);
 			}
+			
+			if (options.autostart)
+				runtime.start();
 
 			return executionContext.application = runtime.getService(Application);
 		});
