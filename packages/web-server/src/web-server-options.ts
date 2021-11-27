@@ -14,6 +14,28 @@ export interface WebServerOptions {
 	privateKey? : string | Buffer;
 
 	/**
+	 * Specify a header (or a set of headers) which will be checked for a 
+	 * request ID when servicing a request. If found the value of the 
+	 * header will be used when showing logs that originated within the 
+	 * route handler. You can also obtain the request ID using WebEvent.requestId. 
+	 * If unspecified (the default), no request ID header is checked and a 
+	 * new UUID is generated for each request instead (which is also what 
+	 * happens when no request ID is set).
+	 * 
+	 * This feature helps to enable distributed tracing when used in a 
+	 * microservices environment. The recommended header name to use 
+	 * is 'x-trace'.
+	 */
+	requestIdHeader? : string | string[];
+
+	/**
+	 * The regular expression used to validate request IDs passed in from 
+	 * the outside world via the requestIdHeader. If unspecified, the request
+	 * ID is only accepted if it is a valid UUID.
+	 */
+	requestIdValidator? : RegExp;
+
+	/**
 	 * What protocols should be supported on incoming client connections
 	 * If not specified, HTTP/2, SPDY and HTTP/1.1 will all be supported
 	 * if an SSL certificate is provided. If not, then only HTTP/1.1 will

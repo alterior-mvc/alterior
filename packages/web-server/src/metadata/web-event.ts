@@ -23,6 +23,8 @@ export class WebEvent {
 	response : express.Response;
 	controller : any;
 
+	requestId : string;
+	
 	/**
 	 * Is the client still connected?
 	 */

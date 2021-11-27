@@ -426,17 +426,6 @@ export class RouteInstance {
 		return this._parameters.slice();
 	}
 
-	async logAndExecute(instance, event : WebEvent) {
-		let requestId = uuid.v4();
-		this.server.logger.run(() => {
-			return this.server.logger.withContext(
-				{ host: 'web-server', requestId }, 
-				requestId, 
-				() => this.execute(instance, event)
-			);
-		});
-	}
-
 	private async execute(instance, event : WebEvent) {
 		if (!instance) 
 			throw new ArgumentNullError('instance');
@@ -547,7 +536,7 @@ export class RouteInstance {
 			this.description,
 			this.definition.httpMethod, 
 			`${pathPrefix || ''}${this.definition.path}`,
-			ev => this.logAndExecute(this.controllerInstance, ev), 
+			ev => this.execute(this.controllerInstance, ev), 
 			this.resolvedMiddleware
 		);
 	}

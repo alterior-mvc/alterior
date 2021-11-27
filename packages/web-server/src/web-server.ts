@@ -220,6 +220,46 @@ export class WebServer {
 	}
 
 	/**
+	 * Determine the request ID for a web event and apply it to the 
+	 * requestId field.
+	 * @param event 
+	 */
+	 private addRequestId(event : WebEvent) {
+		let requestId : string;
+		let idHeaderNames = this.options.requestIdHeader;
+
+		if (typeof idHeaderNames === 'string')
+			idHeaderNames = [ idHeaderNames ];
+
+		if (idHeaderNames) {
+			for (let idHeaderName of idHeaderNames) {
+				let idHeader = event.request.headers[idHeaderName];
+				if (!idHeader)
+					continue;
+
+				if (Array.isArray(idHeader))
+					idHeader = idHeader[0];
+				
+				if (this.options.requestIdValidator) {
+					if (this.options.requestIdValidator.test(idHeader))
+						requestId = idHeader;
+				} else {
+					if (uuid.validate(idHeader))
+						requestId = idHeader;
+				}
+
+				if (requestId)
+					break;
+			}
+		}
+
+		if (!requestId)
+			requestId = uuid.v4();
+
+		event.requestId = requestId;
+	}
+
+	/**
 	 * Installs this route into the given Express application. 
 	 * @param app 
 	 */
@@ -227,9 +267,9 @@ export class WebServer {
 		this.serviceDescription.routes.push(definition);
 
 		this.engine.addRoute(method, path, ev => {
-			let requestId = uuid.v4();
-			return this.logger.withContext({ host: 'web-server', requestId }, requestId, () => {
-				return handler(ev);
+			this.addRequestId(ev);
+			this.logger.run(() => {
+				this.logger.withContext({ host: 'web-server', requestId: ev.requestId }, ev.requestId, () => handler(ev));
 			});
 		}, middleware);
 	}
