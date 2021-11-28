@@ -1,8 +1,6 @@
 import fastify from "fastify";
 import * as http from "http";
-import { WebEvent } from "./metadata";
-import { WebServerEngine } from "./web-server-engine";
-import { WebServerOptions } from './web-server-options';
+import { WebEvent, WebServerEngine, WebServerOptions } from '@alterior/web-server';
 
 export class FastifyEngine implements WebServerEngine {
 	constructor() {

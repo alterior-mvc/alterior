@@ -37,7 +37,8 @@
     "docs": "typedoc ."
   },
   "dependencies": {
-    "@alterior/web-server": "^3.0.0-rc.4"
+    "@alterior/web-server": "^3.0.0-rc.4",
+    "fastify": "^2.15.3"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
