@@ -44,13 +44,6 @@ export interface WebServerOptions {
 	protocols? : Protocol[];
 
 	/**
-	 * A class which implements WebServerEngine. Can be one of
-	 * the builtin engines (ExpressEngine, FastifyEngine) or 
-	 * a custom engine
-	 */
-	engine? : any;
-
-	/**
 	 * Connect-style middleware that should be run before the final request handler
 	 */
     middleware? : Function[];

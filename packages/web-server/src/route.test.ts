@@ -28,32 +28,48 @@ function fakeAppVarietyOfMethods() {
 	class FakeApp {
 		@Get('/foo')
 		getX(ev : WebEvent) {
-			ev.response.status(200).send(JSON.stringify({foo:"get"}));
+			ev.response.statusCode = 200;
+			ev.response.write(JSON.stringify({foo:"get"}));
+			ev.response.end();
 		}
 
 		@Post('/foo')
 		postX(ev : WebEvent) {
-			ev.response.status(200).send(JSON.stringify({foo:"post"}));
+			ev.response.statusCode = 200;
+			ev.response.write(JSON.stringify({foo:"post"}));
+			ev.response.end();
 		}
 
 		@Put('/foo')
 		putX(ev : WebEvent) {
-			ev.response.status(200).send(JSON.stringify({foo:"put"}));
+			ev.response.statusCode = 200;
+			ev.response.setHeader('Content-Type', 'application/json');
+			ev.response.write(JSON.stringify({foo:"put"}));
+			ev.response.end();
 		}
 
 		@Patch('/foo')
 		patchX(ev : WebEvent) {
-			ev.response.status(200).send(JSON.stringify({foo:"patch"}));
+			ev.response.statusCode = 200;
+			ev.response.setHeader('Content-Type', 'application/json');
+			ev.response.write(JSON.stringify({foo:"patch"}));
+			ev.response.end();
 		}
 
 		@Delete('/foo')
 		deleteX(ev : WebEvent) {
-			ev.response.status(200).send(JSON.stringify({foo:"delete"}));
+			ev.response.statusCode = 200;
+			ev.response.setHeader('Content-Type', 'application/json');
+			ev.response.write(JSON.stringify({foo:"delete"}));
+			ev.response.end();
 		}
 
 		@Options('/foo')
 		optionsX(ev : WebEvent) {
-			ev.response.status(200).send(JSON.stringify({foo:"options"}));
+			ev.response.statusCode = 200;
+			ev.response.setHeader('Content-Type', 'application/json');
+			ev.response.write(JSON.stringify({foo:"options"}));
+			ev.response.end();
 		}
 
 		@Get('/json/bare')
@@ -77,7 +93,10 @@ suite(describe => {
 			class TestModule {
 				@Get('/foo')
 				foo(ev : WebEvent) {
-					ev.response.status(200).send({foo:123});
+					ev.response.statusCode = 200;
+					ev.response.setHeader('Content-Type', 'application/json');
+					ev.response.write(JSON.stringify({foo:123}));
+					ev.response.end();
 				}
 			}
 

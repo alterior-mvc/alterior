@@ -9,7 +9,6 @@ import { RouteInstance, RouteDescription } from './route';
 import { ApplicationOptions, Application, AppOptionsAnnotation, AppOptions } from '@alterior/runtime';
 import { Logger } from '@alterior/logging';
 import { WebServerEngine } from './web-server-engine';
-import { ExpressEngine } from './express-engine';
 import { WebServerOptions } from './web-server-options';
 import { ServiceDescription } from './service-description';
 import { ServiceDescriptionRef } from './service-description-ref';
@@ -38,8 +37,18 @@ export class WebServer {
 
 		this._engine = this._injector.get(WebServerEngine, null);
 
-		if (!this._engine)
-			this._engine = this._injector.get(ExpressEngine);
+		if (!this._engine) {
+			this._engine = ReflectiveInjector.resolveAndCreate([
+				{ provide: WebServerEngine, useClass: WebServerEngine.default }
+			], this._injector).get(WebServerEngine, null);
+		}
+
+		if (!this._engine) {
+			throw new Error(
+				`No WebServerEngine found! Set WebServerEngine.default to an engine (@alterior/express, @alterior/fastify) `
+				+ `or provide a WebServerEngine via dependency injection.`
+			);
+		}
 
 		this.installGlobalMiddleware();
 		this.websockets = new ws.Server({ noServer: true });
@@ -70,10 +79,7 @@ export class WebServer {
 		let appOptionsAnnot = AppOptionsAnnotation.getForClass(entryModule);
 		@AppOptions(appOptionsAnnot ? appOptionsAnnot.options : {})
 		@Module({
-			imports: [entryModule],
-			providers: [
-				{ provide: WebServerEngine, useClass: ExpressEngine }
-			]
+			imports: [entryModule]
 		})
 		class EntryModule {
 		}
@@ -167,7 +173,9 @@ export class WebServer {
 		if (!this.options.silent) {
 			let req: any = event.request;
 			let method = event.request.method;
-			let path = event.request.path;
+			let path = event.request['path'];
+			if (!('path' in event.request))
+				throw new Error(`WebServerEngine must provide request.path!`);
 
 			// When using fastify as the underlying server, you must 
 			// access route-specific metadata from the underlying Node.js 
@@ -285,7 +293,7 @@ export class WebServer {
 		}
 
 		if (!this.options.silentErrors) {
-			console.error(`Error handling request '${event.request.path}'`);
+			console.error(`Error handling request '${event.request['path']}'`);
 			console.error(`Handled by: ${source}`);
 			console.error(error);
 		}
@@ -301,10 +309,10 @@ export class WebServer {
 				response.error = error;
 		}
 
-		event.response
-			.status(500)
-			.send(response)
-			;
+		event.response.statusCode = 500;
+		event.response.setHeader('Content-Type', 'application/json; charset=utf-8');
+		event.response.write(JSON.stringify(response));
+		event.response.end();
 	}
 }
 

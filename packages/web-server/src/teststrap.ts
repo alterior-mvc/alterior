@@ -3,7 +3,6 @@ import supertest from 'supertest';
 import { Module } from "@alterior/di";
 import { WebServerOptions } from "./web-server-options";
 import { WebServerEngine } from "./web-server-engine";
-import { ExpressEngine } from "./express-engine";
 import { WebServer } from './web-server';
 
 export function teststrap(module : Function, options? : WebServerOptions) {
@@ -13,12 +12,7 @@ export function teststrap(module : Function, options? : WebServerOptions) {
 
         @AppOptions(appOptionsAnnot ? appOptionsAnnot.options : {})
         @Module({
-            imports: [
-                module
-            ],
-            providers: [
-                { provide: WebServerEngine, useClass: ExpressEngine }
-            ]
+            imports: [ module ]
         })
         class EntryModule {
         }

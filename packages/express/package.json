@@ -1,0 +1,58 @@
+{
+  "name": "@alterior/express",
+  "version": "3.0.0-rc.4",
+  "description": "Access Express state within an Alterior app",
+  "author": "The Alterior Project (https://github.com/alterior-mvc)",
+  "license": "MIT",
+  "homepage": "https://github.com/alterior-mvc/alterior/blob/main/packages/di/README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alterior-mvc/alterior.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alterior-mvc/alterior/issues"
+  },
+  "keywords": [
+    "express",
+    "api",
+    "rest"
+  ],
+  "main": "dist/index.js",
+  "module": "dist.esm/index.js",
+  "types": "dist/index.d.ts",
+  "access": "public",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "clean": "rimraf dist dist.esm",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "prepublishOnly": "npm test",
+    "test": "npm run build && node dist/test.js",
+    "docs": "typedoc ."
+  },
+  "dependencies": {
+    "@alterior/web-server": "^3.0.0-rc.4",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.11",
+    "@types/express": "^4.17.13",
+    "@types/jasmine": "^2.5.41",
+    "@types/node": "^8.10.61",
+    "chai": "^4.2.0",
+    "prettier": "1.13.7",
+    "razmin": "^1.1.6",
+    "reflect-metadata": "^0.1.12",
+    "rimraf": "^2.7.1",
+    "tslib": "^2.3.1",
+    "tslint": "5.11.0",
+    "tslint-config-prettier": "1.17.0",
+    "typescript": "^4.1.5"
+  }
+}

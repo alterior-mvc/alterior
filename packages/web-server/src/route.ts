@@ -97,8 +97,8 @@ export class RouteMethodParameter<T = any> {
 			let inputName = inputAnnotation.name || paramName;
 
 			let typeFactories = {
-				path: (ev : WebEvent) => ev.request.params[inputName],
-				query: (ev : WebEvent) => ev.request.query[inputName],
+				path: (ev : WebEvent) => ev.request['params'] ? ev.request['params'][inputName] : undefined,
+				query: (ev : WebEvent) => ev.request['query'] ? ev.request['query'][inputName] : undefined,
 				session: (ev : WebEvent) => inputAnnotation.name ? 
 					(ev.request['session'] || {})[inputAnnotation.name]
 					: ev.request['session'],
@@ -124,7 +124,7 @@ export class RouteMethodParameter<T = any> {
 
 		if (!factory) {
 			if (this.route.params.find(x => x == paramName) && simpleTypes.includes(paramType)) {
-				factory = (ev : WebEvent) => ev.request.params[paramName];
+				factory = (ev : WebEvent) => ev.request['params'] ? ev.request['params'][paramName] : undefined;
 				paramDesc.type = 'path';
 			}
 		}
@@ -460,12 +460,15 @@ export class RouteInstance {
 			
 			if (e.constructor === HttpError) {
 				let httpError = <HttpError>e;
-				event.response.status(httpError.statusCode);
+				event.response.statusCode = httpError.statusCode;
 				
 				httpError.headers
-					.forEach(header => event.response.header(header[0], header[1]));
+					.forEach(header => event.response.setHeader(header[0], header[1]));
 
-				event.response.send(httpError.body);
+				event.response.setHeader('Content-Type', 'application/json; charset=utf-8');
+				event.response.write(JSON.stringify(httpError.body));
+				event.response.end();
+
 				return;
 			}
 
@@ -489,19 +492,20 @@ export class RouteInstance {
 			if (result.constructor === Response) {
 				let response = <Response>result;
 
-				event.response.status(response.status);
-				response.headers.forEach(x => event.response.header(x[0], x[1]));
+				event.response.statusCode = response.status;
+				response.headers.forEach(x => event.response.setHeader(x[0], x[1]));
 				
 				if (response.encoding === 'raw') {
 					if (response.body instanceof Buffer)
-						event.response.send(response.body);
+						event.response.write(response.body);
 					else if (typeof response.body === 'string')
-						event.response.send(Buffer.from(response.body)); 
+						event.response.write(Buffer.from(response.body)); 
 					else if (response.body === undefined || response.body === null)
-						event.response.send();
+						event.response.write('');
 					else
 						throw new Error(`Unknown response body type ${response.body}`);
 
+					event.response.end();
 				} else if (response.encoding === 'json') {
 					this.server.engine.sendJsonBody(event, response.unencodedBody);
 				} else {
@@ -514,7 +518,7 @@ export class RouteInstance {
 				// 	.send(result)
 				// ;
 
-				event.response.status(200);
+				event.response.statusCode = 200;
 				this.server.engine.sendJsonBody(event, result);
 			}
 		} catch (e) {

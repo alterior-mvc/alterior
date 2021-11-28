@@ -1,4 +1,4 @@
-import type * as express from 'express';
+import * as http from 'http';
 
 export interface ServerSentEvent {
 	event?: string;
@@ -10,17 +10,19 @@ export interface ServerSentEvent {
 /**
  * Represents 
  */
-export class WebEvent {
-	constructor(request : express.Request, response : express.Response) {
+export class WebEvent<
+	RequestT extends http.IncomingMessage = http.IncomingMessage, 
+	ResponseT extends http.ServerResponse = http.ServerResponse
+> {
+	constructor(request : RequestT, response : ResponseT) {		
 		this.request = request;
 		this.response = response;
-
         if (this.request.socket)
 		    this.request.socket.on('close', () => this.connected = false);
 	}
 
-	request : express.Request;
-	response : express.Response;
+	request : RequestT;
+	response : ResponseT;
 	controller : any;
 
 	requestId : string;
@@ -64,7 +66,7 @@ export class WebEvent {
 			throw new Error(`Cannot send server-sent-event, headers are already sent and content type is not text/event-stream (it is '${contentType}')`);
 
 		if (!WebEvent.response.headersSent) {
-			WebEvent.response.status(200);
+			WebEvent.response.statusCode = 200;
 			WebEvent.response.setHeader('Content-Type', 'text/event-stream');
 			WebEvent.response.setHeader('Cache-Control', 'no-cache');
 			WebEvent.response.removeHeader('Transfer-Encoding');
@@ -98,7 +100,7 @@ export class WebEvent {
 		return this.current.connected;
 	}
 
-	static with<T>(routeEvent : WebEvent, callback : () => T): T {
+	static with<T, RequestT extends http.IncomingMessage, ResponseT extends http.ServerResponse>(routeEvent : WebEvent<RequestT, ResponseT>, callback : () => T): T {
 		let zone = Zone.current.fork({
 			name: `WebEventZone`,
 			properties: {

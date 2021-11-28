@@ -1,6 +1,6 @@
 import { Annotation, Annotations } from "@alterior/annotations";
 import { MetadataName } from "@alterior/annotations";
-import { ModuleOptions, Module, Optional, ReflectiveInjector } from "@alterior/di";
+import { ModuleOptions, Module } from "@alterior/di";
 import { WebServerOptions } from "./web-server-options";
 import { ApplicationOptions, AppOptions, Application, RolesService, Service, Constructor } from "@alterior/runtime";
 import { Controller } from "./metadata";
@@ -8,9 +8,8 @@ import { WebServiceCompiler } from './web-service-compiler';
 import { Logger, LoggingModule } from '@alterior/logging';
 import { WebServer } from './web-server';
 import { ControllerInstance } from './controller';
-import { ExpressEngine } from './express-engine';
 import { RouteDefinition } from './metadata/route';
-import { Body, InputAnnotation, PathParam, QueryParam } from "./input";
+import { InputAnnotation } from "./input";
 import { getParameterNames } from "@alterior/common";
 
 export type RestClient<T> = {
@@ -86,8 +85,7 @@ export const WebService : WebServiceDecorator = <any>WebServiceAnnotation.decora
     validTargets: [ 'class' ],
     factory: (site, options : WebServiceOptions) => {
         @Module({
-            imports: [ LoggingModule ],
-            providers: [ ExpressEngine ]
+            imports: [ LoggingModule ]
         })
         class WebServerModule {
             constructor(
@@ -116,10 +114,15 @@ export const WebService : WebServiceDecorator = <any>WebServiceAnnotation.decora
 
                 if (webserver.options.defaultHandler !== null) {
                     webserver.engine.addAnyRoute(ev => {
-                        if (webserver.options.defaultHandler)
+                        if (webserver.options.defaultHandler) {
                             webserver.options.defaultHandler(ev);
-                        else
-                            ev.response.status(404).send({ error: 'not-found' });
+                            return;
+                        }
+                        
+                        ev.response.statusCode = 404;
+                        ev.response.setHeader('Content-Type', 'application/json; charset=utf-8');
+                        ev.response.write(JSON.stringify({ error: 'not-found' }));
+                        ev.response.end();
                     });
                 }
 

@@ -1,8 +1,8 @@
 import { suite } from 'razmin';
 import { Application } from '@alterior/runtime';
 import { expect } from 'chai';
-import { WebService } from './service';
-import { WebServer } from './web-server';
+import { WebService } from '@alterior/web-server';
+import { WebServer } from '@alterior/web-server';
 
 suite(describe => {
 	describe('ExpressRef', it => {
@@ -24,7 +24,7 @@ suite(describe => {
 				let expressApp = WebServer.for(app.inject(FakeApp)).engine.app;
 
 				expect(expressApp, 'WebServer provided invalid app value').to.exist;
-				expect(expressApp.patch, 'WebServer provided app without patch() method').to.exist;
+				expect(expressApp['patch'], 'WebServer provided app without patch() method').to.exist;
 				resolve();
 				app.stop();
 			});
