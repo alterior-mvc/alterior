@@ -1,6 +1,6 @@
 # ![Alterior](./logo.svg) [![CircleCI](https://circleci.com/gh/alterior-mvc/alterior/tree/main.svg?style=shield)](https://circleci.com/gh/alterior-mvc/alterior/tree/main) [![Join the chat at https://gitter.im/alterior-mvc/Lobby](https://badges.gitter.im/alterior-core/Lobby.svg)](https://gitter.im/alterior-mvc/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![License](https://img.shields.io/npm/l/@alterior/runtime.svg) [![npm](https://img.shields.io/npm/v/@alterior/runtime)](https://alterior-mvc.github.io/alterior/index.html?)
 
-[NPM](https://www.npmjs.com/org/alterior) | [Github](https://github.com/alterior-mvc/alterior) | [API reference](https://alterior-mvc.github.io/alterior/index.html?)
+[NPM](https://www.npmjs.com/org/alterior) | [Github](https://github.com/alterior-mvc/alterior) | [API reference](https://alterior-mvc.github.io/alterior/index.html?) | [Changelog](CHANGELOG.md)
 
 A framework for building well-structured applications and isomorphic libraries in Typescript.
 
