@@ -39,8 +39,11 @@
 - The `--self-test` option no longer starts the application (so the `OnStart` lifecycle method does not execute)
 
 `@/web-server`
-- Adds support for automatic conversion of boolean values when using `@QueryParam()` on a parameter of type `boolean`.
-  The values `''`, `'no'`, `'0'`, `'false'`, and `'off'` produce `false`, all other values produce `true`.
+- Adds support for `boolean` values on input parameters (ie `@QueryParam()`) when a parameter annotated with `boolean` 
+  type is used. The values `''`, `'no'`, `'0'`, `'false'`, and `'off'` produce `false`, all other values produce `true`.
+- Adds support for `Date` values on input parameters (ie `@QueryParam` et al) when a parameter annotated with `Date` 
+  type is used. Any string value that produces a valid `Date` object via `new Date(str)` will be accepted, otherwise a 
+  `400 Bad Request` will be returned without executing the route method. Caution: Because this accepts values in milliseconds (not seconds), it is not suitable for receiving UNIX timestamps.
 - Adds support for receiving the ID for the request from a request header (ie `X-Trace` or so). Not enabled by 
   default. Use `requestIdHeader` option when configuring the web server to enable this functionality.
 - Fixes an issue where request ID was wastefully generated twice
@@ -52,9 +55,6 @@
 - Routes which do not return any result content now generate `204 No Content`, provided the headers have not already 
   been sent, and the status code selected by the end of the request is `200 OK`. If you need to return an empty body 
   with status `200 OK` instead of `204 No Content`, call `WebEvent.response.end()` before completing the request.
-- Support added for `Date` types on input parameters (ie `@QueryParam` et al). Any string value that 
-  produces a valid `Date` object via `new Date(str)` will be accepted, otherwise a `400 Bad Request`
-  will be returned without executing the route method. Caution: Because this accepts values in milliseconds (not seconds), it is not suitable for receiving UNIX timestamps.
 
 # 🚀 3.0.0-rc.4
 
