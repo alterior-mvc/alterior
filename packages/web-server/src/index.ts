@@ -18,3 +18,4 @@ export * from './web-server';
 export * from './service-description';
 export * from './service-description-ref';
 export * from './web-service-compiler';
+export * from './certificate-generator';

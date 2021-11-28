@@ -40,6 +40,8 @@
   `WebServerEngine` as a dependency to specify the web engine. See above for details.
 - `@QueryParam()` no longer requires the `name` parameter. Similar to the offer input decorators, `@QueryParam()` 
   already supported auto-detecting `name`, this just adjusts the function signature to match the behavior.
+- `CertificateGenerator` is now properly exported for external use
+
 # 🚀 3.0.0-rc.4
 
 `@/common`
