@@ -42,8 +42,11 @@ Alterior is **not just a REST framework**, but that's certainly it's most common
 
 ```typescript
 import '@alterior/platform-nodejs';
-import { WebService, Get } from '@alterior/web-server';
+import { WebService, Get, WebServerEngine } from '@alterior/web-server';
 import { Application } from '@alterior/runtime';
+import { ExpressEngine } from '@alterior/express';
+
+WebServerEngine.default = ExpressEngine;
 
 @WebService()
 export class MyWebService {
