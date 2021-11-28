@@ -33,12 +33,13 @@
 `@/web-server`
 - Adds support for automatic conversion of boolean values when using `@QueryParam()` on a parameter of type `boolean`.
   The values `''`, `'no'`, `'0'`, `'false'`, and `'off'` produce `false`, all other values produce `true`.
-- Adds support for receiving the ID for the request from a request header (ie `X-Trace` or so). Not enabled by default. 
-  Use `requestIdHeader` option when configuring the web server to enable this functionality.
+- Adds support for receiving the ID for the request from a request header (ie `X-Trace` or so). Not enabled by 
+  default. Use `requestIdHeader` option when configuring the web server to enable this functionality.
 - Fixes an issue where request ID was wastefully generated twice
-- Removed the `engine` option from `WebServerOptions`. Either set `WebServerEngine.default` or provide `WebServerEngine` 
-  as a dependency to specify the web engine. See above for details.
-
+- Removed the `engine` option from `WebServerOptions`. Either set `WebServerEngine.default` or provide 
+  `WebServerEngine` as a dependency to specify the web engine. See above for details.
+- `@QueryParam()` no longer requires the `name` parameter. Similar to the offer input decorators, `@QueryParam()` 
+  already supported auto-detecting `name`, this just adjusts the function signature to match the behavior.
 # 🚀 3.0.0-rc.4
 
 `@/common`

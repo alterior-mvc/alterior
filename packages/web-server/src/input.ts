@@ -33,7 +33,7 @@ export interface QueryParamOptions {
  * Apply to a parameter to indicate that it represents a query parameter (ie foo in /bar?foo=1)
  * @param name 
  */
-export function QueryParam(name : string, options? : QueryParamOptions) {
+export function QueryParam(name? : string, options? : QueryParamOptions) {
 	return InputAnnotation.decorator({
 		validTargets: [ 'parameter' ],
 		allowMultiple: false
