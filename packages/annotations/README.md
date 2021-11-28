@@ -89,9 +89,3 @@ Sometimes you have multiple decorators that are storing the same type of metadat
     export const Red = () => Color('red');
     export const Blue = () => Color('red');
 ```
-
-## Angular
-
-(This is probably only useful inside Alterior; it is used to provide Angular compatibility for `@alterior/di`)
-
-This library stores annotations the same way that Angular does, and does it in a compatible manner. However, all Alterior annotations will be ignored by Angular unless an Angular-specific metadata name is applied to the annotation. This can be done using the `@NgMetadataName()` decorator. The decorator causes the annotation instances to have their `ngMetadataName` property set to the string passed to the decorator.

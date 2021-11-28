@@ -2,7 +2,7 @@
  * (C) 2017-2019 William Lahti
  */
 
- import { MetadataName, NgMetadataName, Annotation, AnnotationDecorator } from "@alterior/annotations";
+ import { MetadataName, Annotation } from "@alterior/annotations";
 import { Provider } from './injection';
 
 export interface ConfiguredModule extends ModuleOptions {
@@ -26,7 +26,6 @@ export interface ModuleOptions {
     providers?: Provider[];
 }
 
-@NgMetadataName('NgModule')
 @MetadataName('@alterior/di:Module')
 export class ModuleAnnotation extends Annotation implements ModuleOptions {
     constructor(moduleOptions? : ModuleOptions) {

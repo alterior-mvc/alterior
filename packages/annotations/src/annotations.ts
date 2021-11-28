@@ -16,7 +16,6 @@ import { NotSupportedError } from '@alterior/common';
  */
 export interface IAnnotation {
     $metadataName? : string;
-    ngMetadataName? : string;
 }
 
 // These are the properties on a class where annotation metadata is deposited 
@@ -383,11 +382,9 @@ export class Annotation implements IAnnotation {
         }
 
         Object.assign(this, props || {});
-        this.ngMetadataName = (this.constructor as any).ngMetadataName;
     }
 
     readonly $metadataName : string;
-    readonly ngMetadataName : string = undefined;
 
     toString() {
         return `@${this.constructor.name}`;

@@ -27,6 +27,10 @@
   users were required to install a lot of Express-related `@types/*` packages to avoid Typescript errors during 
   development.
 
+`@/annotations`
+- The `@NgMetadataName()` and related Angular compatibility features have been entirely removed. They do not work with 
+  newer versions of Angular. The recommended way to use Alterior with Angular is via `@alterior/platform-angular`
+
 `@/runtime`
 - The `--self-test` option no longer starts the application (so the `OnStart` lifecycle method does not execute)
 
