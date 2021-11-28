@@ -1,4 +1,4 @@
-import { lazySubject } from 'lazy-subject';
+import { lazySubject } from './lazy-subject';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
 
 /**
