@@ -48,6 +48,9 @@
 - Routes which do not return any result content now generate `204 No Content`, provided the headers have not already 
   been sent, and the status code selected by the end of the request is `200 OK`. If you need to return an empty body 
   with status `200 OK` instead of `204 No Content`, call `WebEvent.response.end()` before completing the request.
+- Support added for `Date` types on input parameters (ie `@QueryParam` et al). Any string value that 
+  produces a valid `Date` object via `new Date(str)` will be accepted, otherwise a `400 Bad Request`
+  will be returned without executing the route method. Caution: Because this accepts values in milliseconds (not seconds), it is not suitable for receiving UNIX timestamps.
 
 # 🚀 3.0.0-rc.4
 

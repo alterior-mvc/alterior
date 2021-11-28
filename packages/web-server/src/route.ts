@@ -189,6 +189,22 @@ export class RouteMethodParameter<T = any> {
 				
 				return !['', 'no', '0', 'false', 'off'].includes(`${value}`.toLowerCase());
 			}
+		} else if (paramType === Date) {
+			let originalFactory = factory;
+			factory = ev => {
+				let value = originalFactory(ev);
+				if (value === void 0)
+					return value;
+				
+				let date = new Date(value);
+
+				if (!date.getDate()) {
+					throw new HttpError(400, {
+						error: 'invalid-request',
+						message: `The parameter ${paramDesc.name} must be a valid timestamp`
+					});
+				}
+			}
 		}
 
 		if (paramType === String) {
