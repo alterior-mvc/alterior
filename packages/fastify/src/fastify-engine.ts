@@ -1,27 +1,17 @@
-import fastify from "fastify";
-import * as http from "http";
-import { WebEvent, WebServerEngine, WebServerOptions } from '@alterior/web-server';
+import fastify, { FastifyInstance } from "fastify";
+import { WebEvent, WebServerEngine, WebServerOptions, ConnectMiddleware } from '@alterior/web-server';
+import * as http from 'http';
+
+export type FastifyConnectMiddleware = ConnectMiddleware & fastify.FastifyInstance<http.Server, http.IncomingMessage, http.ServerResponse>;
 
 export class FastifyEngine implements WebServerEngine {
-	constructor() {
-		this._app = fastify({ })
-	}
+	app = <FastifyConnectMiddleware>fastify();
 
-	get providers() {
-		return [];
-	}
-
-	private _app : fastify.FastifyInstance<http.Server, http.IncomingMessage, http.ServerResponse>;
-
-	get app() {
-		return this._app;
-	}
+	providers = [];
 
 	sendJsonBody(routeEvent : WebEvent, body : any) {
-		routeEvent.response
-			.header('Content-Type', 'application/json')
-			.send(body)
-		;
+		routeEvent.response.setHeader('Content-Type', 'application/json');
+		routeEvent.response['send'](body);
 	}
 	
 	private readonly supportedMethods = [ 
@@ -45,7 +35,7 @@ export class FastifyEngine implements WebServerEngine {
 		if (middleware.name === 'jsonParser')
 			return;
 
-		this.app.use(path, middleware);
+		this.app['use'](path, middleware);
 	}
 	
 	async listen(options : WebServerOptions) {
