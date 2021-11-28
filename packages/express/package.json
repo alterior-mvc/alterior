@@ -37,8 +37,8 @@
     "docs": "typedoc ."
   },
   "dependencies": {
-    "@alterior/di": "*",
-    "@alterior/logging": "*",
+    "@alterior/di": "^3.0.0-rc.4",
+    "@alterior/logging": "^3.0.0-rc.4",
     "@alterior/web-server": "^3.0.0-rc.4",
     "express": "^4.17.1",
     "spdy": "^4.0.2"
