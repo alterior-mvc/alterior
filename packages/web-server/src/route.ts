@@ -479,6 +479,8 @@ export class RouteInstance {
 		// Return value handling
 
 		if (result === undefined) {
+			if (!event.response.headersSent && event.response.statusCode === 200)
+				event.response.statusCode = 204;
 			event.response.end();
 			return;
 		}
@@ -496,14 +498,16 @@ export class RouteInstance {
 				response.headers.forEach(x => event.response.setHeader(x[0], x[1]));
 				
 				if (response.encoding === 'raw') {
-					if (response.body instanceof Buffer)
+					if (response.body instanceof Buffer) {
 						event.response.write(response.body);
-					else if (typeof response.body === 'string')
+					} else if (typeof response.body === 'string') {
 						event.response.write(Buffer.from(response.body)); 
-					else if (response.body === undefined || response.body === null)
-						event.response.write('');
-					else
+					} else if (response.body === undefined || response.body === null) {
+						if (!event.response.headersSent && event.response.statusCode === 200)
+							event.response.statusCode = 204;
+					} else {
 						throw new Error(`Unknown response body type ${response.body}`);
+					}
 
 					event.response.end();
 				} else if (response.encoding === 'json') {

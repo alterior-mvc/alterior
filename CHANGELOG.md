@@ -45,12 +45,16 @@
 - `@QueryParam()` no longer requires the `name` parameter. Similar to the offer input decorators, `@QueryParam()` 
   already supported auto-detecting `name`, this just adjusts the function signature to match the behavior.
 - `CertificateGenerator` is now properly exported for external use
+- Routes which do not return any result content now generate `204 No Content`, provided the headers have not already 
+  been sent, and the status code selected by the end of the request is `200 OK`. If you need to return an empty body 
+  with status `200 OK` instead of `204 No Content`, call `WebEvent.response.end()` before completing the request.
 
 # 🚀 3.0.0-rc.4
 
 `@/common`
 - Adds ability to get an entry from `Cache<T>` without doing a fetch operation
-- Fixes an issue with `Cache<T>` where `null` and `undefined` are cached incorrectly. `null` now caches correctly and `undefined` is never cached.
+- Fixes an issue with `Cache<T>` where `null` and `undefined` are cached incorrectly. `null` now caches correctly and 
+  `undefined` is never cached.
 
 # 3.0.0-rc.2
 > 3.0.0-rc.3 hotfixes CommonJS support via downgrade to node-fetch@2
