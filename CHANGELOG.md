@@ -1,6 +1,6 @@
 # ⏭ vNext
 
-- Unreleased changes appear here
+- Fixes `deepClone()` to handle cyclical object graphs correctly
 
 # 🚀 3.0.0-rc.5
 

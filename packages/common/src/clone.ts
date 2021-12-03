@@ -28,21 +28,30 @@ export function clone<T = any>(obj : T): T {
  * @param o 
  */
 export function deepClone(o) {
+	return deepCloneWithMemoization(o, new WeakMap());
+}
+
+function deepCloneWithMemoization(o, memo : WeakMap<any, any>) {
 	if (o === null)
 		return null;
 	if (!Array.isArray(o) && typeof o !== 'object')
 		return o;
+
+	if (memo.has(o))
+		return memo.get(o);
 	
-	var output, v, key;
+	let output, v, key;
 	output = Array.isArray(o) ? [] : {};
+	
+	memo.set(o, output);
+
 	for (key in o) {
 		v = o[key];
-		output[key] = (typeof v === 'object') ? deepClone(v) : v;
+		output[key] = (typeof v === 'object') ? deepCloneWithMemoization(v, memo) : v;
 	}
 
 	return output;
 }
-
 /**
  * Clone the value by serializing it to JSON and back.
  * @param obj 
