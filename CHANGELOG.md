@@ -1,5 +1,7 @@
 # ⏭ vNext
 
+- `@alterior/platform-nodejs` now provides a global implementation of `WebSocket` implementation using `ws` if one is
+  not already available
 - Fixes `deepClone()` to handle cyclical object graphs correctly
 
 # 🚀 3.0.0-rc.5
