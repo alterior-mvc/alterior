@@ -5,6 +5,9 @@
 - Fixes `deepClone()` to handle cyclical object graphs correctly
 - The `@SessionValue()` parameter decorator has been removed in preparation for the 3.0.0 release. This decorator was 
   deprecated in `v3.0.0-beta.76` released on 2/27/2021.
+- Added `@QueryParams()` parameter decorator as a way to get a `Record<string,string>` containing all query parameters
+  passed via URL. You can use a specific interface type for such parameters, but please note that Alterior does not 
+  perform automatic coercion of the fields of the `@QueryParmas()` object- all values will be strings.
 
 # 🚀 3.0.0-rc.5
 

@@ -218,9 +218,11 @@ WebService.clientClassFor = function<T>(klass : Constructor<T>): RestClientConst
                                 isBody = true;
                             } else if (inputAnnot.type === 'path') {
                                 path[inputAnnot.name || paramName] = value;
-                            } else if (inputAnnot.type === 'query') {
+                            } else if (inputAnnot.type === 'queryParam') {
                                 query[inputAnnot.name || paramName] = value;
-                            } 
+                            } else if (inputAnnot.type === 'queryParams') {
+                                // TODO
+                            }
                         } else {
                             if (paramName === 'body') {
                                 isBody = true;

@@ -98,7 +98,8 @@ export class RouteMethodParameter<T = any> {
 
 			let typeFactories = {
 				path: (ev : WebEvent) => ev.request['params'] ? ev.request['params'][inputName] : undefined,
-				query: (ev : WebEvent) => ev.request['query'] ? ev.request['query'][inputName] : undefined,
+				queryParam: (ev : WebEvent) => ev.request['query'] ? ev.request['query'][inputName] : undefined,
+				queryParams: (ev : WebEvent) => ev.request['query'] ?? {},
 				session: (ev : WebEvent) => inputAnnotation.name ? 
 					(ev.request['session'] || {})[inputAnnotation.name]
 					: ev.request['session'],

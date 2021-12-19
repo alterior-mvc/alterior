@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import * as bodyParser from 'body-parser';
 import { Module } from '@alterior/di';
 import { teststrap } from './teststrap';
-import { QueryParam, Body, PathParam, SessionValue } from './input';
+import { QueryParam, Body, PathParam, QueryParams } from './input';
 import { WebService } from './service';
 import { HttpError } from '@alterior/common';
 import { Application } from '@alterior/runtime';
@@ -632,7 +632,7 @@ suite(describe => {
 			expect(observedMessageID).to.equal('barmessage');
 		});
 
-		it('should support binding query parameters', async () => {
+		it('should support binding @QueryParam', async () => {
 			let observedQ;
 			@WebService()
 			class FakeApp {
@@ -650,6 +650,28 @@ suite(describe => {
 			;
 			
 			expect(observedQ).to.equal('baz');
+		});
+
+		it('should support binding @QueryParams', async () => {
+			let observedQ, observedR;
+			@WebService()
+			class FakeApp {
+				@Get('/foo')
+				getX(@QueryParams() q) {
+					observedQ = q.q;
+					observedR = q.r;
+
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			await teststrap(FakeApp)
+				.get('/foo?q=baz&r=bar')
+				.expect(200, { ok: true })
+			;
+			
+			expect(observedQ).to.equal('baz');
+			expect(observedR).to.equal('bar');
 		});
 
 		it('should be able to inject body when the body parsing middleware is used', async () => {

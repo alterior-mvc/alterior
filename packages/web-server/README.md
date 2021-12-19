@@ -223,17 +223,31 @@ Alterior inspects the parameters of controller methods to determine what values 
 
 - Parameters decorated with `@PathParam('a')` will be fulfilled with the value 
   of path parameter `:a` from the route path (as in `/some/path/:a`). The 
-  path parameter can be defined in any parent controller/mount context. Since path parameters are the most common, and there is a high degree of linkage between path parameters and method parameters, you can omit `@PathParam()` if the name of your path parameters is the same as your method parameter as shown above
-- Parameters decorated with `@QueryParam('q')` will be fulfilled with the query 
-  parameter `q` if provided (`?q=...`). If the query parameter was not provided in the request, the value of the parameter will be `undefined`.
-- Parameters which are decorated with `@Body()` will be fulfilled 
-  with the value of `WebEvent.request.body`. If the type of the method parameter is `string`, Alterior will automatically connect a text body parsing middleware (`bodyParser.text()`). If the type of the method parameter is `Buffer`, Alterior will automatically connect a raw body parsing middleware (`bodyParser.raw()`). For any other parameter type, Alterior adds a JSON body parsing middleware (`bodyParser.json()`). If you need other body parsing middleware, you can add it directly to the `middleware` property of the route decorator's `options` parameter and use `WebEvent.request.body` directly instead.
-
-> Note: If a path parameter is defined directly in the path passed to `@Get()` 
+  path parameter can be defined in any parent controller/mount context. Since path parameters are the most common, 
+  and there is a high degree of linkage between path parameters and method parameters, you can omit `@PathParam()` if 
+  the name of your path parameters is the same as your method parameter as shown above
+  
+  > Note: If a path parameter is defined directly in the path passed to `@Get()` 
   decorator and an (otherwise unfulfilled) parameter with the same name is 
   defined on the method, the method parameter is fulfilled with the path parameter
   for the current request. Method parameters meant to be fulfilled from any 
   parent controller/mount-defined parameters must be decorated with `@PathParam()`
+
+- Parameters decorated with `@QueryParam('q')` will be fulfilled with the query 
+  parameter `q` if provided (`?q=...`). If the query parameter was not provided in the request, the value of the 
+  parameter will be `undefined`.
+- Parameters decorated with `@QueryParams()` will be fulfilled with an object containing all query parameters found
+  within the URL. The type of this object is effectively `Record<string,string>`, but you can use any interface type
+  for the parameter for convenience purposes.
+  > Note: No coercion of parameter types is performed- all values within the `@QueryParams()` object will be 
+  > strings
+- Parameters which are decorated with `@Body()` will be fulfilled 
+  with the value of `WebEvent.request.body`. If the type of the method parameter is `string`, Alterior will 
+  automatically connect a text body parsing middleware (`bodyParser.text()`). If the type of the method parameter is 
+  `Buffer`, Alterior will automatically connect a raw body parsing middleware (`bodyParser.raw()`). For any other 
+  parameter type, Alterior adds a JSON body parsing middleware (`bodyParser.json()`). If you need other body parsing 
+  middleware, you can add it directly to the `middleware` property of the route decorator's `options` parameter and use 
+  `WebEvent.request.body` directly instead.
 
 When combined with value returns, you can achieve a very natural style:  
 
