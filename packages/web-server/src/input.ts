@@ -44,20 +44,6 @@ export function QueryParam(name? : string, options? : QueryParamOptions) {
 	});
 }
 
-/**
- * Apply to a parameter to indicate that it represents a session parameter (ie foo in /bar?foo=1)
- * @param name 
- * @deprecated Use the Session class
- */
-export function SessionValue(name? : string) {
-	return InputAnnotation.decorator({
-		validTargets: [ 'parameter' ],
-		allowMultiple: false
-	})({ 
-		type: 'session', 
-		name 
-	});
-}
 
 /**
  * Apply to a parameter to indicate that it represents a session parameter (ie foo in /bar?foo=1)

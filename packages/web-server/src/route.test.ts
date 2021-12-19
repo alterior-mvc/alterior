@@ -136,46 +136,6 @@ suite(describe => {
 			;
 		});
 
-		it('should bind @SessionValue() parameter to `request.session`', async () => {
-			@WebService()
-			class FakeApp {
-				@Get('/foo', { 
-					middleware: [ 
-						(req, res, next) => 
-							(req.session = { test: 'session-value' }, next()) 
-					]
-				})
-				getX(@SessionValue() session : any) {
-					return Promise.resolve({foo: session.test});
-				}
-			}
-
-			await teststrap(FakeApp)
-				.get('/foo')
-				.expect(200, { foo: 'session-value' })
-			;
-		});
-		
-		it('should bind @SessionValue(\'name\') property to `request.session[\'name\']`', async () => {
-			@WebService()
-			class FakeApp {
-				@Get('/foo', { 
-					middleware: [ 
-						(req, res, next) => 
-							(req.session = { test: 123 }, next()) 
-					]
-				})
-				getX(@SessionValue('test') test : number) {
-					return Promise.resolve({foo: test});
-				}
-			}
-
-			await teststrap(FakeApp)
-				.get('/foo')
-				.expect(200, { foo: 123 })
-			;
-		});
-
 		it('should allow a method to return an explicit body value', async () => {
 			@WebService()
 			class FakeApp {

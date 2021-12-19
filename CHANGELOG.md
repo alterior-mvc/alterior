@@ -3,6 +3,8 @@
 - `@alterior/platform-nodejs` now provides a global implementation of `WebSocket` implementation using `ws` if one is
   not already available
 - Fixes `deepClone()` to handle cyclical object graphs correctly
+- The `@SessionValue()` parameter decorator has been removed in preparation for the 3.0.0 release. This decorator was 
+  deprecated in `v3.0.0-beta.76` released on 2/27/2021.
 
 # 🚀 3.0.0-rc.5
 
