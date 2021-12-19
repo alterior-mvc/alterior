@@ -26,8 +26,6 @@ export class WebServiceCompiler extends ServiceCompiler {
                     mutators.push(`queryParams = { ...queryParams, ...(${param.name} ?? {}) };`);
                 } else if (input.type === 'session') {
                     throw new Error(`Transparent service cannot have a @Session() parameter`);
-                } else if (input.type === 'request') {
-                    throw new Error(`Transparent service cannot have a @Request() parameter`);
                 } else if (input.type === 'response') {
                     throw new Error(`Transparent service cannot have a @Response() parameter`);
                 } else if (input.type === 'path') {

@@ -12,6 +12,8 @@
   deprecated in `v3.0.0-beta.2` released on 9/6/2018. Please use a Connect-compatible middleware package or create
   your own instead. Feel free to start from Alterior's implementation, you can find it
   at https://github.com/alterior-mvc/alterior/blob/c4e6730c98d7f2a6d20764612af0b7b2cd51c1e6/packages/web-server/src/accesscontrol.ts.
+- The `@Request()` parameter decorator has been removed in preparation for the 3.0.0 release. This decorator was deprecated in `v3.0.0-beta.76` released on 2/27/2021. Use `WebEvent.request` instead to access parameters of the underlying HTTP request.
+
 # 🚀 3.0.0-rc.5
 
 - Documentation improvements

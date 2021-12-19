@@ -103,8 +103,7 @@ export class RouteMethodParameter<T = any> {
 				session: (ev : WebEvent) => inputAnnotation.name ? 
 					(ev.request['session'] || {})[inputAnnotation.name]
 					: ev.request['session'],
-				body: (ev : WebEvent) => ev.request['body'],
-				request: (ev : WebEvent) => ev.request[inputName]
+				body: (ev : WebEvent) => ev.request['body']
 			};
 			
 			factory = typeFactories[inputAnnotation.type];
