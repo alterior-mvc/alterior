@@ -1,5 +1,4 @@
 
-export * from './accesscontrol';
 export * from './route';
 export * from './controller';
 export * from './upload';

@@ -8,7 +8,10 @@
 - Added `@QueryParams()` parameter decorator as a way to get a `Record<string,string>` containing all query parameters
   passed via URL. You can use a specific interface type for such parameters, but please note that Alterior does not 
   perform automatic coercion of the fields of the `@QueryParmas()` object- all values will be strings.
-
+- The `accessControl()` built-in middleware has been removed in preparation for the 3.0.0 release. This feature was
+  deprecated in `v3.0.0-beta.2` released on 9/6/2018. Please use a Connect-compatible middleware package or create
+  your own instead. Feel free to start from Alterior's implementation, you can find it
+  at https://github.com/alterior-mvc/alterior/blob/c4e6730c98d7f2a6d20764612af0b7b2cd51c1e6/packages/web-server/src/accesscontrol.ts.
 # 🚀 3.0.0-rc.5
 
 - Documentation improvements
