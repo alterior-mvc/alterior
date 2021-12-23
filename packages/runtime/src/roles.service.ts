@@ -119,19 +119,20 @@ export class RolesService {
         this._configuration = config;
     }
 
-    async start(roleModuleClass : any) {
-        return await this.getRoleForModule(roleModuleClass).start();
-    }
-
-    async stop(roleModuleClass : any) {
-        return await this.getRoleForModule(roleModuleClass).stop();
-    }
-
-    getRoleForModule(roleModuleClass) {
+    getForModule(roleModuleClass) {
         let role = this._roles.find(x => x.class === roleModuleClass);
 
         if (!role)
             throw new ArgumentError(`Role module class ${roleModuleClass.name} is not registered`);
+
+        return role;
+    }
+
+    getById(id : string) {
+        let role = this._roles.find(x => x.identifier === id);
+
+        if (!role)
+            throw new ArgumentError(`Role with ID '${id}' is not registered`);
 
         return role;
     }

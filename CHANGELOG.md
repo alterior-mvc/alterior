@@ -13,7 +13,11 @@
   your own instead. Feel free to start from Alterior's implementation, you can find it
   at https://github.com/alterior-mvc/alterior/blob/c4e6730c98d7f2a6d20764612af0b7b2cd51c1e6/packages/web-server/src/accesscontrol.ts.
 - The `@Request()` parameter decorator has been removed in preparation for the 3.0.0 release. This decorator was deprecated in `v3.0.0-beta.76` released on 2/27/2021. Use `WebEvent.request` instead to access parameters of the underlying HTTP request.
-
+- The `RolesService#getRoleForModule()` method has been renamed to `RolesService#getForModule()`
+- `RolesService#getById()` has been added.
+- The `RolesService#start()` and `RolesService#stop()` methods have been removed. Use `RolesService#getById()` or 
+  `RolesService#getForModule()` and call `start`/`stop` on the resulting `Role` object instead.
+  
 # 🚀 3.0.0-rc.5
 
 - Documentation improvements
