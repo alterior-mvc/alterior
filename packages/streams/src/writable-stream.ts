@@ -10,6 +10,7 @@ const K_DESIRED_SIZE = Symbol(`[[desiredSize]]`);
 const K_SIGNAL_CONTROLLER = Symbol(`[[signalController]]`);
 const K_STORED_ERROR = Symbol(`[[storedError]]`);
 const K_ENSURE_READY_PROMISE_REJECTED = Symbol(`[[ensureReadyPromiseRejected]]`);
+const K_ENSURE_CLOSED_PROMISE_REJECTED = Symbol(`[[ensureClosedPromiseRejected]]`);
 const K_HAS_OPERATION_MARKED_IN_FLIGHT = Symbol(`[[hasOperationMarkedInFlight]]`);
 const K_FINISH_ERRORING = Symbol(`[[finishErroring]]`);
 const K_ERROR_STEPS = Symbol(`[[errorSteps]]`);
@@ -33,6 +34,7 @@ const K_ADD_WRITE_REQUEST = Symbol(`[[addWriteRequest]]`);
 const K_CHUNK_SIZE = Symbol(`[[chunkSize]]`);
 const K_NEW = Symbol(`[[new]]`);
 const K_FROM_UNDERLYING_SINK = Symbol(`[[fromUnderlyingSink]]`);
+const K_BACKPRESSURE = Symbol(`[[backpressure]]`);
 
 const CLOSE_SENTINEL : ValueWithSize = { value: undefined, size: 0 };
 
@@ -58,7 +60,55 @@ export class AltWritableStreamDefaultController implements WritableStreamDefault
         sizeAlgorithm : QueuingStrategySizeCallback,
         highWaterMark : number
     ) {
+        let controller = new AltWritableStreamDefaultController();
+        controller.#stream = stream;
 
+        let startAlgorithm = () => Promise.resolve();
+        let writeAlgorithm = chunk => Promise.resolve();
+        let closeAlgorithm = () => Promise.resolve();
+        let abortAlgorithm = error => Promise.resolve();
+
+        if (underlyingSink.start)
+            startAlgorithm = () => underlyingSink.start.call(underlyingSink, controller);
+        if (underlyingSink.write)
+            writeAlgorithm = chunk => underlyingSink.write.call(underlyingSink, chunk, controller);
+        if (underlyingSink.close)
+            closeAlgorithm = () => underlyingSink.close.call(underlyingSink);
+        if (underlyingSink.abort)
+            abortAlgorithm = error => underlyingSink.abort.call(underlyingSink, error);
+        
+        controller.#writeAlgorithm = writeAlgorithm;
+        controller.#closeAlgorithm = closeAlgorithm;
+        controller.#abortAlgorithm = abortAlgorithm;
+
+        controller.#strategySizeAlgorithm = sizeAlgorithm;
+        controller.#strategyHWM = highWaterMark;
+        stream[K_UPDATE_BACKPRESSURE](controller.backpressure);
+
+        controller.start(startAlgorithm);
+
+        return controller;
+    }
+
+    private async start(callback : () => Promise<void>) {
+        try {
+            await callback();
+        } catch (e) {
+            assert(() => ['writable', 'erroring'].includes(this.#stream[K_STATE]));
+            this.#started = true;
+            if (this.#stream[K_STATE] === 'writable') {
+                this.#stream[K_START_ERRORING](e);
+                return;
+            }
+
+            assert(() => this.#stream[K_STATE] === 'erroring');
+            this.#stream[K_FINISH_ERRORING]();
+            return;
+        }
+
+        assert(() => ['writable', 'erroring'].includes(this.#stream[K_STATE]));
+        this.#started = true;
+        this.advanceQueueIfNeeded();
     }
 
     #strategyHWM : number;
@@ -238,6 +288,32 @@ export class AltWritableStreamDefaultController implements WritableStreamDefault
 }
 
 export class AltWritableStreamDefaultWriter<W = any> implements WritableStreamDefaultWriter<W> {
+    constructor(stream : AltWritableStream) {
+        if (stream.locked)
+            throw new TypeError();
+        
+        this.#stream = stream;
+        stream[K_WRITER] = this;
+
+        if (this.#stream[K_STATE] === 'writable') {
+            if (!stream[K_CLOSE_QUEUED_OR_IN_FLIGHT]() && stream[K_BACKPRESSURE])
+                this.#ready = new PromiseController();
+            else
+                this.#ready = PromiseController.resolve();
+            this.#closed = new PromiseController();
+        } else if (this.#stream[K_STATE] === 'erroring') {
+            this.#ready = PromiseController.reject(stream[K_STORED_ERROR]);
+            this.#closed = new PromiseController();
+        } else if (this.#stream[K_STATE] === 'closed') {
+            this.#ready = PromiseController.resolve();
+            this.#closed = PromiseController.resolve();
+        } else {
+            assert(() => this.#stream[K_STATE] === 'errored');
+            this.#ready = PromiseController.reject(stream[K_STORED_ERROR]);
+            this.#closed = PromiseController.reject(stream[K_STORED_ERROR]);
+        }
+    }
+
     #closed : PromiseController<void>;
     #ready : PromiseController<void>;
     #stream : AltWritableStream;
@@ -245,7 +321,8 @@ export class AltWritableStreamDefaultWriter<W = any> implements WritableStreamDe
     get closed(): Promise<void> { return this.#closed.promise; }
     get [K_CLOSED]() { return this.#closed; }
     set [K_CLOSED](value) { this.#closed = value; }
-
+    get [K_STREAM]() { return this.#stream; }
+    set [K_STREAM](value) { this.#stream = value; }
     get desiredSize(): number {
         if (!this.#stream)
             throw new TypeError();
@@ -261,16 +338,31 @@ export class AltWritableStreamDefaultWriter<W = any> implements WritableStreamDe
 
     get ready(): Promise<void> { return this.#ready.promise; }
 
-    abort(reason?: any): Promise<void> {
-        throw new Error("Method not implemented.");
+    async abort(reason?: any): Promise<void> {
+        if (!this.#stream)
+            throw new TypeError();
+        await this.#stream.abort();
     }
     
-    close(): Promise<void> {
-        throw new Error("Method not implemented.");
+    async close(): Promise<void> {
+        if (!this.#stream)
+            throw new TypeError();
+        if (this.#stream[K_CLOSE_QUEUED_OR_IN_FLIGHT]())
+            throw new TypeError();
+
+        this.#stream.close();
     }
     
     releaseLock(): void {
-        throw new Error("Method not implemented.");
+        if (!this.#stream)
+            return;
+        assert(() => !this.#stream[K_WRITER]);
+        
+        let releasedError = new TypeError();
+        this[K_ENSURE_READY_PROMISE_REJECTED](releasedError);
+        this[K_ENSURE_CLOSED_PROMISE_REJECTED](releasedError);
+        this.#stream[K_WRITER] = undefined;
+        this.#stream = undefined;
     }
     
     async write(chunk: W): Promise<void> {
@@ -303,6 +395,13 @@ export class AltWritableStreamDefaultWriter<W = any> implements WritableStreamDe
         else
             this.#ready = PromiseController.reject(error);
     }
+
+    [K_ENSURE_CLOSED_PROMISE_REJECTED](error) {
+        if (this.#closed.state === 'pending')
+            this.#closed.reject(error);
+        else
+            this.#closed = PromiseController.reject(error);
+    }
 }
 
 export class AltWritableStream<W = any> implements WritableStream<W> {
@@ -318,26 +417,11 @@ export class AltWritableStream<W = any> implements WritableStream<W> {
         if (Number.isNaN(highWaterMark) || highWaterMark < 0)
             throw new RangeError();
         
+
+        
         assert(() => !this.#controller);
 
-        let controller = AltWritableStreamDefaultController[K_NEW]();
-        this.#controller = controller;
-        controller[K_STREAM] = this;
-
-        let startAlgorithm = () => {};
-        let writeAlgorithm = chunk => Promise.resolve();
-        let closeAlgorithm = () => Promise.resolve();
-        let abortAlgorithm = error => Promise.resolve();
-
-        if (underlyingSink.start)
-            startAlgorithm = () => underlyingSink.start.call(underlyingSink, controller);
-        if (underlyingSink.write)
-            writeAlgorithm = chunk => underlyingSink.write.call(underlyingSink, chunk, controller);
-        if (underlyingSink.close)
-            closeAlgorithm = () => underlyingSink.close.call(underlyingSink);
-        if (underlyingSink.abort)
-            abortAlgorithm = error => underlyingSink.abort.call(underlyingSink, error);
-        
+        this.#controller = AltWritableStreamDefaultController[K_FROM_UNDERLYING_SINK](this, underlyingSink, sizeAlgorithm, highWaterMark);
         
     }
 
@@ -367,7 +451,10 @@ export class AltWritableStream<W = any> implements WritableStream<W> {
     }
 
     getWriter(): WritableStreamDefaultWriter<W> {
-        throw new Error("Method not implemented.");
+        if (this.locked)
+            throw new TypeError();
+
+        return new AltWritableStreamDefaultWriter(this);
     }
 
     async close() {
@@ -396,6 +483,7 @@ export class AltWritableStream<W = any> implements WritableStream<W> {
     get [K_STATE]() { return this.#state; }
     set [K_STATE](value) { this.#state = value; }
     get [K_WRITER]() { return this.#writer; }
+    set [K_WRITER](value) { this.#writer = value; }
     get [K_CONTROLLER]() { return this.#controller; }
     get [K_STORED_ERROR]() { return this.#storedError; }
     set [K_STORED_ERROR](value) { this.#storedError = value; }
@@ -478,6 +566,7 @@ export class AltWritableStream<W = any> implements WritableStream<W> {
         return this.closeQueuedOrInFlight;
     }
 
+    get [K_BACKPRESSURE]() { return this.#backpressure; }
     [K_UPDATE_BACKPRESSURE](backpressure) {
         assert(() => this.#state === 'writable');
         assert(() => !this.closeQueuedOrInFlight);
