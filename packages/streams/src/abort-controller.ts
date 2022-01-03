@@ -11,7 +11,7 @@ export class AltEventEmitter implements EventTarget {
     }
 
     dispatchEvent(event: Event): boolean {
-        let listeners = this.#listeners.get(event.type);
+        let listeners = this.#listeners.get(event.type) ?? [];
         for (let listener of listeners) {
             if (typeof listener === 'function') {
                 listener(event);
@@ -49,13 +49,18 @@ export class AltAbortSignal implements AbortSignal {
 
     #aborted = false;
     #emitter = new AltEventEmitter();
+    #reason;
 
     get aborted() { return this.#aborted; }
+    get reason() { return this.#reason; }
 
-    [K_ABORT]() {
+    [K_ABORT](reason?) {
+        if (this.#aborted)
+            return;
         this.#aborted = true;
+        this.#reason = reason;
         this.#emitter.dispatchEvent({
-            type: 'aborted', 
+            type: 'abort', 
             bubbles: false, 
             cancelable: false, 
             cancelBubble: false, 
@@ -108,7 +113,7 @@ export class AltAbortSignal implements AbortSignal {
 
 export class AltAbortController implements AbortController {
     signal = new AltAbortSignal();
-    abort(): void {
-        this.signal[K_ABORT]();
+    abort(reason?): void {
+        this.signal[K_ABORT](reason);
     }
 }

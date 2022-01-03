@@ -1,0 +1,15 @@
+{
+  "name": "@alterior/streams",
+  "version": "1.0.0",
+  "description": "Provides a WHATWG-compatible Streams implementation for Node.js. \r This is only required for Node.js versions before v16. For Node.js' implementation see https://nodejs.org/docs/latest-v16.x/api/webstreams.html",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "npm run build && node dist/test"
+  },
+  "author": "Alterior",
+  "license": "MIT",
+  "dependencies": {
+    "wpt-runner": "^4.0.2"
+  }
+}

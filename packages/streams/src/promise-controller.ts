@@ -1,10 +1,12 @@
+import { React, SetPromiseIsHandledToTrue } from "./util";
+
 export class PromiseController<T = void> {
     constructor() {
         this.#promise = new Promise<T>((resolve, reject) => (this.#resolve = resolve, this.#reject = reject));
     }
 
     #promise : Promise<T>;
-    #resolve : (t : T) => void;
+    #resolve : (t : T | PromiseLike<T>) => void;
     #reject : (e) => void;
     #error;
     #fulfilled = false;
@@ -20,16 +22,23 @@ export class PromiseController<T = void> {
         return 'pending';
     }
 
-    resolve(t : T) {
+    resolve(t : T | PromiseLike<T>) {
         this.#fulfilled = true;
-        this.#value = t;
+        React(t, t => this.#value = t);
         this.#resolve(t);
+        return this;
     }
 
     reject(e) {
         this.#error = e;
         this.#fulfilled = true;
         this.#reject(e);
+        return this;
+    }
+
+    markHandled() {
+        SetPromiseIsHandledToTrue(this.#promise);
+        return this;
     }
 
     static resolve<T = any>(v? : T) {
