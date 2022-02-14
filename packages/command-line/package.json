@@ -37,5 +37,8 @@
     "razmin": "^1.1.6",
     "rimraf": "^3.0.2"
   },
-  "gitHead": "d5d6ba9e21d280a23f056a5b983f51903be58120"
+  "gitHead": "d5d6ba9e21d280a23f056a5b983f51903be58120",
+  "dependencies": {
+    "tslib": "^2.3.1"
+  }
 }
