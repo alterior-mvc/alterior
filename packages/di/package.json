@@ -1,6 +1,6 @@
 {
   "name": "@alterior/di",
-  "version": "3.0.0-rc.5",
+  "version": "3.0.0-rc.6",
   "description": "Flexible reflection-based dependency injection",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -39,8 +39,8 @@
     "docs": "typedoc ."
   },
   "dependencies": {
-    "@alterior/annotations": "^3.0.0-rc.5",
-    "@alterior/common": "^3.0.0-rc.5",
+    "@alterior/annotations": "^3.0.0-rc.6",
+    "@alterior/common": "^3.0.0-rc.6",
     "zone.js": "^0.11.4"
   },
   "devDependencies": {
