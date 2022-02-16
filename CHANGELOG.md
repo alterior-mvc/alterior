@@ -1,5 +1,6 @@
 # ⏭ vNext
 
+- Alterior is now built using Typescript 4.5.4, previous versions used Typescript 4.1.5.
 - `@alterior/platform-nodejs` now provides a global implementation of `WebSocket` implementation using `ws` if one is
   not already available
 - Fixes `deepClone()` to handle cyclical object graphs correctly
