@@ -337,6 +337,7 @@ export class RouteInstance {
 		
 		let bodyAnnotation = paramAnnotations
 			.map(annots => annots.find(x => x instanceof InputAnnotation && x.type === 'body') as InputAnnotation)
+			.filter(x => x)
 			[0]
 		;
 		let bodyIndex = paramAnnotations.findIndex(annots => annots.some(x => x === bodyAnnotation));

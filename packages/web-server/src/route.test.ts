@@ -674,7 +674,7 @@ suite(describe => {
 			expect(observedR).to.equal('bar');
 		});
 
-		it('should be able to inject body when the body parsing middleware is used', async () => {
+		it('should be able to inject @Body()', async () => {
 			interface MyRequestType {
 				zoom : number;
 			}
@@ -683,7 +683,7 @@ suite(describe => {
 
 			@WebService()
 			class FakeApp {
-				@Post('/foo', { middleware: [ bodyParser.json() ] })
+				@Post('/foo')
 				getX(@Body() body : MyRequestType) { 
 					observedZoom = body.zoom;
 					return Promise.resolve({ok: true});
@@ -692,6 +692,31 @@ suite(describe => {
 
 			await teststrap(FakeApp)
 				.post('/foo')
+				.send({ zoom: 123 })
+				.expect(200, { ok: true })
+			;
+
+			expect(observedZoom).to.equal(123);
+		});
+
+		it.only('should be able to inject @Body() on non-first parameters', async () => {
+			interface MyRequestType {
+				zoom : number;
+			}
+
+			let observedZoom = null;
+
+			@WebService()
+			class FakeApp {
+				@Post('/foo/:id')
+				getX(id : string, @Body() body : MyRequestType) { 
+					observedZoom = body.zoom;
+					return Promise.resolve({ok: true});
+				}
+			}
+
+			await teststrap(FakeApp)
+				.post('/foo/abc')
 				.send({ zoom: 123 })
 				.expect(200, { ok: true })
 			;
