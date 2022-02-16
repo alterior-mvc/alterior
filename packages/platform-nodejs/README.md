@@ -35,3 +35,4 @@ This does a number of things for you:
 - Loads `dotenv/config` as early as possible to ensure that 
   any `dotenv` files are properly accounted for within `process.env`.
 - Makes `fetch()` available globally (when not already provided). Does this with `globalThis.fetch = require('node-fetch')`
+- Makes `WebSocket` available globally (when not already provided)
