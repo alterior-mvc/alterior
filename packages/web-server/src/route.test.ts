@@ -699,7 +699,7 @@ suite(describe => {
 			expect(observedZoom).to.equal(123);
 		});
 
-		it.only('should be able to inject @Body() on non-first parameters', async () => {
+		it('should be able to inject @Body() on non-first parameters', async () => {
 			interface MyRequestType {
 				zoom : number;
 			}
