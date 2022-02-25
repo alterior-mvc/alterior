@@ -57,7 +57,11 @@ export class WebServer {
 	private _injector: Injector;
 	readonly options: WebServerOptions;
 	readonly websockets: ws.Server;
-	private httpServer: http.Server;
+
+	private _httpServer : http.Server;
+	get httpServer() {
+		return this._httpServer;
+	}
 	private _serviceDescription: ServiceDescription;
 	private _engine: WebServerEngine;
 
@@ -159,7 +163,7 @@ export class WebServer {
 	}
 
 	async start() {
-		this.httpServer = await this.engine.listen(this.options);
+		this._httpServer = await this.engine.listen(this.options);
 	}
 
 	stop() {
