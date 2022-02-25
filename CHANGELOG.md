@@ -1,4 +1,11 @@
-# ⏭ 3.0.0-rc.7
+# ⏭ vNext
+
+TBD
+
+# 🚀 3.0.0-rc.8
+- Bugfix: Wait until web service engine start is complete before proceeding
+
+# 🚀 3.0.0-rc.7
 - `@/web-server`: `WebServer#httpServer` is now public (read only)
 - `@/web-server`: Service classes can now receive an `altOnListen(server : WebServer)` event, useful for configuring
   aspects of the underlying Node.js http.Server instance directly.

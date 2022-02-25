@@ -132,7 +132,7 @@ export const WebService : WebServiceDecorator = <any>WebServiceAnnotation.decora
                     name: 'Web Server',
                     summary: 'Starts a web server backed by the controllers configured in the module tree',
                     start: async () => {
-                        webserver.start();
+                        await webserver.start();
                         serviceInstance.start();
                         serviceInstance.listen(webserver);
                     },
