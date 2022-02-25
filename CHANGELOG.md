@@ -1,4 +1,9 @@
 # ⏭ vNext
+- `@/web-server`: `WebServer#httpServer` is now public (read only)
+- `@/web-server`: Service classes can now receive an `altOnListen(server : WebServer)` event, useful for configuring
+  aspects of the underlying Node.js http.Server instance directly.
+
+# 🚀 3.0.0-rc.6
 
 - Alterior is now built using Typescript 4.5.4, previous versions used Typescript 4.1.5.
 - `@alterior/platform-nodejs` now provides a global implementation of `WebSocket` implementation using `ws` if one is

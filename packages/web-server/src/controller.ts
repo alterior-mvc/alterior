@@ -221,6 +221,15 @@ export class ControllerInstance {
 			this.instance.altOnStart();
 	}
 
+	/**
+	 * Notify the controller that it's web service is now listening to the desired port
+	 * @param server 
+	 */
+	listen(server : WebServer) {
+		if (this.instance && typeof this.instance.altOnListen === 'function')
+			this.instance.altOnListen(server);
+	}
+
 	stop() {
 		if (!this.isModule && this.instance && typeof this.instance.altOnStop === 'function')
 			this.instance.altOnStop();

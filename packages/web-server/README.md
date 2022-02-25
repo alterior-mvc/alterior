@@ -551,7 +551,7 @@ await test.get('/foo')
 
 For more information about the capabilities of `teststrap()`, consult the [supertest documentation](https://github.com/visionmedia/supertest).
 
-# Accessing the Express instance
+# Accessing the underlying Express application
 
 Perhaps you need access to the Express (or other web engine) application object to do something Alterior doesn't support:
 
@@ -573,6 +573,31 @@ export class MyService {
 ```
 
 You can call `WebServer.for()` and pass any web service or any controller mounted within a web service. Always pass the object instance (`this`) in order to ensure you get the correct web server instance. Note that if your controller is used in multiple web services, different instances of your controller will correspond to different instances of `WebServer`. 
+
+# Accessing the http.Server instance
+
+The `http.Server` instance is only available after the server has begun listening to the configured port. This happens 
+after all modules receive the `OnStart` event (ie via `altOnStart`), so getting access to it during startup cannot be 
+done using the usual means. For this reason the service class can receive an additional event when the web service 
+has begun listening.
+
+```typescript
+    altOnListen(server : WebServer) {
+        // access http.Server instance via `server.httpServer`
+    }
+```
+
+# Setting the global timeout policy
+
+Node.js http.Server has a default timeout of 2 minutes (120 seconds). You may need to increase/decrease this timeout 
+depending on your use case and desired policies. You can control this from the top level Service class for your web
+service:
+
+```typescript
+    altOnListen(server : WebServer) {
+        server.httpServer.setTimeout(1000 * 25); // set global request timeout to 25 seconds
+    }
+```
 
 # Deploying to a Cloud Function
 

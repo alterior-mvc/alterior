@@ -134,6 +134,7 @@ export const WebService : WebServiceDecorator = <any>WebServiceAnnotation.decora
                     start: async () => {
                         webserver.start();
                         serviceInstance.start();
+                        serviceInstance.listen(webserver);
                     },
                     stop: async () => {
                         webserver.stop();
