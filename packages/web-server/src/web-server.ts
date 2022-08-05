@@ -72,7 +72,10 @@ export class WebServer {
 	private static _servers = new WeakMap<Object, WebServer>();
 
 	public static for(webService: any): WebServer {
-		return this._servers.get(webService);
+		let server = this._servers.get(webService);
+		if (!server)
+			throw new Error(`Failed to retrieve server for the given web service`);
+		return server;
 	}
 
 	public static register(webService: any, server: WebServer) {
