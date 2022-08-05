@@ -1,6 +1,6 @@
 {
   "name": "@alterior/root-package",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "An Express-based Typescript MVC framework with decorators and dependency injection.",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
