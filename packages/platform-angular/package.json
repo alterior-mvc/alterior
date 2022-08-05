@@ -1,6 +1,6 @@
 {
   "name": "@alterior/platform-angular",
-  "version": "3.0.0-rc.6",
+  "version": "3.0.0-rc.9",
   "description": "Use Alterior modules in Angular apps",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -47,10 +47,10 @@
     "zone.js": "^0.11.4"
   },
   "dependencies": {
-    "@alterior/annotations": "^3.0.0-rc.6",
-    "@alterior/common": "^3.0.0-rc.6",
-    "@alterior/di": "^3.0.0-rc.6",
-    "@alterior/runtime": "^3.0.0-rc.6"
+    "@alterior/annotations": "^3.0.0-rc.9",
+    "@alterior/common": "^3.0.0-rc.9",
+    "@alterior/di": "^3.0.0-rc.9",
+    "@alterior/runtime": "^3.0.0-rc.9"
   },
   "gitHead": "853d0470b31cc4aa0b27fd04e2f743f3f1ec9efc"
 }
