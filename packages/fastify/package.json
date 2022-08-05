@@ -1,6 +1,6 @@
 {
   "name": "@alterior/fastify",
-  "version": "3.0.0-rc.9",
+  "version": "3.0.0",
   "description": "Access Fastify state within an Alterior app",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -37,7 +37,7 @@
     "docs": "typedoc ."
   },
   "dependencies": {
-    "@alterior/web-server": "^3.0.0-rc.9",
+    "@alterior/web-server": "^3.0.0",
     "fastify": "^2.15.3"
   },
   "devDependencies": {
