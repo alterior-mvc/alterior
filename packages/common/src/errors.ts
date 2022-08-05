@@ -156,5 +156,8 @@ export class HttpError {
         public body : any, 
         public headers : string[][] = []
     ) {
+        this.message = `HttpError statusCode=${statusCode} [are you sure you meant to catch this?]`;
 	}
+
+    message: string;
 }
