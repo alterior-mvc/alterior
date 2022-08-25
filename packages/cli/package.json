@@ -1,7 +1,7 @@
 {
   "name": "@alterior/cli",
   "version": "3.0.1",
-  "description": "Provides the `alt` command line tool for managing Alterior projects.",
+  "description": "Provides the `alt` command line tool for managing Alterior projects",
   "main": "dist/index.js",
   "module": "dist.esm/index.js",
   "publishConfig": {
