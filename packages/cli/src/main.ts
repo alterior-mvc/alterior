@@ -16,7 +16,7 @@ let line = new CommandLine()
     .info({
         executable: 'alt',
         description: 'Create and manage Alterior projects',
-        copyright: 'Copyright 2021 William Lahti',
+        copyright: 'Copyright 2021-2022 The Alterior Project',
         version: PKG.version
     })
     .command('new', cmd => {
