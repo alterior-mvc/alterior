@@ -1,6 +1,8 @@
-# ⏭ vNext
+# ⏭ 
 
-TBD
+# 🚀 3.0.0
+
+Final release of Alterior v3
 
 # 🚀 3.0.0-rc.8
 - Bugfix: Wait until web service engine start is complete before proceeding
