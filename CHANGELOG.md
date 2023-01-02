@@ -1,8 +1,38 @@
-# ⏭ 
+# ⏭ vNext
+
+# 🚀 3.0.5
+
+- `@/web-server`: Fixes a crash in `WebEvent.request` et al when called outside of an `@alterior/web-server` request context
+- `@/platform-nodejs`: Support loading `.env` files from parent directories of the current working directory
+
+# 🚀 3.0.4
+
+- `@/web-server`: Remove `@types/supertest` dependency
+
+# 🚀 3.0.3
+
+- Properly expose `@alterior/cli` types
+
+# 🚀 3.0.2
+
+- Released all packages under 3.0.2 for consistency
+
+# 🚀 3.0.1
+
+- Fixed an issue where `console` patch did not work properly on the web
 
 # 🚀 3.0.0
 
 Final release of Alterior v3
+
+# 🚀 3.0.0-rc.9
+
+- `@/web-server`: The message attached to `HttpError` will now hint that you shouldn't be catching this error, since 
+  it's used for aborting the active request and sending an HTTP status codse
+- `@/web-server`: When `WebServer.for()` fails to resolve the current `WebServer` instance, an error is now thrown 
+  instead of returning `undefined`. This helps to identify "split brain" packaging issues, most commonly when using 
+  `npm link` or other developer tooling.
+- `@/platform-angular`: List peer dependency support for Angular 10, 11, 12, 13, and 14
 
 # 🚀 3.0.0-rc.8
 - Bugfix: Wait until web service engine start is complete before proceeding
