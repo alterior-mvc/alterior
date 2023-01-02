@@ -41,15 +41,15 @@ export class WebEvent<
 	}
 
 	static get request() {
-		return this.current.request;
+		return this.current?.request;
 	}
 
 	static get response() {
-		return this.current.response;
+		return this.current?.response;
 	}
 
 	static get controller() {
-		return this.current.controller;
+		return this.current?.controller;
 	}
 
 	/**
