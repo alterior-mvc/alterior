@@ -7,6 +7,7 @@ describe('Base64', () => {
         it('encodes ASCII as expected', () => {
             expect(Base64.encode('A')).to.equal('QQ==');
             expect(Base64.encode('hello world')).to.equal('aGVsbG8gd29ybGQ=');
+            expect(Base64.encode('hello world!')).to.equal('aGVsbG8gd29ybGQh');
             expect(Base64.encode('hello 123 $ _ / @ -')).to.equal('aGVsbG8gMTIzICQgXyAvIEAgLQ==');
         });
         it('encodes UTF-8 as expected', () => {

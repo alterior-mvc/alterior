@@ -7,7 +7,7 @@ export class Base64 {
 
     static encodeBytes(bytes: Uint8Array): string {
         let output = '';
-        let inputPad = 3 - bytes.length % 3;
+        let inputPad = bytes.length % 3 === 0 ? 0 : 3 - bytes.length % 3;
         let buffer = new Uint8Array(bytes.length + inputPad);
         buffer.set(bytes, 0);
 
@@ -29,7 +29,8 @@ export class Base64 {
         }
 
         let outputPad = Math.floor(inputPad * 8 / 6);
-        output = output.slice(0, -outputPad) + Array(outputPad + 1).join('=');
+        if (outputPad !== 0)
+            output = output.slice(0, -outputPad) + Array(outputPad + 1).join('=');
         return output;
     }
 
@@ -39,7 +40,7 @@ export class Base64 {
 
     static decodeBytes(str: string): Uint8Array {
         str = str.replace(/=+$/g, '');
-        let paddingRequired = 4 - str.length % 4;
+        let paddingRequired = str.length % 4 === 0 ? 0 : 4 - str.length % 4;
         str += Array(paddingRequired + 1).join('=');
 
         let decoded = new Uint8Array(str.length * 6 / 8);
