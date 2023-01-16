@@ -1,6 +1,6 @@
 {
   "name": "@alterior/di",
-  "version": "3.1.3",
+  "version": "3.1.4",
   "description": "Flexible reflection-based dependency injection",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -39,8 +39,8 @@
     "docs": "typedoc ."
   },
   "dependencies": {
-    "@alterior/annotations": "^3.1.3",
-    "@alterior/common": "^3.1.2"
+    "@alterior/annotations": "^3.1.4",
+    "@alterior/common": "^3.1.4"
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.13",
