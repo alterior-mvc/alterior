@@ -48,7 +48,7 @@
     "@alterior/runtime": "^3.0.6",
     "@avejidah/get-parameter-names": "^0.3.2",
     "body-parser": "^1.19.0",
-    "ejs": "^2.7.4",
+    "ejs": "^3.1.7",
     "fast-json-stringify": "^1.21.0",
     "kind-of": ">=6.0.3",
     "node-forge": "^1.2.0",
