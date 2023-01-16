@@ -50,7 +50,7 @@
     "fast-json-stringify": "^1.21.0",
     "kind-of": ">=6.0.3",
     "node-forge": "^1.3.0",
-    "qs": "^6.10.1",
+    "qs": "^6.5.3",
     "spdy": "^4.0.2",
     "supertest": "^4.0.2",
     "tslib": "^2.3.1",
