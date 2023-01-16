@@ -22,6 +22,7 @@ export class ServiceGenerator extends Generator {
         let dependencies = [
             '@alterior/runtime',
             '@alterior/web-server',
+            '@alterior/express',
             '@alterior/logging',
             '@alterior/di',
             '@alterior/platform-nodejs'
@@ -35,7 +36,6 @@ export class ServiceGenerator extends Generator {
             'rimraf',
             'nodemon',
             '@types/chai',
-            '@types/express',
             '@types/node-fetch',
             '@types/ws'
         ];
@@ -117,8 +117,11 @@ export class ServiceGenerator extends Generator {
                 import '@alterior/platform-nodejs';
 
                 import { Application } from '@alterior/runtime';
+                import { WebServer } from '@alterior/web-server';
+                import { ExpressEngine } from '@alterior/express';
                 import { ${capitalize(this.projectName)} } from './${this.projectName}';
 
+                WebServerEngine.default = ExpressEngine;
                 Application.bootstrap(${capitalize(this.projectName)});
                 `
             )

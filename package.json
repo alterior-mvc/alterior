@@ -12,6 +12,25 @@
   "bugs": {
     "url": "https://github.com/alterior-mvc/alterior/issues"
   },
+  "workspaces": [
+    "packages/annotations",
+    "packages/cli",
+    "packages/line",
+    "packages/common",
+    "packages/di",
+    "packages/express",
+    "packages/fastify",
+    "packages/functions",
+    "packages/http",
+    "packages/logging",
+    "packages/angular",
+    "packages/nodejs",
+    "packages/runtime",
+    "packages/streams",
+    "packages/tasks",
+    "packages/testapp",
+    "packages/server"
+  ],
   "scripts": {
     "test": "lerna run test",
     "publish:all": "lerna link && npm test && lerna publish",
@@ -27,7 +46,8 @@
   "devDependencies": {
     "@types/chai": "^4.2.11",
     "@types/ejs": "^2.7.0",
-    "@types/express": "^4.17.6",
+    "@types/express": "^4.17.15",
+    "@types/serve-static": "1.15.0",
     "@types/mkdirp": "^0.5.2",
     "@types/node": "^10.17.24",
     "@types/rimraf": "^2.0.4",
