@@ -49,7 +49,7 @@
     "body-parser": "^1.19.0",
     "fast-json-stringify": "^1.21.0",
     "kind-of": ">=6.0.3",
-    "node-forge": "^1.2.0",
+    "node-forge": "^1.3.0",
     "qs": "^6.10.1",
     "reflect-metadata": "^0.1.12",
     "spdy": "^4.0.2",
