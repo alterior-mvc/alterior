@@ -39,19 +39,5 @@
   "dependencies": {
     "@alterior/web-server": "^3.0.6",
     "fastify": "^2.15.3"
-  },
-  "devDependencies": {
-    "@types/chai": "^4.2.11",
-    "@types/jasmine": "^2.5.41",
-    "@types/node": "^8.10.61",
-    "chai": "^4.2.0",
-    "prettier": "1.13.7",
-    "razmin": "^1.1.6",
-    "reflect-metadata": "^0.1.12",
-    "rimraf": "^2.7.1",
-    "tslib": "^2.3.1",
-    "tslint": "5.11.0",
-    "tslint-config-prettier": "1.17.0",
-    "typescript": "^4.1.5"
   }
 }

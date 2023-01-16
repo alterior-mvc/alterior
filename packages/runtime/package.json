@@ -40,18 +40,11 @@
     "@alterior/annotations": "^3.0.6",
     "@alterior/common": "^3.0.6",
     "@alterior/di": "^3.0.6",
-    "reflect-metadata": "^0.1.12",
     "tslib": "^2.3.1"
   },
   "peerDependencies": {
-    "zone.js": "^0.11.4"
-  },
-  "devDependencies": {
-    "@types/node": "^10.17.24",
-    "chai": "^4.1.2",
-    "razmin": "^1.1.6",
-    "rimraf": "^3.0.2",
-    "typescript": "^4.1.5"
+    "zone.js": "^0.11.4",
+    "reflect-metadata": "^0.1.13"
   },
   "gitHead": "853d0470b31cc4aa0b27fd04e2f743f3f1ec9efc"
 }

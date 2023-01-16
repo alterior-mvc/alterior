@@ -46,10 +46,5 @@
     "tslib": "^2.3.1",
     "xhr2": "^0.1.4"
   },
-  "gitHead": "853d0470b31cc4aa0b27fd04e2f743f3f1ec9efc",
-  "devDependencies": {
-    "razmin": "^1.1.6",
-    "rimraf": "^3.0.2",
-    "typescript": "^4.1.5"
-  }
+  "gitHead": "853d0470b31cc4aa0b27fd04e2f743f3f1ec9efc"
 }
