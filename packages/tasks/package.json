@@ -48,7 +48,7 @@
     "@avejidah/get-parameter-names": "^0.3.2",
     "@types/ejs": "^2.7.0",
     "bull": "^3.18.0",
-    "ejs": "^2.7.4",
+    "ejs": "^3.1.7",
     "kind-of": ">=6.0.3",
     "reflect-metadata": "^0.1.12",
     "tslib": "^2.3.1"
