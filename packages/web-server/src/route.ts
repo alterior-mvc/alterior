@@ -374,7 +374,7 @@ export class RouteInstance {
 		// Construct a set of easily addressable path parameter descriptions (pathParameterMap)
 		// that can be decorated with insights from reflection later.
 
-		let pathParamMatches = route.path.match(/:([A-Za-z0-9]+)/g) || [];
+		let pathParamMatches = Array.from(route.path.match(/:([A-Za-z0-9]+)/g) ?? []);
 		let pathParamNames = Object.keys(pathParamMatches.reduce((pv, cv) => (pv[cv] = 1, pv), {}));
 
 		this._methodMetadata = {
