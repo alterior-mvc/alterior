@@ -1,151 +1,61 @@
-
-/**
- * @hidden
- */
 const BASE64_KEY = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
-/**
- * Lightweight base64 encode / decode
- */
 export class Base64 {
-	/**
-	 * Encode a string using base64.
-	 * @param input The string to encode
-	 */
-	public static encode(input : string): string {
+    static encode(str: string): string {
+        return this.encodeBytes(new TextEncoder().encode(str));
+    }
 
-        input = input.replace(/ /g, ' ');
+    static encodeBytes(bytes: Uint8Array): string {
+        let output = '';
+        let inputPad = 3 - bytes.length % 3;
+        let buffer = new Uint8Array(bytes.length + inputPad);
+        buffer.set(bytes, 0);
 
-		var output = "";
-		var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-		var i = 0;
- 
-		input = Base64._utf8_encode(input);
- 
-		while (i < input.length) {
- 
-			chr1 = input.charCodeAt(i++);
-			chr2 = input.charCodeAt(i++);
-			chr3 = input.charCodeAt(i++);
- 
-			enc1 = chr1 >> 2;
-			enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-			enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-			enc4 = chr3 & 63;
- 
-			if (isNaN(chr2)) {
-				enc3 = enc4 = 64;
-			} else if (isNaN(chr3)) {
-				enc4 = 64;
-			}
- 
-			output = output +
-			BASE64_KEY.charAt(enc1) + BASE64_KEY.charAt(enc2) +
-			BASE64_KEY.charAt(enc3) + BASE64_KEY.charAt(enc4);
- 
-		}
- 
-		return output;
-	}
- 
-	/**
-	 * Decode a base64 encoded string to raw format.
-	 * @param input The base64 encoded string
-	 */
-	public static decode(input : string): string {
-		var output = "";
-		var chr1, chr2, chr3;
-		var enc1, enc2, enc3, enc4;
-		var i = 0;
- 
-		input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
- 
-		while (i < input.length) {
- 
-			enc1 = BASE64_KEY.indexOf(input.charAt(i++));
-			enc2 = BASE64_KEY.indexOf(input.charAt(i++));
-			enc3 = BASE64_KEY.indexOf(input.charAt(i++));
-			enc4 = BASE64_KEY.indexOf(input.charAt(i++));
- 
-			chr1 = (enc1 << 2) | (enc2 >> 4);
-			chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-			chr3 = ((enc3 & 3) << 6) | enc4;
- 
-			output = output + String.fromCharCode(chr1);
- 
-			if (enc3 != 64) {
-				output = output + String.fromCharCode(chr2);
-			}
-			if (enc4 != 64) {
-				output = output + String.fromCharCode(chr3);
-			}
- 
-		}
- 
-		output = Base64._utf8_decode(output);
- 
-		return output;
- 
-	}
- 
-	// private method for UTF-8 encoding
-	private static _utf8_encode(string) {
-		string = string.replace(/\r\n/g,"\n");
-		var utftext = "";
- 
-		for (var n = 0; n < string.length; n++) {
- 
-			var c = string.charCodeAt(n);
- 
-			if (c < 128) {
-				utftext += String.fromCharCode(c);
-			}
-			else if((c > 127) && (c < 2048)) {
-				utftext += String.fromCharCode((c >> 6) | 192);
-				utftext += String.fromCharCode((c & 63) | 128);
-			}
-			else {
-				utftext += String.fromCharCode((c >> 12) | 224);
-				utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-				utftext += String.fromCharCode((c & 63) | 128);
-			}
- 
-		}
- 
-		return utftext;
-	}
- 
-	// private method for UTF-8 decoding
-	private static _utf8_decode(utftext) {
-		var string = "";
-		var i = 0;
-        var c = 0;
-        var c1 = 0;
-        var c2 = 0;
-        var c3 = 0;
+        for (let i = 0, max = buffer.length; i < max; i += 3) {
+            let value =
+                buffer[i + 0] << 16
+                | buffer[i + 1] << 8
+                | buffer[i + 2]
+                ;
+            let char1 = (value >> 18) & 0x3f;
+            let char2 = (value >> 12) & 0x3f;
+            let char3 = (value >> 6) & 0x3f;
+            let char4 = (value >> 0) & 0x3f;
 
-		while ( i < utftext.length ) {
- 
-			c = utftext.charCodeAt(i);
- 
-			if (c < 128) {
-				string += String.fromCharCode(c);
-				i++;
-			}
-			else if((c > 191) && (c < 224)) {
-				c2 = utftext.charCodeAt(i+1);
-				string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-				i += 2;
-			}
-			else {
-				c2 = utftext.charCodeAt(i+1);
-				c3 = utftext.charCodeAt(i+2);
-				string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-				i += 3;
-			}
- 
-		}
- 
-		return string;
-	} 
+            output += BASE64_KEY[char1];
+            output += BASE64_KEY[char2];
+            output += BASE64_KEY[char3];
+            output += BASE64_KEY[char4];
+        }
+
+        let outputPad = Math.floor(inputPad * 8 / 6);
+        output = output.slice(0, -outputPad) + Array(outputPad + 1).join('=');
+        return output;
+    }
+
+    static decode(str: string): string {
+        return new TextDecoder().decode(this.decodeBytes(str));
+    }
+
+    static decodeBytes(str: string): Uint8Array {
+        str = str.replace(/=+$/g, '');
+        let paddingRequired = 4 - str.length % 4;
+        str += Array(paddingRequired + 1).join('=');
+
+        let decoded = new Uint8Array(str.length * 6 / 8);
+        for (let i = 0, max = str.length; i < max; i += 4) {
+            let value =
+                BASE64_KEY.indexOf(str[i + 0]) << 18
+                | BASE64_KEY.indexOf(str[i + 1]) << 12
+                | BASE64_KEY.indexOf(str[i + 2]) << 6
+                | BASE64_KEY.indexOf(str[i + 3]) << 0
+                ;
+
+            decoded[i / 4 * 3 + 0] = value >> 16 & 0xFF;
+            decoded[i / 4 * 3 + 1] = value >> 8 & 0xFF;
+            decoded[i / 4 * 3 + 2] = value >> 0 & 0xFF;
+        }
+
+        return decoded.subarray(0, decoded.length - paddingRequired);
+    }
 }
