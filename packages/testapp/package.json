@@ -1,6 +1,6 @@
 {
   "name": "@alterior/testapp",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,9 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@alterior/common": "^3.1.0",
-    "@alterior/runtime": "^3.1.0",
-    "@alterior/web-server": "^3.1.0"
+    "@alterior/common": "^3.1.1",
+    "@alterior/runtime": "^3.1.1",
+    "@alterior/web-server": "^3.1.1"
   },
   "gitHead": "29b7c6e1b53dc5fa667c2e22cd34d3e16bdce69d"
 }
