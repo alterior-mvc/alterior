@@ -55,7 +55,7 @@ workflows:
   version: 2
   build:
     jobs:
-      - node-15
+      - node-19
+      - node-18
+      - node-16
       - node-14
-      - node-12
-      - node-10
