@@ -4,11 +4,6 @@
 
 A framework for building well-structured applications and isomorphic libraries in Typescript.
 
-# Status
-
-> **Note:**  
-> Alterior is in **`release candidate`** for version 3.0.
-
 # Overview
 
 Alterior is a framework for building Typescript applications composed of 
