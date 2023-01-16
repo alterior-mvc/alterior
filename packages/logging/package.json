@@ -44,5 +44,5 @@
     "@alterior/runtime": "^3.1.1",
     "rxjs": "^6.5.5"
   },
-  "gitHead": "853d0470b31cc4aa0b27fd04e2f743f3f1ec9efc"
+  "gitHead": "bce64c1667d5cb0ac8eb046d9d1cdba83a62ed0a"
 }
