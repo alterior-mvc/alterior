@@ -67,9 +67,7 @@ export function capitalize(name : string) {
 }
 
 export function removeAll(path : string) : Promise<void> {
-    return new Promise<void>((resolve, reject) => 
-        rimraf(path, error => error ? reject(error) : resolve())
-    );
+    return rimraf(path);
 }
 
 export async function makeDirectory(path : string) {
