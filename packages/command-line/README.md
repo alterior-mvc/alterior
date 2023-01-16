@@ -1,6 +1,7 @@
 # @/command-line
 
-Provides a framework for creating command line tools using Alterior. Naturally this is the command line handling library for the Alterior CLI.
+Provides a framework for creating command line tools using Alterior. Naturally this is the command line handling library 
+for the Alterior CLI, but it can be used for any sort of command line tool you might need to build.
 
 # Getting Started
 
