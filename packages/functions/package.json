@@ -1,10 +1,11 @@
 {
-  "name": "@alterior/tasks",
+  "name": "@alterior/functions",
   "version": "3.0.6",
-  "description": "Flexible background task system",
+  "description": "Functional utilities",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
-  "homepage": "https://github.com/alterior-mvc/alterior/blob/main/packages/tasks/README.md",
+  "private": true,
+  "homepage": "https://github.com/alterior-mvc/alterior/blob/main/packages/di/README.md",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alterior-mvc/alterior.git"
@@ -13,12 +14,11 @@
     "url": "https://github.com/alterior-mvc/alterior/issues"
   },
   "keywords": [
-    "background",
-    "tasks",
-    "redis",
-    "scheduler",
-    "queue",
-    "worker"
+    "DI",
+    "dependency",
+    "injection",
+    "dependency injection",
+    "injector"
   ],
   "main": "dist/index.js",
   "module": "dist.esm/index.js",
@@ -42,34 +42,21 @@
   "dependencies": {
     "@alterior/annotations": "^3.0.6",
     "@alterior/common": "^3.0.6",
-    "@alterior/di": "^3.0.6",
-    "@alterior/logging": "^3.0.6",
-    "@alterior/runtime": "^3.0.6",
-    "@avejidah/get-parameter-names": "^0.3.2",
-    "@types/ejs": "^2.7.0",
-    "bull": "^3.18.0",
-    "ejs": "^2.7.4",
-    "express": "^4.17.1",
-    "kind-of": ">=6.0.3",
-    "reflect-metadata": "^0.1.12",
-    "tslib": "^2.3.1"
-  },
-  "peerDependencies": {
     "zone.js": "^0.11.4"
   },
   "devDependencies": {
-    "@types/bull": "^3.13.0",
     "@types/chai": "^4.2.11",
-    "@types/express": "^4.17.6",
-    "@types/node": "^10.17.24",
-    "@types/supertest": "^2.0.9",
-    "chai": "^3.5.0",
+    "@types/jasmine": "^2.5.41",
+    "@types/node": "^8.10.61",
+    "chai": "^4.2.0",
+    "prettier": "1.13.7",
     "razmin": "^1.1.6",
+    "reflect-metadata": "^0.1.12",
     "rimraf": "^2.7.1",
-    "supertest": "^3.1.0",
-    "swagger-editor-dist": "^3.9.0",
-    "typescript": "^4.1.5",
-    "wtfnode": "^0.7.0"
+    "tslib": "^2.3.1",
+    "tslint": "5.11.0",
+    "tslint-config-prettier": "1.17.0",
+    "typescript": "^4.1.5"
   },
   "gitHead": "853d0470b31cc4aa0b27fd04e2f743f3f1ec9efc"
 }
