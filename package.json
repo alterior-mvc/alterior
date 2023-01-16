@@ -17,6 +17,7 @@
     "packages/cli",
     "packages/line",
     "packages/common",
+    "packages/command-line",
     "packages/di",
     "packages/express",
     "packages/fastify",
