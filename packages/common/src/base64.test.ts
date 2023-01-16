@@ -4,23 +4,23 @@ import { describe } from "razmin";
 
 describe('Base64', () => {
     describe('.encode()', it => {
-        it.only('encodes ASCII as expected', () => {
+        it('encodes ASCII as expected', () => {
             expect(Base64.encode('A')).to.equal('QQ==');
             expect(Base64.encode('hello world')).to.equal('aGVsbG8gd29ybGQ=');
             expect(Base64.encode('hello 123 $ _ / @ -')).to.equal('aGVsbG8gMTIzICQgXyAvIEAgLQ==');
         });
-        it.only('encodes UTF-8 as expected', () => {
+        it('encodes UTF-8 as expected', () => {
             expect(Base64.encode('🚀')).to.equal('8J+agA==');
         })
     })
     describe('.decode()', it => {
-        it.only('decodes ASCII as expected', () => {
+        it('decodes ASCII as expected', () => {
             expect(Base64.decode('aGVsbG8gd29ybGQ=')).to.equal('hello world');
             expect(Base64.decode('aGVsbG8gd29ybGQ')).to.equal('hello world');
             expect(Base64.decode('aGVsbG8gMTIzICQgXyAvIEAgLQ==')).to.equal('hello 123 $ _ / @ -');
             expect(Base64.decode('aGVsbG8gMTIzICQgXyAvIEAgLQ')).to.equal('hello 123 $ _ / @ -');
         });
-        it.only('decodes UTF-8 as expected', () => {
+        it('decodes UTF-8 as expected', () => {
             expect(Base64.decode('8J+agA==')).to.equal('🚀');
             expect(Base64.decode('8J+agA')).to.equal('🚀');
         })
