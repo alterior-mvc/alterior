@@ -1,6 +1,6 @@
 {
   "name": "@alterior/platform-nodejs",
-  "version": "3.0.5",
+  "version": "3.1.3",
   "description": "Smoother experience for Alterior on Node.js.",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
