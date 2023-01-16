@@ -203,7 +203,7 @@ WebService.clientClassFor = function<T>(klass : Constructor<T>): RestClientConst
                 let paramNames : string[] = getParameterNames(klass.prototype[route.method]);
                 let paramAnnotations = Annotations.getParameterAnnotations(klass, route.method, false);
         		let pathParamNames = Object.keys(
-                    (route.path.match(/:([A-Za-z0-9]+)/g) || [])
+                    Array.from(route.path.match(/:([A-Za-z0-9]+)/g) || [])
                         .reduce((pv, cv) => (pv[cv] = 1, pv), {})
                 );
 
