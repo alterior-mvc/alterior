@@ -40,7 +40,7 @@
     "@alterior/di": "^3.0.6",
     "@alterior/logging": "^3.0.6",
     "@alterior/web-server": "^3.0.6",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "spdy": "^4.0.2"
   },
   "devDependencies": {
