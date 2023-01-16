@@ -10,7 +10,7 @@ commands:
         type: string
     steps:
       - checkout
-      - run: npm install npm -g
+      - run: sudo npm install npm -g
       - restore_cache:
           keys:
           - v1-dependencies-<< parameters.version >>-{{ checksum "package.json" }}
