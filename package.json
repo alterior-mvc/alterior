@@ -29,7 +29,7 @@
     "packages/streams",
     "packages/tasks",
     "packages/testapp",
-    "packages/server"
+    "packages/web-server"
   ],
   "scripts": {
     "test": "lerna run test",
