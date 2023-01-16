@@ -43,4 +43,4 @@ if (!globalThis.fetch) {
 }
 
 if (!globalThis.WebSocket)
-    globalThis.WebSocket = WebSocket;
+    globalThis.WebSocket = <any>WebSocket;
