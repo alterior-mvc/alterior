@@ -24,28 +24,28 @@ commands:
 jobs:
   node-19:
     docker:
-      - image: circleci/node:19
+      - image: cimg/node:19.4
     working_directory: ~/repo
     steps:
       - run_tests:
           version: "19"
   node-18:
     docker:
-      - image: circleci/node:18
+      - image: cimg/node:18.13
     working_directory: ~/repo
     steps:
       - run_tests:
           version: "18"
   node-16:
     docker:
-      - image: circleci/node:16
+      - image: cimg/node:16.19
     working_directory: ~/repo
     steps:
       - run_tests:
           version: "16"
   node-14:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.21
     working_directory: ~/repo
     steps:
       - run_tests:
