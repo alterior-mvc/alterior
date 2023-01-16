@@ -1,6 +1,6 @@
 {
   "name": "@alterior/tasks",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "Flexible background task system",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -40,11 +40,11 @@
     "docs": "typedoc ."
   },
   "dependencies": {
-    "@alterior/annotations": "^3.1.1",
-    "@alterior/common": "^3.1.1",
-    "@alterior/di": "^3.1.1",
-    "@alterior/logging": "^3.1.1",
-    "@alterior/runtime": "^3.1.1",
+    "@alterior/annotations": "^3.1.2",
+    "@alterior/common": "^3.1.2",
+    "@alterior/di": "^3.1.2",
+    "@alterior/logging": "^3.1.2",
+    "@alterior/runtime": "^3.1.2",
     "bull": "^3.18.0",
     "kind-of": ">=6.0.3",
     "tslib": "^2.3.1"
