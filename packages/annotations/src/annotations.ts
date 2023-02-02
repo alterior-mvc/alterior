@@ -944,9 +944,9 @@ export class Annotations {
         return combinedMap;
     }
 
-    private static getOrCreateMapForMethodParameters(target : Object): IAnnotation[] {
+    private static getOrCreateMapForMethodParameters(target : Object): Record<string, IAnnotation[][]> {
         if (!target.hasOwnProperty(METHOD_PARAMETER_ANNOTATIONS_KEY))
-            Object.defineProperty(target, METHOD_PARAMETER_ANNOTATIONS_KEY, { enumerable: false, value: [] });
+            Object.defineProperty(target, METHOD_PARAMETER_ANNOTATIONS_KEY, { enumerable: false, value: {} });
         return target[METHOD_PARAMETER_ANNOTATIONS_KEY];
     }
 

@@ -263,6 +263,26 @@ suite(describe => {
             expect(annotations[1].find((x : any) => x.text === 'foobar')).to.exist;
         })
     
+        it("should be able to list method parameter annotations on methods named as array methods", () => {
+            class TestSubject {
+                splice(@Label(LABEL) param1 : string, @Label(`foobar`) param2 : string) {
+                    console.log(`hello ${param1}, ${param2}`);
+                }
+            }
+    
+            class EmptySubject { 
+                splice(param1 : string, param2 : string) {
+                }
+            }
+            
+            expect(Annotations.getParameterAnnotations(EmptySubject, 'splice')).to.exist;
+    
+            let annotations = Annotations.getParameterAnnotations(TestSubject, 'splice');
+            expect(annotations.length).to.equal(2);
+    
+            expect(annotations[0].find((x : any) => x.text === LABEL)).to.exist;
+            expect(annotations[1].find((x : any) => x.text === 'foobar')).to.exist;
+        })
         it("should be able to list both subclass and superclass method parameter annotations", () => {
             let MultiLabel = LabelAnnotation.decorator({ allowMultiple: true });
 
