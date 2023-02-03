@@ -29,6 +29,7 @@
     "packages/streams",
     "packages/tasks",
     "packages/testapp",
+    "packages/terminal",
     "packages/web-server"
   ],
   "scripts": {
