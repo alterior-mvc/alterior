@@ -1,31 +1,30 @@
 {
-    "name": "@alterior/terminal",
-    "version": "3.1.6",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "publishConfig": {
-      "access": "public"
-    },
-    "dependencies": {
-      "mute-stream": "~1.0.0"
-    },
-    "devDependencies": {
-      "@types/mute-stream": "^0.0.1"
-    },
-    "engines": {
-      "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-    },
-    "author": "The Alterior Project (https://github.com/alterior-mvc)",
-    "description": "Utilities for terminal applications",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/alterior-mvc/alterior.git"
-    },
-    "license": "MIT",
-    "scripts": {
-      "build": "tsc -b .",
-      "test": "npm run build && node dist/test",
-      "prepublishOnly": "npm test"
-    }
+  "name": "@alterior/terminal",
+  "version": "3.1.7",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "mute-stream": "~1.0.0"
+  },
+  "devDependencies": {
+    "@types/mute-stream": "^0.0.1"
+  },
+  "engines": {
+    "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
+  },
+  "author": "The Alterior Project (https://github.com/alterior-mvc)",
+  "description": "Utilities for terminal applications",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alterior-mvc/alterior.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -b .",
+    "test": "npm run build && node dist/test",
+    "prepublishOnly": "npm test"
   }
-  
+}
