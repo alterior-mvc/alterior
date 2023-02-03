@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { describe } from 'razmin';
 import { spawnRead } from './fixtures';
-import read from './read';
+import { read } from './read';
 
 const times = new Array(18).fill(null).map((_, i) => (i + 1).toString())
 

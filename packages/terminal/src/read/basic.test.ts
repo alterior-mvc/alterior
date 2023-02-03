@@ -2,7 +2,7 @@ import { expect } from "chai"
 import { describe } from "razmin"
 import { spawnRead } from './fixtures';
 
-import read from './read';
+import { read } from './read';
 
 if (process.argv[2] === 'child') {
   child()

@@ -49,7 +49,7 @@ export interface ReadOptions {
   replace?: string;
 }
 
-export default async function read (options?: ReadOptions): Promise<string> {
+export async function read (options?: ReadOptions): Promise<string> {
   let opts = { prompt: '', ...options };
   opts.input ??= process.stdin;
   opts.output ??= process.stdout;
