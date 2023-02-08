@@ -35,7 +35,7 @@ const STYLE_CODES = {
     bgWhite: [47, 49]
 };
 
-export type BoundStyler = (...contents: (StyledString | string)[]) => StyledString;
+export type BoundStyler = (...contents: (StyledString | string | number)[]) => StyledString;
 export type StyleShortcuts = {
     [P in keyof typeof STYLE_CODES as `$${P}`]: (...contents: (StyledString | string)[]) => StyledString;
 }
@@ -57,7 +57,7 @@ export function styleIndicator(key: keyof typeof STYLE_CODES, index: number) {
 export class StyledString {
     constructor(
         readonly style?: keyof typeof STYLE_CODES,
-        readonly parts: (StyledString | string)[] = []
+        readonly parts: (StyledString | string | number)[] = []
     ) {
     }
 
@@ -74,7 +74,7 @@ export class StyledString {
     }
 }
 
-let _style = (style: Style, ...contents: (string | StyledString)[]): Readonly<StyledString> => {
+let _style = (style: Style, ...contents: (string | number | StyledString)[]): Readonly<StyledString> => {
     return new StyledString(style, contents);
 }
 
@@ -83,6 +83,6 @@ for (let key of <Style[]>Object.keys(STYLE_CODES))
 
 export const style = <Styler>_style;
 
-export function styled(...contents: (string | StyledString)[]): string {
+export function styled(...contents: (string | number | StyledString)[]): string {
     return style(undefined, ...contents).toString();
 }
