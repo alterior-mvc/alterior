@@ -79,7 +79,7 @@ let _style = (style: Style, ...contents: (string | number | StyledString)[]): Re
 }
 
 for (let key of <Style[]>Object.keys(STYLE_CODES))
-    _style[`$${key}`] = (...contents: (string | StyledString)[]) => new StyledString(key, contents);
+    _style[`$${key}`] = (...contents: (string | number | StyledString)[]) => new StyledString(key, contents);
 
 export const style = <Styler>_style;
 
