@@ -37,7 +37,7 @@ const STYLE_CODES = {
 
 export type BoundStyler = (...contents: (StyledString | string | number)[]) => StyledString;
 export type StyleShortcuts = {
-    [P in keyof typeof STYLE_CODES as `$${P}`]: (...contents: (StyledString | string)[]) => StyledString;
+    [P in keyof typeof STYLE_CODES as `$${P}`]: (...contents: (StyledString | string | number)[]) => StyledString;
 }
 
 export type Styler = BoundStyler & StyleShortcuts;
