@@ -255,20 +255,6 @@ export class ZonedLogger {
         sourceLabel? : string
     ) {
         this._sourceLabel = sourceLabel;
-        
-        if (optionsRef && optionsRef.options) {
-            if (optionsRef.options.listeners)
-                this._listeners = optionsRef.options.listeners;
-        }
-
-        if (!this._listeners) {
-            let defaultListeners = DEFAULT_LISTENERS;
-
-            if (app && app.options.silent)
-                defaultListeners = [];
-               
-            this._listeners = defaultListeners;
-        }
     }
     
     clone() {
@@ -283,8 +269,6 @@ export class ZonedLogger {
         return this._sourceLabel;
     }
 
-    private _listeners : LogListener[];
-
     static readonly ZONE_LOCAL_NAME = '@alterior/logger:Logger.current';
 
     public static get current(): ZonedLogger {
@@ -292,7 +276,14 @@ export class ZonedLogger {
     }
 
     get listeners() {
-        return this._listeners || [];
+        if (this.optionsRef?.options?.listeners) {
+            return this.optionsRef.options.listeners;
+        }
+
+        if (this.app?.options?.silent)
+            return [];
+        
+        return DEFAULT_LISTENERS;
     }
 
     /**
