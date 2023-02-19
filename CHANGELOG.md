@@ -1,5 +1,8 @@
 # ⏭ vNext
 
+# 🚀3.1.13
+- `@/web-server`: Fix a memory leak when many requests are processed in a single HTTP session
+
 # 🚀3.1.12
 - `@/logging`: It is now possible to change the configured log listeners on the fly
 - `@/terminal`: Introducing the `TerminalUI` class which can be used to create real-time terminal UI applications

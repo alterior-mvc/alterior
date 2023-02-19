@@ -17,8 +17,16 @@ export class WebEvent<
 	constructor(request : RequestT, response : ResponseT) {		
 		this.request = request;
 		this.response = response;
-        if (this.request.socket)
-		    this.request.socket.on('close', () => this.connected = false);
+        if (this.request.socket) {
+			this.request.socket.setMaxListeners(0);
+			let handler = () => this.connected = false;
+		    this.request.socket.on('close', handler);
+			response.addListener('finish', () => {
+				this.connected = false;
+				this.request.socket.off('close', handler);
+			})
+		}
+
 	}
 
 	request : RequestT;
