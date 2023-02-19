@@ -1,5 +1,37 @@
 # ⏭ vNext
 
+# 🚀3.1.12
+- `@/logging`: It is now possible to change the configured log listeners on the fly
+- `@/terminal`: Introducing the `TerminalUI` class which can be used to create real-time terminal UI applications
+
+# 🚀3.1.11
+- `@/terminal`: Accept numbers (in addition to strings) in `style` functions
+
+# 🚀3.1.8
+- `@/terminal`: Fixes some issues in the implementation of `read`
+
+# 🚀3.1.7
+- `@/terminal`: Introduced
+
+# 🚀3.1.6
+- `@/annotations`: Fixes a bug where method decorators would be misapplied if the name of the method was the same as the name of a method of the Array class
+
+# 🚀3.1.5
+- `@/platform-angular`: Supports more Angular versions
+
+# 🚀3.1.3
+- `@/common`: Fixes an issue in `Base64` which caused incorrect padding to be applied 
+
+# 🚀3.1.0
+
+- Minimum Node.js version is now 14
+- Updated dependencies
+- Cleans up a number of unused dependencies
+- Now uses NPM workspaces for managing the Alterior codebase
+
+# 🚀3.0.6
+- `@/common`: Fixes several bugs in the `Base64` class
+
 # 🚀 3.0.5
 
 - `@/web-server`: Fixes a crash in `WebEvent.request` et al when called outside of an `@alterior/web-server` request context
