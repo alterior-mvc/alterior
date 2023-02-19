@@ -1,6 +1,6 @@
 {
   "name": "@alterior/logging",
-  "version": "3.1.6",
+  "version": "3.1.12",
   "description": "Configurable context-aware logging",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",

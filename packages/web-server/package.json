@@ -1,6 +1,6 @@
 {
   "name": "@alterior/web-server",
-  "version": "3.1.6",
+  "version": "3.1.12",
   "description": "Declarative framework for building REST services",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -44,7 +44,7 @@
     "@alterior/annotations": "^3.1.6",
     "@alterior/common": "^3.1.4",
     "@alterior/di": "^3.1.6",
-    "@alterior/logging": "^3.1.6",
+    "@alterior/logging": "^3.1.12",
     "@alterior/runtime": "^3.1.6",
     "body-parser": "^1.20.1",
     "fast-json-stringify": "^1.21.0",
