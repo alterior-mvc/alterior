@@ -1,6 +1,6 @@
 {
   "name": "@alterior/testapp",
-  "version": "3.1.12",
+  "version": "3.1.13",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,7 @@
   "dependencies": {
     "@alterior/common": "^3.1.4",
     "@alterior/runtime": "^3.1.6",
-    "@alterior/web-server": "^3.1.12"
+    "@alterior/web-server": "^3.1.13"
   },
   "gitHead": "5c18a5ddde7719d8f439fcf22804280fb56cf255"
 }
