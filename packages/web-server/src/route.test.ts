@@ -282,6 +282,30 @@ suite(describe => {
 			;
 		});
 
+		it('should apply path-limited middleware', async () => {
+			@WebService({
+				server: {
+					middleware: [
+						['/foo', (req, res, next) => {
+							req.fun = 'funfun';
+							next();
+						}]
+					]
+				}
+			})
+			class FakeApp {
+				@Get('/foo')
+				getX(ev : WebEvent) {
+					return ev.request['fun'];
+				}
+			}
+
+			await teststrap(FakeApp)
+				.get('/foo')
+				.expect(200, '"funfun"')
+			;
+		});
+
 		it('should be injecting express URL parameters when appropriate', async () => {
 
 			let observedBar;

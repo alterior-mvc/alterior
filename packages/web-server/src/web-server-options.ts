@@ -42,7 +42,7 @@ export interface WebServerOptions {
 	/**
 	 * Connect-style middleware that should be run before the final request handler
 	 */
-    middleware? : Function[];
+    middleware? : (Function | [ string, Function ])[];
 
 	/**
 	 * Whether or not to hide exception details from the web response output

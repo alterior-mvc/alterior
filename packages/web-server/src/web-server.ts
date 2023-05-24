@@ -160,8 +160,10 @@ export class WebServer {
 	private installGlobalMiddleware() {
 		let middlewares = this.options.middleware || [];
 		for (let middleware of middlewares) {
-			middleware = prepareMiddleware(this.injector, middleware);
-			this.engine.addConnectMiddleware('/', middleware as any);
+			if (middleware instanceof Array)
+				this.engine.addConnectMiddleware(middleware[0], prepareMiddleware(this.injector, middleware[1]));
+			else
+				this.engine.addConnectMiddleware('/', prepareMiddleware(this.injector, middleware));
 		}
 	}
 
