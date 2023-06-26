@@ -1,6 +1,6 @@
 {
   "name": "@alterior/express",
-  "version": "3.1.14",
+  "version": "3.1.15",
   "description": "Access Express state within an Alterior app",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -37,9 +37,9 @@
     "docs": "typedoc ."
   },
   "dependencies": {
-    "@alterior/di": "^3.1.6",
-    "@alterior/logging": "^3.1.12",
-    "@alterior/web-server": "^3.1.14",
+    "@alterior/di": "^3.1.15",
+    "@alterior/logging": "^3.1.15",
+    "@alterior/web-server": "^3.1.15",
     "express": "^4.17.3",
     "spdy": "^4.0.2"
   },
