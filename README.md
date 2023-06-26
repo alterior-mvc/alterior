@@ -6,22 +6,12 @@ A framework for building well-structured applications and isomorphic libraries i
 
 # Overview
 
-Alterior is a framework for building Typescript applications composed of 
-executable modules which participate in dependency injection and declare 
-components.
-This is the same type of module system used by Angular (`@NgModule`) and other 
-backend frameworks like Nestjs, but with a few important differences.
+Alterior is an isomorphic framework for building service-oriented applications composed of executable modules which participate in dependency injection and declare 
+components. 
 
-First, Alterior modules are _isomorphic_. This means they can be used on 
-both the server (on Node.js) and in the browser (via Angular). When used with 
-Angular, services provided by Alterior modules are exposed directly to 
-Angular components, services, and pipes. This makes Alterior an ideal framework 
-for isomorphic modules.
-
-Second, unlike Angular/Nest.js modules, Alterior modules are well-defined 
-units of execution which have a defined lifecycle, and respond to standardized 
-lifecycle events. This makes them suitable for use as a primary vehicle for 
-top-level general purpose code, such as a server or even a desktop 
+Alterior's Modules are well-defined units of execution which have a defined lifecycle, 
+and respond to standardized lifecycle events. This makes them suitable for use as a 
+primary vehicle for top-level general purpose code, such as a server or even a desktop 
 application. 
 
 ## Class Libraries
