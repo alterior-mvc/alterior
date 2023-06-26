@@ -57,5 +57,8 @@ function deepCloneWithMemoization(o, memo : WeakMap<any, any>) {
  * @param obj 
  */
 export function cloneBySerialization(obj) {
+	if (obj === undefined || obj === null || typeof obj !== 'object')
+		return obj;
+	
 	return JSON.parse(JSON.stringify(obj));
 }

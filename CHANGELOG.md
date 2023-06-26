@@ -1,4 +1,5 @@
 # ⏭ vNext
+- `@/common`: `clone()` now properly handles undefined/null and primitive values
 
 # 🚀3.1.13
 - `@/web-server`: Fix a memory leak when many requests are processed in a single HTTP session
