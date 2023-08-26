@@ -261,7 +261,7 @@ export class CommandLineProcessor {
                 option = this.option(arg.slice(2));
                 if (!option) {
                     term.writeLine(`Unknown option: ${arg}`);
-                    term.writeLine(JSON.stringify(this._options));
+                    //term.writeLine(JSON.stringify(this._options));
                     this.exit(1);
                 }
             } else if (arg.startsWith('-')) {
