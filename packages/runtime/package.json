@@ -1,6 +1,6 @@
 {
   "name": "@alterior/runtime",
-  "version": "3.1.15",
+  "version": "3.2.0",
   "description": "Core runtime for Alterior apps",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -37,9 +37,9 @@
     "docs": "typedoc ."
   },
   "dependencies": {
-    "@alterior/annotations": "^3.1.15",
-    "@alterior/common": "^3.1.15",
-    "@alterior/di": "^3.1.15",
+    "@alterior/annotations": "^3.2.0",
+    "@alterior/common": "^3.2.0",
+    "@alterior/di": "^3.2.0",
     "tslib": "^2.3.1"
   },
   "peerDependencies": {
