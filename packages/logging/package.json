@@ -42,7 +42,7 @@
     "@alterior/common": "^3.1.15",
     "@alterior/di": "^3.1.15",
     "@alterior/runtime": "^3.1.15",
-    "rxjs": "^6.5.5"
+    "rxjs": "^7.8.0"
   },
   "gitHead": "5c18a5ddde7719d8f439fcf22804280fb56cf255"
 }
