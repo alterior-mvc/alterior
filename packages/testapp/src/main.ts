@@ -1,9 +1,12 @@
 import 'zone.js';
 import 'reflect-metadata';
 
-import { WebService, Get, WebServer, WebEvent } from '@alterior/web-server';
+import { WebService, Get, WebServer, WebEvent, WebServerEngine } from '@alterior/web-server';
 import { Application } from '@alterior/runtime';
 import { HttpError, timeout } from '@alterior/common';
+
+import { ExpressEngine } from '@alterior/express';
+WebServerEngine.default = ExpressEngine;
 
 @WebService()
 export class MyService {
@@ -13,6 +16,28 @@ export class MyService {
             server: 'wat',
             version: '1.2.3?'
         }
+    }
+
+    @Get('/test')
+    async testRoute() {
+        return { route: '/test' };
+    }
+
+    @Get('/long')
+    async longRoute() {
+        await timeout(1500);
+        return { message: 'finally done!' };
+    }
+
+    @Get('/hung')
+    async hungRoute() {
+        await timeout(3500);
+        return { message: 'finally done!' };
+    }
+
+    @Get('/test/:param')
+    async testRoute2(param: string) {
+        return { route: `/test/${param}`, param };
     }
 
     @Get('/sse')
@@ -25,7 +50,7 @@ export class MyService {
     
     @Get('/socket')
     async socket() {
-        if (WebEvent.request.header('X-Fail') === 'yes')
+        if (WebEvent.request.headers['x-fail'] === 'yes')
             throw new HttpError(400, { message: 'nah' }, []);
         
         let socket = await WebServer.startSocket();

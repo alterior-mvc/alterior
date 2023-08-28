@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc -b", 
+    "start": "npm run build && node dist/main",
     "test": "exit 0"
   },
   "private": true,
@@ -11,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@alterior/common": "^3.2.0",
+    "@alterior/express": "^3.2.0",
     "@alterior/runtime": "^3.2.0",
     "@alterior/web-server": "^3.2.0"
   },
