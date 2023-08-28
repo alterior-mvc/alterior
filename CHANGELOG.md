@@ -1,5 +1,12 @@
 # ⏭ vNext
 
+# 🚀3.3.0
+- `@/web-server`: Request logging has been improved, and is now highly customizable. Support has been added for filtering
+  sensitive parameters during request logging.
+
+# 🚀3.2.0
+- All packages now depend on RxJS 7.8.0 or later.
+
 # 🚀3.1.15
 - `@/common`: `clone()` Now properly handles undefined/null and primitive values
 
