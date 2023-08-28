@@ -342,7 +342,7 @@ export class WebServer {
 							.map(key => [key, (event.request as any).query[key]])
 							.map(([key, value]) => 
 								`${encodeURIComponent(ellipsize(longParameterThreshold, key))}` 
-								+ `${ String(value) === '' ? '' : `=${encodeURIComponent(event.server.formatParameterForDisplay(event, value, key))}` }`
+								+ `${ String(value) === '' ? '' : `=${encodeURIComponent(value)}` }`
 							)
 							.join(`&`)
 					}`;
