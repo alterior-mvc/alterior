@@ -215,7 +215,11 @@ suite(describe => {
 				.get('/foo')
 				.expect(500, {
 					message: 'An exception occurred while handling this request.',
-					error: stackText
+					error: {
+						message: error.message,
+						constructor: error.constructor.name,
+						stack: stackText.split(/\r?\n/).slice(1).map(line => line.replace(/ +at /, ''))
+					}
 				})
 			;
 		});
