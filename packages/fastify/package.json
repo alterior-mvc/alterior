@@ -40,5 +40,5 @@
     "@alterior/web-server": "^3.3.0",
     "fastify": "^2.15.3"
   },
-  "gitHead": "5c18a5ddde7719d8f439fcf22804280fb56cf255"
+  "gitHead": "5e232d07529b9d9f0d5aeba04e08d6e571998720"
 }

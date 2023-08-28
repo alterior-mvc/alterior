@@ -464,9 +464,23 @@ export class RouteInstance {
 		// Execute our function by resolving the parameter factories into a set of parameters to provide to the 
 		// function.
 
-		let resolvedParams = await Promise.all(this.parameters.map(x => x.resolve(event)));
+		let resolvedParams: any[];
+		let reportSource = `${controllerType.name}.${route.method}()`;
+
+		try {
+			resolvedParams = await Promise.all(this.parameters.map(x => x.resolve(event)));
+		} catch (e) {
+			event.metadata['uncaughtError'] = e;
+			this.server.handleError(e, event, this, reportSource);
+			this.server.reportRequest('finished', event, reportSource);
+			return;
+		}
+
 		let displayableParams = resolvedParams
 			.map(param => {
+				if (typeof param === 'undefined')
+					return 'undefined';
+				
 				try {
 					return JSON.stringify(param);
 				} catch (e) {
@@ -475,8 +489,7 @@ export class RouteInstance {
 			})
 			.map(param => ellipsize(this.server.options.longParameterThreshold ?? 100, param))
 		;
-
-		const reportSource = `${controllerType.name}.${route.method}(${displayableParams.join(', ')})`;
+		reportSource = `${controllerType.name}.${route.method}(${displayableParams.join(', ')})`;
 
 		this.server.reportRequest('starting', event, reportSource);
 		try { // To finally report request completion.
@@ -488,22 +501,8 @@ export class RouteInstance {
 					return await instance[route.method](...resolvedParams);
 				});
 			} catch (e) {
-				
-				if (e.constructor === HttpError) {
-					let httpError = <HttpError>e;
-					event.response.statusCode = httpError.statusCode;
-					
-					httpError.headers
-						.forEach(header => event.response.setHeader(header[0], header[1]));
-
-					event.response.setHeader('Content-Type', 'application/json; charset=utf-8');
-					event.response.write(JSON.stringify(httpError.body));
-					event.response.end();
-
-					return;
-				}
-
-				this.server.handleError(e, event, this, `${controllerType.name}.${route.method}()`);
+				event.metadata['uncaughtError'] = e;
+				this.server.handleError(e, event, this, reportSource);
 				return;
 			}
 

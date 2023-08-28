@@ -23,6 +23,16 @@ export class MyService {
         return { route: '/test' };
     }
 
+    @Get('/test/number/:num')
+    async testNumberRoute(num: number) {
+        return { route: `/test/number/${num}` };
+    }
+
+    @Get('/uncaught')
+    async uncaughtError() {
+        throw new Error('Uncaught error');
+    }
+
     @Get('/long')
     async longRoute() {
         await timeout(1500);

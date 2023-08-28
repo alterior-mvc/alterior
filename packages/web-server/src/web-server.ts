@@ -14,6 +14,8 @@ import { ServiceDescription } from './service-description';
 import { ServiceDescriptionRef } from './service-description-ref';
 import { WebConduit } from './web-conduit';
 import { ellipsize } from './utils';
+import { HttpError } from '@alterior/common';
+import { HTTP_MESSAGES } from './http-messages';
 
 const REPORTING_STATE = Symbol('Reporting state');
 
@@ -367,15 +369,19 @@ export class WebServer {
 
 			let displayState = '';
 			let severity: LogSeverity = 'info';
+			let statusSuffix = '';
 
 			if (done) {
-				displayState = 'done';
 				if (state === 'long') {
-					severity = 'warning';
+					displayState = 'done';
 				} else if (state === 'hung') {
-					severity = 'error';
 					displayState = `unhung`;
 				}
+
+				if (event.response.statusCode >= 500)
+					severity = 'error';
+				
+				statusSuffix = ` » ${event.response.statusCode} ${event.response.statusMessage ?? HTTP_MESSAGES[event.response.statusCode]}`;
 			} else {
 				displayState = 'running';
 				if (state === 'long') {
@@ -387,10 +393,35 @@ export class WebServer {
 				}
 			}
 
+			if (event.metadata['uncaughtError'] && !event.server.options.silentErrors) {
+				let error = event.metadata['uncaughtError'];
+				
+				if (error instanceof HttpError) {
+					if (error.body?.error === 'invalid-request') {
+						statusSuffix = `${statusSuffix} (${error.body.message})`;
+					}
+				} else {
+					let displayableError: string;
+					if (error instanceof Error) {
+						displayableError = String(error.stack);
+					} else {
+						try {
+							displayableError = JSON.stringify(error);
+						} catch (e) {
+							displayableError = String(error);
+						}
+					}
+	
+					if (displayableError)
+						statusSuffix = `${statusSuffix}\n    ${displayableError}`;
+				}
+			}
+
 			logger.log(
-				`[${displayState}] ${method.toUpperCase()} ${host}${path}${queryString} » ${source} [${timeDelta} ms]`,
+				`${displayState ? `[${displayState}] ` : ``}${method.toUpperCase()} ${host}${path}${queryString} » ${source} [${timeDelta} ms]${statusSuffix}`,
 				{ severity }
 			);
+
 		}
 		
 		if (reportingEvent === 'starting') {
@@ -501,6 +532,19 @@ export class WebServer {
 	}
 
 	handleError(error: any, event: WebEvent, route: RouteInstance, source: string) {
+		if (error.constructor === HttpError) {
+			let httpError = <HttpError>error;
+			event.response.statusCode = httpError.statusCode;
+			
+			httpError.headers
+				.forEach(header => event.response.setHeader(header[0], header[1]));
+
+			event.response.setHeader('Content-Type', 'application/json; charset=utf-8');
+			event.response.write(JSON.stringify(httpError.body));
+			event.response.end();
+
+			return;
+		}
 
 		if (this.options.onError)
 			this.options.onError(error, event, route, source);
@@ -510,21 +554,21 @@ export class WebServer {
 			return;
 		}
 
-		if (!this.options.silentErrors) {
-			console.error(`Error handling request '${event.request['path']}'`);
-			console.error(`Handled by: ${source}`);
-			console.error(error);
-		}
-
 		let response: any = {
 			message: 'An exception occurred while handling this request.'
 		};
 
 		if (!this.options.hideExceptions) {
-			if (error.constructor === Error)
-				response.error = error.stack;
-			else
+			if (error instanceof Error && !('toJSON' in error)) {
+				let stack = error.stack.split(/\r?\n/).slice(1).map(line => line.replace(/ +at /, ''));
+				response.error = {
+					message: error.message ?? '«undefined»',
+					constructor: error.constructor.name ?? '«undefined»',
+					stack: stack ?? '«undefined»'
+				};
+			} else {
 				response.error = error;
+			}
 		}
 
 		event.response.statusCode = 500;
