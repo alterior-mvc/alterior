@@ -1,3 +1,4 @@
+import { Logger } from "@alterior/logging";
 import { WebEvent } from "./metadata";
 import { RouteInstance } from "./route";
 
@@ -7,6 +8,10 @@ type Protocol = 'h2'
 	| 'spdy/2'
 	| 'http/1.1'
 	| 'http/1.0';
+
+export type RequestReporter = (reportingEvent: 'starting' | 'finished', event: WebEvent, source: string, logger: Logger) => void;
+export type RequestReporterFilter = (event: WebEvent, source: string) => boolean;
+export type ParameterDisplayFormatter = (event: WebEvent, value: any, forKey: string) => string;
 
 export interface WebServerOptions {
 	port? : number;
@@ -84,4 +89,57 @@ export interface WebServerOptions {
 	 * error handling, use onError instead.
 	 */
 	handleError? : (error : any, event : WebEvent, route : RouteInstance, source : string) => void;
+
+	/**
+	 * A function responsible for reporting incoming requests to logging. See also
+	 * WebServer.setRequestReporter().
+	 */
+	requestReporter?: RequestReporter;
+
+	/**
+	 * A set of filters which determine whether an incoming request should be reported via requestReporter.
+	 * See also WebServer.addRequestReporterFilter() and WebServer.removeRequestReporterFilter()
+	 */
+	requestReporterFilters?: RequestReporterFilter[];
+
+	/**
+	 * How long before a request is considered to be running long and should be reported as such
+	 * in the logs (in milliseconds). Defaults to 1000.
+	 */
+	longRequestThreshold?: number;
+
+	/**
+	 * How long before a request is considered to be hung and should be reported as such
+	 * in the logs (in milliseconds). Defaults to 3000. The request will not be automatically resolved,
+	 * this only affects logging.
+	 */
+	hungRequestThreshold?: number;
+
+	/**
+	 * Formatter function used when displaying parameters within logs
+	 */
+	parameterDisplayFormatter?: ParameterDisplayFormatter;
+
+	/**
+	 * A set of parameter names which should be considered sensitive. The values for such parameters will be 
+	 * replaced with asterisks in logs.
+	 */
+	sensitiveParameters?: (string | RegExp)[];
+
+	/**
+	 * Placeholder to use when eliding a sensitive parameter value from logs. Defaults to '***'.
+	 */
+	sensitiveMask?: string;
+
+	/**
+	 * Any content within parameter values which matches the given regular expressions will be replaced with asterisks.
+	 * Useful for filtering out API keys or other sensitive values with known formats.
+	 */
+	sensitivePatterns?: RegExp[];
+
+	/**
+	 * How many characters does a parameter have to be before it is ellipsized in the log entry for an
+	 * incoming request. Applies to query parameters as well as method parameters. Defaults to 100 characters.
+	 */
+	longParameterThreshold?: number;
 }

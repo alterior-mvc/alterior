@@ -1,4 +1,6 @@
 import * as http from 'http';
+import type { WebServer } from '../web-server';
+import { RouteInstance } from '../route';
 
 export interface ServerSentEvent {
 	event?: string;
@@ -14,7 +16,7 @@ export class WebEvent<
 	RequestT extends http.IncomingMessage = http.IncomingMessage, 
 	ResponseT extends http.ServerResponse = http.ServerResponse
 > {
-	constructor(request : RequestT, response : ResponseT) {		
+	constructor(request: RequestT, response: ResponseT) {		
 		this.request = request;
 		this.response = response;
         if (this.request.socket) {
@@ -29,11 +31,20 @@ export class WebEvent<
 
 	}
 
-	request : RequestT;
-	response : ResponseT;
-	controller : any;
+	request: RequestT;
+	response: ResponseT;
+	controller: any;
+	server: WebServer;
+	route: RouteInstance;
 
-	requestId : string;
+	requestId: string;
+
+	/**
+	 * An arbitrary place to store metadata regarding this request. 
+	 * Preferable to use this as opposed to directly attaching 
+	 * properties for performance reasons.
+	 */
+	metadata: Record<string | symbol, any> = {};
 	
 	/**
 	 * Is the client still connected?
@@ -44,7 +55,7 @@ export class WebEvent<
 		return Zone.current.get('@alterior/web-server:WebEvent.current');
 	}
 
-	context<T>(callback : () => T): T {
+	context<T>(callback: () => T): T {
 		return WebEvent.with(this, callback);
 	}
 
@@ -64,7 +75,7 @@ export class WebEvent<
 	 * Send a server-sent-event to the client as part of a "text/event-stream" response
 	 * @param event 
 	 */
-	async sendEvent(event : ServerSentEvent) {
+	async sendEvent(event: ServerSentEvent) {
         if (!WebEvent.current)
             throw new Error(`WebSocket.start() can only be called while handling an incoming HTTP request`);
         
@@ -81,7 +92,7 @@ export class WebEvent<
 			WebEvent.response.flushHeaders();
 		}
 		
-		let lines : string[] = [];
+		let lines: string[] = [];
 
 		if (event.event)
 			lines.push(`event: ${event.event}`);
@@ -97,7 +108,7 @@ export class WebEvent<
 		WebEvent.request.socket.write(`${lines.join("\n")}\n\n`);
 	}
 
-	static async sendEvent(event : ServerSentEvent) {
+	static async sendEvent(event: ServerSentEvent) {
 		WebEvent.current.sendEvent(event);
 	}
 
@@ -108,7 +119,7 @@ export class WebEvent<
 		return this.current.connected;
 	}
 
-	static with<T, RequestT extends http.IncomingMessage, ResponseT extends http.ServerResponse>(routeEvent : WebEvent<RequestT, ResponseT>, callback : () => T): T {
+	static with<T, RequestT extends http.IncomingMessage, ResponseT extends http.ServerResponse>(routeEvent: WebEvent<RequestT, ResponseT>, callback: () => T): T {
 		let zone = Zone.current.fork({
 			name: `WebEventZone`,
 			properties: {

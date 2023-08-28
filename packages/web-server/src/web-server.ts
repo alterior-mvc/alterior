@@ -7,12 +7,15 @@ import { prepareMiddleware } from "./middleware";
 import { WebEvent } from "./metadata";
 import { RouteInstance, RouteDescription } from './route';
 import { ApplicationOptions, Application, AppOptionsAnnotation, AppOptions } from '@alterior/runtime';
-import { Logger } from '@alterior/logging';
+import { LogSeverity, Logger } from '@alterior/logging';
 import { WebServerEngine } from './web-server-engine';
-import { WebServerOptions } from './web-server-options';
+import { ParameterDisplayFormatter, RequestReporter, RequestReporterFilter, WebServerOptions } from './web-server-options';
 import { ServiceDescription } from './service-description';
 import { ServiceDescriptionRef } from './service-description-ref';
 import { WebConduit } from './web-conduit';
+import { ellipsize } from './utils';
+
+const REPORTING_STATE = Symbol('Reporting state');
 
 /**
  * Implements a web server which is comprised of a set of Controllers.
@@ -52,13 +55,15 @@ export class WebServer {
 
 		this.installGlobalMiddleware();
 		this.websockets = new ws.Server({ noServer: true });
+		this.requestReporter = options?.requestReporter ?? this.requestReporter;
+		this.requestReporterFilters = options?.requestReporterFilters ?? this.requestReporterFilters;
 	}
 
 	private _injector: Injector;
 	readonly options: WebServerOptions;
 	readonly websockets: ws.Server;
 
-	private _httpServer : http.Server;
+	private _httpServer: http.Server;
 	get httpServer() {
 		return this._httpServer;
 	}
@@ -84,7 +89,7 @@ export class WebServer {
 
 	public static bootstrapCloudFunction(entryModule: any, options?: ApplicationOptions) {
 		let appOptionsAnnot = AppOptionsAnnotation.getForClass(entryModule);
-		@AppOptions(appOptionsAnnot ? appOptionsAnnot.options : {})
+		@AppOptions(appOptionsAnnot ? appOptionsAnnot.options: {})
 		@Module({
 			imports: [entryModule]
 		})
@@ -167,24 +172,182 @@ export class WebServer {
 		}
 	}
 
+	/**
+	 * Start the web server.
+	 */
 	async start() {
+		if (this._httpServer)
+			return;
 		this._httpServer = await this.engine.listen(this.options);
 	}
 
+	/**
+	 * Stop the web server. The listening port will be closed.
+	 * @returns 
+	 */
 	stop() {
-		if (!this.httpServer)
+		if (!this._httpServer)
 			return;
 
-		this.httpServer.close();
+		this._httpServer.close();
+		this._httpServer = null;
 	}
 
-	reportRequest(event : WebEvent, source : string) {
-		if (!this.options.silent) {
+	private requestReporter: RequestReporter = WebServer.DEFAULT_REQUEST_REPORTER;
+	private requestReporterFilters: RequestReporterFilter[] = [];
+	private parameterDisplayFormatter: ParameterDisplayFormatter = WebServer.DEFAULT_PARAMETER_LOG_FORMATTER;
+
+	/**
+	 * Modify how parameters are formatted for display within logs and other display purposes. In addition to general
+	 * formatting, this function is responsible for:
+	 * - Ellipsizing long values to prevent creating excessively large log values
+	 * - Masking the parameter value based on configuration (see sensitiveParameters, sensitivePlaceholder, and parameterValueFilters
+	 *   options)
+	 * @param formatter 
+	 */
+	setParameterDisplayFormatter(formatter: ParameterDisplayFormatter) {
+		this.parameterDisplayFormatter = formatter;
+	}
+
+	/**
+	 * Format a parameter value for display within logs or other auxiliary purposes. Will also apply sensitive value
+	 * masking as well as ellipsization for long values. Formatting routine can be changed using setParameterDisplayFormatter
+	 * or via the parameterDisplayFormatter server option.
+	 * 
+	 * @param event 
+	 * @param value 
+	 * @param forKey 
+	 * @returns 
+	 */
+	formatParameterForDisplay(event: WebEvent, value: any, forKey: string): string {
+		return this.parameterDisplayFormatter(event, value, forKey);
+	}
+
+	/**
+	 * Filter which requests are reported via logging. Useful for filtering requests which happen very often,
+	 * such as health checks.
+	 * @param filter 
+	 */
+	addRequestReporterFilter(filter: RequestReporterFilter) {
+		this.requestReporterFilters.push(filter);
+	}
+
+	/**
+	 * Remove a request reporting filter added previously with addRequestReporterFilter()
+	 * @param filter 
+	 */
+	removeRequestReporterFilter(filter: RequestReporterFilter) {
+		this.requestReporterFilters = this.requestReporterFilters.filter(x => x !== filter);
+	}
+
+	/**
+	 * Modify how requests are reported to logging.
+	 * @param reporter 
+	 */
+	setRequestReporter(reporter: RequestReporter) {
+		this.requestReporter = reporter;
+	}
+
+	reportRequest(reportingEvent: 'starting' | 'finished', event: WebEvent, source: string) {
+		if (this.options.silent)
+			return;
+
+		if (!this.requestReporterFilters.every(x => x(event, source)))
+			return;
+
+		this.requestReporter(reportingEvent, event, source, this.logger);
+	}
+
+	get sensitiveParameters() {
+		return this.options.sensitiveParameters ?? [];
+	}
+
+	/**
+	 * Placeholder used when masking sensitive information within a string.
+	 * Set via the sensitivePlaceholder server option.
+	 */
+	get sensitiveMask() {
+		return this.options.sensitiveMask ?? '****';
+	}
+
+	get sensitivePatterns() {
+		return this.options.sensitivePatterns ?? [];
+	}
+
+	get longParameterThreshold() {
+		return this.options.longParameterThreshold ?? 100;
+	}
+
+	get longRequestThreshold() {
+		return this.options.longRequestThreshold ?? 1_000;
+	}
+
+	get hungRequestThreshold() {
+		return this.options.hungRequestThreshold ?? 3_000;
+	}
+
+	/**
+	 * Attempt to mask any sensitive information found within the given string. If this information comes from a parameter,
+	 * the name of the parameter may cause the entire string to be masked. Will be masked using the sensitivePlaceholder property.
+	 * @param value 
+	 * @param parameterName 
+	 * @returns 
+	 */
+	maskSensitiveInformation(value: string, parameterName?: string) {
+		if (parameterName && this.sensitiveParameters.includes(parameterName))
+			return this.sensitiveMask;
+
+		for (let filter of this.sensitivePatterns)
+			value = value.replace(filter, this.sensitiveMask);
+	
+		return value;
+	}
+
+	public static DEFAULT_PARAMETER_LOG_FORMATTER: ParameterDisplayFormatter = (event: WebEvent, value: any, forKey: string) => {
+		let parameterString: string;
+		try {
+			parameterString = JSON.stringify(value);
+		} catch (e) {
+			parameterString = String(value);
+		}
+
+		return ellipsize(
+			event.server.options.longParameterThreshold, 
+			event.server.maskSensitiveInformation(parameterString, forKey)
+		);
+	};
+
+	public static DEFAULT_REQUEST_REPORTER: RequestReporter = (reportingEvent: 'starting' | 'finished', event: WebEvent, source: string, logger: Logger) => {
+		let metadata = event.metadata[REPORTING_STATE] ??= { startedAt: Date.now(), state: 'running' };
+
+		let logRequest = () => {
 			let req: any = event.request;
 			let method = event.request.method;
 			let path = event.request['path'];
 			if (!('path' in event.request))
 				throw new Error(`WebServerEngine must provide request.path!`);
+
+			let queryString = '';
+			let host = event.request.headers?.['host'] ?? '';
+			let longParameterThreshold = event.server.longParameterThreshold;
+
+			if ('query' in event.request) {
+				if (typeof event.request.query === 'string') {
+					queryString = event.request.query.startsWith('?') ? event.request.query : `?${event.request.query}`;
+				} else if (typeof event.request.query === 'object') {
+					queryString = `?${
+						Object.keys(event.request.query)
+							.map(key => [key, (event.request as any).query[key]])
+							.map(([key, value]) => 
+								`${encodeURIComponent(ellipsize(longParameterThreshold, key))}` 
+								+ `${ String(value) === '' ? '' : `=${encodeURIComponent(event.server.formatParameterForDisplay(event, value, key))}` }`
+							)
+							.join(`&`)
+					}`;
+
+					queryString = queryString === '?' ? '' : queryString;
+				}
+			}
 
 			// When using fastify as the underlying server, you must 
 			// access route-specific metadata from the underlying Node.js 
@@ -197,7 +360,53 @@ export class WebServer {
 					path = req.req.path;
 			}
 
-			this.logger.info(`${method.toUpperCase()} ${path} » ${source}`);
+			let time = event.metadata[REPORTING_STATE].startedAt;
+			let timeDelta = (Date.now() - time) | 0;
+			let state = event.metadata[REPORTING_STATE].state;
+			let done = reportingEvent === 'finished';
+
+			let displayState = '';
+			let severity: LogSeverity = 'info';
+
+			if (done) {
+				displayState = 'done';
+				if (state === 'long') {
+					severity = 'warning';
+				} else if (state === 'hung') {
+					severity = 'error';
+					displayState = `unhung`;
+				}
+			} else {
+				displayState = 'running';
+				if (state === 'long') {
+					displayState = 'long';
+					severity = 'warning';
+				} else if (state === 'hung') {
+					displayState = 'hung';
+					severity = 'error';
+				}
+			}
+
+			logger.log(
+				`[${displayState}] ${method.toUpperCase()} ${host}${path}${queryString} » ${source} [${timeDelta} ms]`,
+				{ severity }
+			);
+		}
+		
+		if (reportingEvent === 'starting') {
+			metadata.longTimeout = setTimeout(() => {
+				metadata.state = 'long';
+				logRequest();
+			}, event.server.longRequestThreshold ?? 1_000);
+			
+			metadata.hungTimeout = setTimeout(() => {
+				metadata.state = 'hung';
+				logRequest();
+			}, event.server.hungRequestThreshold ?? 3_000);
+		} else if (reportingEvent === 'finished') {
+			clearTimeout(metadata.longTimeout);
+			clearTimeout(metadata.hungTimeout);
+			logRequest();
 		}
 	}
 
@@ -241,8 +450,8 @@ export class WebServer {
 	 * requestId field.
 	 * @param event 
 	 */
-	 private addRequestId(event : WebEvent) {
-		let requestId : string;
+	 private addRequestId(event: WebEvent) {
+		let requestId: string;
 		let idHeaderNames = this.options.requestIdHeader;
 
 		if (typeof idHeaderNames === 'string')
@@ -280,7 +489,7 @@ export class WebServer {
 	 * Installs this route into the given Express application. 
 	 * @param app 
 	 */
-	addRoute(definition : RouteDescription, method : string, path : string, handler : (event : WebEvent) => void, middleware = []) {
+	addRoute(definition: RouteDescription, method: string, path: string, handler: (event: WebEvent) => void, middleware = []) {
 		this.serviceDescription.routes.push(definition);
 
 		this.engine.addRoute(method, path, ev => {
@@ -291,7 +500,7 @@ export class WebServer {
 		}, middleware);
 	}
 
-	handleError(error : any, event : WebEvent, route : RouteInstance, source : string) {
+	handleError(error: any, event: WebEvent, route: RouteInstance, source: string) {
 
 		if (this.options.onError)
 			this.options.onError(error, event, route, source);

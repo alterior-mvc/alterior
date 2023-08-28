@@ -11,7 +11,7 @@ import { WebServer } from "./web-server";
 import { WebServerSetupError } from "./web-server-setup-error";
 import { HttpError, ArgumentError, ArgumentNullError, getParameterNames } from "@alterior/common";
 import { Response } from './response';
-import { Logger } from '@alterior/logging';
+import { ellipsize } from './utils';
 
 export interface RouteDescription {
 	definition : RouteDefinition;
@@ -448,6 +448,7 @@ export class RouteInstance {
 			throw new ArgumentNullError('instance');
 		
 		event.controller = instance;
+		event.server = this.server;
 
 		if (!instance[this.definition.method]) {
 			throw new ArgumentError(
@@ -463,90 +464,106 @@ export class RouteInstance {
 		// Execute our function by resolving the parameter factories into a set of parameters to provide to the 
 		// function.
 
-		this.server.reportRequest(event, `${controllerType.name}.${route.method}()`);
+		let resolvedParams = await Promise.all(this.parameters.map(x => x.resolve(event)));
+		let displayableParams = resolvedParams
+			.map(param => {
+				try {
+					return JSON.stringify(param);
+				} catch (e) {
+					return String(param);
+				}
+			})
+			.map(param => ellipsize(this.server.options.longParameterThreshold ?? 100, param))
+		;
 
-		let result;
+		const reportSource = `${controllerType.name}.${route.method}(${displayableParams.join(', ')})`;
 
-		try {
-			result = await event.context(async () => {
-				return await instance[route.method](
-					...(await Promise.all(this.parameters.map(x => x.resolve(event))))
-				);
-			});
-		} catch (e) {
-			
-			if (e.constructor === HttpError) {
-				let httpError = <HttpError>e;
-				event.response.statusCode = httpError.statusCode;
+		this.server.reportRequest('starting', event, reportSource);
+		try { // To finally report request completion.
+
+			let result;
+
+			try {
+				result = await event.context(async () => {
+					return await instance[route.method](...resolvedParams);
+				});
+			} catch (e) {
 				
-				httpError.headers
-					.forEach(header => event.response.setHeader(header[0], header[1]));
+				if (e.constructor === HttpError) {
+					let httpError = <HttpError>e;
+					event.response.statusCode = httpError.statusCode;
+					
+					httpError.headers
+						.forEach(header => event.response.setHeader(header[0], header[1]));
 
-				event.response.setHeader('Content-Type', 'application/json; charset=utf-8');
-				event.response.write(JSON.stringify(httpError.body));
-				event.response.end();
+					event.response.setHeader('Content-Type', 'application/json; charset=utf-8');
+					event.response.write(JSON.stringify(httpError.body));
+					event.response.end();
 
+					return;
+				}
+
+				this.server.handleError(e, event, this, `${controllerType.name}.${route.method}()`);
 				return;
 			}
 
-			this.server.handleError(e, event, this, `${controllerType.name}.${route.method}()`);
-			return;
-		}
+			// Return value handling
 
-		// Return value handling
+			if (result === undefined) {
+				if (!event.response.headersSent && event.response.statusCode === 200)
+					event.response.statusCode = 204;
+				event.response.end();
+				return;
+			}
 
-		if (result === undefined) {
-			if (!event.response.headersSent && event.response.statusCode === 200)
-				event.response.statusCode = 204;
-			event.response.end();
-			return;
-		}
+			if (result === null) {
+				this.server.engine.sendJsonBody(event, result);
+				return;
+			}
 
-		if (result === null) {
-			this.server.engine.sendJsonBody(event, result);
-			return;
-		}
+			try {
+				if (result.constructor === Response) {
+					let response = <Response>result;
 
-		try {
-			if (result.constructor === Response) {
-				let response = <Response>result;
+					event.response.statusCode = response.status;
+					response.headers.forEach(x => event.response.setHeader(x[0], x[1]));
+					
+					if (response.encoding === 'raw') {
+						if (response.body instanceof Buffer) {
+							event.response.write(response.body);
+						} else if (typeof response.body === 'string') {
+							event.response.write(Buffer.from(response.body)); 
+						} else if (response.body === undefined || response.body === null) {
+							if (!event.response.headersSent && event.response.statusCode === 200)
+								event.response.statusCode = 204;
+						} else {
+							throw new Error(`Unknown response body type ${response.body}`);
+						}
 
-				event.response.statusCode = response.status;
-				response.headers.forEach(x => event.response.setHeader(x[0], x[1]));
-				
-				if (response.encoding === 'raw') {
-					if (response.body instanceof Buffer) {
-						event.response.write(response.body);
-					} else if (typeof response.body === 'string') {
-						event.response.write(Buffer.from(response.body)); 
-					} else if (response.body === undefined || response.body === null) {
-						if (!event.response.headersSent && event.response.statusCode === 200)
-							event.response.statusCode = 204;
+						event.response.end();
+					} else if (response.encoding === 'json') {
+						this.server.engine.sendJsonBody(event, response.unencodedBody);
 					} else {
-						throw new Error(`Unknown response body type ${response.body}`);
+						throw new Error(`Unknown encoding type ${response.encoding}`);
 					}
 
-					event.response.end();
-				} else if (response.encoding === 'json') {
-					this.server.engine.sendJsonBody(event, response.unencodedBody);
 				} else {
-					throw new Error(`Unknown encoding type ${response.encoding}`);
+					// event.response
+					// 	.status(200)
+					// 	.send(result)
+					// ;
+
+					event.response.statusCode = 200;
+					this.server.engine.sendJsonBody(event, result);
 				}
+			} catch (e) {
+				console.error(`Caught exception:`);
+				console.error(e);
 
-			} else {
-				// event.response
-				// 	.status(200)
-				// 	.send(result)
-				// ;
-
-				event.response.statusCode = 200;
-				this.server.engine.sendJsonBody(event, result);
+				throw e;
 			}
-		} catch (e) {
-			console.error(`Caught exception:`);
-			console.error(e);
-
-			throw e;
+		} finally {
+			this.server.reportRequest('finished', event, reportSource);
 		}
 	}
 
