@@ -1,10 +1,10 @@
 {
   "name": "@alterior/testapp",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -b", 
+    "build": "tsc -b",
     "start": "npm run build && node dist/main",
     "test": "exit 0"
   },
@@ -13,9 +13,9 @@
   "license": "ISC",
   "dependencies": {
     "@alterior/common": "^3.2.0",
-    "@alterior/express": "^3.2.0",
+    "@alterior/express": "^3.3.0",
     "@alterior/runtime": "^3.2.0",
-    "@alterior/web-server": "^3.2.0"
+    "@alterior/web-server": "^3.3.0"
   },
   "gitHead": "5c18a5ddde7719d8f439fcf22804280fb56cf255"
 }
