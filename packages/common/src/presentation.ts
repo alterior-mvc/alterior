@@ -3,7 +3,7 @@
 import { Constructor } from "./constructor";
 import { clone } from "./clone";
 
-export const EXPOSE_PROTOTYPE_STORAGE_KEY = '@sliptap/backend:Expose';
+export const EXPOSE_PROTOTYPE_STORAGE_KEY = '@alterior/common:Expose';
 
 export interface PresentedPropertyOptions {
     useProperty? : string;
