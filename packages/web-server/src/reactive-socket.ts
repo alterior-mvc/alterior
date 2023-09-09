@@ -3,7 +3,7 @@ import { Subject, Observable } from "rxjs";
 /**
  * A better way to handle websockets
  */
-export class WebConduit {
+export class ReactiveSocket {
     constructor(
         readonly socket : WebSocket
     ) {

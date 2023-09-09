@@ -1,5 +1,9 @@
 # ⏭ vNext
 
+# ⏭ vNext [4.0]
+- `@/web-server`: **Breaking**: Renamed WebConduit to ReactiveSocket, and `WebServer#startConduit()` to 
+  `WebServer#startReactiveSocket()`
+
 # 🚀3.3.0
 - `@/web-server`: Request logging has been improved, and is now highly customizable. Support has been added for filtering
   sensitive parameters during request logging.

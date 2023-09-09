@@ -12,7 +12,7 @@ import { WebServerEngine } from './web-server-engine';
 import { ParameterDisplayFormatter, RequestReporter, RequestReporterFilter, WebServerOptions } from './web-server-options';
 import { ServiceDescription } from './service-description';
 import { ServiceDescriptionRef } from './service-description-ref';
-import { WebConduit } from './web-conduit';
+import { ReactiveSocket } from './reactive-socket';
 import { ellipsize } from './utils';
 import { HttpError } from '@alterior/common';
 import { HTTP_MESSAGES } from './http-messages';
@@ -441,8 +441,8 @@ export class WebServer {
 		}
 	}
 
-	async startConduit() {
-		return new WebConduit(await this.startSocket());
+	async startReactiveSocket() {
+		return new ReactiveSocket(await this.startSocket());
 	}
 
 	async startSocket() {
@@ -472,8 +472,8 @@ export class WebServer {
 		return WebServer.for(WebEvent.controller).startSocket();
 	}
 
-	static async startConduit() {
-		return WebServer.for(WebEvent.controller).startConduit();
+	static async startReactiveSocket() {
+		return WebServer.for(WebEvent.controller).startReactiveSocket();
 	}
 
 	/**

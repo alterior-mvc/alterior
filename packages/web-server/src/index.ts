@@ -18,4 +18,4 @@ export * from './service-description';
 export * from './service-description-ref';
 export * from './web-service-compiler';
 export * from './certificate-generator';
-export * from './web-conduit';
+export * from './reactive-socket';
