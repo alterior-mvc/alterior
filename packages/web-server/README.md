@@ -490,6 +490,15 @@ MySession.current.cartTotal
 
 Note that both `Session.current` and `MySession.current` only have meaning when called from within a route method while an HTTP request is being processed. 
 
+# OpenAPI / Swagger
+
+Alterior can automatically generate an OpenAPI v2 schema for your defined REST endpoints. To do so, mount the included OpenApiController:
+
+```typescript
+@Mount('/openapi')
+openapi: OpenApiController;
+```
+
 # Testing
 
 Use `teststrap()` to test endpoints in your web service. Since the caller and the server are in the same process, the actual HTTP server is skipped, with requests passed directly from the `teststrap()` test to an instance of your web service.

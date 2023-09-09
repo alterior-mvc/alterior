@@ -1,7 +1,7 @@
 import 'zone.js';
 import 'reflect-metadata';
 
-import { WebService, Get, WebServer, WebEvent, WebServerEngine } from '@alterior/web-server';
+import { WebService, Get, WebServer, WebEvent, WebServerEngine, Mount, OpenApiController } from '@alterior/web-server';
 import { Application } from '@alterior/runtime';
 import { HttpError, timeout } from '@alterior/common';
 
@@ -10,6 +10,9 @@ WebServerEngine.default = ExpressEngine;
 
 @WebService()
 export class MyService {
+    @Mount('/openapi')
+    openapi: OpenApiController;
+    
     @Get()
     async info() {
         return {
