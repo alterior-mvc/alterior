@@ -24,6 +24,8 @@ class _NullInjector implements Injector {
   }
 }
 
+let CURRENT_INJECTOR: Injector = null;
+
 /**
  * @whatItDoes Injector interface
  * @howToUse
@@ -61,4 +63,24 @@ export abstract class Injector {
    * @suppress {duplicate}
    */
   abstract get(token: any, notFoundValue?: any): any;
+
+  /**
+   * @internal
+   */
+  static _runInInjectionContext(injector: Injector, callback: () => void) {
+    let previousContext = CURRENT_INJECTOR;
+    CURRENT_INJECTOR = injector;
+    try {
+      callback();
+    } finally {
+      CURRENT_INJECTOR = previousContext;
+    }
+  }
+}
+
+export function inject<T = unknown>(token: Type<T> | InjectionToken<T>) {
+  if (CURRENT_INJECTOR === null)
+    throw new Error(`inject() can only be called during construction.`);
+
+  return CURRENT_INJECTOR.get(token);
 }

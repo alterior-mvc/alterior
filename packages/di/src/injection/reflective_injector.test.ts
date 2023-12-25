@@ -27,6 +27,7 @@ import { getOriginalError } from './facade/errors';
 import { isPresent, stringify } from './facade/lang';
 import { suite } from 'razmin';
 import { SelfAnnotation, InjectAnnotation } from './metadata';
+import { inject } from './injector.js';
 
 class Engine {}
 
@@ -77,6 +78,26 @@ class CarWithInject {
 class CyclicEngine {
   constructor(car: Car) {}
 }
+
+/////////////////////////////
+
+class Engine2 {}
+class TurboEngine2 extends Engine {}
+
+@Injectable()
+class SportsCar2 extends Car {}
+
+@Injectable()
+class CarWithInject2 {
+  engine = inject(TurboEngine2);
+}
+
+@Injectable()
+class CyclicEngine2 {
+  car = inject(Car);
+}
+
+/////////////////////////////
 
 class NoAnnotations {
   constructor(secretDependency: any) {}
@@ -151,6 +172,18 @@ suite(describe => {
       expect(car.engine).to.be.instanceOf(TurboEngine);
     });
 
+    it('should resolve imperative dependencies', () => {
+      const injector = createInjector([TurboEngine2, Engine2, CarWithInject2]);
+      const car = injector.get(CarWithInject2);
+
+      expect(car).to.be.instanceOf(CarWithInject2);
+      expect(car.engine).to.be.instanceOf(TurboEngine2);
+    });
+
+    it('should throw when inject() is called outside of injection context', () => {
+      expect(() => inject(CarWithInject2)).to.throw();
+    });
+    
     it('should throw when no type and not @Inject (class case)', () => {
       expect(() => createInjector([NoAnnotations])).to.throw(
         "Cannot resolve all parameters for 'NoAnnotations'(?). " +
