@@ -66,7 +66,7 @@ export function capitalize(name : string) {
     return name[0].toUpperCase() + name.slice(1);
 }
 
-export function removeAll(path : string) : Promise<void> {
+export function removeAll(path : string) : Promise<boolean> {
     return rimraf(path);
 }
 
