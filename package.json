@@ -13,24 +13,7 @@
     "url": "https://github.com/alterior-mvc/alterior/issues"
   },
   "workspaces": [
-    "packages/annotations",
-    "packages/cli",
-    "packages/command-line",
-    "packages/common",
-    "packages/di",
-    "packages/express",
-    "packages/fastify",
-    "packages/functions",
-    "packages/http",
-    "packages/logging",
-    "packages/platform-angular",
-    "packages/platform-nodejs",
-    "packages/runtime",
-    "packages/streams",
-    "packages/tasks",
-    "packages/testapp",
-    "packages/terminal",
-    "packages/web-server"
+    "packages/*"
   ],
   "scripts": {
     "test": "lerna run test",
@@ -56,7 +39,7 @@
     "dotenv": "^6.0.0",
     "express": "^4.17.1",
     "kind-of": ">=6.0.3",
-    "lerna": "^4.0.0",
+    "lerna": "^8.0.0",
     "lodash": ">=4.17.19",
     "mkdirp": "^0.5.5",
     "razmin": "^1.2.0",
