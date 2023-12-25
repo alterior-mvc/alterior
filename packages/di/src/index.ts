@@ -10,5 +10,6 @@ export {
     FactoryProvider,
     TypeProvider,
     ValueProvider,
-    Type
+    Type,
+    inject
 } from './injection';
