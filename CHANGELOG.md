@@ -1,5 +1,10 @@
 # ⏭ vNext
 
+# 3.4.2
+- `@/platform-nodejs`: Add support for `dotenv-flow` style usage of the `NODE_ENV` environment variable. When `NODE_ENV`
+  is set, the filename searched is `.env.{NODE_ENV}` to allow you to configure multiple environments in separate `.env`
+  files.
+
 # 🚀3.4.0
 - `@/di`: Support for imperative injection via the `inject()` function.
 

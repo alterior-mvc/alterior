@@ -14,14 +14,20 @@ function fileExists(file: string): boolean {
 
 function findDotEnv() {
     let dir = process.cwd();
-    while (!fileExists(path.join(dir, '.env'))) {
+    let filename = '.env';
+
+    if (process.env['NODE_ENV']) {
+        filename = `.env.${process.env['NODE_ENV']}`;
+    }
+
+    while (!fileExists(path.join(dir, filename))) {
         let parentDir = path.resolve(dir, '..');
         if (dir === parentDir)
             return undefined;
         dir = parentDir;
     }
 
-    return path.resolve(dir, '.env');
+    return path.resolve(dir, filename);
 }
 
 let dotEnvPath = findDotEnv();
