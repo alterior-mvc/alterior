@@ -120,7 +120,7 @@ export declare interface InjectOptions {
  * @param options 
  * @returns 
  */
-export function inject<T = unknown>(token: Type<T> | InjectionToken<T>, options?: InjectOptions) {
+export function inject<T = unknown>(token: Type<T> | InjectionToken<T>, options?: InjectOptions): T {
   if (CURRENT_INJECTOR === null)
     throw new Error(`inject() can only be called during construction.`);
 
@@ -131,7 +131,7 @@ export function inject<T = unknown>(token: Type<T> | InjectionToken<T>, options?
 
   return CURRENT_INJECTOR.get(
     token, 
-    options?.optional === true ? undefined : THROW_IF_NOT_FOUND,
+    options?.optional === true ? undefined : <any>THROW_IF_NOT_FOUND,
     { self: options?.self ?? false }
   );
 }
