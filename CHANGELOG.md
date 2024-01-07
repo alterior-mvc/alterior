@@ -1,4 +1,5 @@
 # ⏭ vNext
+- `@/di`: `inject()` now supports `skipSelf`, `self`, and `optional` options.
 
 # 3.4.2
 - `@/platform-nodejs`: Add support for `dotenv-flow` style usage of the `NODE_ENV` environment variable. When `NODE_ENV`

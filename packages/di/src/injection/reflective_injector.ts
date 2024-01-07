@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { Injector, THROW_IF_NOT_FOUND } from './injector';
+import { Injector, InjectorGetOptions, THROW_IF_NOT_FOUND } from './injector';
 import { SelfAnnotation, SkipSelfAnnotation, InjectAnnotation, OptionalAnnotation, Optional } from './metadata';
 import { Provider, ClassProvider, ProviderWithDependencies } from './provider';
 import { cyclicDependencyError, instantiationError, noProviderError, outOfBoundsError } from './reflective_errors';
@@ -371,8 +371,10 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     }
   }
 
-  get(token: any, notFoundValue: any = THROW_IF_NOT_FOUND): any {
-    return this._getByKey(ReflectiveKey.get(token), null, notFoundValue);
+  private _useSelf = new SelfAnnotation();
+
+  get(token: any, notFoundValue: any = THROW_IF_NOT_FOUND, options?: InjectorGetOptions): any {
+    return this._getByKey(ReflectiveKey.get(token), options?.self ? this._useSelf: null, notFoundValue);
   }
 
   get parent(): Injector | null {
