@@ -53,7 +53,7 @@ Modules can optionally define lifecycle methods which are invoked by the runtime
 
 Many execution modules represent a service which can be turned on and off. Alterior has support baked in for this with Roles. Such modules can register a Role which allows the status of the service to be controlled and queried programmatically by using the `RolesService` injectable service.
 
-To register a role, use `RolesService.registerRole(roleRegistration)`. You will need to provide `start()` and `stop()` methods which will be executed when the roles service decides to start/stop your role. You will also need to specify an `identifier` which is used when referring to the role in configuration and the environment.
+To register a role, use `RolesService.registerRole(roleRegistration)`. This is usually done within the `altOnInit()` method of a class marked with `@Module()`. You will need to provide `start()` and `stop()` methods which will be executed when the roles service decides to start/stop your role. You will also need to specify an `identifier` which is used when referring to the role in configuration and the environment.
 
 ## Configuring enabled roles
 
