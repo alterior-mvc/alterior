@@ -1,5 +1,12 @@
 # ⏭ vNext
 - `@/di`: `inject()` now supports `skipSelf`, `self`, and `optional` options.
+- `@/web-server`
+    * Add support for SNI
+    * Add support for serving both HTTP and HTTPS via a secondary port
+- `@/fastify`
+    * Fix missing support for Alterior seamless websockets
+    * Fix missing support for Alterior TLS certificate generation
+    * Fix missing support for serving TLS/SPDY
 
 # 3.4.2
 - `@/platform-nodejs`: Add support for `dotenv-flow` style usage of the `NODE_ENV` environment variable. When `NODE_ENV`

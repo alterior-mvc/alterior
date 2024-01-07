@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@alterior/web-server": "^3.4.1",
+    "@alterior/logging": "^3.4.1",
     "fastify": "^2.15.3"
   },
   "gitHead": "5e232d07529b9d9f0d5aeba04e08d6e571998720"

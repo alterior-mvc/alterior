@@ -15,25 +15,14 @@ import * as net from "net";
 import { Injectable } from '@alterior/di';
 
 @Injectable()
-export class TestWebServerEngine implements WebServerEngine {
+export class TestWebServerEngine extends WebServerEngine {
 	app = express();
-	
-	get providers() {
-		return [];
-	}
 
 	sendJsonBody(routeEvent : WebEvent, body : any) {
 		routeEvent.response.setHeader('Content-Type', 'application/json; charset=utf-8');
 		routeEvent.response.write(JSON.stringify(body))
 		routeEvent.response.end();
 	}
-
-	private readonly supportedMethods = [ 
-		"checkout", "copy", "delete", "get", "head", "lock", "merge", 
-		"mkactivity", "mkcol", "move", "m-search", "notify", "options", 
-		"patch", "post", "purge", "put", "report", "search", "subscribe", 
-		"trace", "unlock", "unsubscribe",
-	];
 	
 	private getRegistrarName(method : string) {
 		let registrar = method.toLowerCase();
