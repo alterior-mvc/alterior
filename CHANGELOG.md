@@ -1,5 +1,8 @@
 # ⏭ vNext
 
+# v3.5.1
+- `@/logging`: `Logger.current` does not use the `Logger` instance configured in application injector
+
 # v3.5.0
 - `@/di`: `inject()` now supports `skipSelf`, `self`, and `optional` options.
 - `@/web-server`

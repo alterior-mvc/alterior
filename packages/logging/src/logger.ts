@@ -272,7 +272,10 @@ export class ZonedLogger {
     static readonly ZONE_LOCAL_NAME = '@alterior/logger:Logger.current';
 
     public static get current(): ZonedLogger {
-        return Zone.current.get(Logger.ZONE_LOCAL_NAME) || new ZonedLogger(null, null);
+        return Zone.current.get(Logger.ZONE_LOCAL_NAME) 
+            ?? ExecutionContext.current?.application.inject(Logger)
+            ?? new ZonedLogger(null, null)
+        ;
     }
 
     get listeners() {
