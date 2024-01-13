@@ -1,4 +1,6 @@
 # ⏭ vNext
+
+# v3.5.0
 - `@/di`: `inject()` now supports `skipSelf`, `self`, and `optional` options.
 - `@/web-server`
     * Add support for SNI
