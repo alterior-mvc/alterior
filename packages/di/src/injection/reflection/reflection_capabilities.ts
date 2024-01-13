@@ -8,7 +8,7 @@
  */
 
 import { global, isPresent, stringify } from '../facade/lang';
-import { Type, isType } from '../facade/type';
+import { ConcreteType, Type, isType } from '../facade/type';
 
 import { PlatformReflectionCapabilities } from './platform_reflection_capabilities';
 import { GetterFn, MethodFn, SetterFn } from './types';
@@ -30,7 +30,7 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
     return true;
   }
 
-  factory<T>(t: Type<T>): (args: any[]) => T {
+  factory<T>(t: ConcreteType<T>): (args: any[]) => T {
     return (...args: any[]) => new t(...args);
   }
 

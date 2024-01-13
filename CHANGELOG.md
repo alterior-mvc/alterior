@@ -1,5 +1,9 @@
 # ⏭ vNext
 
+# v3.5.3
+- `@/di`: Better type safety for TypeProvider (must be concrete type) while still allowing for injection tokens to be 
+  abstract. Fixes an issue where `inject()` could not accept an abstract class, even though that is a common pattern
+  for swappable injectables.
 # v3.5.2
 - `@/runtime`: `ExecutionContext.current.application` is now available before `altOnInit` runs
 

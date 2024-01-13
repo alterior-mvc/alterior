@@ -22,6 +22,7 @@ export function isType(v: any): v is Type<any> {
   return typeof v === 'function';
 }
 
-export interface Type<T = object> extends Function {
-  new (...args: any[]): T;
-}
+export type ConcreteType<T = object> = new (...args: any[]) => T;
+export type AbstractType<T = object> = abstract new (...args: any[]) => T;
+
+export type Type<T = object> = ConcreteType<T> | AbstractType<T>;

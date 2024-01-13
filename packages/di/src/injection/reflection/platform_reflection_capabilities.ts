@@ -6,12 +6,12 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { Type } from '../facade/type';
+import { ConcreteType, Type } from '../facade/type';
 import { GetterFn, MethodFn, SetterFn } from './types';
 
 export interface PlatformReflectionCapabilities {
   isReflectionEnabled(): boolean;
-  factory(type: Type<any>): Function;
+  factory(type: ConcreteType<any>): Function;
   hasLifecycleHook(type: any, lcProperty: string): boolean;
   parameters(type: Type<any>): any[][];
   annotations(type: Type<any>): any[];

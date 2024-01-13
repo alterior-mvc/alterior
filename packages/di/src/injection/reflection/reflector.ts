@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { Type } from '../facade/type';
+import { ConcreteType, Type } from '../facade/type';
 import { PlatformReflectionCapabilities } from './platform_reflection_capabilities';
 import { ReflectorReader } from './reflector_reader';
 import { GetterFn, MethodFn, SetterFn } from './types';
@@ -27,7 +27,7 @@ export class Reflector extends ReflectorReader {
     this.reflectionCapabilities = caps;
   }
 
-  factory(type: Type<any>): Function {
+  factory(type: ConcreteType<any>): Function {
     return this.reflectionCapabilities.factory(type);
   }
 

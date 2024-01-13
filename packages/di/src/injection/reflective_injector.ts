@@ -6,9 +6,10 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
+import { ConcreteType, Type } from './facade/type';
 import { Injector, InjectorGetOptions, THROW_IF_NOT_FOUND } from './injector';
 import { SelfAnnotation, SkipSelfAnnotation, InjectAnnotation, OptionalAnnotation, Optional } from './metadata';
-import { Provider, ClassProvider, ProviderWithDependencies } from './provider';
+import { Provider, ClassProvider, ProviderWithDependencies, isTypeProvider } from './provider';
 import { cyclicDependencyError, instantiationError, noProviderError, outOfBoundsError } from './reflective_errors';
 import { ReflectiveKey } from './reflective_key';
 import {
@@ -131,10 +132,10 @@ export abstract class ReflectiveInjector implements Injector {
    * @param providers 
    */
   static reflectDependencies(provider : Provider): ProviderWithDependencies {
-    if (typeof provider === 'function') {
+    if (isTypeProvider(provider)) {
       provider = {
         provide: provider,
-        useClass: provider
+        useClass: <ConcreteType<any>>provider
       };
     }
 
