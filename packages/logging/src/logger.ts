@@ -273,7 +273,7 @@ export class ZonedLogger {
 
     public static get current(): ZonedLogger {
         return Zone.current.get(Logger.ZONE_LOCAL_NAME) 
-            ?? ExecutionContext.current?.application.inject(Logger)
+            ?? ExecutionContext.current?.application?.inject(Logger)
             ?? new ZonedLogger(null, null)
         ;
     }

@@ -187,6 +187,8 @@ export class Application {
 			(<RolesService>injector.get(RolesService)).silent = options.silent;
 			
 			runtime.load(injector);
+			executionContext.application = runtime.getService(Application);
+			
 			runtime.fireEvent('OnInit');
 			runtime.configure();
 	
@@ -198,7 +200,7 @@ export class Application {
 			if (options.autostart)
 				runtime.start();
 
-			return executionContext.application = runtime.getService(Application);
+			return executionContext.application;
 		});
 	}
 	

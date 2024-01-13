@@ -1,5 +1,8 @@
 # ⏭ vNext
 
+# v3.5.2
+- `@/runtime`: `ExecutionContext.current.application` is now available before `altOnInit` runs
+
 # v3.5.1
 - `@/logging`: `Logger.current` does not use the `Logger` instance configured in application injector
 
