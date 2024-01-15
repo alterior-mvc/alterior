@@ -1,6 +1,6 @@
 {
   "name": "@alterior/http",
-  "version": "3.5.3",
+  "version": "3.5.4",
   "description": "Flexible and configurable HTTP client",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -40,8 +40,8 @@
   },
   "dependencies": {
     "@alterior/common": "^3.4.0",
-    "@alterior/di": "^3.5.3",
-    "@alterior/runtime": "^3.5.3",
+    "@alterior/di": "^3.5.4",
+    "@alterior/runtime": "^3.5.4",
     "rxjs": "^7.8.0",
     "tslib": "^2.3.1",
     "xhr2": "^0.1.4"
