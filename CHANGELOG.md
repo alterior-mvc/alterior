@@ -1,5 +1,11 @@
 # ⏭ vNext
 
+# v3.5.7
+- Fixes more semantic issues with certificate generator on Forge
+
+# v3.5.6
+- Re-release of packages to resolve package resolution issues
+
 # v3.5.5
 - `@/web-server`: Fix a semantic issue with the Forge library in certificate generation 
 

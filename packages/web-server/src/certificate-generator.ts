@@ -47,7 +47,7 @@ export class CertificateGenerator {
     async generate(attrs : CertAttributes, options : GeneratorOptions = {}): Promise<GeneratedCertificate> {
         options = options || {};
 
-        let generatePem = (keyPair) => {
+        let generatePem = (keyPair: { privateKey: string, publicKey: string }) => {
             let cert = forge.pki.createCertificate();
 
             cert.serialNumber = this.toPositiveHex(forge.util.bytesToHex(forge.random.getBytesSync(9))); // the serial number can be decimal or hex (if preceded by 0x)
@@ -79,7 +79,7 @@ export class CertificateGenerator {
             cert.setSubject(attrs);
             cert.setIssuer(attrs);
 
-            cert.publicKey = keyPair.publicKey;
+            cert.publicKey = forge.pki.publicKeyFromPem(keyPair.publicKey);
 
             cert.setExtensions(options.extensions || [{
                 name: 'basicConstraints',
@@ -99,7 +99,7 @@ export class CertificateGenerator {
                 }]
             }]);
 
-            cert.sign(keyPair.privateKey, this.getAlgorithm(options && options.algorithm));
+            cert.sign(forge.pki.privateKeyFromPem(keyPair.privateKey), this.getAlgorithm(options && options.algorithm));
 
             const fingerprint = forge.md.sha1
                 .create()
@@ -110,8 +110,8 @@ export class CertificateGenerator {
                 .join(':');
 
             let pem = {
-                private: forge.pki.privateKeyToPem(keyPair.privateKey),
-                public: forge.pki.publicKeyToPem(keyPair.publicKey),
+                private: keyPair.privateKey,
+                public: keyPair.publicKey,
                 cert: forge.pki.certificateToPem(cert),
                 pkcs7: null,
                 fingerprint: fingerprint,
@@ -154,7 +154,7 @@ export class CertificateGenerator {
                 clientcert.publicKey = clientkeys.publicKey;
 
                 // Sign client cert with root cert
-                clientcert.sign(keyPair.privateKey);
+                clientcert.sign(forge.pki.privateKeyFromPem(keyPair.privateKey));
 
                 pem.clientprivate = forge.pki.privateKeyToPem(clientkeys.privateKey);
                 pem.clientpublic = forge.pki.publicKeyToPem(clientkeys.publicKey);
