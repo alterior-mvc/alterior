@@ -1,4 +1,5 @@
 # ⏭ vNext
+- Sources are now included with packages to enable easier sourcemap debugging of the Alterior packages.
 
 # v3.5.3
 - `@/di`: Better type safety for TypeProvider (must be concrete type) while still allowing for injection tokens to be 
