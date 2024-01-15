@@ -1,7 +1,14 @@
 # ⏭ vNext
 
+# v3.5.8
+- `@/web-server`:
+  - Fixes a bug where TLS options are not properly initialized in some cases, causing a crash.
+  - Fixes a bug where automatically generated self-signed certificates (when requesting HTTP/2 or SPDY without specifying
+    a certificate) are not used, causing the server to boot into HTTP only mode instead of HTTPS.
+
 # v3.5.7
-- Fixes more semantic issues with certificate generator on Forge
+- `@/web-server`:
+  - Fixes more semantic issues with certificate generator on Forge
 
 # v3.5.6
 - Re-release of packages to resolve package resolution issues

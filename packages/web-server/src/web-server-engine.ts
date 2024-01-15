@@ -78,10 +78,11 @@ export abstract class WebServerEngine {
 			]);
 			options.certificate = certs.cert;
 			options.privateKey = certs.private;
+			isSecure = true;
 		}
 
 		if (isSecure) {
-			let tlsOptions: tls.TlsOptions;
+			let tlsOptions: tls.TlsOptions = {};
 
 			if (options.sniHandler) {
 				tlsOptions.SNICallback = async (servername, callback) => {
