@@ -196,7 +196,10 @@ export class CertificateGenerator {
                         return reject(err);
 
                     try {
-                        return resolve(keyPair);
+                        return resolve({ 
+                            privateKey: forge.pki.privateKeyToPem(keyPair.privateKey), 
+                            publicKey: forge.pki.publicKeyToPem(keyPair.publicKey) 
+                        });
                     } catch (ex) {
                         return reject(ex);
                     }

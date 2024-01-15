@@ -1,5 +1,8 @@
 # ⏭ vNext
 
+# v3.5.5
+- `@/web-server`: Fix a semantic issue with the Forge library in certificate generation 
+
 # v3.5.4
 - Sources are now included with packages to enable easier sourcemap debugging of the Alterior packages.
 
