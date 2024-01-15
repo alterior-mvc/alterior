@@ -46,5 +46,6 @@
     "reflect-metadata": "^0.1.13",
     "zone.js": "^0.11.4"
   },
+  "lernaKick": 1,
   "gitHead": "5c18a5ddde7719d8f439fcf22804280fb56cf255"
 }
