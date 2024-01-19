@@ -1,5 +1,6 @@
 # ⏭ vNext
 
+# v3.6.0
 - `@/runtime`: Allow specifying additional providers when bootstrapping an application
 - `@/platform-nodejs`
     - `dotenv` version 16.3.1
