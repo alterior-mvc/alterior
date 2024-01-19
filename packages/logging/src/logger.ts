@@ -278,6 +278,13 @@ export class ZonedLogger {
         ;
     }
 
+    static log(message : string, options? : LogOptions) { this.current.log(message, options); }
+    static info(message : string, options? : LogOptions) { this.current.log(message, options); }
+    static fatal(message: string, options?: LogOptions) { this.current.fatal(message, options); }
+    static debug(message : string, options? : LogOptions) { this.current.log(message, options); }
+    static warning(message : string, options? : LogOptions) { this.current.log(message, options); }
+    static error(message : string, options? : LogOptions) { this.current.log(message, options); }
+
     get listeners() {
         if (this.optionsRef?.options?.listeners) {
             return this.optionsRef.options.listeners;
@@ -329,6 +336,10 @@ export class ZonedLogger {
 
     info(message : string, options? : LogOptions) {
         this.log(message, Object.assign({}, options, { severity: 'info' }));
+    }
+
+    fatal(message: string, options?: LogOptions) {
+        this.log(message, Object.assign({}, options, { severity: 'fatal' }));
     }
 
     debug(message : string, options? : LogOptions) {

@@ -9,7 +9,9 @@
             * Backtick quotes are now supported
     - `ws` version 8.16.0
     - `source-map-support` version 0.5.21
-
+- `@/logging`: 
+    * Added missing `fatal()` convenience function
+    * Added static shortcuts to `Logger` (ie `Logger.info()` means `Logger.current.info()`)
 # v3.5.8
 - `@/web-server`:
   - Fixes a bug where TLS options are not properly initialized in some cases, causing a crash.
