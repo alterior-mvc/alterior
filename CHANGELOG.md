@@ -1,6 +1,11 @@
 # ⏭ vNext
 
 - `@/runtime`: Allow specifying additional providers when bootstrapping an application
+- `@/platform-nodejs`: Now depends on `dotenv` version 16.3.1.
+    - **Please note these changes**
+        * Comments are now supported
+        * Multiline strings are now supported
+        * Backtick quotes are now supported
 
 # v3.5.8
 - `@/web-server`:
