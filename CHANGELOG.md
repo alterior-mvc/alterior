@@ -1,5 +1,7 @@
 # ⏭ vNext
 
+- `@/runtime`: Allow specifying additional providers when bootstrapping an application
+
 # v3.5.8
 - `@/web-server`:
   - Fixes a bug where TLS options are not properly initialized in some cases, causing a crash.

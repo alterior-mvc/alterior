@@ -1,56 +1,62 @@
 import { Annotation, AnnotationDecorator, MetadataName } from '@alterior/annotations';
+import { Provider } from '@alterior/di';
 
 export interface ApplicationOptions {
 	
 	/**
 	 * Specify a human readable name for your application.
 	 */
-	name? : string;
+	name?: string;
 
 	/**
 	 * Version of the service
 	 */
-	version? : string;
+	version?: string;
 	
 	/**
 	 * The computer-readable name for your application. Should match your NPM package name.
 	 */
-	packageName? : string;
+	packageName?: string;
 
 	/**
 	 * A long-form description for your application, when necessary. If you implement only one,
 	 * implement summary instead.
 	 */
-	description? : string;
+	description?: string;
 
 	/**
 	 * A shorter-form description for your application, when necessary. If you implement only one,
 	 * implement this instead of description.
 	 */
-	summary? : string;
+	summary?: string;
 
 	/**
 	 * A set of string tags related to your application.
 	 */
-	tags? : string[];
+	tags?: string[];
 
-	group? : string;
+	group?: string;
 	
 	/**
 	 * Enable verbose console logging for Alterior
 	 */
-	verbose? : boolean;
+	verbose?: boolean;
 
 	/**
 	 * Whether to start the service immediately on startup.
 	 * Defaults to true.
 	 */
-	autostart? : boolean;
+	autostart?: boolean;
 
 	/**
 	 * Turn off all console output
 	 */
-	silent? : boolean;
+	silent?: boolean;
+
+	/**
+	 * Additional dependency injection providers to include in the application's injector.
+	 */
+	providers?: Provider[];
 }
 
 /**
@@ -58,7 +64,7 @@ export interface ApplicationOptions {
  */
 @MetadataName('@alterior/di:Application')
 export class AppOptionsAnnotation extends Annotation {
-	constructor(readonly options? : ApplicationOptions) {
+	constructor(readonly options?: ApplicationOptions) {
 		super();
 	}
 }

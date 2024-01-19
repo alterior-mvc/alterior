@@ -168,6 +168,7 @@ export class Application {
 				}
 			);
 			providers.push(Application);
+			providers.push(options.providers ?? []);
 
 			runtime.providers = providers;
 	
