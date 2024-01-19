@@ -1,23 +1,26 @@
 import 'reflect-metadata';
 
-import { ApplicationOptions, AppOptionsAnnotation } from './app-options';
-import { ReflectiveInjector, Provider, Injectable, 
-		 ModuleAnnotation, Injector } from '@alterior/di';
-import { Runtime } from './modules';
-import { ApplicationArgs } from './args';
-import { RolesService } from './roles.service';
 import { Environment, Time } from '@alterior/common';
-
-declare let module : never;
+import {
+	inject,
+	Injectable,
+	ModuleAnnotation,
+	Provider,
+	ReflectiveInjector
+} from '@alterior/di';
+import { ApplicationOptions, AppOptionsAnnotation } from './app-options';
+import { ApplicationArgs } from './args';
+import { Runtime } from './modules';
+import { RolesService } from './roles.service';
 
 export class ApplicationOptionsRef {
 	constructor(
-		options : ApplicationOptions
+		options: ApplicationOptions
 	) {
 		this.options = Object.assign({}, options);
 	}
 
-	readonly options : ApplicationOptions;
+	readonly options: ApplicationOptions;
 }
 
 /**
@@ -30,7 +33,7 @@ export class ExecutionContext {
 	 * Retrieve the Alterior application which is currently being executed.
 	 * If an application has not been bootstrapped yet, the value is null.
 	 */
-	public application : Application = null;
+	public application: Application = null;
 
 	static readonly ZONE_LOCAL_NAME  = '@alterior/runtime:ExecutionContext';
 
@@ -45,7 +48,7 @@ export class ExecutionContext {
 	 * Execute the given function in a new zone which has
 	 * this ExecutionContext instance as the current execution context.
 	 */
-	public async run<T>(callback : () => Promise<T>): Promise<T> {
+	public async run<T>(callback: () => Promise<T>): Promise<T> {
 		let zone = Zone.current.fork({
 			name: `AlteriorExecutionContext`,
 			properties: {
@@ -56,7 +59,7 @@ export class ExecutionContext {
 		return await zone.run(() => callback());
 	}
 
-	public runSync<T>(callback : () => T): T {
+	public runSync<T>(callback: () => T): T {
 		let zone = Zone.current.fork({
 			name: `AlteriorExecutionContext`,
 			properties: {
@@ -73,14 +76,10 @@ export class ExecutionContext {
  */
 @Injectable()
 export class Application {
-	constructor(
-		readonly runtime? : Runtime,
-		private _optionsRef? : ApplicationOptionsRef,
-		private _args? : ApplicationArgs
-	) {
-
-	}
-
+	readonly runtime = inject(Runtime);
+	private _optionsRef = inject(ApplicationOptionsRef);
+	private _args = inject(ApplicationArgs);
+	
 	public start() {
 		this.runtime.start();
 	}
@@ -93,24 +92,24 @@ export class Application {
 		return this.runtime.injector;
 	}
 
-	inject<T>(ctor : { new(...args) : T }, notFoundValue? : T): T {
+	inject<T>(ctor: { new(...args): T }, notFoundValue?: T): T {
 		return this.injector.get(ctor, notFoundValue);
 	}
 
-	get args() : string[] {
+	get args(): string[] {
 		return this._args.get();
 	}
 
-	get options() : ApplicationOptions {
+	get options(): ApplicationOptions {
 		return this._optionsRef.options;
 	}
 
-	private static loadOptions(entryModule : Function, bootstrapOptions : ApplicationOptions): ApplicationOptions {
+	private static loadOptions(entryModule: Function, bootstrapOptions: ApplicationOptions): ApplicationOptions {
 		// Read an @AppOptions() decorator if any, and merge providers from it 
 		// into the bootstrapped providers
 
 		let appOptionsAnnotation = AppOptionsAnnotation.getForClass(entryModule);
-		let appProvidedOptions : ApplicationOptions = appOptionsAnnotation ? appOptionsAnnotation.options : {} || {};
+		let appProvidedOptions: ApplicationOptions = appOptionsAnnotation ? appOptionsAnnotation.options: {} || {};
 		
 		return Object.assign(
 			<ApplicationOptions>{
@@ -125,7 +124,7 @@ export class Application {
 		);
 	}
 
-	private static validateEntryModule(module : Function) {
+	private static validateEntryModule(module: Function) {
 		if (typeof module !== 'function') {
 			throw new Error(
 				`You must pass a Module class as the first parameter ` 
@@ -138,13 +137,11 @@ export class Application {
 		if (!moduleMetadata)
 			throw new Error(`You must pass a module class decorated by @Module()`);
 	}
-
-	private _bootstrapped : boolean = false;
-
+	
 	/**
 	 * Bootstrap an Alterior application.
 	 */
-	public static bootstrap(entryModule : Function, options? : ApplicationOptions): Application {
+	public static bootstrap(entryModule: Function, options?: ApplicationOptions): Application {
 		let executionContext = new ExecutionContext();
 		return executionContext.runSync(() => {
 			this.validateEntryModule(entryModule);
@@ -153,7 +150,7 @@ export class Application {
 	
 			let runtime = new Runtime(entryModule);
 
-			let providers : Provider[] = [
+			let providers: Provider[] = [
 				ApplicationArgs,
 				RolesService,
 				Environment,
@@ -172,7 +169,7 @@ export class Application {
 
 			runtime.providers = providers;
 	
-			let injector : ReflectiveInjector;
+			let injector: ReflectiveInjector;
 			try {
 				injector = ReflectiveInjector.resolveAndCreate(providers);
 			} catch (e) {
