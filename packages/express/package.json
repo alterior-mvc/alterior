@@ -1,6 +1,6 @@
 {
   "name": "@alterior/express",
-  "version": "3.6.1",
+  "version": "3.6.2",
   "description": "Access Express state within an Alterior app",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -38,8 +38,8 @@
   },
   "dependencies": {
     "@alterior/di": "^3.5.6",
-    "@alterior/logging": "^3.6.1",
-    "@alterior/web-server": "^3.6.1",
+    "@alterior/logging": "^3.6.2",
+    "@alterior/web-server": "^3.6.2",
     "express": "^4.17.3"
   },
   "devDependencies": {
