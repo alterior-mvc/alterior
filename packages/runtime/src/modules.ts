@@ -151,7 +151,7 @@ export class Runtime {
                 ;
 
                 rolesService.configure({ mode: 'only', roles });
-            } else if (arg == '-r' || arg == '--roles-skip') {
+            } else if (arg == '-x' || arg == '--roles-skip') {
                 let value = getArgumentValue();
 
                 let roles = value.split(',')

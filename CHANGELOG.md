@@ -1,5 +1,9 @@
 # ⏭ vNext
 
+# v3.6.2
+- `@/runtime`: Fixes an issue where the short form of the new `--roles-skip` command line option (`-x`) was 
+  ignored.
+
 # v3.6.1
 - `@/runtime`: Add `enabledByDefault` to `RoleRegistration` and default to all services which are enabled by default.
   Allows for some roles to be disabled unless specifically asked for. Roles which are disabled by default are still 
