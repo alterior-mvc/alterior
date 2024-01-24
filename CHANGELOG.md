@@ -1,5 +1,12 @@
 # ⏭ vNext
 
+# v3.6.1
+- `@/runtime`: Add `enabledByDefault` to `RoleRegistration` and default to all services which are enabled by default.
+  Allows for some roles to be disabled unless specifically asked for. Roles which are disabled by default are still 
+  included in `all-except` configuration. Use the new `default-except` (or via `ALT_ROLES_DEFAULT_EXCEPT` environment
+  variable) to enable all default services except those listed. Additionally there is now an `--roles-skip` option 
+  which enables the `default-except` mode.
+ 
 # v3.6.0
 - `@/runtime`: Allow specifying additional providers when bootstrapping an application
 - `@/platform-nodejs`

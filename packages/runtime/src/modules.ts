@@ -92,6 +92,14 @@ export class Runtime {
             ;
 
             rolesService.configure({ mode: 'all-except', roles });
+        } else if (environment.get<any>().ALT_ROLES_DEFAULT_EXCEPT) {
+            let value = environment.get<any>().ALT_ROLES_DEFAULT_EXCEPT;
+            let roles = value.split(',')
+                .map(x => allRoles.find(y => y.identifier == x))
+                .map(x => x.class)
+            ;
+
+            rolesService.configure({ mode: 'default-except', roles });
         } 
 
         if (typeof process !== 'undefined' && process.argv) {
@@ -143,6 +151,16 @@ export class Runtime {
                 ;
 
                 rolesService.configure({ mode: 'only', roles });
+            } else if (arg == '-r' || arg == '--roles-skip') {
+                let value = getArgumentValue();
+
+                let roles = value.split(',')
+                    .map(x => allRoles.find(y => y.identifier == x))
+                    .filter(x => x)
+                    .map(x => x.class)
+                ;
+
+                rolesService.configure({ mode: 'default-except', roles });
             } else if (arg == '-R' || arg == '--roles-all-except') {
                 let value = getArgumentValue();
 

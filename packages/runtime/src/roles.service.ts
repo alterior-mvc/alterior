@@ -1,8 +1,8 @@
 import { Injectable } from "@alterior/di";
 import { timeout, InvalidOperationError, ArgumentError } from "@alterior/common";
 
-const SUPPORTED_ROLE_MODES =       ['all-except',  'only' ];
-export type RoleConfigurationMode = 'all-except' | 'only'  ;
+const SUPPORTED_ROLE_MODES =       [ 'default', 'default-except', 'all-except', 'only' ];
+export type RoleConfigurationMode = 'default' | 'default-except' | 'all-except' | 'only'  ;
 
 export interface RoleConfiguration {
     mode : RoleConfigurationMode;
@@ -19,6 +19,12 @@ export interface RoleRegistration {
      * called from an Alterior module's `altOnInit()` method.
      */
     instance : any;
+
+    /**
+     * Set to false to cause this role to be disabled unless explicitly asked for. When unspecified, the default is 
+     * true.
+     */
+    enabledByDefault?: boolean;
     
     /**
      * The identifier that will be matched when interpreting command line role enablements.
@@ -65,7 +71,7 @@ export class RolesService {
     }
 
     _activeRoles : any[] = null;
-    _configuration : RoleConfiguration = { mode: 'all-except', roles: [] };
+    _configuration : RoleConfiguration = { mode: 'default', roles: [] };
     _roles : RoleState[] = [];
 
     get configuration() : RoleConfiguration {
@@ -97,8 +103,12 @@ export class RolesService {
     get effectiveRoles(): RoleState[] {
         let config = this._configuration;
 
-        if (config.mode == 'all-except')
+        if (config.mode === 'default')
+            return this._roles.filter(x => x.enabledByDefault !== false);
+        else if (config.mode == 'all-except')
             return this._roles.filter(x => !config.roles.includes(x.class));
+        else if (config.mode == 'default-except')
+            return this._roles.filter(x => x.enabledByDefault !== false).filter(x => !config.roles.includes(x.class));
         else if (config.mode == 'only')
             return this._roles.filter(x => config.roles.includes(x.class));
         
