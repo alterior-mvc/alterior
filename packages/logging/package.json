@@ -1,6 +1,6 @@
 {
   "name": "@alterior/logging",
-  "version": "3.6.3",
+  "version": "3.6.4",
   "description": "Configurable context-aware logging",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -38,10 +38,10 @@
     "docs": "typedoc ."
   },
   "dependencies": {
-    "@alterior/annotations": "^3.6.3",
-    "@alterior/common": "^3.6.3",
-    "@alterior/di": "^3.6.3",
-    "@alterior/runtime": "^3.6.3",
+    "@alterior/annotations": "^3.6.4",
+    "@alterior/common": "^3.6.4",
+    "@alterior/di": "^3.6.4",
+    "@alterior/runtime": "^3.6.4",
     "rxjs": "^7.8.0"
   },
   "gitHead": "5c18a5ddde7719d8f439fcf22804280fb56cf255"
