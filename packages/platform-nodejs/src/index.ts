@@ -1,4 +1,10 @@
-import "zone.js";
+/// <reference types="zone.js" />
+
+import "zone.js/node";
+import "zone.js/plugins/zone-patch-rxjs";
+import "source-map-support/register";
+import "reflect-metadata";
+
 import dotenv from "dotenv";
 import fs from 'fs';
 import path from 'path';
@@ -33,9 +39,6 @@ function findDotEnv() {
 let dotEnvPath = findDotEnv();
 if (dotEnvPath)
     dotenv.config({ path: findDotEnv() });
-
-import "source-map-support/register";
-import "reflect-metadata";
 
 import fetch from "node-fetch";
 import WebSocket from 'ws';

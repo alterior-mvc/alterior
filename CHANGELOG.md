@@ -1,5 +1,12 @@
 # ⏭ vNext
 
+# v3.6.3
+- `@/platform-nodejs`
+  * Upgrades Zone.js to 0.14.3
+  * Loads the Node.js specific Zone.js bundle
+  * Loads the RxJS zone patch
+  * Loads reflect-metadata and source-map-support before initializing `dotenv`.
+
 # v3.6.2
 - `@/runtime`: Fixes an issue where the short form of the new `--roles-skip` command line option (`-x`) was 
   ignored.
