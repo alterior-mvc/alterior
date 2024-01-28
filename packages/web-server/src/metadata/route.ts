@@ -1,4 +1,4 @@
-import { shallowClone } from '@alterior/common';
+import { shallowClone, disallowNativeAsync } from '@alterior/common';
 import { Provider } from '@alterior/di';
 import { Expose } from '@alterior/runtime';
 
@@ -83,6 +83,7 @@ export function Patch(path? : string, options? : RouteOptions) { return Route('P
 
 export function Route(method : string, path? : string, options? : RouteOptions) {
     return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
+		disallowNativeAsync(target[propertyKey]);
 
 		Expose()(target, propertyKey, descriptor);
 

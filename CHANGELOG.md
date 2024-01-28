@@ -6,6 +6,9 @@
   * Loads the Node.js specific Zone.js bundle
   * Loads the RxJS zone patch
   * Loads reflect-metadata and source-map-support before initializing `dotenv`.
+- `@/web-server`
+  * To help avoid accidentally using ES2017 or later (which is not supported by Alterior 
+    or any other libraries which use Zone.js), an error will now be thrown if a native async function is used as a route method.
 
 # v3.6.2
 - `@/runtime`: Fixes an issue where the short form of the new `--roles-skip` command line option (`-x`) was 

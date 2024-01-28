@@ -15,3 +15,4 @@ export * from './presentation';
 export * from './time';
 export * from './get-param-names';
 export * from './lazy-subject';
+export * from './check-native-async';
