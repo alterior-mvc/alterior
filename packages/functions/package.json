@@ -1,6 +1,6 @@
 {
   "name": "@alterior/functions",
-  "version": "3.5.6",
+  "version": "3.6.3",
   "description": "Functional utilities",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -40,8 +40,8 @@
     "docs": "typedoc ."
   },
   "dependencies": {
-    "@alterior/annotations": "^3.5.6",
-    "@alterior/common": "^3.4.0"
+    "@alterior/annotations": "^3.6.3",
+    "@alterior/common": "^3.6.3"
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.13",

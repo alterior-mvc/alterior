@@ -42,7 +42,7 @@
     "lerna": "^8.0.0",
     "lodash": ">=4.17.19",
     "mkdirp": "^0.5.5",
-    "razmin": "^1.2.0",
+    "razmin": "^1.2.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.0.7",
     "source-map-support": "^0.4.6",
