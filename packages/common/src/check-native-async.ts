@@ -10,7 +10,12 @@ export function disallowNativeAsync(func: Function) {
         console.error(`Unfortunately, native async/await is not supported by Alterior, as it breaks Zone tracking.`);
         console.error(`Please ensure compilerOptions.target is set to ES2016 or lower, and keep in mind that `);
         console.error(`dependencies compiled with native async/await support may cause problems for some Alterior features.`);
-        console.error(`For more information, please see https://github.com/angular/angular/issues/31730`);
+        console.error(`For more information see https://github.com/angular/angular/issues/31730`);
+        console.error();
+        console.error(`**Please support the AsyncContext proposal which will help solve this problem**`);
+        console.error(`   https://github.com/tc39/proposal-async-context`);
+        console.error();
+        console.error(`Context:`);
         console.error(` - Function name: ${func.name}`);
         console.error(` - Function implementation:`);
         console.error(`   ${String(func).replace(/\n/g, "\n   ")}`);
