@@ -1,5 +1,13 @@
 # ⏭ vNext
 
+# v3.6.4
+- `@/runtime`
+  * Fixed an issue where using role identifiers within environment/command-line configuration could 
+    cause the wrong role to be enabled if multiple roles are defined within a single module.
+  * An error is now thrown if a role specified in the effective roles configuration does not exist.
+  * `RolesService#configure()` now accepts string identifiers of roles in addition to class references.
+  * `RolesService#getForModule()` now throws if there are multiple roles defined for the given module.
+
 # v3.6.3
 - `@/platform-nodejs`
   * Upgrades Zone.js to 0.14.3

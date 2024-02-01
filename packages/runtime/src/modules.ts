@@ -1,7 +1,7 @@
 import { ModuleAnnotation, ModuleOptions, Module, ModuleLike } from "@alterior/di";
 import { Injector, Provider, ReflectiveInjector } from "@alterior/di";
 import { timeout, Environment } from "@alterior/common";
-import { RolesService } from "./roles.service";
+import { RoleConfigurationMode, RoleState, RolesService } from "./roles.service";
 /**
  * Combines a module annotation and a target class into a single 
  * object for storage purposes in Runtime and related objects.
@@ -71,36 +71,32 @@ export class Runtime {
      * Perform runtime configuration steps
      */
     configure() {
+        let roleEnv = this.injector.get(Environment)
+            .get<{
+                ALT_ROLES_ONLY: string,
+                ALT_ROLES_ALL_EXCEPT: string,
+                ALT_ROLES_DEFAULT_EXCEPT: string;
+            }>()
+        ;
 
-        let environment = this.injector.get(Environment);
-        let rolesService = this.injector.get(RolesService);
-        let allRoles = rolesService.roles;
+        let roleMode: RoleConfigurationMode = 'default';
+        let roles: string[] = [];
 
-        if (environment.get<any>().ALT_ROLES_ONLY) {
-            let value = environment.get<any>().ALT_ROLES_ONLY;
-            let roles = value.split(',')
-                .map(x => allRoles.find(y => y.identifier == x))
-                .map(x => x.class)
-            ;
-
-            rolesService.configure({ mode: 'only', roles });
-        } else if (environment.get<any>().ALT_ROLES_ALL_EXCEPT) {
-            let value = environment.get<any>().ALT_ROLES_ALL_EXCEPT;
-            let roles = value.split(',')
-                .map(x => allRoles.find(y => y.identifier == x))
-                .map(x => x.class)
-            ;
-
-            rolesService.configure({ mode: 'all-except', roles });
-        } else if (environment.get<any>().ALT_ROLES_DEFAULT_EXCEPT) {
-            let value = environment.get<any>().ALT_ROLES_DEFAULT_EXCEPT;
-            let roles = value.split(',')
-                .map(x => allRoles.find(y => y.identifier == x))
-                .map(x => x.class)
-            ;
-
-            rolesService.configure({ mode: 'default-except', roles });
+        if (roleEnv.ALT_ROLES_ONLY) {
+            roleMode = 'only';
+            roles = roleEnv.ALT_ROLES_ONLY.split(',');
+        } else if (roleEnv.ALT_ROLES_ALL_EXCEPT) {
+            roleMode = 'all-except';
+            roles = roleEnv.ALT_ROLES_ALL_EXCEPT.split(',');
+        } else if (roleEnv.ALT_ROLES_DEFAULT_EXCEPT) {
+            roleMode = 'default-except';
+            roles = roleEnv.ALT_ROLES_DEFAULT_EXCEPT.split(',');
         } 
+
+        let rolesService = this.injector.get(RolesService);
+        if (roleMode !== 'default') {
+            rolesService.configure({ mode: roleMode, roles });
+        }
 
         if (typeof process !== 'undefined' && process.argv) {
             this.processCommandLine(process.argv.slice(2));
@@ -117,10 +113,9 @@ export class Runtime {
     }
 
     processCommandLine(args : string[]) {
-        let rolesService = this.injector.get(RolesService);
         let argIndex = 0;
 
-        let getArgumentValue = () => {
+        let optionValue = () => {
             let arg = args[argIndex];
             if (argIndex + 1 >= args.length)
                 throw new Error(`You must specify a value for option ${arg}`);
@@ -135,43 +130,28 @@ export class Runtime {
             return value;
         };
 
-        let allRoles = rolesService.roles;
+        let roleMode = 'default';
+        let roles: string[];
+
         for (; argIndex < args.length; ++argIndex) {
             let arg = args[argIndex];
-
             if (arg === '--self-test') {
                 this._selfTest = true;
             } else if (arg == '-r' || arg == '--roles-only') {
-                let value = getArgumentValue();
-
-                let roles = value.split(',')
-                    .map(x => allRoles.find(y => y.identifier == x))
-                    .filter(x => x)
-                    .map(x => x.class)
-                ;
-
-                rolesService.configure({ mode: 'only', roles });
+                roleMode = 'only';
+                roles = optionValue().split(',');
             } else if (arg == '-x' || arg == '--roles-skip') {
-                let value = getArgumentValue();
-
-                let roles = value.split(',')
-                    .map(x => allRoles.find(y => y.identifier == x))
-                    .filter(x => x)
-                    .map(x => x.class)
-                ;
-
-                rolesService.configure({ mode: 'default-except', roles });
+                roleMode = 'default-except';
+                roles = optionValue().split(',');
             } else if (arg == '-R' || arg == '--roles-all-except') {
-                let value = getArgumentValue();
-
-                let roles = value.split(',')
-                    .map(x => allRoles.find(y => y.identifier == x))
-                    .filter(x => x)
-                    .map(x => x.class)
-                ;
-
-                rolesService.configure({ mode: 'all-except', roles });
+                roleMode = 'all-except';
+                roles = optionValue().split(',');
             }
+        }
+
+        let rolesService = this.injector.get(RolesService);
+        if (roleMode !== 'default') {
+            rolesService.configure({ mode: 'only', roles });
         }
     }
 
