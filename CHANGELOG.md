@@ -1,6 +1,6 @@
 # ⏭ vNext
 
-# v3.6.4
+# v3.6.5
 - `@/runtime`
   * Fixed an issue where using role identifiers within environment/command-line configuration could 
     cause the wrong role to be enabled if multiple roles are defined within a single module.
