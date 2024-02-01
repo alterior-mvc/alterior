@@ -1,5 +1,10 @@
 # ⏭ vNext
 
+# v3.6.6
+- `@/common`
+  * Alterior's standard error classes now extend from `Error`
+  * The inaccessible `innerError` property has been removed. Use the ES standard `cause` instead.
+
 # v3.6.5
 - `@/runtime`
   * Fixed an issue where using role identifiers within environment/command-line configuration could 

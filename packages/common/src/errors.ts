@@ -1,24 +1,8 @@
-export type BaseError = BaseErrorT | Error;
 
-export class BaseErrorT {
-    constructor(message : string) {
-        this._message = message;
-    }
 
-    private _message : string;
-    private _innerError : BaseError;
-
-    private causedBy(error : BaseError): this {
-        this._innerError = error;
-        return this;
-    }
-
-    get message(): string {
-        return this._message;
-    }
-
-    get innerError(): BaseError {
-        return this._innerError;
+export class BaseError extends Error {
+    constructor(message : string, options?: ErrorOptions) {
+        super(message, options);
     }
 
     static serializer : (instance : any) => any;
@@ -27,8 +11,8 @@ export class BaseErrorT {
     }
 
     asJSON() {
-        if (BaseErrorT.serializer)
-            return BaseErrorT.serializer(this);
+        if (BaseError.serializer)
+            return BaseError.serializer(this);
         
         let ownKeys = Object.getOwnPropertyNames(this);
         let repr = {
@@ -52,13 +36,13 @@ export class BaseErrorT {
 /**
  * Base class for errors thrown by the system or framework
  */
-export class SystemError extends BaseErrorT {
+export class SystemError extends BaseError {
 }
 
 /**
  * Base class for errors thrown by your application
  */
-export class ApplicationError extends BaseErrorT {
+export class ApplicationError extends BaseError {
 }
 
 export class ArgumentError<ValueT = any> extends SystemError {
@@ -150,14 +134,12 @@ export class AccessDeniedError extends SystemError {
     }
 }
 
-export class HttpError {
+export class HttpError extends Error {
 	constructor(
         public statusCode : number, 
         public body : any, 
         public headers : string[][] = []
     ) {
-        this.message = `HttpError statusCode=${statusCode} [are you sure you meant to catch this?]`;
+        super(`HttpError statusCode=${statusCode} [are you sure you meant to catch this?]`);
 	}
-
-    message: string;
 }
