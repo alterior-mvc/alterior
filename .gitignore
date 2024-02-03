@@ -12,3 +12,4 @@ example-app/
 lerna-debug.log
 *.tsbuildinfo
 cli-test/
+bombardier.exe
