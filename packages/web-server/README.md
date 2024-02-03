@@ -318,6 +318,13 @@ export class MyService {
 }
 ```
 
+# Listening on both HTTPS and HTTP
+
+When TLS is enabled, you can provide the `insecurePort` option to also listen on another port using HTTP.
+In that case, Alterior will create two HTTP servers, but both will use the same bootstrapped application. 
+Older WebServerEngines don't have this capability, so you may need to upgrade yours if you need this. Both
+the ExpressEngine and FastifyEngine have been upgraded to support this capability as of Alterior 3.5.0.
+
 # Server-Sent Events
 
 You can use `WebEvent.sendEvent()` to send an event stream response back to the client. For more information about 
@@ -595,6 +602,9 @@ has begun listening.
         // access http.Server instance via `server.httpServer`
     }
 ```
+
+If you serve over HTTPS and make use of the `insecurePort` option to also listen on HTTP, there will be two http.Server instances. You can access the insecure one using 
+`insecureServer`.
 
 # Setting the global timeout policy
 

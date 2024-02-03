@@ -1,6 +1,7 @@
 {
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "target": "ES2019",
+        "target": "ES2016",
         "module": "CommonJS",
         "moduleResolution": "node",
         "esModuleInterop": true,
@@ -10,5 +11,9 @@
     },
     "include": [
         "./src/**/*.ts"
-    ]
+    ],
+    "typedocOptions": {
+		"out": "../website/src/assets/docs/terminal",
+		"json": "../website/src/assets/docs/terminal.json"
+	}
 }

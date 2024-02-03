@@ -1,0 +1,39 @@
+<mat-menu #mobileMenu>
+    <a mat-menu-item routerLink="/">Home</a>
+    
+    @for (item of menu; track item.url) {
+      @if (item.url.startsWith('https:')) {
+        <a mat-menu-item target="_blank" href="{{item.url}}">{{item.label}}</a>
+      } @else {
+        <a mat-menu-item routerLink="{{item.url}}">{{item.label}}</a>
+      }
+    }
+  </mat-menu>
+  <header class="mobile">
+    <a class="menu-button" mat-icon-button [matMenuTriggerFor]="mobileMenu">
+      <mat-icon>menu_vert</mat-icon>
+    </a>
+    <a mat-button routerLink="/" [matMenuTriggerFor]="mobileMenu">
+      <div class="logo">
+        <img src="/assets/logo-light.svg">
+      </div>
+    </a>
+  </header>
+  <header class="desktop">
+    <a mat-button routerLink="/">
+      <div class="logo">
+        <img src="/assets/logo-light.svg">
+      </div>
+    </a>
+  
+    @for (item of menu; track item.url) {
+      @if (item.url.startsWith('https:')) {
+        <a mat-button target="_blank" href="{{item.url}}">{{item.label}}</a>
+      } @else {
+        <a mat-button routerLink="{{item.url}}">{{item.label}}</a>
+      }
+    }
+  </header>
+  <main>
+    <router-outlet></router-outlet>
+  </main>

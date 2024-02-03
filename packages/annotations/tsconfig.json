@@ -6,16 +6,7 @@
     },
     "include": [ "./src/**/*.ts" ],
     "typedocOptions": {
-		"mode": "file",
-		"out": "../../docs/annotations",
-		"target": "ES5",
-		"excludeExternals": true,
-		"excludePrivate": true,
-		"externalPattern": "**/node_modules/**",
-		"exclude": "**/node_modules/**,**/dist*/**,**/example/**,**/*.test.ts",
-		"categoryOrder": [
-		  "Entrypoint",
-		  "*"
-		]
+		"out": "../website/src/assets/docs/annotations",
+		"json": "../website/src/assets/docs/annotations.json"
 	}
 }

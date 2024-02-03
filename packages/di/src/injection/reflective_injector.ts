@@ -6,9 +6,10 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { Injector, THROW_IF_NOT_FOUND } from './injector';
+import { ConcreteType, Type } from './facade/type';
+import { Injector, InjectorGetOptions, THROW_IF_NOT_FOUND } from './injector';
 import { SelfAnnotation, SkipSelfAnnotation, InjectAnnotation, OptionalAnnotation, Optional } from './metadata';
-import { Provider, ClassProvider, ProviderWithDependencies } from './provider';
+import { Provider, ClassProvider, ProviderWithDependencies, isTypeProvider } from './provider';
 import { cyclicDependencyError, instantiationError, noProviderError, outOfBoundsError } from './reflective_errors';
 import { ReflectiveKey } from './reflective_key';
 import {
@@ -121,7 +122,7 @@ export abstract class ReflectiveInjector implements Injector {
    * because it needs to resolve the passed-in providers first.
    * See {@link Injector#resolve} and {@link Injector#fromResolvedProviders}.
    */
-  static resolveAndCreate(providers: Provider[], parent?: Injector): ReflectiveInjector {
+  static resolveAndCreate(providers: Provider[], parent: Injector | null = null): ReflectiveInjector {
     const ResolvedReflectiveProviders = ReflectiveInjector.resolve(providers);
     return ReflectiveInjector.fromResolvedProviders(ResolvedReflectiveProviders, parent);
   }
@@ -131,14 +132,14 @@ export abstract class ReflectiveInjector implements Injector {
    * @param providers 
    */
   static reflectDependencies(provider : Provider): ProviderWithDependencies {
-    if (typeof provider === 'function') {
+    if (isTypeProvider(provider)) {
       provider = {
         provide: provider,
-        useClass: provider
+        useClass: <ConcreteType<any>>provider
       };
     }
 
-    if (!provider['useClass'])
+    if (!('useClass' in provider))
       return provider;
   
     let classProvider : ClassProvider = <any>provider;
@@ -210,7 +211,7 @@ export abstract class ReflectiveInjector implements Injector {
    * ```
    * @experimental
    */
-  static fromResolvedProviders(providers: ResolvedReflectiveProvider[], parent?: Injector): ReflectiveInjector {
+  static fromResolvedProviders(providers: ResolvedReflectiveProvider[], parent: Injector | null = null): ReflectiveInjector {
     // tslint:disable-next-line:no-use-before-declare
     return new ReflectiveInjector_(providers, parent);
   }
@@ -356,9 +357,9 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   /**
    * Private
    */
-  constructor(_providers: ResolvedReflectiveProvider[], _parent?: Injector) {
+  constructor(_providers: ResolvedReflectiveProvider[], _parent: Injector | null = null) {
     this._providers = _providers;
-    this._parent = _parent || null;
+    this._parent = _parent;
 
     const len = _providers.length;
 
@@ -371,8 +372,10 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     }
   }
 
-  get(token: any, notFoundValue: any = THROW_IF_NOT_FOUND): any {
-    return this._getByKey(ReflectiveKey.get(token), null, notFoundValue);
+  private _useSelf = new SelfAnnotation();
+
+  get(token: any, notFoundValue: any = THROW_IF_NOT_FOUND, options?: InjectorGetOptions): any {
+    return this._getByKey(ReflectiveKey.get(token), options?.self ? this._useSelf: null, notFoundValue);
   }
 
   get parent(): Injector | null {
@@ -435,7 +438,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     let deps: any[];
     try {
       deps = ResolvedReflectiveFactory.dependencies.map(dep => this._getByReflectiveDependency(dep));
-    } catch (e) {
+    } catch (e: any) {
       if (e.addKey) {
         e.addKey(this, provider.key);
       }
@@ -444,8 +447,10 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
 
     let obj: any;
     try {
-      obj = factory(...deps);
-    } catch (e) {
+      Injector._runInInjectionContext(this, () => {
+        obj = factory(...deps);
+      });
+    } catch (e: any) {
       throw instantiationError(this, e, e.stack, provider.key);
     }
 

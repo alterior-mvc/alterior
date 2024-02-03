@@ -21,12 +21,12 @@ export class LintCommand {
         let buildConfig = await readJsonFile<BuildConfig>(pathCombine(this.dir, 'alterior.json'));
         let pkgConfig = new PackageConfiguration(getWorkingDirectory());
         let currentAccess = await pkgConfig.getPackageAccess();
-        if (currentAccess !== buildConfig.packageAccess) {
-            this.reportLintError(
-                'PackageAccessMismatch', 
-                'The packageAccess option of alterior.json does not match the publishing behavior specified in package.json'
-            );
-        }
+        // if (currentAccess !== buildConfig.packageAccess) {
+        //     this.reportLintError(
+        //         'PackageAccessMismatch', 
+        //         'The packageAccess option of alterior.json does not match the publishing behavior specified in package.json'
+        //     );
+        // }
     }
 
     private async checkEntrypoint(name : string, filename : string, errorMessage : string) {

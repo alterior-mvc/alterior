@@ -1,0 +1,57 @@
+:host {
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background-color: #0044aa;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 1em;
+    gap: 1em;
+    --mdc-text-button-label-text-color: white;
+    box-shadow: 0px 0px 50px rgba(0,0,0,0.5);
+
+    &.mobile { 
+        display: none; 
+        justify-content: center;
+        
+        a.menu-button {
+            position: absolute;
+            left: 0.5em;
+        }
+    }
+
+    @media (width < 450px) {
+        &.mobile { display: flex; }
+        &.desktop { display: none; }
+    }
+    div.logo {
+        display: flex;
+        align-items: center;
+        font-size: 20px;
+        gap: 0.5em;
+        img {
+            height: 3em;
+        }
+    }
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    width: 1400px;
+    max-width: 100%;
+    margin: 4em auto;
+    padding: 3em;
+    //border: 1px solid #0044aa;
+    background-color: white;
+    box-shadow: 0px 20px 50px rgba(0,0,0,0.1);
+
+    @media (max-width: 450px) {
+        margin: 0;
+        padding: 0.5em;
+    }
+}

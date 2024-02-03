@@ -1,34 +1,16 @@
-export type BaseError = BaseErrorT | Error;
-
-export class BaseErrorT {
-    constructor(message : string) {
-        this._message = message;
+export class BaseError extends Error {
+    constructor(message: string, options?: any) {
+        super(message, options);
     }
 
-    private _message : string;
-    private _innerError : BaseError;
-
-    private causedBy(error : BaseError): this {
-        this._innerError = error;
-        return this;
-    }
-
-    get message(): string {
-        return this._message;
-    }
-
-    get innerError(): BaseError {
-        return this._innerError;
-    }
-
-    static serializer : (instance : any) => any;
-    static setJSONSerializer(serializer : (instance : any) => any) {
+    static serializer: (instance: any) => any;
+    static setJSONSerializer(serializer: (instance: any) => any) {
         this.serializer = serializer;
     }
 
     asJSON() {
-        if (BaseErrorT.serializer)
-            return BaseErrorT.serializer(this);
+        if (BaseError.serializer)
+            return BaseError.serializer(this);
         
         let ownKeys = Object.getOwnPropertyNames(this);
         let repr = {
@@ -40,9 +22,9 @@ export class BaseErrorT {
         
         let includedData = ownKeys
             .filter(x => !x.startsWith('_'))
-            .filter(x => typeof this[x] !== 'function')
-            .map(x => [x, this[x]])
-            .reduce((pv, cv) => pv[cv[0]] = cv[1], {})
+            .filter(x => typeof (this as any)[x] !== 'function')
+            .map(x => [x, (this as any)[x]])
+            .reduce((pv, cv) => pv[cv[0]] = cv[1], <Record<string, unknown>>{})
         ;
 
         return Object.assign({}, repr, includedData);
@@ -52,32 +34,32 @@ export class BaseErrorT {
 /**
  * Base class for errors thrown by the system or framework
  */
-export class SystemError extends BaseErrorT {
+export class SystemError extends BaseError {
 }
 
 /**
  * Base class for errors thrown by your application
  */
-export class ApplicationError extends BaseErrorT {
+export class ApplicationError extends BaseError {
 }
 
 export class ArgumentError<ValueT = any> extends SystemError {
-    constructor(argumentName : string, message? : string) {
+    constructor(argumentName: string, message?: string) {
         super(message || `Invalid value for argument ${argumentName}`);
         this._argumentName = argumentName;
     }
 
-    private _argumentName : string;
-    private _value : ValueT;
+    private _argumentName: string;
+    private _value?: ValueT;
 
     /**
      * The invalid value passed for the given argument
      */
-    get value(): ValueT {
+    get value(): ValueT | undefined {
         return this._value;
     }
 
-    withValue(value : ValueT): this {
+    withValue(value: ValueT): this {
         this._value = value;
         return this;
     }
@@ -91,73 +73,71 @@ export class ArgumentError<ValueT = any> extends SystemError {
 }
 
 export class ArgumentNullError<ValueT = any> extends ArgumentError<ValueT> {
-    constructor(argumentName : string, message? : string) {
+    constructor(argumentName: string, message?: string) {
         super(argumentName, message || `Argument ${argumentName} cannot be null`);
     }
 }
 
 export class ArgumentOutOfRangeError<ValueT = any> extends ArgumentError<ValueT> {
-    constructor(argumentName : string, message? : string) {
+    constructor(argumentName: string, message?: string) {
         super(argumentName, message || `Argument ${argumentName} is out of range`);
     }
 }
 
 export class NotSupportedError extends SystemError {
-    constructor(message? : string) {
+    constructor(message?: string) {
         super(message || `The requested operation is not supported.`);
     }
 }
 
 export class NotImplementedError extends SystemError {
-    constructor(message? : string) {
+    constructor(message?: string) {
         super(message || `The requested operation is not implemented.`);
     }
 }
 
 export class OperationCanceledError extends SystemError {
-    constructor(message? : string) {
+    constructor(message?: string) {
         super(message || `The requested operation is not implemented.`);
     }
 }
 
 export class TimeoutError extends SystemError {
-    constructor(message? : string) {
+    constructor(message?: string) {
         super(message || `The operation has timed out.`);
     }
 }
 
 export class IOError extends SystemError {
-    constructor(message? : string) {
+    constructor(message?: string) {
         super(message || `An I/O error has occurred.`);
     }
 }
 
 export class FormatError extends SystemError {
-    constructor(message? : string) {
+    constructor(message?: string) {
         super(message || `Invalid format.`);
     }
 }
 
 export class InvalidOperationError extends SystemError {
-    constructor(message? : string) {
+    constructor(message?: string) {
         super(message || `Invalid format.`);
     }
 }
 
 export class AccessDeniedError extends SystemError {
-    constructor(message? : string) {
+    constructor(message?: string) {
         super(message || `Invalid format.`);
     }
 }
 
-export class HttpError {
+export class HttpError extends Error {
 	constructor(
-        public statusCode : number, 
-        public body : any, 
-        public headers : string[][] = []
+        public statusCode: number, 
+        public body: any, 
+        public headers: string[][] = []
     ) {
-        this.message = `HttpError statusCode=${statusCode} [are you sure you meant to catch this?]`;
+        super(`HttpError statusCode=${statusCode} [are you sure you meant to catch this?]`);
 	}
-
-    message: string;
 }

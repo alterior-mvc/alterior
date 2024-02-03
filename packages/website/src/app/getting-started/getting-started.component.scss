@@ -1,0 +1,14 @@
+
+.example {
+    display: flex;
+    width: 100%;
+
+    iframe {
+        width: 80em;
+        height: 40em;
+    }
+
+    .content {
+        flex-grow: 1;
+    }
+}

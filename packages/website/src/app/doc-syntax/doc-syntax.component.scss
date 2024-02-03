@@ -1,0 +1,11 @@
+span {
+    white-space: pre;
+
+    &.intrinsic {
+        color: #dc97ff;
+    }
+
+    &.keyword {
+        font-weight: bold;
+    }
+}

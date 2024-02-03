@@ -8,13 +8,13 @@ export class Lock {
     constructor() {
     }
 
-    private _ready : Promise<void>;
-    private static _namedLocks : Map<any, Lock>;
+    private _ready?: Promise<void>;
+    private static _namedLocks: Map<any, Lock>;
 
-    static forToken<T extends Lock>(this : { new() : T }, token : any): T {
+    static forToken<T extends Lock>(this: { new(): T }, token: any): T {
 
         let prop = Object.getOwnPropertyDescriptor(this, '_namedLocks');
-        let map : Map<any, T>;
+        let map: Map<any, T>;
 
         if (!prop) {
             map = new Map<any, T>();
@@ -37,11 +37,11 @@ export class Lock {
         return lock;
     }
 
-    protected async executeCallback(cb) {
+    protected async executeCallback<T>(cb: () => T | Promise<T>): Promise<T> {
         return await cb();
     }
 
-    async run(cb : Function) {
+    async run<T>(cb: () => T | Promise<T>) {
         let ready = this._ready;
         let value = undefined;
         let error = undefined;
@@ -76,7 +76,7 @@ export class ZoneLock extends Lock {
         super();
     }
 
-    protected async executeCallback(cb) {
+    protected async executeCallback<T>(cb: () => T | Promise<T>) {
         return await AsyncZone.run(cb);
     }
 }

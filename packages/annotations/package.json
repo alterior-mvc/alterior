@@ -1,6 +1,6 @@
 {
   "name": "@alterior/annotations",
-  "version": "3.2.0",
+  "version": "3.6.4",
   "description": "Create and interact with Typescript metadata decorators",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -34,10 +34,10 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublishOnly": "npm test",
     "test": "npm run build && node dist/test.js",
-    "docs": "typedoc ."
+    "docs": "typedoc src"
   },
   "dependencies": {
-    "@alterior/common": "^3.2.0",
+    "@alterior/common": "^3.6.4",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
@@ -45,5 +45,6 @@
     "supertest": "^3.1.0",
     "swagger-editor-dist": "^3.9.0"
   },
+  "lernaKick": "1",
   "gitHead": "5c18a5ddde7719d8f439fcf22804280fb56cf255"
 }

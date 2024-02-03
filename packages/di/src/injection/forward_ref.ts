@@ -17,8 +17,8 @@ import { Type } from './facade/type';
  * {@example core/di/ts/forward_ref/forward_ref_spec.ts region='forward_ref_fn'}
  * @experimental
  */
-export interface ForwardRefFn {
-  (): any;
+export interface ForwardRefFn<T = any> {
+  (): T;
 }
 
 /**
@@ -33,12 +33,12 @@ export interface ForwardRefFn {
  * {@example core/di/ts/forward_ref/forward_ref_spec.ts region='forward_ref'}
  * @experimental
  */
-export function forwardRef(forwardRefFn: ForwardRefFn): Type<any> {
+export function forwardRef<T>(forwardRefFn: ForwardRefFn): T {
   (<any>forwardRefFn).__forward_ref__ = forwardRef;
   (<any>forwardRefFn).toString = function() {
     return stringify(this());
   };
-  return <Type<any>>(<any>forwardRefFn);
+  return <T>(<any>forwardRefFn);
 }
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "@alterior/di",
-  "version": "3.2.0",
+  "version": "3.6.4",
   "description": "Flexible reflection-based dependency injection",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -36,15 +36,15 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublishOnly": "npm test",
     "test": "npm run build && node dist/test.js",
-    "docs": "typedoc ."
+    "docs": "typedoc src"
   },
   "dependencies": {
-    "@alterior/annotations": "^3.2.0",
-    "@alterior/common": "^3.2.0"
+    "@alterior/annotations": "^3.6.4",
+    "@alterior/common": "^3.6.4"
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.13",
-    "zone.js": "^0.11.4"
+    "zone.js": "^0.14.3"
   },
   "gitHead": "5c18a5ddde7719d8f439fcf22804280fb56cf255"
 }

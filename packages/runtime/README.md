@@ -53,17 +53,27 @@ Modules can optionally define lifecycle methods which are invoked by the runtime
 
 Many execution modules represent a service which can be turned on and off. Alterior has support baked in for this with Roles. Such modules can register a Role which allows the status of the service to be controlled and queried programmatically by using the `RolesService` injectable service.
 
-To register a role, use `RolesService.registerRole(roleRegistration)`. You will need to provide `start()` and `stop()` methods which will be executed when the roles service decides to start/stop your role. You will also need to specify an `identifier` which is used when referring to the role in configuration and the environment.
+To register a role, use `RolesService.registerRole(roleRegistration)`. This is usually done within the `altOnInit()` method of a class marked with `@Module()`. You will need to provide `start()` and `stop()` methods which will be executed when the roles service decides to start/stop your role. You will also need to specify an `identifier` which is used when referring to the role in configuration and the environment.
 
 ## Configuring enabled roles
 
-When an Alterior app is bootstrapped, the `ALT_ROLES_ONLY`/`ALT_ROLES_ALL_EXCEPT` environment variables are inspected to determine which roles should be started when the application starts. The variables are comma-delimited lists of role `identifiers` that should be started or ignored. By default all registered roles are started. If both variables are specified, `ALT_ROLES_ONLY` takes precedence.
+When an Alterior app is bootstrapped, several environment variables are inspected to determine which roles should be 
+enabled by default. They are checked in the following order (the first one found wins).
 
-Alternatively you can specify roles via the command line when the application is started using one of the following options:
+- `ALT_ROLES_ONLY` - Enable only the given roles
+- `ALT_ROLES_ALL_EXCEPT` - Enable all roles except those listed (including roles that are disabled by default)
+- `ALT_ROLES_DEFAULT_EXCEPT` - Enable all default-enabled roles except those listed
+
+The variables are comma-delimited lists of role `identifiers` that should be started or ignored. By default all 
+registered roles which are configured as enabled by default are started. 
+
+Alternatively you can specify roles via the command line when the application is started using one of the following 
+options:
 
 ```
---roles-only,   -r [role,...]  Enable only the specified roles
---roles-except, -R [role,...]  Enable all roles except the specified roles
+--roles-only,       -r  [role,...]  Enable only the specified roles
+--roles-skip,       -x  [role,...]  Enable all default-enabled roles except those specified
+--all-roles-except, -R  [role,...]  Enable all roles except the specified roles (regardless of default status)
 ```
 
 For example, to enable only the `web-server` and `tasks` roles:

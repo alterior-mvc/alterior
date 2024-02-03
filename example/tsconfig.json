@@ -4,7 +4,7 @@
         "emitDecoratorMetadata": true,
         "sourceMap": true,
         "module": "commonjs",
-        "target": "es2015",
+        "target": "ES2016",
         "moduleResolution": "node",
         "baseUrl": "./src",
         "outDir": "./dist",

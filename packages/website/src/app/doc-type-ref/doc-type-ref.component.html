@@ -1,0 +1,21 @@
+@if (type.type === 'reflection') {
+    (reflection-type)
+} @else if (type.type === 'reference') {
+    @if (isExternal()) {
+        <a href="{{ url }}" target="_blank">{{ type.name }}</a>
+    } @else {
+        <a routerLink="{{ url }}">{{ type.name }}</a>
+    }
+} @else if (type.type === 'intrinsic') {
+    {{ type.name }}
+} @else {
+    ({{type.type}}) {{type.name}}
+}
+
+@if (type.typeArguments?.length > 0) {
+    &lt;
+    @for (arg of type.typeArguments; track arg) {
+        <alt-doc-type-ref [type]="arg"></alt-doc-type-ref>
+    }
+    &gt;
+}

@@ -78,15 +78,15 @@ export function twoDigitYear(fullYear: number) {
     return Number(fullYear.toString().slice(2));
 }
 
-export function zeroPad(number, digits = 2) {
-    let str = `${number}`;
+export function zeroPad(number: number, digits = 2) {
+    let str = String(number);
     while (str.length < digits)
         str = '0' + str;
 
     return str;
 }
 
-export function randomItem<T>(arr : T[], emptyValue? : T) : T {
+export function randomItem<T>(arr : T[], emptyValue? : T) : T | undefined {
     if (arr.length === 0)
         return emptyValue;
 
@@ -160,7 +160,7 @@ export function lineRangeTagEnd(name : string) {
 }
 
 export function replaceTaggedLineRange(content : string[], tagName : string, lines : string[]) {
-    let startIndex = content.findIndex(line => line.includes(this.lineRangeTagStart(tagName)));
+    let startIndex = content.findIndex(line => line.includes(lineRangeTagStart(tagName)));
     content = removeTaggedLineRange(content, tagName);
 
     if (startIndex) {
@@ -196,7 +196,7 @@ export function removeTaggedLineRange(content : string[], tag : string) {
 }
 
 export async function writeFileLines(filename : string, lines : string[]): Promise<void> {
-    this.writeTextFile(filename, lines.join(os.EOL));
+    writeTextFile(filename, lines.join(os.EOL));
 }
 
 export async function readJsonFile<T = any>(filename : string, defaultValue?: T) : Promise<T> {
@@ -247,7 +247,8 @@ export function timespan(amount: string | number): number {
     
     let result = amount.match(/(\d+)([smhd])/)
     if (!result)
-        throw new Error(`Cannot parse timespan '${amount}'!`);
+        throw new TypeError(`Cannot parse timespan '${amount}'!`);
+
     let [full, numStr, unit] = result;
     let number = Number(numStr);
 
@@ -257,6 +258,8 @@ export function timespan(amount: string | number): number {
         case 'h': return number * 1000 * 60 * 60;
         case 'd': return number * 1000 * 60 * 60 * 24;
     }
+
+    throw new TypeError(`Unknown unit '${unit}'`);
 }
 
 export function age(timestamp: Date) {
@@ -316,7 +319,7 @@ export function age(timestamp: Date) {
 /**
  * https://stackoverflow.com/a/46759625/1995204
  */
-export function isConstructor(f) {
+export function isConstructor(f: Function) {
     if (f === Symbol)
         return false;
 
@@ -326,4 +329,11 @@ export function isConstructor(f) {
         return false;
     }
     return true;
+}
+
+export function omit<T extends object, U extends keyof T>(value: T, excluded: U[]): Omit<T, U> {
+    return Object.fromEntries(
+        (Object.entries(value) as [ U, unknown ][])
+            .filter(([ k, v ]) => excluded.includes(k))
+    ) as Omit<T, U>;
 }

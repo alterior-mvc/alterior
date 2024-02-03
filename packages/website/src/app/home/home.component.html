@@ -1,0 +1,65 @@
+<mat-menu class="quick-menu" #quickJumpMenu>
+    @for (item of menu; track item.url) {
+      @if (item.url.startsWith('https:')) {
+        <a mat-menu-item target="_blank" href="{{item.url}}">{{item.label}}</a>
+      } @else {
+        <a mat-menu-item routerLink="{{item.url}}">{{item.label}}</a>
+      }
+    }
+    <mat-divider></mat-divider>
+    @for (pkg of packages; track pkg.name) {
+        <a mat-menu-item routerLink="/packages/{{ pkg.name }}">
+            <mat-icon>{{ pkg.icon }}</mat-icon>
+            &#64;/{{ pkg.name }}
+        </a>
+    }
+</mat-menu>
+
+<div class="hero">
+    <div class="fader"></div>
+    <div class="foreground">
+        <img src="/assets/logo-light.svg">
+
+        <h1>Much more than a REST framework</h1>
+
+        <div class="c2a">
+            <a mat-raised-button color="primary" routerLink="/try">
+                <mat-icon>science</mat-icon>
+                Try It
+            </a>
+
+            <a mat-raised-button color="primary" routerLink="/getting-started">
+                <mat-icon>rocket_launch</mat-icon>
+                Get Started
+            </a>
+        </div>
+    </div>
+    <div class="left-nav">
+        <button mat-icon-button class="quick-jump" [matMenuTriggerFor]="quickJumpMenu">
+            <mat-icon>menu_vert</mat-icon>
+        </button>
+    </div>
+    <div class="right-nav">
+        <a target="_blank" href="https://github.com/alterior-mvc/alterior" mat-icon-button>
+            <svg class="github" data-src="/assets/github-square.svg"
+                viewBox="0 0 98 96"
+                ></svg>
+        </a>
+        <a target="_blank" href="https://github.com/alterior-mvc/alterior" mat-button>
+            <svg class="npm" data-src="/assets/npm.svg" data-cache="disabled"
+            ></svg>
+  
+        </a>
+   </div>
+</div>
+<div class="packages">
+    @for (pkg of packages; track pkg.name) {
+        <a routerLink="/packages/{{ pkg.name }}" class="package">
+            <mat-icon *ngIf="pkg.icon">{{ pkg.icon }}</mat-icon>
+            <svg *ngIf="pkg.image" [attr.data-src]="pkg.image"></svg>
+            <div class="label">
+                &#64;/{{ pkg.name }}
+            </div>
+        </a>
+    }
+</div>

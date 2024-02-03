@@ -66,9 +66,11 @@ export class WebServer {
 	readonly websockets: ws.Server;
 
 	private _httpServer: http.Server;
-	get httpServer() {
-		return this._httpServer;
-	}
+	get httpServer() { return this._httpServer; }
+
+	private _insecureHttpServer: http.Server;
+	get insecureHttpServer() { return this._insecureHttpServer; }
+
 	private _serviceDescription: ServiceDescription;
 	private _engine: WebServerEngine;
 
@@ -181,6 +183,16 @@ export class WebServer {
 		if (this._httpServer)
 			return;
 		this._httpServer = await this.engine.listen(this.options);
+
+		let isSecure = !!this.options.certificate || !!this.options.sniHandler;
+		if (isSecure && this.options.insecurePort && !this.engine.listenInsecurely) {
+			throw new Error(
+				`Provided ServerEngine does not support listening on secondary insecure port. ` 
+				+ `You may need to upgrade it to a newer version.`
+			);
+		}
+
+		this._insecureHttpServer = await this.engine.listenInsecurely(this.options);
 	}
 
 	/**

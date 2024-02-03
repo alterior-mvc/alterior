@@ -1,6 +1,7 @@
 import { Logger } from "@alterior/logging";
 import { WebEvent } from "./metadata";
 import { RouteInstance } from "./route";
+import * as tls from 'tls';
 
 type Protocol = 'h2'
 	| 'spdy/3.1'
@@ -14,9 +15,39 @@ export type RequestReporterFilter = (event: WebEvent, source: string) => boolean
 export type ParameterDisplayFormatter = (event: WebEvent, value: any, forKey: string) => string;
 
 export interface WebServerOptions {
+	/**
+	 * The primary port to listen on. When TLS is specified via certificate/privateKey
+	 * or sniHandler, this is HTTPS. Otherwise it is HTTP. To listen on both HTTPS and 
+	 * HTTP, set this field to the secure port and set 
+	 */
 	port? : number;
+
+	/**
+	 * When using TLS via certificate/privateKey or sniHandler (and thus HTTPS is served), 
+	 * this field lets you listen via HTTP on an additional port. If TLS is not configured,
+	 * this does nothing.
+	 */
+	insecurePort?: number;
+	
+	/**
+	 * Specify a certificate to use. To use SNI, do not specify this field,
+	 * instead specify sniHandler. 
+	 */
 	certificate? : string | Buffer;
+
+	/**
+	 * Private key for the certificate provided in the `certificate` field. No meaning
+	 * if the `certificate` field is not provided.
+	 */
 	privateKey? : string | Buffer;
+
+	/**
+	 * If you need to support SNI, provide an SNI handler here. This is mutually exclusive
+	 * with `certificate`
+	 * @param hostname 
+	 * @returns 
+	 */
+	sniHandler?: (hostname: string) => Promise<tls.SecureContext>;
 
 	/**
 	 * Specify a header (or a set of headers) which will be checked for a request ID when servicing a request. The 
@@ -41,8 +72,17 @@ export interface WebServerOptions {
 	/**
 	 * What protocols should be supported on incoming client connections If not specified, HTTP/2, SPDY and HTTP/1.1 
 	 * will all be supported if an SSL certificate is provided. If not, then only HTTP/1.1 will be supported.
+	 * 
+	 * When listening on both HTTPS and HTTP (via the insecurePort option), you can specify the non-secure protocols
+	 * to be supported via the insecureProtocols option.
 	 */
 	protocols? : Protocol[];
+
+	/**
+	 * When listening on both HTTPS and HTTP (via the insecurePort option), this specifies the protocols 
+	 * supported by the HTTP port specified by insecurePort. If not specified, only HTTP/1.1 will be supported.
+	 */
+	insecureProtocols? : Protocol[];
 
 	/**
 	 * Connect-style middleware that should be run before the final request handler

@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { Type } from './facade/type';
+import { ConcreteType, Type } from './facade/type';
 
 /**
  * @whatItDoes Configures the {@link Injector} to return an instance of `Type` when `Type' is used
@@ -32,7 +32,7 @@ import { Type } from './facade/type';
  *
  * @stable
  */
-export interface TypeProvider extends Type<any> {}
+export type TypeProvider = ConcreteType<any>;
 
 /**
  * @whatItDoes Configures the {@link Injector} to return a value for a token.
@@ -103,7 +103,7 @@ export interface ClassProvider {
   /**
    * Class to instantiate for the `token`.
    */
-  useClass: Type<any>;
+  useClass: ConcreteType<any>;
 
   /**
    * If true, then injector returns an array of instances. This is useful to allow multiple
@@ -217,6 +217,10 @@ export interface FactoryProvider {
  * @stable
  */
 export type Provider = TypeProvider | ValueProvider | ClassProvider | ExistingProvider | FactoryProvider | any[];
+
+export function isTypeProvider(provider: Provider): provider is TypeProvider {
+  return typeof provider === 'function';
+}
 
 export interface ProviderDependencies {
   deps? : any[];

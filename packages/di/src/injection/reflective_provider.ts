@@ -178,6 +178,13 @@ export function mergeResolvedReflectiveProviders(
   return normalizedProvidersMap;
 }
 
+/**
+ * Ensure all providers have the same shape ({ provide: any, ... }) by creating useClass providers
+ * for TypeProvider (bare constructor) and flattening array providers.
+ * @param providers 
+ * @param res 
+ * @returns 
+ */
 function _normalizeProviders(providers: Provider[], res: Provider[]): NormalizedProvider[] {
   providers.forEach(b => {
     if (b instanceof Type) {

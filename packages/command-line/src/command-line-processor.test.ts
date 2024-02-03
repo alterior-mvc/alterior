@@ -6,13 +6,13 @@ import { StringTerminalDriver, TerminalDriverSelector } from "./terminal";
 describe('CommandLineProcessor', it => {
     let terminalDriver = new StringTerminalDriver();
     let processor = new CommandLineProcessor();
-    let exitCode : number;
+    let exitCode: number | undefined;
 
     before(() => {
         TerminalDriverSelector.default = terminalDriver;
         terminalDriver.buffer = '';
         processor = new CommandLineProcessor();
-        processor.exit = (code : number) => exitCode = code;
+        processor.exit = (code: number) => exitCode = code;
         exitCode = undefined;
     })
 
@@ -109,7 +109,7 @@ describe('CommandLineProcessor', it => {
     });
     it('passes command subarguments', () => {
         let executed = false;
-        let receivedArgs : string[];
+        let receivedArgs: string[] = [];
         processor.command('hello', cmd => cmd.run(args => (receivedArgs = args, executed = true)));
         processor.process(['hello', 'world']);
         expect(executed).to.be.true;
@@ -118,7 +118,7 @@ describe('CommandLineProcessor', it => {
     });
     it('allows command to have options', () => {
         let executed = false;
-        let receivedArgs : string[];
+        let receivedArgs: string[] = [];
         processor.command('hello', cmd => 
             cmd
                 .option({
@@ -141,7 +141,7 @@ describe('CommandLineProcessor', it => {
     });
     it('allows commands to have subcommands', () => {
         let executed = 0;
-        let receivedArgs : string[] = [];
+        let receivedArgs: string[] = [];
         processor.command('hello', cmd => 
             cmd
                 .command('world', cmd => 
@@ -175,14 +175,14 @@ describe('CommandLineProcessor', it => {
 
 describe('--help', it => {
     let terminalDriver = new StringTerminalDriver();
-    let processor : CommandLineProcessor;
-    let exitCode : number;
+    let processor: CommandLineProcessor;
+    let exitCode: number | undefined;
 
     before(() => {
         TerminalDriverSelector.default = terminalDriver;
         terminalDriver.buffer = '';
         processor = new CommandLineProcessor();
-        processor.exit = (code : number) => exitCode = code;
+        processor.exit = (code: number) => exitCode = code;
         exitCode = undefined;
     });
     after(() => {

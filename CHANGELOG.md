@@ -1,8 +1,100 @@
-# ⏭ vNext
-
 # ⏭ vNext [4.0]
 - `@/web-server`: **Breaking**: Renamed WebConduit to ReactiveSocket, and `WebServer#startConduit()` to 
   `WebServer#startReactiveSocket()`
+  
+# v3.6.6
+- `@/common`
+  * Alterior's standard error classes now extend from `Error`
+  * The inaccessible `innerError` property has been removed. Use the ES standard `cause` instead.
+
+# v3.6.5
+- `@/runtime`
+  * Fixed an issue where using role identifiers within environment/command-line configuration could 
+    cause the wrong role to be enabled if multiple roles are defined within a single module.
+  * An error is now thrown if a role specified in the effective roles configuration does not exist.
+  * `RolesService#configure()` now accepts string identifiers of roles in addition to class references.
+  * `RolesService#getForModule()` now throws if there are multiple roles defined for the given module.
+
+# v3.6.3
+- `@/platform-nodejs`
+  * Upgrades Zone.js to 0.14.3
+  * Loads the Node.js specific Zone.js bundle
+  * Loads the RxJS zone patch
+  * Loads reflect-metadata and source-map-support before initializing `dotenv`.
+- `@/web-server`
+  * To help avoid accidentally using ES2017 or later (which is not supported by Alterior 
+    or any other libraries which use Zone.js), an error will now be thrown if a native async function is used as a route method.
+
+# v3.6.2
+- `@/runtime`: Fixes an issue where the short form of the new `--roles-skip` command line option (`-x`) was 
+  ignored.
+
+# v3.6.1
+- `@/runtime`: Add `enabledByDefault` to `RoleRegistration` and default to all services which are enabled by default.
+  Allows for some roles to be disabled unless specifically asked for. Roles which are disabled by default are still 
+  included in `all-except` configuration. Use the new `default-except` (or via `ALT_ROLES_DEFAULT_EXCEPT` environment
+  variable) to enable all default services except those listed. Additionally there is now an `--roles-skip` option 
+  which enables the `default-except` mode.
+ 
+# v3.6.0
+- `@/runtime`: Allow specifying additional providers when bootstrapping an application
+- `@/platform-nodejs`
+    - `dotenv` version 16.3.1
+        - **Please note these changes**
+            * Comments are now supported
+            * Multiline strings are now supported
+            * Backtick quotes are now supported
+    - `ws` version 8.16.0
+    - `source-map-support` version 0.5.21
+- `@/logging`: 
+    * Added missing `fatal()` convenience function
+    * Added static shortcuts to `Logger` (ie `Logger.info()` means `Logger.current.info()`)
+# v3.5.8
+- `@/web-server`:
+  - Fixes a bug where TLS options are not properly initialized in some cases, causing a crash.
+  - Fixes a bug where automatically generated self-signed certificates (when requesting HTTP/2 or SPDY without specifying
+    a certificate) are not used, causing the server to boot into HTTP only mode instead of HTTPS.
+
+# v3.5.7
+- `@/web-server`:
+  - Fixes more semantic issues with certificate generator on Forge
+
+# v3.5.6
+- Re-release of packages to resolve package resolution issues
+
+# v3.5.5
+- `@/web-server`: Fix a semantic issue with the Forge library in certificate generation 
+
+# v3.5.4
+- Sources are now included with packages to enable easier sourcemap debugging of the Alterior packages.
+
+# v3.5.3
+- `@/di`: Better type safety for TypeProvider (must be concrete type) while still allowing for injection tokens to be 
+  abstract. Fixes an issue where `inject()` could not accept an abstract class, even though that is a common pattern
+  for swappable injectables.
+# v3.5.2
+- `@/runtime`: `ExecutionContext.current.application` is now available before `altOnInit` runs
+
+# v3.5.1
+- `@/logging`: `Logger.current` does not use the `Logger` instance configured in application injector
+
+# v3.5.0
+- `@/di`: `inject()` now supports `skipSelf`, `self`, and `optional` options.
+- `@/web-server`
+    * Add support for SNI
+    * Add support for serving both HTTP and HTTPS via a secondary port
+- `@/fastify`
+    * Fix missing support for Alterior seamless websockets
+    * Fix missing support for Alterior TLS certificate generation
+    * Fix missing support for serving TLS/SPDY
+
+# 3.4.2
+- `@/platform-nodejs`: Add support for `dotenv-flow` style usage of the `NODE_ENV` environment variable. When `NODE_ENV`
+  is set, the filename searched is `.env.{NODE_ENV}` to allow you to configure multiple environments in separate `.env`
+  files.
+
+# 🚀3.4.0
+- `@/di`: Support for imperative injection via the `inject()` function.
 
 # 🚀3.3.0
 - `@/web-server`: Request logging has been improved, and is now highly customizable. Support has been added for filtering

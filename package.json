@@ -13,24 +13,7 @@
     "url": "https://github.com/alterior-mvc/alterior/issues"
   },
   "workspaces": [
-    "packages/annotations",
-    "packages/cli",
-    "packages/command-line",
-    "packages/common",
-    "packages/di",
-    "packages/express",
-    "packages/fastify",
-    "packages/functions",
-    "packages/http",
-    "packages/logging",
-    "packages/platform-angular",
-    "packages/platform-nodejs",
-    "packages/runtime",
-    "packages/streams",
-    "packages/tasks",
-    "packages/testapp",
-    "packages/terminal",
-    "packages/web-server"
+    "packages/*"
   ],
   "scripts": {
     "test": "lerna run test",
@@ -49,25 +32,25 @@
     "@types/express": "^4.17.15",
     "@types/mkdirp": "^0.5.2",
     "@types/node": "^18.11.18",
-    "@types/rimraf": "^2.0.4",
+    "@types/rimraf": "^4.0.5",
     "@types/serve-static": "1.15.0",
     "@types/supertest": "^2.0.9",
     "chai": "^4.1.2",
-    "dotenv": "^6.0.0",
+    "dotenv": "^16.3.1",
     "express": "^4.17.1",
     "kind-of": ">=6.0.3",
-    "lerna": "^4.0.0",
+    "lerna": "^8.0.0",
     "lodash": ">=4.17.19",
     "mkdirp": "^0.5.5",
-    "razmin": "^1.2.0",
+    "razmin": "^1.2.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.0.7",
     "source-map-support": "^0.4.6",
     "supertest": "^3.1.0",
     "swagger-editor-dist": "^3.9.0",
     "tslib": "^2.3.1",
-    "typedoc": "^0.23.24",
-    "typescript": "^4.9.4",
-    "zone.js": "^0.11.4"
+    "typedoc": "^0.25.7",
+    "typescript": "^5.3.3",
+    "zone.js": "^0.14.3"
   }
 }

@@ -1,0 +1,34 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { 
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+body { 
+    margin: 0; 
+    font-family: Roboto, "Helvetica Neue", sans-serif; 
+    background-color: #eaeaff;
+    color: #2b3036;
+}
+
+* { box-sizing: border-box; }
+
+pre, .syntax-block {
+    width: 100%;
+    background-color: #051938;
+    font-family: monospace;
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    overflow-y: auto;
+
+    a {
+        color: #8ac1ff;
+        text-decoration: none;
+    }
+}
+
+.mdc-button, .mat-icon {
+    flex-shrink: 0;
+}

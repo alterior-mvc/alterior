@@ -1,15 +1,15 @@
 import { deepClone } from "./clone";
 
 interface CacheEntry<T> {
-    key : string;
-    time : number;
-    expiresAt : number;
-    lastFetched : number;
-    value : T;
+    key: string;
+    time: number;
+    expiresAt: number;
+    lastFetched: number;
+    value: T;
 }
 
 interface CacheMap<T> {
-    [s : string] : CacheEntry<T>;
+    [s: string]: CacheEntry<T>;
 }
 
 interface CacheFetcher<T> {
@@ -20,7 +20,7 @@ interface FetchOptions {
     /**
      * The time to live to set for a fulfilled item
      */
-    timeToLive? : number;
+    timeToLive?: number;
 
     /**
      * What kind of cache miss strategy should be used here.
@@ -30,7 +30,7 @@ interface FetchOptions {
      *   If the cache misses due to an expired value, return the expired (stale) value
      *   and call the fetcher to update the value in the background.
      */
-    missStrategy? : "fulfill" | "stale-revalidate";
+    missStrategy?: "fulfill" | "stale-revalidate";
 }
 
 /**
@@ -42,10 +42,10 @@ export class Cache<T> {
      * @param timeToLive Time a cached item should live before expiring, in milliseconds
      * @param maxItems Amount of items that can be held in the cache maximum.
      */
-    public constructor(private timeToLive : number, private maxItems : number) {
+    public constructor(private timeToLive: number, private maxItems: number) {
     }
 
-    private entries : CacheMap<T> = {};
+    private entries: CacheMap<T> = {};
 
     /**
      * Cache cleanup routine run whenever a value is stored in the cache
@@ -67,6 +67,9 @@ export class Cache<T> {
 
             while (itemCount > this.maxItems) {
                 let entry = this.getOldestEntry();
+                if (!entry)
+                    break;
+
                 delete this.entries[entry.key];
                 --itemCount;
             }
@@ -74,7 +77,7 @@ export class Cache<T> {
     }
 
     public getOldestEntry() {
-        let selectedEntry : CacheEntry<T> = null;
+        let selectedEntry: CacheEntry<T> | null = null;
         for (let key in this.entries) {
             let entry = this.entries[key];
 
@@ -94,7 +97,7 @@ export class Cache<T> {
      * @param value The value to cache
      * @param timeToLive How long the value should remain valid for before revalidation
      */
-    public insertItem(key : string, value : T, timeToLive? : number) {
+    public insertItem(key: string, value: T, timeToLive?: number) {
         if (timeToLive === undefined)
             timeToLive = this.timeToLive;
 
@@ -119,16 +122,16 @@ export class Cache<T> {
      * 
      * @param key The key to get
      */
-    public get(key : string): T {
+    public get(key: string): T | undefined {
         let entry = this.entries[key];
-        return entry ? deepClone(entry.value) : undefined;
+        return entry ? deepClone(entry.value): undefined;
     }
 
     /**
      * Get the cache entry for the given key.
      * @param key The key to get
      */
-    public getEntry(key : string): CacheEntry<T> {
+    public getEntry(key: string): CacheEntry<T> {
         return this.entries[key];
     }
 
@@ -147,12 +150,12 @@ export class Cache<T> {
      * @param fetcher A function to define the value of the key if a cache miss occurs
      * @param options Options for doing the caching.
      */
-    public async fetch(key : string, fetcher? : CacheFetcher<T>, options : FetchOptions = {}): Promise<T> {
+    public async fetch(key: string, fetcher?: CacheFetcher<T>, options: FetchOptions = {}): Promise<T> {
         let existingFetch = this.outstandingFetches.get(key);
         if (existingFetch)
             return await existingFetch;
 
-        let entry : CacheEntry<T>;
+        let entry: CacheEntry<T> | undefined;
         let now = Date.now();
         let stale = true;
         
@@ -167,12 +170,12 @@ export class Cache<T> {
         if (options.missStrategy === 'fulfill')
             entry = stale ? undefined : entry;
 
-        let fetchOperation : Promise<any>;
+        let fetchOperation: Promise<any> | undefined;
 
         if (stale && fetcher) {
             fetchOperation = new Promise(async (resolve, reject) => {
                 // Fetch!
-                let value : T;
+                let value: T;
                 try {
                     value = await fetcher();
 
@@ -184,7 +187,7 @@ export class Cache<T> {
                     console.error(e);
                     debugger;
 
-                    resolve(entry ? deepClone(entry.value) : undefined);
+                    resolve(entry ? deepClone(entry.value): undefined);
                 }
             });
 

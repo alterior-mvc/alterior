@@ -29,7 +29,7 @@ let AFTER_CLOSING_PAREN = /^([^)]*)\).*$/mg;
  * Get the names of the parameters of the given function.
  * @param fn 
  */
-export function getParameterNames(fn): string[] {
+export function getParameterNames(fn: Function): string[] {
   let code = fn.toString()
     .replace(SPACES, '')
     .replace(COMMENTS, '')

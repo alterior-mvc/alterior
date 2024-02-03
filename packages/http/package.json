@@ -1,6 +1,6 @@
 {
   "name": "@alterior/http",
-  "version": "3.2.0",
+  "version": "3.6.5",
   "description": "Flexible and configurable HTTP client",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -36,12 +36,12 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublishOnly": "npm test",
     "test": "npm run build && node dist/test/test",
-    "docs": "typedoc ."
+    "docs": "typedoc src"
   },
   "dependencies": {
-    "@alterior/common": "^3.2.0",
-    "@alterior/di": "^3.2.0",
-    "@alterior/runtime": "^3.2.0",
+    "@alterior/common": "^3.6.4",
+    "@alterior/di": "^3.6.4",
+    "@alterior/runtime": "^3.6.5",
     "rxjs": "^7.8.0",
     "tslib": "^2.3.1",
     "xhr2": "^0.1.4"

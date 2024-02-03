@@ -1,0 +1,19 @@
+<alt-doc-decl *ngIf="element.variant === 'declaration' && showDeclaration" [decl]="element"></alt-doc-decl>
+
+<div class="readme" [innerHTML]="readme | markdownToHtml | trustHtml"></div>
+
+<hr/>
+
+<div class="children" *ngIf="element.children?.length > 0 && showChildren">
+    @for (group of element.groups; track group) {
+        <h2>{{ group.title }}</h2>
+        
+        @for (child of getGroupChildren(element, group.children); track child.id) {
+            <h3>
+                <a routerLink="{{ parentUrl }}/{{ child.name }}">
+                    {{ child.name }}
+                </a>
+            </h3>
+        }
+    }
+</div>

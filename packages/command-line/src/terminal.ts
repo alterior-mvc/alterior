@@ -1,7 +1,7 @@
 import { TableRenderer } from "./table-renderer";
 
 export interface TerminalDriver {
-    write(message : string);
+    write(message: string): void;
 }
 
 export class NodeTerminalDriver implements TerminalDriver {
@@ -11,34 +11,34 @@ export class NodeTerminalDriver implements TerminalDriver {
 }
 
 export class StringTerminalDriver implements TerminalDriver {
-    buffer : string;
+    buffer = '';
     write(message: string) {
         this.buffer += message;
     }
 }
 
 export class TeeTerminalDriver extends StringTerminalDriver {
-    constructor(private underlyingDriver : TerminalDriver) {
+    constructor(private underlyingDriver: TerminalDriver) {
         super();
     }
 
-    write(message : string) {
+    write(message: string) {
         super.write(message);
         this.underlyingDriver.write(message);
     }
 }
 
 export class MultiplexedTerminalDriver implements TerminalDriver {
-    constructor(private drivers : TerminalDriver[]) {
+    constructor(private drivers: TerminalDriver[]) {
     }
 
-    write(message : string) {
+    write(message: string) {
         this.drivers.forEach(d => d.write(message));
     }
 }
 
 export class TerminalDriverSelector {
-    private static _default : TerminalDriver;
+    private static _default: TerminalDriver | null;
 
     public static get default() {
         if (this._default)
@@ -50,7 +50,7 @@ export class TerminalDriverSelector {
             return new StandardTerminalDriver();
     }
 
-    public static set default(value : TerminalDriver) {
+    public static set default(value: TerminalDriver | null) {
         this._default = value;
     }
 }
@@ -78,23 +78,28 @@ export class StandardTerminalDriver implements TerminalDriver {
 }
 
 export class Terminal {
-    constructor(driver? : TerminalDriver) {
-        this.driver = driver || TerminalDriverSelector.default;
+    constructor(driver?: TerminalDriver) {
+        let selectedDriver = driver ?? TerminalDriverSelector.default;
+
+        if (!selectedDriver) 
+            throw new Error(`No driver provided`);
+
+        this.driver = selectedDriver;
     }
 
-    driver : TerminalDriver;
+    driver: TerminalDriver;
 
-    write(message : string) {
+    write(message: string) {
         this.driver.write(message);
         if (typeof process !== 'undefined')
             process.stdout.write(message);
     }
 
-    writeLine(message? : string) {
+    writeLine(message?: string) {
         this.driver.write(`${message || ''}\n`);
     }
 
-    table(rows : string[][]) {
+    table(rows: string[][]) {
         TableRenderer.draw(this, rows);
     }
 }

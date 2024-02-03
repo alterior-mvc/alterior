@@ -16,7 +16,7 @@ export * from './metadata';
 
 export { forwardRef, resolveForwardRef, ForwardRefFn } from './forward_ref';
 
-export { Injector } from './injector';
+export { Injector, inject } from './injector';
 export { ReflectiveInjector } from './reflective_injector';
 export { Provider, TypeProvider, ValueProvider, ClassProvider, ExistingProvider, FactoryProvider } from './provider';
 export { ResolvedReflectiveFactory, ResolvedReflectiveProvider } from './reflective_provider';

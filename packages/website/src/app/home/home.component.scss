@@ -1,0 +1,152 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4em;
+    position: relative;
+}
+
+.hero {
+    position: relative;
+    width: 100%;
+    height: 40em;
+
+    --mdc-text-button-label-text-color: white;
+
+    svg {
+        filter: drop-shadow(1px 1px 2px black);
+    }
+    svg ::ng-deep * {
+        fill: currentColor !important;
+        stroke: none !important;
+    }
+
+    svg.npm {
+        aspect-ratio: 3/2;
+        height: 2em;
+        width: fit-content;
+        position: relative;
+        top: 0.3em;
+    }
+    .left-nav {
+        position: absolute;
+        top: 1em;
+        left: 1em;
+        color: white;
+        z-index: 10;
+    }
+
+    .right-nav {
+        position: absolute;
+        top: 1em;
+        right: 1em;
+        color: white;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+
+        // > * {
+        //     border: 1px solid red;
+        // }
+    }
+
+    .quick-jump {
+        --mdc-text-button-label-text-color: white;
+    }
+    .foreground, .fader {
+        position: absolute;
+        inset: 0;
+    }
+
+    .foreground {
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4em;
+    }
+    .fader {
+        background: 
+            linear-gradient(
+                to bottom,
+                transparent 10%,
+                white
+            ), 
+            url(/assets/clouds-1.jpg)
+            //url(/assets/mountains-1.jpg)
+            //url(/assets/blue-pattern-1.jpg)
+            //url(/assets/night-sky-1.jpg)
+        ;
+        background-size: cover;
+        background-position: center;
+    }
+}
+
+.packages {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+
+    .package {
+        --image-size: 64px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 15em;
+        aspect-ratio: 1/1;
+        text-decoration: none;
+
+        background-color: #8ac1ff;
+        color: #0044aa;
+        border-radius: 50%;
+
+        .label {
+            font-size: 20px;
+        }
+
+        svg {
+            height: var(--image-size);
+            width: var(--image-size);
+
+            ::ng-deep * {
+                fill: currentColor !important;
+                stroke: currentColor !important;
+            }
+        }
+
+        mat-icon {
+            width: var(--image-size);
+            height: var(--image-size);
+            font-size: var(--image-size);
+        }
+    }
+}
+
+.quick-menu {
+    svg {
+        height: var(--image-size);
+        width: var(--image-size);
+
+        ::ng-deep * {
+            fill: currentColor !important;
+            stroke: currentColor !important;
+        }
+    }
+
+    mat-icon {
+        width: var(--image-size);
+        height: var(--image-size);
+        font-size: var(--image-size);
+    }
+
+}
+
+.c2a {
+    display: flex;
+    gap: 1em;
+}

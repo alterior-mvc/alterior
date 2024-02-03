@@ -56,11 +56,11 @@ export type ColorLibrary<T> = {
     [K in keyof T] : (message : string) => string;
 };
 
-function objectLibrary<T>(codes : T): ColorLibrary<T> {
+function objectLibrary<T extends object>(codes : T): ColorLibrary<T> {
     let library : ColorLibrary<T> = {} as any;
 
-    Object.keys(codes).forEach(function(key) {
-        let val = codes[key];
+    (Object.keys(codes) as (keyof T)[]).forEach(key => {
+        let val = codes[key] as [string, string];
         let open = '\u001b[' + val[0] + 'm';
         let close = '\u001b[' + val[1] + 'm';
 

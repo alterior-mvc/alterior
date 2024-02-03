@@ -1,6 +1,6 @@
 {
   "name": "@alterior/web-server",
-  "version": "3.3.2",
+  "version": "3.6.5",
   "description": "Declarative framework for building REST services",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -38,18 +38,19 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublishOnly": "npm test",
     "test": "npm run build && node dist/test.js",
-    "docs": "typedoc ."
+    "docs": "typedoc src"
   },
   "dependencies": {
-    "@alterior/annotations": "^3.2.0",
-    "@alterior/common": "^3.2.0",
-    "@alterior/di": "^3.2.0",
-    "@alterior/logging": "^3.2.0",
-    "@alterior/runtime": "^3.2.0",
+    "@alterior/annotations": "^3.6.4",
+    "@alterior/common": "^3.6.4",
+    "@alterior/di": "^3.6.4",
+    "@alterior/logging": "^3.6.5",
+    "@alterior/runtime": "^3.6.5",
+    "@types/node-forge": "^1.3.11",
     "body-parser": "^1.20.1",
     "fast-json-stringify": "^1.21.0",
     "kind-of": ">=6.0.3",
-    "node-forge": "^1.3.0",
+    "node-forge": "^1.3.1",
     "qs": "^6.10.1",
     "spdy": "^4.0.2",
     "supertest": "^4.0.2",
@@ -59,10 +60,11 @@
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.12",
-    "zone.js": "^0.11.4"
+    "zone.js": "^0.14.3"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.0",
+    "@types/spdy": "^3.4.9",
     "@types/supertest": "^2.0.9",
     "@types/uuid": "^8.3.3",
     "@types/ws": "^7.4.0",

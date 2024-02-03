@@ -1,6 +1,6 @@
 {
   "name": "@alterior/tasks",
-  "version": "3.2.0",
+  "version": "3.6.5",
   "description": "Flexible background task system",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -37,21 +37,21 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublishOnly": "npm test",
     "test": "npm run build && node dist/test.js",
-    "docs": "typedoc ."
+    "docs": "typedoc src"
   },
   "dependencies": {
-    "@alterior/annotations": "^3.2.0",
-    "@alterior/common": "^3.2.0",
-    "@alterior/di": "^3.2.0",
-    "@alterior/logging": "^3.2.0",
-    "@alterior/runtime": "^3.2.0",
+    "@alterior/annotations": "^3.6.4",
+    "@alterior/common": "^3.6.4",
+    "@alterior/di": "^3.6.4",
+    "@alterior/logging": "^3.6.5",
+    "@alterior/runtime": "^3.6.5",
     "bull": "^3.18.0",
     "kind-of": ">=6.0.3",
     "tslib": "^2.3.1"
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.13",
-    "zone.js": "^0.11.4"
+    "zone.js": "^0.14.3"
   },
   "devDependencies": {
     "@types/bull": "^3.13.0",
