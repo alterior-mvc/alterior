@@ -8,17 +8,17 @@ export class TableRenderer {
 
     }
 
-    public static draw(terminal : Terminal, rows : string[][])
-    public static draw(terminal : Terminal, rows : string[]) 
+    public static draw(terminal : Terminal, rows : string[][]): void;
+    public static draw(terminal : Terminal, rows : string[]): void;
     public static draw(terminal : Terminal, rows : string[][] | string[]) {
         new TableRenderer(terminal).add(rows as any).draw();
     }
 
     private _rows : string[][] = [];
 
-    add(rows : string[][])
-    add(row : string[]) 
-    add(...args : any[])
+    add(rows : string[][]): this;
+    add(row : string[]): this;
+    add(...args : any[]): this
     {
         let arg = args[0]
 

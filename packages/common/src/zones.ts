@@ -69,18 +69,18 @@ export class AsyncZone {
 
     private _outside : Zone;
     private _nesting : number = 0;
-    private _hasPendingMicrotasks : boolean;
-    private _hasPendingMacrotasks : boolean;
+    private _hasPendingMicrotasks : boolean = false;
+    private _hasPendingMacrotasks : boolean = false;
     private _zone : Zone;
     private _onError : Subject<Error> = new Subject<Error>();
-    private _isStable : boolean;
+    private _isStable : boolean = false;
     private _onMicrotaskEmpty : Subject<void> = new Subject<void>();
     private _onStable : Subject<void> = new Subject<void>();
 
     public static run<T>(cb : () => (Promise<T> | T)): Promise<T> {
         return new Promise<T>((resolve, reject) => {
             let zone = new AsyncZone('AsyncZone');
-            let value;
+            let value: T;
 
             zone.onStable.subscribe(() => resolve(value));
             zone.onError.subscribe(e => reject(e));
@@ -120,13 +120,13 @@ export class AsyncZone {
         
         try {
             this._nesting++;
-            this._onMicrotaskEmpty.next(null);
+            this._onMicrotaskEmpty.next();
         } finally {
             this._nesting--;
 
             if (!this._hasPendingMicrotasks) {
                 try {
-                    this.runOutside(() => this._onStable.next(null));
+                    this.runOutside(() => this._onStable.next());
                 } finally {
                     this._isStable = true;
                 }
@@ -134,7 +134,7 @@ export class AsyncZone {
         }
     }
 
-    public runOutside(runnable) {
+    public runOutside(runnable: Function) {
         this._outside.run(runnable);
     }
 

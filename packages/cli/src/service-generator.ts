@@ -1,15 +1,26 @@
-import * as path from 'path';
-import * as fs from 'fs';
+import inquirer from 'inquirer';
+import { BuildConfig, ServiceBuildConfig } from './build-config';
 import { CommandRunner } from './command-runner';
-import { unindent, capitalize, writeJsonFile, readJsonFile, writeTextFile, makeDirectory, changeWorkingDirectory, pathCombine, askBoolean, writeFileLines, getWorkingDirectory } from './utils';
+import { Generator } from './generator';
 import { GeneratorCanceled } from './generator-canceled';
 import { GeneratorError } from './generator-error';
-import { Generator } from './generator';
-import { BuildConfig } from './build-config';
 import { PackageConfiguration } from './package-configuration';
+import { askBoolean, capitalize, changeWorkingDirectory, getWorkingDirectory, makeDirectory, pathCombine, readJsonFile, toUpperCamelCase, unindent, writeFileLines, writeJsonFile, writeTextFile } from './utils';
+
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
+import { SPDX } from './spdx';
+import ora, { Ora } from 'ora';
+
+export interface ServiceGenerationSettings {
+    engine: 'express' | 'fastify';
+    moduleClassName: string;
+    serviceName: string;
+}
 
 export class ServiceGenerator extends Generator {
-    runner = new CommandRunner();
+    runner = new CommandRunner(true);
 
     static description = 'Generate a backend service';
     async createDirectory() {
@@ -19,13 +30,38 @@ export class ServiceGenerator extends Generator {
     async writePackageJson() {
         // Package.json
 
+        await writeJsonFile('tsconfig.json', {
+            "compilerOptions": {
+                "outDir": "dist",
+                "target": "ES2016",
+                "module": "commonjs",
+                "moduleResolution": "node",
+                "strict": true,
+                "declaration": true,
+                "emitDecoratorMetadata": true,
+                "experimentalDecorators": true,
+                "resolveJsonModule": true,
+                "sourceMap": true,
+                "esModuleInterop": true
+            },
+            "include": [
+                "./src/**/*.ts"
+            ]
+        });
+
+        await writeJsonFile('package.json', this.packageJson);
+
+    }
+
+    async installDependencies() {
         let dependencies = [
             '@alterior/runtime',
             '@alterior/web-server',
-            '@alterior/express',
+            `@alterior/${this.serviceGenerationSettings.engine}`,
             '@alterior/logging',
             '@alterior/di',
-            '@alterior/platform-nodejs'
+            '@alterior/platform-nodejs',
+            '@astronautlabs/conduit'
         ];
 
         let devDependencies = [
@@ -40,107 +76,84 @@ export class ServiceGenerator extends Generator {
             '@types/ws'
         ];
 
-        await writeJsonFile('tsconfig.json', {
-            "compilerOptions": {
-                "outDir": "dist",
-                "target": "es2016",
-                "module": "commonjs",
-                "moduleResolution": "node",
-                "declaration": true,
-                "emitDecoratorMetadata": true,
-                "experimentalDecorators": true,
-                "sourceMap": true,
-                "esModuleInterop": true
-            },
-            "include": [
-                "./src/**/*.ts"
-            ]
-        });
-
-        await this.runner.run('npm', 'init');
-
-        if (!fs.existsSync('package.json')) {
-            throw new GeneratorCanceled(`Canceled during npm init`);
-        }
-
         await this.runner.run('npm', 'install', ...dependencies);
         await this.runner.run('npm', 'install', ...devDependencies, '-D');
-
-        let pkgJson = await readJsonFile('package.json');
-
-        if (!pkgJson.scripts)
-            pkgJson.scripts = {};
-
-        pkgJson.scripts.build = "npm run clean && alt build";
-        pkgJson.scripts.rebuild = "alt build";
-        pkgJson.scripts.test = "npm run build && node dist/test";
-        pkgJson.scripts.start = "npm run build && node dist/main";
-        pkgJson.scripts.clean = "rimraf dist .tsbuildinfo";
-        pkgJson.scripts.prepublishOnly = "alt prepare";
-        
-        await writeJsonFile('package.json', pkgJson);
-
     }
 
-    async installDependencies() {
-        await this.runner.run('npm', 'install');
-    }
-
-    async makeSkeleton() {
-        await Promise.all([
-            makeDirectory('src'),
-            makeDirectory('dist')
-        ]);
-
-        await Promise.all([ 
-            makeDirectory(pathCombine('src', this.projectName)),
-            makeDirectory(pathCombine('src', 'common'))
-        ]);
-    }
-
-    async writeGitIgnore() {
+    async writeIgnores() {
         await writeTextFile(
             path.join('.gitignore'), 
-            [
-                `node_modules/`,
-                `dist/`,
-                `src/__browser/**`
-            ].join(`\n`)
-        );
-    }
-
-    async writeMainTS() {    
-        await writeTextFile(
-            path.join('src', 'main.ts'), 
             unindent(
                 `
-                import '@alterior/platform-nodejs';
-
-                import { Application } from '@alterior/runtime';
-                import { WebServer } from '@alterior/web-server';
-                import { ExpressEngine } from '@alterior/express';
-                import { ${capitalize(this.projectName)} } from './${this.projectName}';
-
-                WebServerEngine.default = ExpressEngine;
-                Application.bootstrap(${capitalize(this.projectName)});
+                node_modules/
+                dist/
+                *.env
+                `
+            )
+        );
+        await writeTextFile(
+            path.join('.npmignore'),
+            unindent(
+                `
+                ##############################################
+                # Alterior: Exclude server from NPM package
+                ./src/server/**
+                ./dist/server/**
+                ##############################################
+                # Files to omit from NPM package
                 `
             )
         );
     }
 
-    async writeProjectModuleTS() {
+    async writeCode() {
+        let engineClass = `${capitalize(this.serviceGenerationSettings.engine)}Engine`;
+        let enginePackage = `@alterior/${this.serviceGenerationSettings.engine}`;
+        
         await writeTextFile(
-            path.join('src', this.projectName, `${this.projectName}.module.ts`), 
+            path.join('src', 'interface', 'index.ts'), 
+            unindent(
+                `
+                import * as conduit from '@astronautlabs/conduit';
+                
+                @conduit.Name('${this.serviceGenerationSettings.serviceName}')
+                export abstract class ${this.serviceGenerationSettings.moduleClassName} {
+                    abstract info(): Promise<{ service: string, version: string }>;
+                }
+                `
+            )
+        );
+
+        await writeTextFile(
+            path.join('src', 'server', 'main.ts'), 
+            unindent(
+                `
+                import '@alterior/platform-nodejs';
+
+                import { Application } from '@alterior/runtime';
+                import { WebServer, WebServerEngine } from '@alterior/web-server';
+                import { ${engineClass} } from '${enginePackage}';
+                import { ${this.serviceGenerationSettings.moduleClassName} } from './server';
+
+                WebServerEngine.default = ${engineClass};
+                Application.bootstrap(${this.serviceGenerationSettings.moduleClassName});
+                `
+            )
+        );
+
+        await writeTextFile(
+            path.join('src', 'server', `server.ts`), 
             unindent(
                 `
                 import { WebService, Get } from '@alterior/web-server';
-                
-                const PKG = require('../../package.json');
+                import * as Interface from '../interface';
 
                 @WebService()
-                export class ${capitalize(this.projectName)} {
+                export class ${this.serviceGenerationSettings.moduleClassName} extends Interface.${this.serviceGenerationSettings.moduleClassName} {
                     @Get()
                     async info() {
+                        const PKG = await import('../../package.json');
+
                         return { 
                             service: PKG.name,
                             version: PKG.version
@@ -149,16 +162,6 @@ export class ServiceGenerator extends Generator {
                 }
                 `
             )
-        );
-    }
-
-    async writeNPMIgnore() {
-        await writeFileLines(
-            path.join('.npmignore'),
-            [
-                `# Files to omit from NPM package`,
-                ``
-            ]
         );
     }
 
@@ -171,53 +174,128 @@ export class ServiceGenerator extends Generator {
 
     async configurePackage() {
         let pkgConfig = new PackageConfiguration(getWorkingDirectory());
-        await pkgConfig.setPublishBackend(this.buildConfig.publishBackend);
-        await pkgConfig.setPackageAccess(this.buildConfig.packageAccess);
-    }
-
-    async writeIndexTS() {
-        await writeTextFile(
-            path.join('src', this.projectName, 'index.ts'), 
-            unindent(
-                `
-                export * from './${this.projectName}.module';
-                `
-            )
-        );
-        await writeTextFile(
-            path.join('src', 'index.ts'), 
-            unindent(
-                `
-                export { ${capitalize(this.projectName)} } from './${this.projectName}';
-                `
-            )
-        );
+        await pkgConfig.setPublishBackend(false);
+        await pkgConfig.setPackageAccess(this.packageJson.publishConfig.access);
     }
 
     async buildProject() {
-        console.log(`Performing initial compilation...`);
         await this.runner.run('npm', 'run', 'build');
     }
 
     buildConfig : BuildConfig = {
         projectType: 'service',
-        publishBackend: false,
-        packageAccess: 'private'
+        service: {
+            publishBackend: false
+        }
+    };
+
+    serviceGenerationSettings: ServiceGenerationSettings = {
+        engine: 'express',
+        moduleClassName: toUpperCamelCase(this.projectName),
+        serviceName: `com.example.${toUpperCamelCase(this.projectName)}`
+    };
+
+    packageJson: any = {
+        name: this.projectName,
+        private: true,
+        version: '0.0.0',
+        description: '',
+        main: './dist/interface',
+        publishConfig: { access: 'private' },
+        author: os.userInfo()?.username,
+        license: 'UNLICENSED',
+        scripts: {
+            build: "npm run clean && alt build",
+            rebuild: "alt build",
+            test: "npm run build && node dist/test",
+            start: "npm run build && node dist/main",
+            clean: "rimraf dist .tsbuildinfo",
+            prepublishOnly: "alt prepare",
+        }
     };
 
     async askQuestions() {
-        let isPublic = await askBoolean("Will this package be published to NPM publically?", false);
-        this.buildConfig.packageAccess = isPublic ? 'public' : 'private';
+        console.log();
 
-        let publishBackendPrompt = `Should the backend code be included when publishing this package to NPM?`;
+        let packageAnswers = await inquirer.prompt<typeof this.packageJson>([
+            {
+                message: `package.json » Package name`,
+                type: 'input',
+                default: this.packageJson.name,
+                name: 'name'
+            },
+            {
+                message: `package.json » Initial version`,
+                type: 'input',
+                default: this.packageJson.version,
+                name: 'version'
+            },
+            {
+                message: `package.json » Description`,
+                type: 'input',
+                default: this.packageJson.description,
+                name: 'description'
+            },
+            {
+                message: `package.json » Author`,
+                type: 'input',
+                default: this.packageJson.author,
+                name: 'author'
+            },
+            {
+                message: `package.json » License`,
+                type: 'list',
+                default: this.packageJson.license,
+                name: 'license',
+                choices: [
+                    new inquirer.Separator('--------- Common Options ---------'),
 
-        if (isPublic) {
-            publishBackendPrompt += `\n** Your package is public, so if you intend to only publish an API client, say no`;
-        } else {
-            publishBackendPrompt += `\n** Your package is private, so it is safe to include the backend`;
-        }
+                    { value: 'UNLICENSED', name: 'All Rights Reserved [UNLICENSED]' },
+                    { value: 'MIT', name: 'MIT License [MIT]' },
+                    { value: 'Apache-2.0', name: 'Apache 2.0 License [Apache-2.0]' },
+                    { value: 'GPL-2.0-or-later', name: 'GNU General Public License v2 or later [GPL-2.0-or-later]' },
+                    { value: 'GPL-3.0-or-later', name: 'GNU General Public License v3 or later [GPL-3.0-or-later]' },
+                    { value: 'AGPL-1.0', name: 'Affero General Public License 1.0 [AGPL-1.0]' },
 
-        this.buildConfig.publishBackend = await askBoolean(publishBackendPrompt, !isPublic);
+                    new inquirer.Separator('--------- All Options ---------'),
+
+                    ...SPDX.licenses.map(license => ({
+                        name: `[${license.licenseId}] ${license.name}`,
+                        value: license.licenseId
+                    }))
+                ]
+            }
+        ]);
+
+        console.log();
+
+        Object.assign(this.packageJson, packageAnswers);
+
+        let serviceConfigAnswers = await inquirer.prompt<ServiceBuildConfig>([
+            {
+                message: 'Which web server engine would you like to use?',
+                name: 'engine',
+                type: 'list',
+                choices: [
+                    { name: 'Express', value: 'express', checked: this.serviceGenerationSettings.engine === 'express' },
+                    { name: 'Fastify', value: 'fastify', checked: this.serviceGenerationSettings.engine === 'fastify' },
+                ]
+            },
+            {
+                message: `What class name should be used for the main @WebService() class?`,
+                type: 'input',
+                default: this.serviceGenerationSettings.moduleClassName,
+                name: 'moduleClassName'
+            },
+            {
+                message: `What Conduit service name should be used for the main @WebService() class?`,
+                type: 'input',
+                default: this.serviceGenerationSettings.serviceName,
+                name: 'moduleClassName'
+            }
+        ]);
+
+        Object.assign(this.serviceGenerationSettings, serviceConfigAnswers);
     }
 
     async generate() {
@@ -229,22 +307,27 @@ export class ServiceGenerator extends Generator {
         
         await this.askQuestions();
 
+        console.log();
+
+        let spinner = ora();
+        spinner.start('Generating project...');
         await this.createDirectory();
         await changeWorkingDirectory(projectDir);
         await this.writePackageJson();
-        await this.installDependencies();
-        await this.makeSkeleton();
-        await this.writeGitIgnore();
-        await this.writeMainTS();
-        await this.writeProjectModuleTS();
-        await this.writeIndexTS();
-        await this.writeNPMIgnore();
-        await this.buildProject();
-        await this.writeBuildConfig();
         await this.configurePackage();
-        
-        console.log(`================`);
-        console.log(`all done!`);
+        await this.writeBuildConfig();
+        await this.writeIgnores();
+        await this.writeCode();
+        spinner.succeed('Generated project.');
+
+        spinner.start('Installing dependencies...');
+        await this.installDependencies();
+        spinner.succeed('Dependencies installed.');
+
+        spinner.start('Building project...');
+        await this.buildProject();
+        spinner.succeed('Project built.');
+        spinner.succeed('Done.');
         console.log();
     }
 }

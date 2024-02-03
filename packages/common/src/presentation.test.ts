@@ -7,20 +7,20 @@ suite(describe => {
         it('exposes properties via Subclass.properties', () => {
 
             interface Movie {
-                title : string;
-                description : string;
-                rating : number;
+                title: string;
+                description: string;
+                rating: number;
             }
             
-            function Nothing() {
-                return (target, ...args) => target;
+            function Nothing<T>() {
+                return (target: T, ...args: any[]) => target;
             }
 
             @Nothing()
             class ApiMovie extends Presentation<Movie> {
-                @Expose() description : string;
-                @Expose() title : string;
-                @Expose() rating : number;
+                @Expose() description?: string;
+                @Expose() title?: string;
+                @Expose() rating?: number;
             }
 
             let props = ApiMovie.properties;
@@ -33,33 +33,33 @@ suite(describe => {
             expect(titleProp).to.exist
             expect(ratingProp).to.exist
             
-            expect(descProp.designType).to.equal(String);
-            expect(titleProp.designType).to.equal(String);
-            expect(ratingProp.designType).to.equal(Number);
+            expect(descProp?.designType).to.equal(String);
+            expect(titleProp?.designType).to.equal(String);
+            expect(ratingProp?.designType).to.equal(Number);
         });
 
         it('correctly handles subclassing', () => {
             interface Movie {
-                title : string;
-                description : string;
+                title: string;
+                description: string;
             }
             
             class ApiAbridgedMovie extends Presentation<Movie> {
-                @Expose() title : string;
+                @Expose() title?: string;
             }
             
             class ApiMovie extends ApiAbridgedMovie {
-                @Expose() description : string;
+                @Expose() description?: string;
             }
 
             let abridgedPresenter = new ApiAbridgedMovie({ title: 'Title', description: 'Description' });
-            let abridgedRepr : any = abridgedPresenter.toJSON();
+            let abridgedRepr: any = abridgedPresenter.toJSON();
 
             expect(abridgedRepr.title).to.equal('Title');
             expect(abridgedRepr.description).to.be.undefined;
 
             let presenter = new ApiMovie({ title: 'Title', description: 'Description' });
-            let repr : any = presenter.toJSON();
+            let repr: any = presenter.toJSON();
 
             expect(repr.title).to.equal('Title');
             expect(repr.description).to.equal('Description');

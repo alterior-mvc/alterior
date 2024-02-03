@@ -11,7 +11,7 @@ export class OptionalAnnotation extends Annotation {
 
 @MetadataName('@alterior/di:Inject')
 export class InjectAnnotation extends Annotation {
-    constructor(token?) {
+    constructor(token?: any) {
         super({ token });
     }
 

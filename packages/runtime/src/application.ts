@@ -1,17 +1,9 @@
 import 'reflect-metadata';
 
-import { Environment, Time } from '@alterior/common';
-import {
-	inject,
-	Injectable,
-	ModuleAnnotation,
-	Provider,
-	ReflectiveInjector
-} from '@alterior/di';
-import { ApplicationOptions, AppOptionsAnnotation } from './app-options';
+import { Injectable, InjectionToken, ModuleAnnotation, inject } from '@alterior/di';
+import { AppOptionsAnnotation, ApplicationOptions } from './app-options';
 import { ApplicationArgs } from './args';
-import { Runtime } from './modules';
-import { RolesService } from './roles.service';
+import { Runtime } from './runtime';
 
 export class ApplicationOptionsRef {
 	constructor(
@@ -33,7 +25,7 @@ export class ExecutionContext {
 	 * Retrieve the Alterior application which is currently being executed.
 	 * If an application has not been bootstrapped yet, the value is null.
 	 */
-	public application: Application = null;
+	public application: Application | null = null;
 
 	static readonly ZONE_LOCAL_NAME  = '@alterior/runtime:ExecutionContext';
 
@@ -92,7 +84,10 @@ export class Application {
 		return this.runtime.injector;
 	}
 
-	inject<T>(ctor: { new(...args): T }, notFoundValue?: T): T {
+	inject<T>(ctor: { new(...args: any[]): T }, notFoundValue?: T): T;
+	inject<T>(ctor: InjectionToken<T>, notFoundValue?: T): T;
+	inject<T>(ctor: unknown, notFoundValue?: unknown): unknown;
+	inject<T>(ctor: any, notFoundValue?: any): any {
 		return this.injector.get(ctor, notFoundValue);
 	}
 
@@ -102,26 +97,6 @@ export class Application {
 
 	get options(): ApplicationOptions {
 		return this._optionsRef.options;
-	}
-
-	private static loadOptions(entryModule: Function, bootstrapOptions: ApplicationOptions): ApplicationOptions {
-		// Read an @AppOptions() decorator if any, and merge providers from it 
-		// into the bootstrapped providers
-
-		let appOptionsAnnotation = AppOptionsAnnotation.getForClass(entryModule);
-		let appProvidedOptions: ApplicationOptions = appOptionsAnnotation ? appOptionsAnnotation.options: {} || {};
-		
-		return Object.assign(
-			<ApplicationOptions>{
-				version: '0.0.0',
-				verbose: false,
-				silent: false,
-				autostart: true,
-				providers: []
-			}, 
-			appProvidedOptions, 
-			bootstrapOptions
-		);
 	}
 
 	private static validateEntryModule(module: Function) {
@@ -141,50 +116,23 @@ export class Application {
 	/**
 	 * Bootstrap an Alterior application.
 	 */
-	public static bootstrap(entryModule: Function, options?: ApplicationOptions): Application {
+	public static bootstrap(entryModule: Function, options: ApplicationOptions = {}): Application {
 		let executionContext = new ExecutionContext();
 		return executionContext.runSync(() => {
 			this.validateEntryModule(entryModule);
 
-			options = this.loadOptions(entryModule, options);
+			options = {
+				version: '0.0.0',
+				verbose: false,
+				silent: false,
+				autostart: true,
+				providers: [],
+				...AppOptionsAnnotation.getForClass(entryModule)?.options ?? {},
+				...options
+			};
 	
-			let runtime = new Runtime(entryModule);
-
-			let providers: Provider[] = [
-				ApplicationArgs,
-				RolesService,
-				Environment,
-				Time
-			];
+			let runtime = new Runtime(entryModule, options);
 	
-			runtime.contributeProviders(providers);
-			providers.push(
-				{
-					provide: ApplicationOptionsRef,
-					useValue: new ApplicationOptionsRef(options)
-				}
-			);
-			providers.push(Application);
-			providers.push(options.providers ?? []);
-
-			runtime.providers = providers;
-	
-			let injector: ReflectiveInjector;
-			try {
-				injector = ReflectiveInjector.resolveAndCreate(providers);
-			} catch (e) {
-				console.error(`Failed to resolve injector:`);
-				console.error(e);
-				console.error(`Providers:`);
-				console.dir(providers);
-				console.error(`Modules:`);
-				console.dir(runtime.definitions);
-				throw e;
-			}
-
-			(<RolesService>injector.get(RolesService)).silent = options.silent;
-			
-			runtime.load(injector);
 			executionContext.application = runtime.getService(Application);
 			
 			runtime.fireEvent('OnInit');

@@ -9,7 +9,7 @@ import { CommandInfo } from "./command-info";
  * well as nested (ie subcommand) command lines.
  */
 export class CommandLineProcessor {
-    constructor(readonly parent? : CommandLineProcessor) {
+    constructor(readonly parent?: CommandLineProcessor) {
         this.option({
             id: 'help',
             short: 'h',
@@ -25,15 +25,15 @@ export class CommandLineProcessor {
         this.exit(0);
     }
 
-    exit(code : number) {
+    exit(code: number) {
         process.exit(0);
     }
 
-    get argumentUsage() {
+    get argumentUsage(): string | undefined {
         return '';
     }
 
-    get optionUsage() {
+    get optionUsage(): string {
         let usage = [];
 
         if (this.parent)
@@ -56,7 +56,7 @@ export class CommandLineProcessor {
         return usage.join(' ');
     }
 
-    get commandName() : string {
+    get commandName(): string | null {
         return null;
     }
 
@@ -93,7 +93,7 @@ export class CommandLineProcessor {
         this.showUsage();
         this.term.table(
             this.definedOptions.map(option => [
-                `--${option.id}${option.short ? `, -${option.short}` : ``} ${option.valueHint? `<${option.valueHint}>` : ``}`,
+                `--${option.id}${option.short ? `, -${option.short}`: ``} ${option.valueHint? `<${option.valueHint}>`: ``}`,
                 `${option.description}`
             ])
         );
@@ -107,10 +107,10 @@ export class CommandLineProcessor {
         this.term.writeLine();
     }
 
-    private _arguments : string[] = [];
-    private _options : CommandLineOption[] = [];
+    private _arguments: string[] = [];
+    private _options: CommandLineOption[] = [];
     private _processed = false;
-    private _commands : Command[] = [];
+    private _commands: Command[] = [];
 
     private prepareOnDemand() {
         if (!this._processed)
@@ -145,21 +145,21 @@ export class CommandLineProcessor {
      * Get an option by its ID
      * @param id ID of the option to return
      */
-    option(id : string) : CommandLineOption
+    option(id: string): CommandLineOption
 
     /**
      * Define an option.
      * @param option The option to define
      */
-    option(option : CommandLineOption) : CommandLine
-    option(...args : any[]) : any {
+    option(option: CommandLineOption): CommandLine
+    option(...args: any[]): any {
         if (args.length === 1 && typeof args[0] === 'string') {
             this.prepareOnDemand();
             return this._options.find(x => x.id === args[0]) || this.parent?.option(args[0]);
         } else if (args.length === 1) {
             let option = <CommandLineOption>args[0];
             option.values = [];
-            option.value = null;
+            option.value = undefined;
 
             this._options = this._options.filter(x => x.id !== option.id);
 
@@ -174,7 +174,7 @@ export class CommandLineProcessor {
      * @param id The ID for the subcommand
      * @param definer A function that defines the available command line options and commands for the subcommand.
      */
-    command(id : string, definer : (line : Command) => void) {
+    command(id: string, definer: (line: Command) => void) {
         let command = new Command(id, this);
         definer(command);
         this._commands.push(command);
@@ -186,7 +186,7 @@ export class CommandLineProcessor {
      * Get the first value of an option
      * @param id 
      */
-    one(id : string) : string {
+    one(id: string): string | undefined {
         this.prepareOnDemand();
         return this.option(id).value;
     }
@@ -195,7 +195,7 @@ export class CommandLineProcessor {
      * Get all values defined by multiple usages of a single option
      * @param id 
      */
-    multiple(id : string) : string[] {
+    multiple(id: string): string[] | undefined {
         this.prepareOnDemand();
         return this.option(id).values;
     }
@@ -204,11 +204,11 @@ export class CommandLineProcessor {
      * Get a boolean value for a specific option (ie a "flag")
      * @param id 
      */
-    flag(id : string) : boolean {
+    flag(id: string): boolean {
         this.prepareOnDemand();
         let value = this.option(id).value;
 
-        if (['false', '0'].includes(value))
+        if (['false', '0'].includes(value!))
             return false;
 
         return !!value;
@@ -217,11 +217,11 @@ export class CommandLineProcessor {
     /**
      * Get the description of this command line processor.
      */
-    get description() {
+    get description(): string | undefined {
         return '';
     }
 
-    private _runners : ((args : string[]) => void)[] = [];
+    private _runners: ((args: string[]) => void)[] = [];
 
     /**
      * Define a function that should be run when this instance processes a command line.
@@ -230,7 +230,7 @@ export class CommandLineProcessor {
      * 
      * @param handler The function to call.
      */
-    run(handler : (args : string[]) => void) {
+    run(handler: (args: string[]) => void) {
         this._runners.push(handler);
         return this;
     }
@@ -239,7 +239,7 @@ export class CommandLineProcessor {
      * Process the given command line arguments and run any attached runners (see run()).
      * @param args 
      */
-    process(args? : string[]) {
+    process(args?: string[]) {
         if (!args)
             args = process.argv.slice(2);
         
@@ -247,7 +247,7 @@ export class CommandLineProcessor {
         this._arguments = [];
         this._options.forEach(x => {
             x.values = [];
-            x.value = null;
+            x.value = undefined;
             x.present = false;
         });
 
@@ -255,7 +255,7 @@ export class CommandLineProcessor {
 
         for (let i = 0, max = args.length; i < max; ++i) {
             let arg = args[i];
-            let option : CommandLineOption;
+            let option: CommandLineOption | undefined;
 
             if (arg.startsWith('--')) {
                 option = this.option(arg.slice(2));
@@ -286,7 +286,7 @@ export class CommandLineProcessor {
                 }
 
                 option.value = value;
-                option.values.push(value);
+                option.values!.push(value);
                 
                 if (option.handler)
                     option.handler();
@@ -319,7 +319,7 @@ export class CommandLineProcessor {
  * Represents a Command defined via the command() method.
  */
 export class Command extends CommandLineProcessor {
-    constructor(readonly id : string, readonly parent : CommandLineProcessor) {
+    constructor(readonly id: string, readonly parent: CommandLineProcessor) {
         super(parent);
     }
 
@@ -331,8 +331,8 @@ export class Command extends CommandLineProcessor {
         return this._info.argumentUsage;
     }
 
-    private _info : CommandInfo = {};
-    info(info : CommandInfo) {
+    private _info: CommandInfo = {};
+    info(info: CommandInfo) {
         this._info = info;
         return this;
     }

@@ -122,7 +122,7 @@ export abstract class ReflectiveInjector implements Injector {
    * because it needs to resolve the passed-in providers first.
    * See {@link Injector#resolve} and {@link Injector#fromResolvedProviders}.
    */
-  static resolveAndCreate(providers: Provider[], parent?: Injector): ReflectiveInjector {
+  static resolveAndCreate(providers: Provider[], parent: Injector | null = null): ReflectiveInjector {
     const ResolvedReflectiveProviders = ReflectiveInjector.resolve(providers);
     return ReflectiveInjector.fromResolvedProviders(ResolvedReflectiveProviders, parent);
   }
@@ -139,7 +139,7 @@ export abstract class ReflectiveInjector implements Injector {
       };
     }
 
-    if (!provider['useClass'])
+    if (!('useClass' in provider))
       return provider;
   
     let classProvider : ClassProvider = <any>provider;
@@ -211,7 +211,7 @@ export abstract class ReflectiveInjector implements Injector {
    * ```
    * @experimental
    */
-  static fromResolvedProviders(providers: ResolvedReflectiveProvider[], parent?: Injector): ReflectiveInjector {
+  static fromResolvedProviders(providers: ResolvedReflectiveProvider[], parent: Injector | null = null): ReflectiveInjector {
     // tslint:disable-next-line:no-use-before-declare
     return new ReflectiveInjector_(providers, parent);
   }
@@ -357,9 +357,9 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   /**
    * Private
    */
-  constructor(_providers: ResolvedReflectiveProvider[], _parent?: Injector) {
+  constructor(_providers: ResolvedReflectiveProvider[], _parent: Injector | null = null) {
     this._providers = _providers;
-    this._parent = _parent || null;
+    this._parent = _parent;
 
     const len = _providers.length;
 
@@ -438,7 +438,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     let deps: any[];
     try {
       deps = ResolvedReflectiveFactory.dependencies.map(dep => this._getByReflectiveDependency(dep));
-    } catch (e) {
+    } catch (e: any) {
       if (e.addKey) {
         e.addKey(this, provider.key);
       }
@@ -450,7 +450,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
       Injector._runInInjectionContext(this, () => {
         obj = factory(...deps);
       });
-    } catch (e) {
+    } catch (e: any) {
       throw instantiationError(this, e, e.stack, provider.key);
     }
 

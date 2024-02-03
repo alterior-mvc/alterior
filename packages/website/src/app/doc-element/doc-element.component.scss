@@ -1,0 +1,15 @@
+.readme {
+    ::ng-deep {
+        h1 {
+            display: none;
+        }
+
+        h2 {
+            margin: 3em 0 0.5em 0;
+        }
+    }
+}
+
+hr {
+    margin: 5em 0;
+}

@@ -1,11 +1,9 @@
 import { Process } from "./process";
 
 export class CommandRunner {
-    constructor() {
+    constructor(public silent = false) {
 
     }
-
-    silent = false;
 
     private formatArg(arg : string) {
         if (arg.includes(' '))

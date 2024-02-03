@@ -18,7 +18,7 @@ export function timeout(time : number = 0) : Promise<void> {
  * @param time 
  */
 export function interval(time : number) : Observable<void> {
-	let interval;
+	let interval: any;
 	return lazySubject({
 		start: subject => interval = setInterval(() => subject.next()),
 		stop: () => clearInterval(interval)

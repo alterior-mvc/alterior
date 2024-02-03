@@ -115,26 +115,28 @@ export class ReflectionCapabilities implements PlatformReflectionCapabilities {
 
     return Annotations.getMapForClassProperties(typeOrFunc.prototype);
 
-    const parentCtor = getParentCtor(typeOrFunc);
-    const propMetadata: { [key: string]: any[] } = {};
-    if (parentCtor !== Object) {
-      const parentPropMetadata = this.propMetadata(parentCtor);
-      Object.keys(parentPropMetadata).forEach(propName => {
-        propMetadata[propName] = parentPropMetadata[propName];
-      });
-    }
-    const ownPropMetadata = this._ownPropMetadata(typeOrFunc, parentCtor);
-    if (ownPropMetadata) {
-      Object.keys(ownPropMetadata).forEach(propName => {
-        const decorators: any[] = [];
-        if (propMetadata.hasOwnProperty(propName)) {
-          decorators.push(...propMetadata[propName]);
-        }
-        decorators.push(...ownPropMetadata[propName]);
-        propMetadata[propName] = decorators;
-      });
-    }
-    return propMetadata;
+    // TODO: review removal
+    
+    // const parentCtor = getParentCtor(typeOrFunc);
+    // const propMetadata: { [key: string]: any[] } = {};
+    // if (parentCtor !== Object) {
+    //   const parentPropMetadata = this.propMetadata(parentCtor);
+    //   Object.keys(parentPropMetadata).forEach(propName => {
+    //     propMetadata[propName] = parentPropMetadata[propName];
+    //   });
+    // }
+    // const ownPropMetadata = this._ownPropMetadata(typeOrFunc, parentCtor);
+    // if (ownPropMetadata) {
+    //   Object.keys(ownPropMetadata).forEach(propName => {
+    //     const decorators: any[] = [];
+    //     if (propMetadata.hasOwnProperty(propName)) {
+    //       decorators.push(...propMetadata[propName]);
+    //     }
+    //     decorators.push(...ownPropMetadata[propName]);
+    //     propMetadata[propName] = decorators;
+    //   });
+    // }
+    // return propMetadata;
   }
 
   hasLifecycleHook(type: any, lcProperty: string): boolean {

@@ -32,7 +32,7 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublishOnly": "npm test",
     "test": "npm run build && node dist/test",
-    "docs": "typedoc ."
+    "docs": "typedoc src"
   },
   "dependencies": {
     "dotenv": "^16.3.1",

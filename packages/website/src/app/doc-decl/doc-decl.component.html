@@ -1,0 +1,11 @@
+@if (syntax.length > 0) {
+    <alt-doc-syntax class="syntax-block" [syntax]="syntax"></alt-doc-syntax>
+} 
+
+<div [innerHTML]="comment | markdownToHtml | trustHtml"></div>
+
+<hr/>
+
+@if (children.length > 0) {
+    <alt-doc-decl [decl]="child" *ngFor="let child of children"></alt-doc-decl>
+}

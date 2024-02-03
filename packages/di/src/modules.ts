@@ -10,7 +10,7 @@ export interface ConfiguredModule extends ModuleOptions {
     ngModule? : ModuleLike;
 }
 
-export function configureModule(module, providers : Provider[]): ConfiguredModule {
+export function configureModule(module: Function, providers : Provider[]): ConfiguredModule {
     return {
         $module: module,
         ngModule: module,
@@ -36,17 +36,17 @@ export class ModuleAnnotation extends Annotation implements ModuleOptions {
      * Task classes which are part of this module
      * @deprecated
      */
-    tasks : any[];
+    tasks : any[] = [];
 
     /**
      * Modules imported by this module
      */
-    imports: ModuleLike[];
+    imports: ModuleLike[] = [];
 
     /**
      * Dependency injection providers
      */
-    providers: Provider[];
+    providers: Provider[] = [];
 }
 
 /**

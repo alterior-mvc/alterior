@@ -1,0 +1,62 @@
+@if (docs) {
+    <h1>
+        @if (parent) {
+            <a [routerLink]="parentUrl">
+                {{parent.name}}
+            </a>
+            &raquo;
+        }
+
+        @if (element.kind === Kind.Project) {
+            Package {{ element.name }}
+        } @else {
+            {{getKindName(element.kind)}} {{element.name}}
+        }
+    </h1>
+
+    <div class="viewer">
+        <div class="mobile-nav">
+            @for (group of element.groups; track group) {
+                <mat-menu #items>
+                    @for (item of getGroupChildren(element, group.children); track item.id) {
+                        <a mat-menu-item routerLink="{{ url }}/{{ item.name }}">
+                            {{ item.name }}
+                        </a>
+                    }
+                </mat-menu>
+
+                <button mat-button [matMenuTriggerFor]="items">
+                    {{ group.title }}
+                </button>
+            }
+        </div>
+
+        <aside *ngIf="element.children?.length > 0">
+            
+            @for (group of element.groups; track group) {
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>{{ group.title }}</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <ul>
+                        @for (item of getGroupChildren(element, group.children); track item.id) {
+                            <li>
+                                <a routerLink="{{ url }}/{{ item.name }}">
+                                    {{ item.name }}
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </mat-expansion-panel>
+            }
+        </aside>
+
+        <article>
+
+            <alt-doc-element [element]="element" [parentUrl]="url"></alt-doc-element>
+
+            <!-- <pre>{{ element | json }}</pre> -->
+        </article>
+    </div>
+
+}

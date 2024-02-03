@@ -5,6 +5,22 @@ export interface BuildConfig {
      */
     projectType : 'service' | 'library';
 
+    packageName?: string;
+    packageVersion?: string;
+    packageDescription?: string;
+    packageAuthor?: string;
+    packageLicense?: string;
+    packageHomepage?: string;
+    packageRepositoryUrl?: string;
+    packageBugsUrl?: string;
+    packageKeywords?: string[];
+    
+    service?: ServiceBuildConfig;
+}
+
+
+export interface ServiceBuildConfig {
+    
     /**
      * When publishing your project to NPM, should the backend code be included?
      * If false, only the frontend code (the client portion) will be published to NPM.
@@ -12,10 +28,4 @@ export interface BuildConfig {
      * to be run from the package itself.
      */
     publishBackend : boolean;
-
-    /**
-     * When publishing your project to NPM, should the package be published publically or privately?
-     * Note that publishing private packages requires an NPM subscription.
-     */
-    packageAccess : 'public' | 'private';
 }

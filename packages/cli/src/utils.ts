@@ -1,4 +1,4 @@
-import rimraf from "rimraf";
+import { rimraf } from "rimraf";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
@@ -6,6 +6,7 @@ import * as process from "process";
 import mkdirp from "mkdirp";
 import * as readline from 'readline';
 import { resolve } from "path";
+import inquirer from "inquirer";
 
 export function unindent(str : string) {
     let lastNewline = str.lastIndexOf("\n");
@@ -66,6 +67,14 @@ export function capitalize(name : string) {
     return name[0].toUpperCase() + name.slice(1);
 }
 
+export function toCamelCase(name : string) {
+    return name.replace(/-(.)/g, (_, c) => c.toUpperCase());
+}
+
+export function toUpperCamelCase(name: string) {
+    return capitalize(toCamelCase(name));
+}
+
 export function removeAll(path : string) : Promise<boolean> {
     return rimraf(path);
 }
@@ -91,7 +100,7 @@ export function lineRangeTagEnd(name : string) {
 }
 
 export function replaceTaggedLineRange(content : string[], tagName : string, lines : string[]) {
-    let startIndex = content.findIndex(line => line.includes(this.lineRangeTagStart(tagName)));
+    let startIndex = content.findIndex(line => line.includes(lineRangeTagStart(tagName)));
     content = removeTaggedLineRange(content, tagName);
 
     if (startIndex) {
@@ -127,7 +136,7 @@ export function removeTaggedLineRange(content : string[], tag : string) {
 }
 
 export async function writeFileLines(filename : string, lines : string[]): Promise<void> {
-    this.writeTextFile(filename, lines.join(os.EOL));
+    writeTextFile(filename, lines.join(os.EOL));
 }
 
 export async function readJsonFile<T = any>(filename : string) : Promise<T> {
@@ -162,6 +171,7 @@ export async function writeJsonFile<T = any>(filename : string, content : T) {
 }
 
 export async function writeTextFile(filename : string, content : string) {
+    await makeDirectory(path.dirname(filename));
     await new Promise<void>((resolve, reject) => {
         fs.writeFile(filename, content, err => err ? reject(err) : resolve());
     });

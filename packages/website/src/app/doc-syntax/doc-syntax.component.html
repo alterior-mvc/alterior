@@ -1,0 +1,11 @@
+<ng-container *ngFor="let element of syntax"
+    ><span *ngIf="!element.link" 
+        [class.keyword]="element.keyword"
+        [class.intrinsic]="element.intrinsic"
+    >{{ element.text }}</span
+    ><a routerLink="{{element.link}}" *ngIf="element.link && !element.externalLink"
+    >{{ element.text }}</a
+    ><a href="{{element.link}}" target="_blank" *ngIf="element.link && element.externalLink"
+    >{{ element.text }}</a
+    ></ng-container
+    >

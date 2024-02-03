@@ -68,7 +68,7 @@ export class PresentationSchema<T> {
         this.properties = exposures;
     }
 
-    properties : PresentedProperty[];
+    properties : PresentedProperty[] = [];
 }
 
 /**
@@ -106,7 +106,7 @@ export class Presentation<T> {
         if (!this.instance)
             return null;
         
-        let properties = {};
+        let properties: Record<string, unknown> = {};
         let exposures : PresentedProperty[] = (this.constructor as any).properties;
 
         for (let exposure of exposures) {
@@ -117,16 +117,16 @@ export class Presentation<T> {
 
             let propertyType = Reflect.getMetadata('design:type', this.constructor.prototype, key);
             let propertyDescriptor = Object.getOwnPropertyDescriptor(prototype, key);
-            let value = this[key];
+            let value = (this as any)[key];
 
             if (options.useProperty) {
-                value = this.instance[options.useProperty];
+                value = (this.instance as any)[options.useProperty];
             } else if (!propertyDescriptor || !propertyDescriptor.get) {
                 // Data property, fill from original object.
-                value = this.instance[key];
+                value = (this.instance as any)[key];
             }
 
-            let entityType : Constructor<Presentation<any>>;
+            let entityType : Constructor<Presentation<any>> | undefined = undefined;
 
             if (options.class) {
                 entityType = options.class;
@@ -164,7 +164,7 @@ export function Expose(options : PresentedPropertyOptions = {}) {
             });
         }
 
-        let exposures : PresentedProperty[] = target[EXPOSE_PROTOTYPE_STORAGE_KEY];
+        let exposures : PresentedProperty[] = (target as any)[EXPOSE_PROTOTYPE_STORAGE_KEY] ?? [];
 
 		exposures.push(<PresentedProperty>{
 			propertyKey: propertyKey,

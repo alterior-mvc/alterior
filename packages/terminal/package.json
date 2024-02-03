@@ -25,6 +25,7 @@
   "scripts": {
     "build": "tsc -b .",
     "test": "npm run build && node dist/test",
+    "docs": "typedoc src",
     "prepublishOnly": "npm test"
   }
 }

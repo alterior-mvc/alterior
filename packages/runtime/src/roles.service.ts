@@ -1,5 +1,6 @@
-import { Injectable } from "@alterior/di";
+import { Injectable, inject } from "@alterior/di";
 import { timeout, InvalidOperationError, ArgumentError } from "@alterior/common";
+import { ApplicationOptionsRef } from "./application";
 
 const SUPPORTED_ROLE_MODES =       [ 'default', 'default-except', 'all-except', 'only' ];
 export type RoleConfigurationMode = 'default' | 'default-except' | 'all-except' | 'only'  ;
@@ -66,11 +67,11 @@ export interface RoleState extends RoleRegistration {
  */
 @Injectable()
 export class RolesService {
-    constructor() {
+    private appOptionsRef = inject(ApplicationOptionsRef);
+    
+    silent = this.appOptionsRef.options.silent ?? false;
 
-    }
-
-    _activeRoles : any[] = null;
+    _activeRoles : any[] = [];
     _configuration : RoleConfiguration = { mode: 'default', roles: [] };
     _roles : RoleState[] = [];
 
@@ -140,7 +141,7 @@ export class RolesService {
         this._configuration = config;
     }
 
-    getForModule(roleModuleClass) {
+    getForModule(roleModuleClass: Function) {
         let roles = this._roles.filter(x => x.class === roleModuleClass);
 
         if (roles.length === 0)
@@ -166,8 +167,6 @@ export class RolesService {
         await timeout(1);
         await this.startAll();
     }
-
-    silent = false;
 
     async startAll() {
         await Promise.all(

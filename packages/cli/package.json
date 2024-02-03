@@ -35,14 +35,17 @@
     "@alterior/command-line": "^3.2.0",
     "@alterior/common": "^3.6.4",
     "@alterior/runtime": "^3.6.5",
+    "inquirer": "^8.2.6",
     "mkdirp": "^1.0.4",
+    "ora": "^5.4.1",
+    "rimraf": "^5.0.5",
     "source-map-support": "^0.5.19",
     "tslib": "^2.3.1",
     "typescript": "^5.1.6",
-    "typescript-rtti": "^0.9.6",
-    "rimraf": "^5.0.5"
+    "typescript-rtti": "^0.9.6"
   },
   "devDependencies": {
+    "@types/inquirer": "^8.2.10",
     "@types/mkdirp": "^1.0.1"
   },
   "gitHead": "5c18a5ddde7719d8f439fcf22804280fb56cf255"

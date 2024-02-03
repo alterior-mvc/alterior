@@ -34,7 +34,7 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublishOnly": "npm test",
     "test": "npm run build && node dist/test.js",
-    "docs": "typedoc ."
+    "docs": "typedoc src"
   },
   "dependencies": {
     "@alterior/common": "^3.6.4",

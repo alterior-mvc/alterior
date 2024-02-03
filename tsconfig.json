@@ -1,7 +1,8 @@
 {
 	"compilerOptions": {
 		"experimentalDecorators": true,
-		"target": "es2016",
+		"target": "ES2016",
+		"strict": true,
 		"sourceMap": true,
 		"declarationMap": true,
 		"outDir": "./dist",
@@ -22,5 +23,16 @@
 	"exclude": [
 		"node_modules",
 		"dist"
-	]
+	],
+	"typedocOptions": {
+		"excludeExternals": true,
+		"excludePrivate": true,
+		"customCss": "../../docs/theme.css",
+		"externalPattern": "**/node_modules/**",
+		"exclude": "**/node_modules/**,**/dist*/**,**/example/**,**/*.test.ts",
+		"categoryOrder": [
+		  "Entrypoint",
+		  "*"
+		]
+	}
 }

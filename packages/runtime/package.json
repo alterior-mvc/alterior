@@ -34,12 +34,13 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublishOnly": "npm test",
     "test": "npm run build && node dist/test.js",
-    "docs": "typedoc ."
+    "docs": "typedoc src"
   },
   "dependencies": {
     "@alterior/annotations": "^3.6.4",
     "@alterior/common": "^3.6.4",
     "@alterior/di": "^3.6.4",
+    "@alterior/functions": "^3.6.4",
     "tslib": "^2.3.1"
   },
   "peerDependencies": {

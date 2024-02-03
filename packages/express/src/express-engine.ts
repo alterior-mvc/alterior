@@ -3,6 +3,7 @@ import { WebEvent } from "@alterior/web-server";
 import { WebServerEngine } from "@alterior/web-server";
 
 import express from "express";
+import * as http from 'http';
 
 @Injectable()
 export class ExpressEngine extends WebServerEngine {
@@ -13,13 +14,13 @@ export class ExpressEngine extends WebServerEngine {
 		this.app.use(path, middleware);
 	}
 
-	addRoute(method: string, path: string, handler: (event: WebEvent) => void, middleware?) {
+	addRoute(method: string, path: string, handler: (event: WebEvent) => void, middleware?: any[]) {
 		if (!middleware)
 			middleware = [];
 			
-		this.app[this.getRegistrarName(method)](
+		(this.app as any)[this.getRegistrarName(method)](
 			path, ...middleware, 
-			(req, res) => handler(new WebEvent(req, res))
+			(req: http.IncomingMessage, res: http.ServerResponse) => handler(new WebEvent(req, res))
 		);
 	}
 

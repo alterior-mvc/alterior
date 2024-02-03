@@ -27,11 +27,14 @@ export function clone<T = any>(obj : T): T {
  * 
  * @param o 
  */
-export function deepClone(o) {
+export function deepClone<T>(o: T): T {
 	return deepCloneWithMemoization(o, new WeakMap());
 }
 
-function deepCloneWithMemoization(o, memo : WeakMap<any, any>) {
+function deepCloneWithMemoization<T>(o: null, memo : WeakMap<any, any>): null;
+function deepCloneWithMemoization<T>(o: T, memo : WeakMap<any, any>): T
+function deepCloneWithMemoization<T>(o: T[], memo : WeakMap<any, any>): T[];
+function deepCloneWithMemoization<T>(o: T | T[] | null, memo : WeakMap<any, any>): T | T[] | null {
 	if (o === null)
 		return null;
 	if (!Array.isArray(o) && typeof o !== 'object')
@@ -40,14 +43,19 @@ function deepCloneWithMemoization(o, memo : WeakMap<any, any>) {
 	if (memo.has(o))
 		return memo.get(o);
 	
+	if (Array.isArray(o)) {
+		memo.set(o, o.map(v => deepCloneWithMemoization(v, memo)));
+		return memo.get(o);
+	}
+
 	let output, v, key;
-	output = Array.isArray(o) ? [] : {};
+	output = {} as T;
 	
 	memo.set(o, output);
 
-	for (key in o) {
+	for (let key of Object.keys(o) as (keyof T)[]) {
 		v = o[key];
-		output[key] = (typeof v === 'object') ? deepCloneWithMemoization(v, memo) : v;
+		(output as any)[key] = (typeof v === 'object') ? deepCloneWithMemoization(v, memo) : v;
 	}
 
 	return output;
@@ -56,7 +64,7 @@ function deepCloneWithMemoization(o, memo : WeakMap<any, any>) {
  * Clone the value by serializing it to JSON and back.
  * @param obj 
  */
-export function cloneBySerialization(obj) {
+export function cloneBySerialization<T>(obj: T): T {
 	if (obj === undefined || obj === null || typeof obj !== 'object')
 		return obj;
 	

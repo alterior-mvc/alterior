@@ -398,7 +398,7 @@ suite(describe => {
             expect((TestSubject as any)[ANNOTATIONS_KEY].length > 0).to.exist;
     
             let installedAnnotations : IAnnotation[] = 
-                (TestSubject as any)[ANNOTATIONS_KEY]
+                ((TestSubject as any)[ANNOTATIONS_KEY] as any[])
                     .filter(x => x.$metadataName == META_NAME)
             ;
     
@@ -429,7 +429,7 @@ suite(describe => {
             expect((TestSubject as any)[PROPERTY_ANNOTATIONS_KEY]['helloWorld']).to.exist;
     
             let installedAnnotations : IAnnotation[] = 
-                (TestSubject as any)[PROPERTY_ANNOTATIONS_KEY]['helloWorld']
+                ((TestSubject as any)[PROPERTY_ANNOTATIONS_KEY]['helloWorld'] as any[])
                     .filter(x => x.$metadataName == META_NAME)
             ;
     
@@ -460,7 +460,7 @@ suite(describe => {
             expect((TestSubject as any)[PROPERTY_ANNOTATIONS_KEY]['helloWorld']).to.exist;
     
             let installedAnnotations : IAnnotation[] = 
-                (TestSubject as any)[PROPERTY_ANNOTATIONS_KEY]['helloWorld']
+                ((TestSubject as any)[PROPERTY_ANNOTATIONS_KEY]['helloWorld'] as any[])
                     .filter(x => x.$metadataName == META_NAME)
             ;
     
@@ -651,13 +651,13 @@ suite(describe => {
             expect(typeof decorator).to.equal('function');
             
             let annotationDecorator = decorator(LABEL);
-            let obj = {};
+            let obj = {} as any;
     
             annotationDecorator(obj);
     
             expect(obj[ANNOTATIONS_KEY]).to.exist;
-            expect(obj[ANNOTATIONS_KEY].filter(x => x.$metadataName === META_NAME).length === 1).to.exist;
-            expect(obj[ANNOTATIONS_KEY].find(x => x.$metadataName === META_NAME).text === LABEL).to.exist;
+            expect((obj[ANNOTATIONS_KEY] as any[]).filter(x => x.$metadataName === META_NAME).length === 1).to.exist;
+            expect((obj[ANNOTATIONS_KEY] as any[]).find(x => x.$metadataName === META_NAME).text === LABEL).to.exist;
         });
     
         it("should handle class decorators", () => {
@@ -667,9 +667,13 @@ suite(describe => {
             class TestSubject {
             }
             
-            expect(TestSubject[ANNOTATIONS_KEY]).to.exist;
-            expect(TestSubject[ANNOTATIONS_KEY].filter(x => x.$metadataName === META_NAME).length === 1).to.exist;
-            expect(TestSubject[ANNOTATIONS_KEY].find(x => x.$metadataName === META_NAME).text === LABEL).to.exist;
+            expect((TestSubject as any)[ANNOTATIONS_KEY]).to.exist;
+            expect(((TestSubject as any)[ANNOTATIONS_KEY] as any[])
+                .filter(x => x.$metadataName === META_NAME).length === 1).to.exist;
+
+            expect(((TestSubject as any)[ANNOTATIONS_KEY] as any[])
+                .find(x => x.$metadataName === META_NAME).text === LABEL).to.exist;
+
         });
         
         it("should handle method decorators", () => {
@@ -682,10 +686,14 @@ suite(describe => {
                 }
             }
             
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]).to.exist;
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]['helloWorld']).to.exist;
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]['helloWorld'].filter(x => x.$metadataName === META_NAME).length === 1).to.exist;
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]['helloWorld'].find(x => x.$metadataName === META_NAME).text === LABEL).to.exist;
+            expect((TestSubject.prototype as any)[PROPERTY_ANNOTATIONS_KEY]).to.exist;
+            expect((TestSubject.prototype as any)[PROPERTY_ANNOTATIONS_KEY]['helloWorld']).to.exist;
+            expect(((TestSubject.prototype as any)[PROPERTY_ANNOTATIONS_KEY]['helloWorld'] as any[])
+                .filter(x => x.$metadataName === META_NAME).length === 1).to.exist;
+
+            expect(((TestSubject.prototype as any)[PROPERTY_ANNOTATIONS_KEY]['helloWorld'] as any[])
+                .find(x => x.$metadataName === META_NAME).text === LABEL).to.exist;
+
         });
         
         it("should handle property decorators", () => {
@@ -696,10 +704,14 @@ suite(describe => {
                 stuff : number = 123;
             }
             
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]).to.exist;
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]['stuff']).to.exist;
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]['stuff'].filter(x => x.$metadataName === META_NAME).length === 1).to.exist;
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]['stuff'].find(x => x.$metadataName === META_NAME).text === LABEL).to.exist;
+            expect((TestSubject.prototype as any)[PROPERTY_ANNOTATIONS_KEY]).to.exist;
+            expect((TestSubject.prototype as any)[PROPERTY_ANNOTATIONS_KEY]['stuff']).to.exist;
+            expect(((TestSubject.prototype as any)[PROPERTY_ANNOTATIONS_KEY]['stuff'] as any[])
+                .filter(x => x.$metadataName === META_NAME).length === 1).to.exist;
+                
+            expect(((TestSubject.prototype as any)[PROPERTY_ANNOTATIONS_KEY]['stuff'] as any[])
+                .find(x => x.$metadataName === META_NAME).text === LABEL).to.exist;
+                
         });
         
         it("should handle method parameters decorators", () => {
@@ -711,14 +723,14 @@ suite(describe => {
                 }
             }
             
-            expect(TestSubject.prototype[METHOD_PARAMETER_ANNOTATIONS_KEY]).to.exist;
-            expect(TestSubject.prototype[METHOD_PARAMETER_ANNOTATIONS_KEY]['helloWorld']).to.exist;
+            expect((TestSubject.prototype as any)[METHOD_PARAMETER_ANNOTATIONS_KEY]).to.exist;
+            expect((TestSubject.prototype as any)[METHOD_PARAMETER_ANNOTATIONS_KEY]['helloWorld']).to.exist;
     
-            let parameters = TestSubject.prototype[METHOD_PARAMETER_ANNOTATIONS_KEY]['helloWorld'];
+            let parameters = (TestSubject.prototype as any)[METHOD_PARAMETER_ANNOTATIONS_KEY]['helloWorld'];
     
             expect(parameters.length).to.equal(1);
             
-            let paramAnnotations = parameters[0];
+            let paramAnnotations = parameters[0] as any[];
     
             expect(paramAnnotations.filter(x => x.$metadataName === META_NAME).length).to.equal(1);
             expect(paramAnnotations.find(x => x.$metadataName === META_NAME).text).to.equal(LABEL);
@@ -733,12 +745,12 @@ suite(describe => {
                 }
             }
             
-            expect(TestSubject[CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY]).to.exist;
-            let parameters = TestSubject[CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY];
+            expect((TestSubject as any)[CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY]).to.exist;
+            let parameters = (TestSubject as any)[CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY];
     
             expect(parameters.length).to.equal(1);
             
-            let paramAnnotations = parameters[0];
+            let paramAnnotations = parameters[0] as any[];
     
             expect(paramAnnotations.filter(x => x.$metadataName === META_NAME).length === 1).to.exist;
             expect(paramAnnotations.find(x => x.$metadataName === META_NAME).text === LABEL).to.exist;

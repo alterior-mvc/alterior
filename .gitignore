@@ -2,6 +2,8 @@ node_modules/
 npm-debug.log
 dist/
 dist.esm/
+packages/website/src/assets/docs/
+packages/website/src/assets/packages.json
 *~
 *.tgz
 
@@ -9,3 +11,4 @@ foobar*/
 example-app/
 lerna-debug.log
 *.tsbuildinfo
+cli-test/

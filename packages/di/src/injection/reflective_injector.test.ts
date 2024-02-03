@@ -147,7 +147,7 @@ suite(describe => {
         }
 
         @Inject()
-        foo : Dependency;
+        foo: Dependency | undefined = undefined;
       }
 
       const injector = createInjector([Sample]);
@@ -364,7 +364,7 @@ suite(describe => {
       try {
         injector.get(Car);
         throw 'Must throw';
-      } catch (e) {
+      } catch (e: any) {
         expect(e.message).to.contain(`Error during instantiation of Engine! (${stringify(Car)} -> Engine)`);
         expect(getOriginalError(e) instanceof Error).to.be.ok;
         expect(e.keys[0].token).to.equal(Engine);
@@ -374,7 +374,7 @@ suite(describe => {
     it('should instantiate an object after a failed attempt', () => {
       let isBroken = true;
 
-      const injector = createInjector([Car, { provide: Engine, useFactory: () => (isBroken ? new BrokenEngine() : new Engine()) }]);
+      const injector = createInjector([Car, { provide: Engine, useFactory: () => (isBroken ? new BrokenEngine(): new Engine()) }]);
 
       expect(() => injector.get(Car)).to.throw('Broken Engine: Error during instantiation of Engine! (Car -> Engine).');
 

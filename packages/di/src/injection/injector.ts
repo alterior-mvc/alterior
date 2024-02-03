@@ -22,9 +22,11 @@ class _NullInjector implements Injector {
     }
     return notFoundValue;
   }
+
+  parent = null;
 }
 
-let CURRENT_INJECTOR: Injector = null;
+let CURRENT_INJECTOR: Injector | null = null;
 
 export interface InjectorGetOptions {
   /**
@@ -61,7 +63,7 @@ export abstract class Injector {
    * Retrieve the parent injector, if one exists.
    * Not all injectors support this.
    */
-  readonly parent?: Injector;
+  readonly parent: Injector | null = null;
 
   /**
    * Retrieves an instance from the injector based on the provided token.
