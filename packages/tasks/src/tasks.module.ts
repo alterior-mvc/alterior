@@ -13,8 +13,8 @@ import { Logger, LoggingModule } from "@alterior/logging";
  */
 @Module({
     providers: [
-        TaskQueueClient, 
-        TaskWorkerRegistry, 
+        TaskQueueClient,
+        TaskWorkerRegistry,
         TaskRunner
     ],
     imports: [
@@ -23,12 +23,12 @@ import { Logger, LoggingModule } from "@alterior/logging";
 })
 export class TasksModule implements OnInit {
     constructor(
-        private app : Application,
-        private rolesService : RolesService,
-        private client : TaskQueueClient,
-        private workerRegistry : TaskWorkerRegistry,
-        private logger : Logger,
-        @Optional() private _options : TaskModuleOptionsRef
+        private app: Application,
+        private rolesService: RolesService,
+        private client: TaskQueueClient,
+        private workerRegistry: TaskWorkerRegistry,
+        private logger: Logger,
+        @Optional() private _options: TaskModuleOptionsRef
     ) {
 
     }
@@ -47,7 +47,7 @@ export class TasksModule implements OnInit {
      * be imported into an entry module (or feature module).
      * @param options The options to use for the web server
      */
-    public static configure(options : TaskModuleOptions) {
+    public static configure(options: TaskModuleOptions) {
         return {
             $module: TasksModule,
             providers: [
@@ -56,14 +56,14 @@ export class TasksModule implements OnInit {
         }
     }
 
-    worker : TaskWorker;
+    worker: TaskWorker | undefined;
 
     get options(): TaskModuleOptions {
         return this._options ? this._options.options : {} || {};
     }
 
     get tasks(): Function[] {
-        return [].concat(...this.app.runtime.definitions.map(x => x.metadata.tasks || []));
+        return [...(this.app.runtime.definitions.map(x => x.metadata?.tasks ?? []))].flat();
     }
 
     altOnInit() {
@@ -71,9 +71,9 @@ export class TasksModule implements OnInit {
         this.workerRegistry.registerClasses(this.tasks);
 
         this.worker = new TaskWorker(
-            this.app.runtime.injector, 
-            this.client, 
-            this.options, 
+            this.app.runtime.injector,
+            this.client,
+            this.options,
             this.app.options,
             this.logger
         );
@@ -87,11 +87,11 @@ export class TasksModule implements OnInit {
             name: 'Task Worker',
             summary: 'Pulls from the task queue and executes them using task classes registered in the module tree',
             async start() {
-                self.worker.start();
+                self.worker?.start();
             },
 
             async stop() {
-                self.worker.stop();
+                self.worker?.stop();
             }
         })
 

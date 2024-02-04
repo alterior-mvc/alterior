@@ -35,7 +35,7 @@ const STYLE_CODES = {
     bgWhite: [47, 49]
 };
 
-export type BoundStyler = (...contents: (StyledString | string | number)[]) => StyledString;
+export type BoundStyler = (...contents: (StyledString | string | number | undefined)[]) => StyledString;
 export type StyleShortcuts = {
     [P in keyof typeof STYLE_CODES as `$${P}`]: (...contents: (StyledString | string | number)[]) => StyledString;
 }
@@ -43,10 +43,10 @@ export type StyleShortcuts = {
 export type Styler = BoundStyler & StyleShortcuts;
 
 export type Style = keyof typeof STYLE_CODES;
-export const startStyle = (key: keyof typeof STYLE_CODES) => styleIndicator(key, 0);
-export const endStyle = (key: keyof typeof STYLE_CODES) => styleIndicator(key, 1);
+export const startStyle = (key: keyof typeof STYLE_CODES | undefined) => styleIndicator(key, 0);
+export const endStyle = (key: keyof typeof STYLE_CODES | undefined) => styleIndicator(key, 1);
 
-export function styleIndicator(key: keyof typeof STYLE_CODES, index: number) {
+export function styleIndicator(key: keyof typeof STYLE_CODES | undefined, index: number) {
     if (key === undefined)
         return '';
     if (!(key in STYLE_CODES))
@@ -79,7 +79,7 @@ let _style = (style: Style, ...contents: (string | number | StyledString)[]): Re
 }
 
 for (let key of <Style[]>Object.keys(STYLE_CODES))
-    _style[`$${key}`] = (...contents: (string | number | StyledString)[]) => new StyledString(key, contents);
+    (_style as any)[`$${key}`] = (...contents: (string | number | StyledString)[]) => new StyledString(key, contents);
 
 export const style = <Styler>_style;
 

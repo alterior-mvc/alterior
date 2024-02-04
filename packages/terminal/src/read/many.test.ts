@@ -13,7 +13,7 @@ if (process.argv[2] === 'child') {
       const writes = times.reduce((acc, k) => {
         acc[`num ${k}`] = k
         return acc
-      }, {})
+      }, <Record<string, string>>{})
       const { stdout, stderr } = await spawnRead(__filename, writes)
     
       expect(stdout).to.equal(Object.keys(writes).join(' ') + ' ');

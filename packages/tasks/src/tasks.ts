@@ -3,8 +3,8 @@ import { Injectable, InjectionToken, Optional, Injector, Provider, ReflectiveInj
 import BullQueue from "bull";
 
 export interface TaskModuleOptions {
-    queueName? : string;
-    queueOptions? : BullQueue.QueueOptions;
+    queueName?: string;
+    queueOptions?: BullQueue.QueueOptions;
 }
 
 
@@ -18,24 +18,24 @@ export interface TaskModuleOptions {
  */
 @Injectable()
 export class TaskModuleOptionsRef {
-    constructor(options : TaskModuleOptions) {
+    constructor(options: TaskModuleOptions) {
         this.options = options;
     }
 
-    public options : TaskModuleOptions;
+    public options: TaskModuleOptions;
 }
 
 export interface TaskJob {
-    id : string;
-    method : string;
-    args : any[];
+    id: string;
+    method: string;
+    args: any[];
 }
 
 export const QUEUE_OPTIONS = new InjectionToken<BullQueue.QueueOptions>('QueueOptions');
 
 @MetadataName('@alterior/tasks:Task')
 export class TaskAnnotation extends Annotation {
-    constructor(readonly id? : string) {
+    constructor(readonly id?: string) {
         super();
     }
 }
@@ -43,40 +43,40 @@ export class TaskAnnotation extends Annotation {
 export const Task = TaskAnnotation.decorator();
 
 export abstract class Worker {
-    abstract get name() : string;
-    get options() : JobOptions { return undefined; }
+    abstract get name(): string;
+    get options(): JobOptions | undefined { return undefined; }
 
-    protected get currentJob() : QueueJob<TaskJob> {
+    protected get currentJob(): QueueJob<TaskJob> {
         return Zone.current.get('workerStateJob');
     }
 }
 
 export type RemoteService<T> = {
-    [P in keyof T]: 
-        T[P] extends (...args: any[]) => any ? 
-            // methods
-            (ReturnType<T[P]> extends Promise<any> ?
-                T[P] // dont modify methods that are already promises
-                : (...args : Parameters<T[P]>) => Promise<ReturnType<T[P]>>
-            )
-            // fields
-            : never
+    [P in keyof T]:
+    T[P] extends (...args: any[]) => any ?
+    // methods
+    (ReturnType<T[P]> extends Promise<any> ?
+        T[P] // dont modify methods that are already promises
+        : (...args: Parameters<T[P]>) => Promise<ReturnType<T[P]>>
+    )
+    // fields
+    : never
     ;
 } & {
-    withOptions(options : JobOptions) : RemoteService<T>;
+    withOptions(options: JobOptions): RemoteService<T>;
 }
 
 export type RemoteWorker<T> = {
-    [P in keyof T]: 
-        T[P] extends (...args: any[]) => any ? 
-            // methods
-            (...args : Parameters<T[P]>) => Promise<QueueJob<TaskJob>>
-            
-            // fields
-            : never
+    [P in keyof T]:
+    T[P] extends (...args: any[]) => any ?
+    // methods
+    (...args: Parameters<T[P]>) => Promise<QueueJob<TaskJob>>
+
+    // fields
+    : never
     ;
 } & {
-    withOptions(options : JobOptions) : RemoteWorker<T>;
+    withOptions(options: JobOptions): RemoteWorker<T>;
 };
 
 export type QueueOptions = BullQueue.QueueOptions;
@@ -85,21 +85,21 @@ export type QueueJob<T> = BullQueue.Job<T>;
 export type Queue<T> = BullQueue.Queue<T>;
 
 export interface Constructor<T> {
-    new (...args) : T;
+    new(...args: any[]): T;
 }
 
 export type PromiseWrap<T> = T extends PromiseLike<any> ? T : Promise<T>;
 
 export class TaskWorkerProxy {
-    private static create<T extends Worker>(handler : (key, ...args) => any): any {
-        return <RemoteWorker<T>> new Proxy({}, {
-            get(t, key : string, receiver) {
-                return (...args) => handler(key, ...args);
+    private static create<T extends Worker>(handler: (key: string, ...args: any[]) => any): any {
+        return <RemoteWorker<T>>new Proxy({}, {
+            get(t, key: string, receiver) {
+                return (...args: any) => handler(key, ...args);
             }
         })
     }
 
-    static createAsync<T extends Worker>(queueClient : TaskQueueClient, id : string, options? : JobOptions): RemoteWorker<T> {
+    static createAsync<T extends Worker>(queueClient: TaskQueueClient, id: string, options?: JobOptions): RemoteWorker<T> {
         return this.create(
             (method, ...args) => {
                 if (method === 'withOptions')
@@ -109,9 +109,9 @@ export class TaskWorkerProxy {
             }
         );
     }
-    
-    static createSync<T extends Worker>(queueClient : TaskQueueClient, id : string, options? : JobOptions): RemoteService<T> {
-        return this.create( 
+
+    static createSync<T extends Worker>(queueClient: TaskQueueClient, id: string, options?: JobOptions): RemoteService<T> {
+        return this.create(
             (method, ...args) => {
                 if (method === 'withOptions')
                     return TaskWorkerProxy.createSync(queueClient, id, Object.assign({}, options, args[0]));
@@ -123,10 +123,10 @@ export class TaskWorkerProxy {
 }
 
 interface TaskWorkerEntry<T extends Worker = any> {
-    type : Constructor<T>;
-    local : T;
-    async : RemoteWorker<T>;
-    sync : RemoteService<T>;
+    type: Constructor<T>;
+    local: T;
+    async: RemoteWorker<T>;
+    sync: RemoteService<T>;
 }
 
 
@@ -134,17 +134,17 @@ interface TaskWorkerEntry<T extends Worker = any> {
 export class TaskQueueClient {
     constructor(
         @Optional()
-        private optionsRef : TaskModuleOptionsRef
+        private optionsRef: TaskModuleOptionsRef
     ) {
         this._queue = new BullQueue(this.queueName, this.queueOptions);
     }
 
-    _queue : BullQueue.Queue;
+    _queue: BullQueue.Queue;
 
     get queue(): Queue<TaskJob> {
         return this._queue;
     }
-    
+
     /**
      * Get the task client options. See 
      */
@@ -173,7 +173,7 @@ export class TaskQueueClient {
     /**
      * Enqueue a new task. To handle the task on the worker side, register for it with `.process()`
      */
-    async enqueue(data : TaskJob, opts? : JobOptions): Promise<QueueJob<TaskJob>> {
+    async enqueue(data: TaskJob, opts?: JobOptions): Promise<QueueJob<TaskJob>> {
         return await this._queue.add(data, opts);
     }
 }
@@ -181,48 +181,48 @@ export class TaskQueueClient {
 @Injectable()
 export class TaskWorkerRegistry {
     constructor(
-        private injector : Injector,
-        private client : TaskQueueClient
+        private injector: Injector,
+        private client: TaskQueueClient
     ) {
 
     }
 
-    private _entries : { [name : string] : TaskWorkerEntry } = {};
+    private _entries: { [name: string]: TaskWorkerEntry } = {};
 
-    private registerClass(injector : Injector, taskClass : Constructor<Worker>) {
-        let instance = <Worker> injector.get(taskClass);
+    private registerClass(injector: Injector, taskClass: Constructor<Worker>) {
+        let instance = <Worker>injector.get(taskClass);
         let id = instance.name;
-        
+
         if (this._entries[id])
             throw new Error(`Another worker is already registered with name '${id}'`);
 
         this._entries[id] = {
-            type: <any> taskClass,
+            type: <any>taskClass,
             local: instance,
             sync: TaskWorkerProxy.createSync(this.client, id, instance.options),
             async: TaskWorkerProxy.createAsync(this.client, id, instance.options)
         };
     }
 
-    get all() : TaskWorkerEntry[] {
+    get all(): TaskWorkerEntry[] {
         return Object.values(this._entries);
     }
 
-    get<T extends Worker>(cls : Constructor<T>): TaskWorkerEntry<T> {
+    get<T extends Worker>(cls: Constructor<T>): TaskWorkerEntry<T> {
         let entry = this.all.find(x => x.type === cls);
 
         if (!entry)
             throw new Error(`Worker class ${cls.name} is not registered. Add it to the 'tasks' property of a module or call TaskWorkerRegistry.register(${cls.name})`);
-        
-        return <TaskWorkerEntry<T>> entry;
+
+        return <TaskWorkerEntry<T>>entry;
     }
 
-    getByName(name : string) {
+    getByName(name: string) {
         return this._entries[name];
     }
 
-    registerClasses(classes : Function[]) {
-        let taskClasses : Constructor<Worker>[] = classes as any;
+    registerClasses(classes: Function[]) {
+        let taskClasses: Constructor<Worker>[] = classes as any;
         let ownInjector = ReflectiveInjector.resolveAndCreate(taskClasses as Provider[], this.injector);
         taskClasses.forEach(taskClass => this.registerClass(ownInjector, taskClass));
     }

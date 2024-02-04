@@ -99,9 +99,9 @@ export async function read (options?: ReadOptions): Promise<string> {
       output.end()
     }
 
-    const onError = (er) => {
+    const onError = (error: any) => {
       done()
-      reject(er)
+      reject(error)
     }
 
     rl.on('error', onError)

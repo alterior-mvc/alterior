@@ -11,8 +11,8 @@ export class TerminalUI {
     input: ReadStream;
     output: WriteStream;
 
-    private rl: readline.Interface;
-    private _prompt: string;
+    private rl: readline.Interface | null = null;
+    private _prompt: string = '';
     get prompt() {
         return this._prompt;
     }
@@ -25,8 +25,8 @@ export class TerminalUI {
         }
     }
 
-    runCommand: (line: string) => Promise<void>;
-    beforeShowingPrompt: () => Promise<void>;
+    runCommand?: (line: string) => Promise<void>;
+    beforeShowingPrompt?: () => Promise<void>;
     runningCommand = false;
 
     async start() {
@@ -49,7 +49,7 @@ export class TerminalUI {
         this.rl.setPrompt(this._prompt);
         this.rl.addListener('history', async lines => this.history = lines);
         this.rl.addListener('line', async line => {
-            this.rl.close();
+            this.rl?.close();
             this.rl = null;
             this.runningCommand = true;
 
@@ -58,7 +58,7 @@ export class TerminalUI {
             this.deletePrompt();
             this.output.uncork();
             try {
-                await this.runCommand(line);
+                await this.runCommand?.(line);
             } finally {
                 this.runningCommand = false;
                 this.output.cork();
