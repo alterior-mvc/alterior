@@ -17,7 +17,11 @@
   * **Breaking**: The experimental `WebServiceCompiler` class is no longer available, and `@WebService` no longer 
     accepts a `compiler` option.
 - `@/mongodb`: New package for ergonomically connecting to MongoDB from within your Alterior applications
-  
+- `@/di`
+  * You can now use `injectionContext()` to acquire the current injection context. You can use this to acquire the 
+    `injector` which is currently resolving a provider or access the `token` currently being resolved. This can be 
+    used to make new `inject()`-like functions for more specific purposes.
+
 # v3.6.6
 - `@/common`
   * Alterior's standard error classes now extend from `Error`

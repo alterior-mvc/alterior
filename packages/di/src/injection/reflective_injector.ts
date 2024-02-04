@@ -447,7 +447,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
 
     let obj: any;
     try {
-      Injector._runInInjectionContext(this, () => {
+      Injector._runInInjectionContext(this, provider.key.token, () => {
         obj = factory(...deps);
       });
     } catch (e: any) {

@@ -26,7 +26,12 @@ class _NullInjector implements Injector {
   parent = null;
 }
 
-let CURRENT_INJECTOR: Injector | null = null;
+export interface InjectionContext {
+  injector: Injector;
+  token: object;
+};
+
+let CURRENT_INJECTION_CONTEXT: InjectionContext | null = null;
 
 export interface InjectorGetOptions {
   /**
@@ -82,13 +87,13 @@ export abstract class Injector {
   /**
    * @internal
    */
-  static _runInInjectionContext(injector: Injector, callback: () => void) {
-    let previousContext = CURRENT_INJECTOR;
-    CURRENT_INJECTOR = injector;
+  static _runInInjectionContext(injector: Injector, token: Object, callback: () => void) {
+    let previousContext = CURRENT_INJECTION_CONTEXT;
+    CURRENT_INJECTION_CONTEXT = { injector, token };
     try {
       callback();
     } finally {
-      CURRENT_INJECTOR = previousContext;
+      CURRENT_INJECTION_CONTEXT = previousContext;
     }
   }
 }
@@ -114,6 +119,13 @@ export declare interface InjectOptions {
   self?: boolean;
 }
 
+export function injectionContext(): InjectionContext {
+  if (CURRENT_INJECTION_CONTEXT === null)
+    throw new Error(`Can only be called during creation of a dependency injection provider.`);
+
+  return { ...CURRENT_INJECTION_CONTEXT };
+}
+
 /**
  * Get an injectable value by token from the current injector. This can only be used during creation of an injectable
  * (ie during class construction). It will throw otherwise.
@@ -123,15 +135,12 @@ export declare interface InjectOptions {
  * @returns 
  */
 export function inject<T = unknown>(token: Type<T> | InjectionToken<T>, options?: InjectOptions): T {
-  if (CURRENT_INJECTOR === null)
-    throw new Error(`inject() can only be called during construction.`);
-
-  let injector = CURRENT_INJECTOR;
+  let injector = injectionContext().injector;
 
   if (options?.skipSelf ?? false)
     injector = injector.parent ?? injector;
 
-  return CURRENT_INJECTOR.get(
+  return injector.get(
     token, 
     options?.optional === true ? undefined : <any>THROW_IF_NOT_FOUND,
     { self: options?.self ?? false }
