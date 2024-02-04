@@ -16,7 +16,7 @@ export type ParameterDisplayFormatter = (event: WebEvent, value: any, forKey: st
 
 export interface WebServerOptions {
 	/**
-	 * The primary port to listen on. When TLS is specified via certificate/privateKey
+	 * The primary port this service is available on. When TLS is specified via certificate/privateKey
 	 * or sniHandler, this is HTTPS. Otherwise it is HTTP. To listen on both HTTPS and 
 	 * HTTP, set this field to the secure port and set 
 	 */

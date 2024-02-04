@@ -5,6 +5,8 @@ import { RouteDefinition } from './route-definition';
 import { MountOptions } from './mount-options';
 import { MountDefinition } from './mount-definition';
 
+import * as conduit from '@astronautlabs/conduit';
+
 export function Get(path?: string, options?: RouteOptions) { return Route('GET', path, options); }
 export function Put(path?: string, options?: RouteOptions) { return Route('PUT', path, options); }
 export function Post(path?: string, options?: RouteOptions) { return Route('POST', path, options); }
@@ -15,6 +17,9 @@ export function Patch(path?: string, options?: RouteOptions) { return Route('PAT
 export function Route(method: string, path?: string, options?: RouteOptions) {
 	return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
 		disallowNativeAsync((target as any)[propertyKey]);
+		conduit.Method()(target, propertyKey);
+		if (options?.description)
+			conduit.Description(options?.description)(target, propertyKey);
 
 		Expose()(target, propertyKey, descriptor);
 

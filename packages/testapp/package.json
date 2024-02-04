@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -b",
-    "start": "npm run build && node dist/main",
+    "start": "npm run build && node dist/server/main",
     "test": "exit 0"
   },
   "private": true,
@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@alterior/common": "^3.6.4",
+    "@alterior/platform-nodejs": "^3.6.4",
     "@alterior/express": "^3.6.5",
     "@alterior/runtime": "^3.6.5",
     "@alterior/web-server": "^3.6.5"

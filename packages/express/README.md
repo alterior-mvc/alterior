@@ -1,20 +1,29 @@
 # @/express
 
-Access Express state within an Alterior app. 
+Provides the Express web server engine for Alterior and allows for access to Express' state within an Alterior app. 
 
-# Why?
+# Usage
 
-`@alterior/web-server` provides `WebEvent.request` which exposes the HTTP request object of the underlying web server framework being used. Alterior supports more than one framework, including `express` and `fastify`. Technically the minimum shape of `WebEvent.request` is that of the `request` object defined by the Node.js `http` module. As an app developer which uses Express as the server framework in my Alterior app, I want to access `WebEvent.request` with a Typescript type that exposes all that Express provides, not just as a generic Node.js `http` request object. I don't want to manually cast this object whenever I use it.
+Installing Express as the default server engine happens automatically as soon as you import this library, provided
+you have not already installed some other server engine as default.
 
-Since `WebEvent.request` is static (using the HTTP request's Zone to determine the appropriate value), we can create new ways to access this value which are appropriately typed.
+```typescript
+import '@alterior/express';
+```
 
-Splitting this functionality into a specific package lets us remove unused code when not using Express.
+You can also manually perform this step using:
 
-# How
+```ts
+import { ExpressEngine } from '@alterior/express';
+import { WebServerEngine } from '@alterior/web-server';
+
+WebServerEngine.default = ExpressEngine;
+```
+
+Accessing the Express request/response:
 
 ```typescript
 import { ExpressContext } from '@alterior/express';
-// ...
 
 @WebService() 
 export class MyService {

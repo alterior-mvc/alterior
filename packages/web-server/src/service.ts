@@ -1,11 +1,13 @@
 import { Annotation, MetadataName } from "@alterior/annotations";
-import { Module, ModuleOptions } from "@alterior/di";
+import { Module, ModuleOptions, inject } from "@alterior/di";
 import { Logger, LoggingModule } from '@alterior/logging';
 import { AppOptions, Application, ApplicationOptions, RolesService } from "@alterior/runtime";
 import { ControllerInstance } from './controller';
 import { Controller } from "./metadata";
 import { WebServer } from './web-server';
 import { WebServerOptions } from "./web-server-options";
+
+import * as conduit from '@astronautlabs/conduit';
 
 export type RestClient<T> = {
     [P in keyof T as T[P] extends ((...args: any[]) => any) ? P : never]:
@@ -30,6 +32,21 @@ export interface RestClientConstructor<T> {
  * of the options available for @Module() as well as WebServerModule.configure(...).
  */
 export interface WebServiceOptions extends ApplicationOptions, ModuleOptions {
+	/**
+	 * Identity to use when exposing this service via Conduit. When not specified, the name of the class is used.
+	 */
+	identity?: string;
+
+    /**
+     * Whether this service is discoverable via Conduit. Defaults to true.
+     */
+    discoverable?: boolean;
+
+    /**
+     * Whether this service is introspectable via Conduit. Defaults to true.
+     */
+    introspectable?: boolean;
+
     server?: WebServerOptions;
 }
 
@@ -57,16 +74,21 @@ export interface WebServiceDecorator {
 export const WebService = WebServiceAnnotation.decorator({
     validTargets: ['class'],
     factory: (site, options?: WebServiceOptions) => {
+        conduit.Name(options?.identity ?? site.target.name)(site.target);
+
+        if (options?.description)
+            conduit.Description(options.description)(site.target);
+
+        conduit.Discoverable(options?.discoverable ?? true)(site.target);
+        conduit.Introspectable(options?.introspectable ?? true)(site.target);
+
         @Module({
             imports: [LoggingModule]
         })
         class WebServerModule {
-            constructor(
-                private app: Application,
-                private rolesService: RolesService,
-                private logger: Logger
-            ) {
-            }
+            private app = inject(Application);
+            private rolesService = inject(RolesService);
+            private logger = inject(Logger);
 
             altOnInit() {
                 let webserver: WebServer;

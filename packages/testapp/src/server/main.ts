@@ -1,12 +1,10 @@
-import 'zone.js';
-import 'reflect-metadata';
+import '@alterior/platform-nodejs';
 
-import { WebService, Get, WebServer, WebEvent, WebServerEngine, Mount, OpenApiController } from '@alterior/web-server';
-import { Application } from '@alterior/runtime';
 import { HttpError, timeout } from '@alterior/common';
+import { Application } from '@alterior/runtime';
+import { Get, Mount, OpenApiController, WebEvent, WebServer, WebService } from '@alterior/web-server';
 
-import { ExpressEngine } from '@alterior/express';
-WebServerEngine.default = ExpressEngine;
+import '@alterior/express';
 
 @WebService()
 export class MyService {
