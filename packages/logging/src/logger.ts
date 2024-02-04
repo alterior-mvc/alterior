@@ -1,4 +1,4 @@
-import { Injectable, Optional } from '@alterior/di';
+import { Injectable, Optional, Skip } from '@alterior/di';
 import { ExecutionContext, Application, Constructor } from '@alterior/runtime';
 
 export type LogSeverity = 'debug' | 'info' | 'warning' | 'error' | 'fatal';
@@ -397,7 +397,7 @@ export class Logger extends ZonedLogger {
     constructor(
         @Optional() optionsRef?: LoggingOptionsRef,
         app?: Application,
-        sourceLabel?: string
+        @Skip() sourceLabel?: string
     ) {
         super(optionsRef, app, sourceLabel);
     }

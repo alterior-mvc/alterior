@@ -6,7 +6,7 @@
     "start": "ng serve --disable-host-check --host 0.0.0.0",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "testx": "ng test",
     "serve:ssr:website": "node dist/website/server/server.mjs"
   },
   "private": true,

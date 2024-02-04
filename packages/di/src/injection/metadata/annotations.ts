@@ -9,6 +9,10 @@ export class InjectableAnnotation extends Annotation {
 export class OptionalAnnotation extends Annotation {
 }
 
+@MetadataName('@alterior/di:Skip')
+export class SkipAnnotation extends Annotation {
+}
+
 @MetadataName('@alterior/di:Inject')
 export class InjectAnnotation extends Annotation {
     constructor(token?: any) {

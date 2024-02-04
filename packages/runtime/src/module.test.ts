@@ -5,7 +5,7 @@ import { expect } from 'chai';
 import { Time, Environment } from '@alterior/common';
 
 describe("Modules", () => {
-    it('allows injection of the Injector', () => {
+    it('allows injection of the Injector', async () => {
         let sawInjector: Injector | null = null;
         @Module({
 
@@ -16,7 +16,7 @@ describe("Modules", () => {
             }
         }
 
-        Application.bootstrap(TestModule);
+        await Application.bootstrap(TestModule);
 
         expect(sawInjector).not.to.be.null;
 

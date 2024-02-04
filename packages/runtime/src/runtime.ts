@@ -73,7 +73,7 @@ export class Runtime {
         ]);
 
         this.definitions
-            .filter(defn => defn.metadata && defn.metadata.providers)
+            .filter(defn => defn.metadata?.providers)
             .forEach(defn => providers.push(...(defn.metadata?.providers) ?? []))
             ;
 
@@ -290,12 +290,7 @@ export class Runtime {
         }
 
         let metadata = ModuleAnnotation.getForClass(module);
-        let definitions: ModuleDefinition[] = [
-            {
-                target: module,
-                metadata,
-            }
-        ];
+        let definitions: ModuleDefinition[] = [];
 
         if (metadata?.imports) {
             let position = 0;
@@ -310,6 +305,6 @@ export class Runtime {
             }
         }
 
-        return definitions;
+        return [...definitions, { target: module, metadata, }];
     }
 }

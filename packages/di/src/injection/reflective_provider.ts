@@ -11,7 +11,7 @@ import { Type } from './facade/type';
 
 import { resolveForwardRef } from './forward_ref';
 import { InjectionToken } from './injection_token';
-import { SkipSelfAnnotation, SelfAnnotation, InjectAnnotation, OptionalAnnotation } from './metadata';
+import { SkipSelfAnnotation, SelfAnnotation, InjectAnnotation, OptionalAnnotation, SkipAnnotation } from './metadata';
 import { ClassProvider, ExistingProvider, FactoryProvider, Provider, TypeProvider, ValueProvider } from './provider';
 import { invalidProviderError, mixingMultiProvidersWithRegularProvidersError, noAnnotationError } from './reflective_errors';
 import { ReflectiveKey } from './reflective_key';
@@ -24,10 +24,16 @@ interface NormalizedProvider extends TypeProvider, ValueProvider, ClassProvider,
  * This is internal to Angular and should not be used directly.
  */
 export class ReflectiveDependency {
-  constructor(public key: ReflectiveKey, public optional: boolean, public visibility: SelfAnnotation | SkipSelfAnnotation | null) {}
+  constructor(
+    public key: ReflectiveKey, 
+    public optional: boolean, 
+    public visibility: SelfAnnotation | SkipSelfAnnotation | null, 
+    public skip: boolean
+  ) {
+  }
 
   static fromKey(key: ReflectiveKey): ReflectiveDependency {
-    return new ReflectiveDependency(key, false, null);
+    return new ReflectiveDependency(key, false, null, false);
   }
 }
 
@@ -226,12 +232,13 @@ function _dependenciesFor(typeOrFunc: any): ReflectiveDependency[] {
 function _extractToken(typeOrFunc: any, metadata: any[] | any, params: any[][]): ReflectiveDependency {
   let token: any = null;
   let optional = false;
+  let skip = false;
 
   if (!Array.isArray(metadata)) {
     if (metadata instanceof InjectAnnotation) {
-      return _createDependency(metadata['token'], optional, null);
+      return _createDependency(metadata['token'], optional, null, false);
     } else {
-      return _createDependency(metadata, optional, null);
+      return _createDependency(metadata, optional, null, false);
     }
   }
 
@@ -242,6 +249,8 @@ function _extractToken(typeOrFunc: any, metadata: any[] | any, params: any[][]):
 
     if (paramMetadata instanceof InjectAnnotation) {
       token = paramMetadata['token'];
+    } else if (paramMetadata instanceof SkipAnnotation) {
+      skip = true;
     } else if (paramMetadata instanceof OptionalAnnotation) {
       optional = true;
     } else if (paramMetadata instanceof SelfAnnotation || paramMetadata instanceof SkipSelfAnnotation) {
@@ -256,15 +265,14 @@ function _extractToken(typeOrFunc: any, metadata: any[] | any, params: any[][]):
   token = resolveForwardRef(token);
 
   if (token != null) {
-    return _createDependency(token, optional, visibility);
+    return _createDependency(token, optional, visibility, skip);
   } else {
-    console.error(`Failed to find token ${typeOrFunc.name || typeOrFunc}:`);
-    console.dir(params);
-    
+    // console.error(`Failed to find token ${typeOrFunc.name || typeOrFunc}:`);
+    // console.dir(params);
     throw noAnnotationError(typeOrFunc, params);
   }
 }
 
-function _createDependency(token: any, optional: boolean, visibility: SelfAnnotation | SkipSelfAnnotation | null): ReflectiveDependency {
-  return new ReflectiveDependency(ReflectiveKey.get(token), optional, visibility);
+function _createDependency(token: any, optional: boolean, visibility: SelfAnnotation | SkipSelfAnnotation | null, skip: boolean): ReflectiveDependency {
+  return new ReflectiveDependency(ReflectiveKey.get(token), optional, visibility, skip);
 }

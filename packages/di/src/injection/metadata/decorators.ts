@@ -6,7 +6,7 @@
  */
 
 import { InjectableAnnotation, SelfAnnotation, HostAnnotation, InjectAnnotation, 
-         OptionalAnnotation, SkipSelfAnnotation } from './annotations';
+         OptionalAnnotation, SkipSelfAnnotation, SkipAnnotation } from './annotations';
 
 /**
  * @whatItDoes A marker metadata that marks a class as available to {@link Injector} for creation.
@@ -62,6 +62,13 @@ export const Injectable = InjectableAnnotation.decorator({
  * @stable
  */
 export const Optional = OptionalAnnotation.decorator({
+  validTargets: ['parameter']
+});
+
+/**
+ * Marks a constructor parameter as skipped for dependency injection.
+ */
+export const Skip = SkipAnnotation.decorator({
   validTargets: ['parameter']
 });
 

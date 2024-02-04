@@ -334,6 +334,6 @@ export function isConstructor(f: Function) {
 export function omit<T extends object, U extends keyof T>(value: T, excluded: U[]): Omit<T, U> {
     return Object.fromEntries(
         (Object.entries(value) as [ U, unknown ][])
-            .filter(([ k, v ]) => excluded.includes(k))
+            .filter(([ k, v ]) => !excluded.includes(k))
     ) as Omit<T, U>;
 }

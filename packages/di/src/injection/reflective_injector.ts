@@ -8,7 +8,7 @@
 
 import { ConcreteType, Type } from './facade/type';
 import { Injector, InjectorGetOptions, THROW_IF_NOT_FOUND } from './injector';
-import { SelfAnnotation, SkipSelfAnnotation, InjectAnnotation, OptionalAnnotation, Optional } from './metadata';
+import { SelfAnnotation, SkipSelfAnnotation, InjectAnnotation, OptionalAnnotation, Optional, SkipAnnotation, Skip } from './metadata';
 import { Provider, ClassProvider, ProviderWithDependencies, isTypeProvider } from './provider';
 import { cyclicDependencyError, instantiationError, noProviderError, outOfBoundsError } from './reflective_errors';
 import { ReflectiveKey } from './reflective_key';
@@ -161,6 +161,7 @@ export abstract class ReflectiveInjector implements Injector {
         let paramAnnotations = paramsAnnotations[i] || [];
 
         let injectAnnotation = <InjectAnnotation>paramAnnotations.find(x => x instanceof InjectAnnotation);
+        let skipAnnotation = <SkipAnnotation>paramAnnotations.find(x => x instanceof SkipAnnotation);
         let optionalAnnotation = <OptionalAnnotation>paramAnnotations.find(x => x instanceof OptionalAnnotation);
 
         let token = param;
@@ -171,7 +172,9 @@ export abstract class ReflectiveInjector implements Injector {
 
         let dep : any = token;
 
-        if (optionalAnnotation) {
+        if (skipAnnotation) {
+          dep = [ Skip, token ]
+        } else if (optionalAnnotation) {
           dep = [ Optional, token ];
         } else {
           dep = token;
@@ -458,6 +461,8 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   }
 
   private _getByReflectiveDependency(dep: ReflectiveDependency): any {
+    if (dep.skip)
+      return undefined;
     return this._getByKey(dep.key, dep.visibility, dep.optional ? null : THROW_IF_NOT_FOUND);
   }
 

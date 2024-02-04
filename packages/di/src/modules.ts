@@ -2,15 +2,15 @@
  * (C) 2017-2019 William Lahti
  */
 
- import { MetadataName, Annotation } from "@alterior/annotations";
+import { MetadataName, Annotation } from "@alterior/annotations";
 import { Provider } from './injection';
 
 export interface ConfiguredModule extends ModuleOptions {
     $module: ModuleLike;
-    ngModule? : ModuleLike;
+    ngModule?: ModuleLike;
 }
 
-export function configureModule(module: Function, providers : Provider[]): ConfiguredModule {
+export function configureModule(module: Function, providers: Provider[]): ConfiguredModule {
     return {
         $module: module,
         ngModule: module,
@@ -21,7 +21,7 @@ export function configureModule(module: Function, providers : Provider[]): Confi
 export type ModuleLike = Function | ConfiguredModule;
 
 export interface ModuleOptions {
-    tasks? : any[];
+    tasks?: any[];
 
     /**
      * Dependencies of this module. Specifying a module as an import causes that module to be included in the 
@@ -49,7 +49,7 @@ export interface ModuleOptions {
 
 @MetadataName('@alterior/di:Module')
 export class ModuleAnnotation extends Annotation implements ModuleOptions {
-    constructor(moduleOptions? : ModuleOptions) {
+    constructor(moduleOptions?: ModuleOptions) {
         super(moduleOptions);
     }
 
@@ -57,17 +57,17 @@ export class ModuleAnnotation extends Annotation implements ModuleOptions {
      * Task classes which are part of this module
      * @deprecated
      */
-    tasks : any[] = [];
+    tasks!: any[];
 
     /**
      * Modules imported by this module
      */
-    imports: ModuleLike[] = [];
+    imports!: ModuleLike[];
 
     /**
      * Dependency injection providers
      */
-    providers: Provider[] = [];
+    providers!: Provider[];
 
     /**
      * Called during Application.bootstrap() when this module is part of the application's module graph.

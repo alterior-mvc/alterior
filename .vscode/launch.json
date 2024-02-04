@@ -18,28 +18,37 @@
 				"NODE_ENV": "development"
 			},
 			"console": "internalConsole",
-			"sourceMaps": true,
-			"outDir": null
+			"sourceMaps": true
 		},
 		{
 			"name": "common - Launch Tests",
 			"type": "node",
 			"request": "launch",
 			"program": "${workspaceRoot}/packages/common/dist/test.js",
-			"args": [],
-			"stopOnEntry": false,
-			"cwd": "${workspaceRoot}",
-			"preLaunchTask": null,
-			"runtimeExecutable": null,
-			"runtimeArgs": [
-				"--nolazy"
-			],
-			"env": {
-				"NODE_ENV": "development"
-			},
+			"cwd": "${workspaceRoot}/packages/common",
+			"runtimeArgs": [ "--nolazy" ],
 			"console": "internalConsole",
-			"sourceMaps": true,
-			"outDir": null
+			"sourceMaps": true
+		},
+		{
+			"name": "runtime - Launch Tests",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceRoot}/packages/runtime/dist/test.js",
+			"cwd": "${workspaceRoot}/packages/runtime",
+			"runtimeArgs": [ "--nolazy" ],
+			"console": "internalConsole",
+			"sourceMaps": true
+		},
+		{
+			"name": "web-server - Launch Tests",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceRoot}/packages/web-server/dist/test.js",
+			"cwd": "${workspaceRoot}/packages/web-server",
+			"runtimeArgs": [ "--nolazy" ],
+			"console": "internalConsole",
+			"sourceMaps": true
 		},
 		{
 			"name": "Attach",
