@@ -34,7 +34,6 @@
     "build:cjs": "tsc",
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublishOnly": "npm test",
-    "test": "npm run build && node dist/test",
     "docs": "typedoc src"
   },
   "dependencies": {
