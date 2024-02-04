@@ -1,5 +1,9 @@
 # ⏭ vNext
 
+# v3.6.7
+- `@/runtime`
+  * `RoleRegistration#instance` is now optional. When not specified, the only way to target a role is by its identifier.
+ 
 # v3.6.6
 - `@/common`
   * Alterior's standard error classes now extend from `Error`
