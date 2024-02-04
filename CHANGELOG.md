@@ -5,6 +5,8 @@
   decorators.
 
 ## Changes
+- **Breaking**: Alterior 4.0 supports Node.js 18 and newer. If you require older Node.js versions, please continue
+  to use Alterior 3.
 - `@/runtime`
   * **Breaking**: `Application.bootstrap()` now returns `Promise<Application>` instead of `Application`
   * You can now specify the `prepare` option on your modules in order to perform an operation before the application 

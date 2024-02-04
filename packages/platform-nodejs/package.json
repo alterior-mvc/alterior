@@ -23,7 +23,7 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=18"
   },
   "scripts": {
     "clean": "rimraf dist dist.esm",
@@ -36,7 +36,6 @@
   },
   "dependencies": {
     "dotenv": "^16.3.1",
-    "node-fetch": "^2.6.7",
     "reflect-metadata": "^0.1.13",
     "source-map-support": "^0.5.21",
     "ws": "^8.16.0",
