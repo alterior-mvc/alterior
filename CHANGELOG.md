@@ -5,6 +5,7 @@
     is bootstrapped. This can be used to connect to databases, for instance.
 - `@/web-server`: **Breaking**: Renamed WebConduit to ReactiveSocket, and `WebServer#startConduit()` to 
   `WebServer#startReactiveSocket()`
+- `@/mongodb`: New package for ergonomically connecting to MongoDB from within your Alterior applications
   
 # v3.6.6
 - `@/common`

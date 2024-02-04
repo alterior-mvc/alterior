@@ -1,0 +1,49 @@
+{
+  "name": "@alterior/mongodb",
+  "version": "3.6.5",
+  "description": "Use MongoDB as a first-class citizen in your Alterior app",
+  "author": "The Alterior Project (https://github.com/alterior-mvc)",
+  "license": "MIT",
+  "homepage": "https://github.com/alterior-mvc/alterior/blob/main/packages/mongodb/README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alterior-mvc/alterior.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alterior-mvc/alterior/issues"
+  },
+  "keywords": [
+    "mongodb",
+    "database",
+    "db",
+    "persistence"
+  ],
+  "main": "dist/index.js",
+  "module": "dist.esm/index.js",
+  "types": "dist/index.d.ts",
+  "access": "public",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "clean": "rimraf dist dist.esm",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "prepublishOnly": "npm test",
+    "test": "npm run build && node dist/test",
+    "docs": "typedoc src"
+  },
+  "dependencies": {
+    "@alterior/annotations": "^3.6.4",
+    "@alterior/common": "^3.6.4",
+    "@alterior/di": "^3.6.4",
+    "@alterior/runtime": "^3.6.5",
+    "mongodb": "^6.3.0",
+    "rxjs": "^7.8.0"
+  },
+  "gitHead": "5c18a5ddde7719d8f439fcf22804280fb56cf255"
+}
