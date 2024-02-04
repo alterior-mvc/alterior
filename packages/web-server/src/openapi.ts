@@ -9,7 +9,7 @@ export interface OpenApiContact {
 
 export interface OpenApiServiceInfo {
     title : string;
-    description : string;
+    description? : string;
     contact? : OpenApiContact;
     version : string;
 }
@@ -63,8 +63,8 @@ export interface OpenApiParameter {
 
 export interface OpenApiOperation {
     operationId : string;
-    summary : string;
-    description : string;
+    summary? : string;
+    description? : string;
     parameters : OpenApiParameter[];
     responses : OpenApiResponseMap;
     tags : (OpenApiTag | string)[];
@@ -104,7 +104,7 @@ export class OpenApiController {
         let desc = this.serviceDescriptionRef.description;
 
         let info : OpenApiServiceInfo = {
-            title: desc.name || 'Untitled Web Service',
+            title: desc.name ?? 'Untitled Web Service',
             description: desc.description,
             version: desc.version || '0.0.0'
         };
@@ -131,7 +131,7 @@ export class OpenApiController {
 
             paths[oapiPathName][loweredHttpMethod] = {
                 operationId: route.method,
-                summary: (route.definition.options || {}).summary,
+                summary: route.definition.options?.summary,
                 description: (route.definition.options || {}).description,
                 parameters: route.parameters.map(routeParam => ({
                     in: routeParam.type,

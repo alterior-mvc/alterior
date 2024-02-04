@@ -1,10 +1,21 @@
 # ⏭ vNext [4.0]
+
+## [BLOCKERS] Features In Progress
+* `@/web-server`: You can now specify routes and mounts using the `route()` and `mount()` functions instead of using 
+  decorators.
+
+## Changes
 - `@/runtime`
   * **Breaking**: `Application.bootstrap()` now returns `Promise<Application>` instead of `Application`
   * You can now specify the `prepare` option on your modules in order to perform an operation before the application 
     is bootstrapped. This can be used to connect to databases, for instance.
-- `@/web-server`: **Breaking**: Renamed WebConduit to ReactiveSocket, and `WebServer#startConduit()` to 
-  `WebServer#startReactiveSocket()`
+  * **Breaking**: The experimental `@Service` annotation and the corresponding `ServiceCompiler` interface have 
+    been removed.
+- `@/web-server`
+  * **Breaking**: Renamed WebConduit to ReactiveSocket, and `WebServer#startConduit()` to 
+    `WebServer#startReactiveSocket()`
+  * **Breaking**: The experimental `WebServiceCompiler` class is no longer available, and `@WebService` no longer 
+    accepts a `compiler` option.
 - `@/mongodb`: New package for ergonomically connecting to MongoDB from within your Alterior applications
   
 # v3.6.6

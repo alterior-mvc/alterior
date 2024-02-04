@@ -4,8 +4,7 @@ import * as ws from 'ws';
 
 import { Injector, ReflectiveInjector, Module, Provider } from "@alterior/di";
 import { prepareMiddleware } from "./middleware";
-import { WebEvent } from "./metadata";
-import { RouteInstance, RouteDescription } from './route';
+import { MiddlewareDefinition, MiddlewareFunction, WebEvent } from "./metadata";
 import { ApplicationOptions, Application, AppOptionsAnnotation, AppOptions } from '@alterior/runtime';
 import { LogSeverity, Logger } from '@alterior/logging';
 import { WebServerEngine } from './web-server-engine';
@@ -16,8 +15,13 @@ import { ReactiveSocket } from './reactive-socket';
 import { ellipsize } from './utils';
 import { HttpError } from '@alterior/common';
 import { HTTP_MESSAGES } from './http-messages';
+import { RouteDescription } from './route-description';
+import { RouteInstance } from './route-instance';
 
 const REPORTING_STATE = Symbol('Reporting state');
+const DEFAULT_LONG_PARAMETER_THRESHOLD = 100;
+const DEFAULT_LONG_REQUEST_THRESHOLD = 1_000;
+const DEFAULT_HUNG_REQUEST_THRESHOLD = 3_000;
 
 /**
  * Implements a web server which is comprised of a set of Controllers.
@@ -29,8 +33,12 @@ export class WebServer {
 		readonly logger: Logger,
 		readonly appOptions: ApplicationOptions = {}
 	) {
-		this.setupServiceDescription();
-		this.setupInjector(injector);
+		this._serviceDescription = {
+			routes: [],
+			name: this.appOptions.name ?? 'Untitled Web Service',
+			version: this.appOptions.version ?? '0.0.0'
+		};
+		this._injector = this.setupInjector(injector);
 		this.options = options || {};
 		if (!this.options.port) {
 			if (this.options.certificate) {
@@ -40,20 +48,7 @@ export class WebServer {
 			}
 		}
 
-		this._engine = this._injector.get(WebServerEngine, null);
-
-		if (!this._engine) {
-			this._engine = ReflectiveInjector.resolveAndCreate([
-				{ provide: WebServerEngine, useClass: WebServerEngine.default }
-			], this._injector).get(WebServerEngine, null);
-		}
-
-		if (!this._engine) {
-			throw new Error(
-				`No WebServerEngine found! Set WebServerEngine.default to an engine (@alterior/express, @alterior/fastify) `
-				+ `or provide a WebServerEngine via dependency injection.`
-			);
-		}
+		this._engine = this._injector.get(WebServerEngine, null) || this.createDefaultWebServerEngine();
 
 		this.installGlobalMiddleware();
 		this.websockets = new ws.Server({ noServer: true });
@@ -61,14 +56,26 @@ export class WebServer {
 		this.requestReporterFilters = options?.requestReporterFilters ?? this.requestReporterFilters;
 	}
 
+	private createDefaultWebServerEngine() {
+		if (!WebServerEngine.default) {
+			throw new Error(
+				`No WebServerEngine found! Set WebServerEngine.default to an engine (@alterior/express, @alterior/fastify) `
+				+ `or provide a WebServerEngine via dependency injection.`
+			);
+		}
+		return ReflectiveInjector.resolveAndCreate([
+			{ provide: WebServerEngine, useClass: WebServerEngine.default }
+		], this._injector).get(WebServerEngine, null);
+	}
+
 	private _injector: Injector;
 	readonly options: WebServerOptions;
 	readonly websockets: ws.Server;
 
-	private _httpServer: http.Server;
+	private _httpServer?: http.Server;
+	private _insecureHttpServer?: http.Server;
+	
 	get httpServer() { return this._httpServer; }
-
-	private _insecureHttpServer: http.Server;
 	get insecureHttpServer() { return this._insecureHttpServer; }
 
 	private _serviceDescription: ServiceDescription;
@@ -112,27 +119,6 @@ export class WebServer {
 	}
 
 	/**
-	 * Setup the service description which provides a view of all the routes 
-	 * registered in this web server.
-	 */
-	private setupServiceDescription() {
-		let version = '0.0.0';
-		let name = 'Untitled Web Service';
-
-		if (this.appOptions.version)
-			version = this.appOptions.version;
-
-		if (this.appOptions.name)
-			name = this.appOptions.name;
-
-		this._serviceDescription = {
-			routes: [],
-			name,
-			version
-		};
-	}
-
-	/**
 	 * Construct an injector suitable for use in this web server component,
 	 * inheriting from the given injector.
 	 * 
@@ -147,7 +133,7 @@ export class WebServer {
 		];
 
 		let ownInjector = ReflectiveInjector.resolveAndCreate(providers, injector);
-		this._injector = ownInjector;
+		return ownInjector;
 	}
 
 	public get injector() {
@@ -170,9 +156,9 @@ export class WebServer {
 		let middlewares = this.options.middleware || [];
 		for (let middleware of middlewares) {
 			if (middleware instanceof Array)
-				this.engine.addConnectMiddleware(middleware[0], prepareMiddleware(this.injector, middleware[1]));
+				this.engine.addConnectMiddleware(middleware[0], <MiddlewareFunction>prepareMiddleware(this.injector, middleware[1]));
 			else
-				this.engine.addConnectMiddleware('/', prepareMiddleware(this.injector, middleware));
+				this.engine.addConnectMiddleware('/', <MiddlewareFunction>prepareMiddleware(this.injector, middleware));
 		}
 	}
 
@@ -204,7 +190,7 @@ export class WebServer {
 			return;
 
 		this._httpServer.close();
-		this._httpServer = null;
+		this._httpServer = undefined;
 	}
 
 	private requestReporter: RequestReporter = WebServer.DEFAULT_REQUEST_REPORTER;
@@ -289,15 +275,15 @@ export class WebServer {
 	}
 
 	get longParameterThreshold() {
-		return this.options.longParameterThreshold ?? 100;
+		return this.options.longParameterThreshold ?? DEFAULT_LONG_PARAMETER_THRESHOLD;
 	}
 
 	get longRequestThreshold() {
-		return this.options.longRequestThreshold ?? 1_000;
+		return this.options.longRequestThreshold ?? DEFAULT_LONG_REQUEST_THRESHOLD;
 	}
 
 	get hungRequestThreshold() {
-		return this.options.hungRequestThreshold ?? 3_000;
+		return this.options.hungRequestThreshold ?? DEFAULT_HUNG_REQUEST_THRESHOLD;
 	}
 
 	/**
@@ -326,8 +312,8 @@ export class WebServer {
 		}
 
 		return ellipsize(
-			event.server.options.longParameterThreshold, 
-			event.server.maskSensitiveInformation(parameterString, forKey)
+			event.server?.longParameterThreshold ?? DEFAULT_LONG_PARAMETER_THRESHOLD, 
+			event.server?.maskSensitiveInformation(parameterString, forKey) ?? parameterString
 		);
 	};
 
@@ -343,24 +329,20 @@ export class WebServer {
 
 			let queryString = '';
 			let host = event.request.headers?.['host'] ?? '';
-			let longParameterThreshold = event.server.longParameterThreshold;
+			let longParameterThreshold = event.server?.longParameterThreshold ?? DEFAULT_LONG_PARAMETER_THRESHOLD;
 
-			if ('query' in event.request) {
-				if (typeof event.request.query === 'string') {
-					queryString = event.request.query.startsWith('?') ? event.request.query : `?${event.request.query}`;
-				} else if (typeof event.request.query === 'object') {
-					queryString = `?${
-						Object.keys(event.request.query)
-							.map(key => [key, (event.request as any).query[key]])
-							.map(([key, value]) => 
-								`${encodeURIComponent(ellipsize(longParameterThreshold, key))}` 
-								+ `${ String(value) === '' ? '' : `=${encodeURIComponent(value)}` }`
-							)
-							.join(`&`)
-					}`;
+			if (event.request.query) {
+				queryString = `?${
+					Object.keys(event.request.query)
+						.map(key => [key, (event.request as any).query[key]])
+						.map(([key, value]) => 
+							`${encodeURIComponent(ellipsize(longParameterThreshold, key))}` 
+							+ `${ String(value) === '' ? '' : `=${encodeURIComponent(value)}` }`
+						)
+						.join(`&`)
+				}`;
 
-					queryString = queryString === '?' ? '' : queryString;
-				}
+				queryString = queryString === '?' ? '' : queryString;
 			}
 
 			// When using fastify as the underlying server, you must 
@@ -393,7 +375,8 @@ export class WebServer {
 				if (event.response.statusCode >= 500)
 					severity = 'error';
 				
-				statusSuffix = ` » ${event.response.statusCode} ${event.response.statusMessage ?? HTTP_MESSAGES[event.response.statusCode]}`;
+				statusSuffix = ` » ${event.response.statusCode} ${event.response.statusMessage 
+					?? (HTTP_MESSAGES as Record<number, string>)[event.response.statusCode]}`;
 			} else {
 				displayState = 'running';
 				if (state === 'long') {
@@ -405,7 +388,7 @@ export class WebServer {
 				}
 			}
 
-			if (event.metadata['uncaughtError'] && !event.server.options.silentErrors) {
+			if (event.metadata['uncaughtError'] && !event.server?.options.silentErrors) {
 				let error = event.metadata['uncaughtError'];
 				
 				if (error instanceof HttpError) {
@@ -430,7 +413,7 @@ export class WebServer {
 			}
 
 			logger.log(
-				`${displayState ? `[${displayState}] ` : ``}${method.toUpperCase()} ${host}${path}${queryString} » ${source} [${timeDelta} ms]${statusSuffix}`,
+				`${displayState ? `[${displayState}] ` : ``}${(method ?? '<UNKNOWN>').toUpperCase()} ${host}${path}${queryString} » ${source} [${timeDelta} ms]${statusSuffix}`,
 				{ severity }
 			);
 
@@ -440,12 +423,12 @@ export class WebServer {
 			metadata.longTimeout = setTimeout(() => {
 				metadata.state = 'long';
 				logRequest();
-			}, event.server.longRequestThreshold ?? 1_000);
+			}, event.server?.longRequestThreshold ?? DEFAULT_LONG_REQUEST_THRESHOLD);
 			
 			metadata.hungTimeout = setTimeout(() => {
 				metadata.state = 'hung';
 				logRequest();
-			}, event.server.hungRequestThreshold ?? 3_000);
+			}, event.server?.hungRequestThreshold ?? DEFAULT_HUNG_REQUEST_THRESHOLD);
 		} else if (reportingEvent === 'finished') {
 			clearTimeout(metadata.longTimeout);
 			clearTimeout(metadata.hungTimeout);
@@ -461,7 +444,7 @@ export class WebServer {
 		if (!WebEvent.current)
 			throw new Error(`WebSocket.start() can only be called while handling an incoming HTTP request`);
 
-		if (!WebEvent.request['__upgradeHead'])
+		if (!(WebEvent.request as any)['__upgradeHead'])
 			throw new Error(`Client is not requesting an upgrade`);
 
 		return await new Promise<WebSocket>((resolve, reject) => {
@@ -470,7 +453,7 @@ export class WebServer {
 				.handleUpgrade(
 					WebEvent.request,
 					WebEvent.request.socket,
-					WebEvent.request['__upgradeHead'],
+					(WebEvent.request as any)['__upgradeHead'],
 					socket => {
 						WebEvent.response.detachSocket(WebEvent.request.socket);
 						resolve(<any>socket);
@@ -494,7 +477,7 @@ export class WebServer {
 	 * @param event 
 	 */
 	 private addRequestId(event: WebEvent) {
-		let requestId: string;
+		let requestId: string | undefined;
 		let idHeaderNames = this.options.requestIdHeader;
 
 		if (typeof idHeaderNames === 'string')
@@ -532,13 +515,13 @@ export class WebServer {
 	 * Installs this route into the given Express application. 
 	 * @param app 
 	 */
-	addRoute(definition: RouteDescription, method: string, path: string, handler: (event: WebEvent) => void, middleware = []) {
+	addRoute(definition: RouteDescription, method: string, path: string, handler: (event: WebEvent) => void, middleware: MiddlewareDefinition[] = []) {
 		this.serviceDescription.routes.push(definition);
 
 		this.engine.addRoute(method, path, ev => {
 			this.addRequestId(ev);
 			this.logger.run(() => {
-				this.logger.withContext({ host: 'web-server', requestId: ev.requestId }, ev.requestId, () => handler(ev));
+				this.logger.withContext({ host: 'web-server', requestId: ev.requestId }, ev.requestId ?? '<no-request-id>', () => handler(ev));
 			});
 		}, middleware);
 	}
@@ -572,7 +555,7 @@ export class WebServer {
 
 		if (!this.options.hideExceptions) {
 			if (error instanceof Error && !('toJSON' in error)) {
-				let stack = error.stack.split(/\r?\n/).slice(1).map(line => line.replace(/ +at /, ''));
+				let stack = error.stack?.split(/\r?\n/).slice(1).map(line => line.replace(/ +at /, ''));
 				response.error = {
 					message: error.message ?? '«undefined»',
 					constructor: error.constructor.name ?? '«undefined»',

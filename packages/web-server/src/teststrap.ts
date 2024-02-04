@@ -1,12 +1,13 @@
+import { Module } from "@alterior/di";
 import { Application, AppOptions, AppOptionsAnnotation } from "@alterior/runtime";
 import supertest from 'supertest';
-import { Module } from "@alterior/di";
-import { WebServerOptions } from "./web-server-options";
-import { WebServerEngine } from "./web-server-engine";
 import { WebServer } from './web-server';
+import { WebServerOptions } from "./web-server-options";
+import { WebRequest } from "./metadata";
+import { ServerResponse } from "http";
 
 export function teststrap(module : Function, options? : WebServerOptions) {
-    return supertest(async (req, res, next) => {
+    return supertest(async (req: WebRequest, res: ServerResponse, next: () => void) => {
 
         let appOptionsAnnot = AppOptionsAnnotation.getForClass(module);
 

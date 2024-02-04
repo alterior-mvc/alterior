@@ -6,11 +6,11 @@ import "source-map-support/register";
 
 import { suite } from 'razmin';
 import { WebServerEngine } from "./web-server-engine";
-import { WebEvent } from "./metadata";
+import { MiddlewareDefinition, WebEvent, WebRequest } from "./metadata";
 import { WebServerOptions } from "./web-server-options";
 import * as http from 'http';
 
-import express from "express";
+import express, { Express } from "express";
 import * as net from "net";
 import { Injectable } from '@alterior/di';
 
@@ -24,12 +24,12 @@ export class TestWebServerEngine extends WebServerEngine {
 		routeEvent.response.end();
 	}
 	
-	private getRegistrarName(method : string) {
+	private getRegistrarName(method : string): keyof Express {
 		let registrar = method.toLowerCase();
 		if (!this.supportedMethods.includes(registrar))
 			throw new Error(`The specified method '${method}' is not supported by Express.`);
 			
-		return registrar;
+		return <keyof Express>registrar;
 	}
 
 	addConnectMiddleware(path : string, middleware : any) {
@@ -48,7 +48,7 @@ export class TestWebServerEngine extends WebServerEngine {
 
 		server.on('upgrade', (req : http.IncomingMessage, socket : net.Socket, head : Buffer) => {
 			let res = new http.ServerResponse(req);
-			req['__upgradeHead'] = head;
+			(req as any)['__upgradeHead'] = head;
 			res.assignSocket(req.socket);
 			this.app(req, res);
 		});
@@ -56,18 +56,18 @@ export class TestWebServerEngine extends WebServerEngine {
 		return server;
 	}
 	
-	addRoute(method : string, path : string, handler : (event : WebEvent) => void, middleware?) {
+	addRoute(method : string, path : string, handler : (event : WebEvent) => void, middleware?: MiddlewareDefinition[]) {
 		if (!middleware)
 			middleware = [];
 			
 		this.app[this.getRegistrarName(method)](
 			path, ...middleware, 
-			(req, res) => handler(new WebEvent(req, res))
+			(req: WebRequest, res: http.ServerResponse) => handler(new WebEvent(req, res))
 		);
 	}
 
 	addAnyRoute(handler : (event : WebEvent) => void) {
-		this.app.use((req, res) => handler(new WebEvent(req, res)));
+		this.app.use((req: WebRequest, res: http.ServerResponse) => handler(new WebEvent(req, res)));
 	}
 }
 

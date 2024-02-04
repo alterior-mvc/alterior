@@ -1,6 +1,8 @@
-import * as http from 'http';
 import type { WebServer } from '../web-server';
-import { RouteInstance } from '../route';
+
+import * as http from 'http';
+import * as net from 'net';
+import { RouteInstance } from '../route-instance';
 
 export interface ServerSentEvent {
 	event?: string;
@@ -9,11 +11,24 @@ export interface ServerSentEvent {
 	retry?: number;
 }
 
+export interface QueryParamMap {
+	[key: string]: string | string[] | QueryParamMap | QueryParamMap[];
+}
+
+export interface WebRequest extends http.IncomingMessage {
+	params?: Record<string, string>;
+	query?: QueryParamMap;
+	socket: net.Socket;
+	session?: Record<string, any>;
+	body?: any;
+	path?: string;
+}
+
 /**
  * Represents 
  */
 export class WebEvent<
-	RequestT extends http.IncomingMessage = http.IncomingMessage, 
+	RequestT extends WebRequest = WebRequest, 
 	ResponseT extends http.ServerResponse = http.ServerResponse
 > {
 	constructor(request: RequestT, response: ResponseT) {		
@@ -34,10 +49,10 @@ export class WebEvent<
 	request: RequestT;
 	response: ResponseT;
 	controller: any;
-	server: WebServer;
-	route: RouteInstance;
+	server?: WebServer;
+	route?: RouteInstance;
 
-	requestId: string;
+	requestId?: string;
 
 	/**
 	 * An arbitrary place to store metadata regarding this request. 
@@ -119,7 +134,7 @@ export class WebEvent<
 		return this.current.connected;
 	}
 
-	static with<T, RequestT extends http.IncomingMessage, ResponseT extends http.ServerResponse>(routeEvent: WebEvent<RequestT, ResponseT>, callback: () => T): T {
+	static with<T, RequestT extends WebRequest, ResponseT extends http.ServerResponse>(routeEvent: WebEvent<RequestT, ResponseT>, callback: () => T): T {
 		let zone = Zone.current.fork({
 			name: `WebEventZone`,
 			properties: {

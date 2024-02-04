@@ -1,5 +1,5 @@
 import { Provider, inject } from "@alterior/di";
-import { WebEvent } from "./metadata";
+import { MiddlewareDefinition, WebEvent } from "./metadata";
 import { WebServerOptions } from './web-server-options';
 import { Constructor } from "@alterior/runtime";
 import { LogSeverity, Logger } from "@alterior/logging";
@@ -11,17 +11,18 @@ import * as spdy from "spdy";
 import * as net from "net";
 import * as tls from "tls";
 
-export type ConnectMiddleware = (req: http.IncomingMessage, res: http.ServerResponse, next?: () => void) => void;
+export type ConnectMiddleware = (req: http.IncomingMessage, res: http.ServerResponse, next: () => void) => void;
+export type ConnectApp = (req: http.IncomingMessage, res: http.ServerResponse, next?: () => void) => void;
 
 export abstract class WebServerEngine {
 	protected logger = inject(Logger, { optional: true });
 
-	readonly app: ConnectMiddleware;
+	readonly abstract app: ConnectApp;
 	readonly providers: Provider[] = [];
 	
-	abstract addConnectMiddleware(path: string, middleware: ConnectMiddleware);
-	abstract addRoute(method: string, path: string, handler: (event: WebEvent) => void, middleware?);
-	abstract addAnyRoute(handler: (event: WebEvent) => void);
+	abstract addConnectMiddleware(path: string, middleware: ConnectMiddleware): void;
+	abstract addRoute(method: string, path: string, handler: (event: WebEvent) => void, middleware?: MiddlewareDefinition[]): void;
+	abstract addAnyRoute(handler: (event: WebEvent) => void): void;
 
 	readonly supportedMethods = [ 
 		"checkout", "copy", "delete", "get", "head", "lock", "merge", 
@@ -87,9 +88,9 @@ export abstract class WebServerEngine {
 			if (options.sniHandler) {
 				tlsOptions.SNICallback = async (servername, callback) => {
 					try {
-						let context = await options.sniHandler(servername)
-						callback(undefined, context);
-					} catch (e) {
+						let context = await options.sniHandler!(servername)
+						callback(null, context);
+					} catch (e: any) {
 						callback(e);
 					}
 				};
@@ -142,7 +143,7 @@ export abstract class WebServerEngine {
 		routeEvent.response.end();
 	}
 
-	static default: Constructor<WebServerEngine> = null;
+	static default: Constructor<WebServerEngine> | null = null;
 	
 	protected log(severity: LogSeverity, message: string) {
 		if (this.logger)
@@ -167,7 +168,7 @@ export abstract class WebServerEngine {
 	protected attachWebSocketHandler(server: http.Server) {
 		server.on('upgrade', (req: http.IncomingMessage, socket: net.Socket, head: Buffer) => {
 			let res = new http.ServerResponse(req);
-			req['__upgradeHead'] = head;
+			(req as any)['__upgradeHead'] = head;
 			res.assignSocket(req.socket);
 			this.app(req, res);
 		});

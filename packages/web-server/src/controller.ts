@@ -1,16 +1,12 @@
-import { WebServer } from "./web-server";
-import { Provider, ReflectiveInjector, Injector } from "@alterior/di";
-import { RouteInstance } from './route';
-import { ControllerAnnotation, ControllerOptions, MountOptions, RouteReflector, MiddlewareDefinition } from "./metadata";
-import * as express from 'express';
+import { Injector, Provider, ReflectiveInjector } from "@alterior/di";
+import { ControllerAnnotation, ControllerOptions, MiddlewareDefinition, MountOptions } from "./metadata";
+import { RouteReflector } from "./metadata/route-reflector-private";
 import { prepareMiddleware } from "./middleware";
+import { WebServer } from "./web-server";
+import { RouteInstance } from "./route-instance";
 
 export interface ControllerContext {
-	pathPrefix? : string;
-
-	/* PRIVATE */
-
-	visited? : any[];
+	pathPrefix?: string;
 }
 
 /**
@@ -18,88 +14,46 @@ export interface ControllerContext {
  */
 export class ControllerInstance {
 	constructor(
-		readonly server : WebServer,
-		readonly type : Function, 
-		readonly injector : Injector, 
-		readonly routeTable : any[], 
-		context? : ControllerContext,
+		readonly server: WebServer,
+		readonly type: Function,
+		readonly injector: Injector,
+		readonly routeTable: any[],
+		pathPrefix: string = '',
 		readonly isModule = false
 	) {
-		this.setContext(context);
-		this.prepare();
-	}
-
-	private _instance : any;
-
-	get instance() {
-		return this._instance;
-	}
-
-	private setContext(context : ControllerContext) {
-		if (!context)
-			context = {};
-
-		if (!context.pathPrefix)
-			context.pathPrefix = '';
-	
-		if (!context.visited)
-			context.visited = [];
-
-		if (context.visited.includes(this.type)) {
-			console.warn(`Controller visited multiple times and skipped. May indicate recursion.`);
-			return;
-		}
+		this.instance = this.injector.get(this.type);
+		this.options = ControllerAnnotation.getForClass(this.type)?.options ?? {};
+		this.pathPrefix = this.combinePaths(pathPrefix, this.options.basePath);
+		this.routes = this.findRoutes();
 		
-		context.visited.push(this.type);
-		this._context = context;
+		// Ensure indexes are valid.
+
+		this.middleware = [ ...(this.options?.middleware ?? []) ];
+		let invalidIndex = this.middleware.findIndex(x => !x);
+		if (invalidIndex >= 0)
+			throw new Error(`Controller '${this.type}' provided null/undefined middleware at position ${invalidIndex}`);
+
 	}
 
-	private _context : ControllerContext;
-	get context() {
-		return this._context;
-	}
+	readonly middleware: MiddlewareDefinition[];
+	readonly pathPrefix: string;
 
-	get middleware() {
-		let middleware : MiddlewareDefinition[] = [];
-		if (this.options.middleware)
-			middleware = middleware.concat(this.options.middleware);
+	readonly instance: any;
+	readonly routes: RouteInstance[];
+	private _controllers: ControllerInstance[] = [];
+	readonly options: ControllerOptions;
 
-		return middleware;
-	}
-
-	combinePaths(...paths) {
-		let finalPath = '';
-
-		for (let path of paths) {
-			let segment = path ? path.replace(/^\/|\/$/g, '') : undefined;
-			if (segment)
-				finalPath += `/${segment}`;
-		}
-
-		finalPath = finalPath.replace(/^\/|\/$/g, '');
-
-		if (!finalPath || finalPath === '/')
-			return '';
-		
-		return '/' + finalPath;
-	}
-
-	private prepare() {
-		this._instance = this.injector.get(this.type);
+	private findRoutes() {
 
 		// Reflect upon our routes
 
-
-		let routeReflector = new RouteReflector(this.type);
+		let routeReflector = new RouteReflector(this.instance);
 		let routeDefinitions = routeReflector.routes;
-		let controllerMetadata = ControllerAnnotation.getForClass(this.type);
-		let controllerOptions = controllerMetadata ? controllerMetadata.options : {} || {};
-		this._options = controllerOptions;
 
 		for (let mount of routeReflector.mounts) {
 			let controller = mount.controller;
 			let mountInjector = this.injector;
-			let providers : Provider[] = (mount.options || {} as MountOptions).providers || [];
+			let providers: Provider[] = (mount.options || {} as MountOptions).providers || [];
 			let existingInstance = mountInjector.get(controller, null);
 
 			// If the controller is not provided by the injector, or if the mounter has customized the providers,
@@ -117,19 +71,16 @@ export class ControllerInstance {
 			}
 
 			let subPrefix = this.combinePaths(
-				this.context.pathPrefix, 
-				this._options.basePath,
+				this.pathPrefix,
 				mount.path
 			);
 
 			let instance = new ControllerInstance(
-				this.server, 
-				controller, 
-				mountInjector, 
-				this.routeTable, 
-				{
-					pathPrefix: subPrefix
-				}
+				this.server,
+				controller,
+				mountInjector,
+				this.routeTable,
+				subPrefix
 			);
 
 			this.controllers.push(instance);
@@ -138,81 +89,68 @@ export class ControllerInstance {
 
 		// Register all of our routes with Express
 
-		this._routes = routeDefinitions.map(
+		return routeDefinitions.map(
 			definition => new RouteInstance(
-				this.server, 
+				this.server,
 				this.instance,
-				this.injector, 
-				this.middleware, 
-				this.group, 
-				this.type, 
+				this.injector,
+				this.middleware,
+				this.group,
+				this.type,
 				this.routeTable,
 				definition
 			)
 		);
 	}
 
-	private _routes : RouteInstance[];
+	combinePaths(...paths: (string | undefined)[]) {
+		let finalPath = '';
 
-	get pathPrefix() {
-		return this.combinePaths(this._context.pathPrefix, this._options.basePath);
-	}
-	
-	get routes() {
-		return this._routes;
-	}
+		for (let path of paths) {
+			let segment = path ? path.replace(/^\/|\/$/g, '') : undefined;
+			if (segment)
+				finalPath += `/${segment}`;
+		}
 
-	private _controllers : ControllerInstance[] = [];
+		finalPath = finalPath.replace(/^\/|\/$/g, '');
+
+		if (!finalPath || finalPath === '/')
+			return '';
+
+		return '/' + finalPath;
+	}
 
 	get controllers() {
 		return this._controllers;
 	}
 
-	private _options : ControllerOptions;
-
-	get options() {
-		return this._options;
-	}
-
 	get group(): string {
-		let controllerGroup : string = undefined;
-		
-		if (this._options && this._options.group) {
-			controllerGroup = this._options.group;
+		let controllerGroup: string | undefined = undefined;
+
+		if (this.options && this.options.group) {
+			controllerGroup = this.options.group;
 		} else {
 			controllerGroup = this.type.name.replace(/Controller$/, '');
-			controllerGroup = controllerGroup.charAt(0).toLowerCase()+controllerGroup.slice(1);
+			controllerGroup = controllerGroup.charAt(0).toLowerCase() + controllerGroup.slice(1);
 		}
 
 		return controllerGroup;
 	}
 
-	private prepareMiddleware() {
-		
-		// Load up the defined middleware for this route
-		let middleware = this.middleware;
-
-		// Ensure indexes are valid.
-
-		let invalidIndex = middleware.findIndex(x => !x);
-		if (invalidIndex >= 0)
-			throw new Error(`Controller '${this.type}' provided null middleware at position ${invalidIndex}`);
-
+	private prepareMiddleware(): any[] {
 		// Procure an injector which can handle injecting the middlewares' providers
-
-		let middlewareProviders : Provider[] = <any[]>middleware.filter(x => Reflect.getMetadata('alterior:middleware', x));
-
-		let childInjector = ReflectiveInjector.resolveAndCreate(middlewareProviders, this.injector);
+		let childInjector = ReflectiveInjector.resolveAndCreate(
+			<Provider[]>this.middleware.filter(x => Reflect.getMetadata('alterior:middleware', x)), 
+			this.injector
+		);
 
 		// Prepare the middlewares (if they are DI middlewares, they get injected)
 
-		this.resolvedMiddleware = middleware.map(x => prepareMiddleware(childInjector, x));
+		return this.middleware.map(x => prepareMiddleware(childInjector, x));
 	}
 
-	resolvedMiddleware : express.RequestHandler[];
-
 	initialize() {
-		if (!this.isModule && this.instance && typeof this.instance.altOnInit === 'function') 
+		if (!this.isModule && this.instance && typeof this.instance.altOnInit === 'function')
 			this.instance.altOnInit();
 	}
 
@@ -225,7 +163,7 @@ export class ControllerInstance {
 	 * Notify the controller that it's web service is now listening to the desired port
 	 * @param server 
 	 */
-	listen(server : WebServer) {
+	listen(server: WebServer) {
 		if (this.instance && typeof this.instance.altOnListen === 'function')
 			this.instance.altOnListen(server);
 	}
@@ -235,13 +173,12 @@ export class ControllerInstance {
 			this.instance.altOnStop();
 	}
 
-	mount(webServer : WebServer) {
+	mount(webServer: WebServer) {
 		WebServer.register(this.instance, this.server);
-		
-		this.prepareMiddleware();
-		for (let middleware of this.resolvedMiddleware)
+
+		for (let middleware of this.prepareMiddleware())
 			webServer.engine.addConnectMiddleware(this.pathPrefix, middleware);
-		
+
 		this.routes.forEach(r => r.mount(this.pathPrefix));
 		this.controllers.forEach(c => c.mount(webServer));
 

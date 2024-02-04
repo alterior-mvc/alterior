@@ -1,9 +1,11 @@
 import { Annotation, AnnotationDecorator, MetadataName } from "@alterior/annotations";
-import * as express from 'express';
+import { Constructor } from "@alterior/runtime";
+import { IncomingMessage, ServerResponse } from "http";
 
 export let CONTROLLER_CLASSES = [];
 
-export type MiddlewareDefinition = Function | express.RequestHandler | [ string, express.RequestHandler ];
+export type MiddlewareFunction = (req: IncomingMessage, res: ServerResponse, next: () => void) => void;
+export type MiddlewareDefinition = Constructor<any> | MiddlewareFunction | [ string, MiddlewareFunction ];
 
 export interface ControllerOptions {
 	/**

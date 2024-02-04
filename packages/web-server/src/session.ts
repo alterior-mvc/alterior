@@ -11,10 +11,10 @@ export class Session {
     }
 
     get<T>(id : string, defaultValue? : T): T {
-        return WebEvent.current.request['session'][id] ?? defaultValue;
+        return WebEvent.current.request.session?.[id] ?? defaultValue;
     }
 
     set<T>(id : string, value : T) {
-        WebEvent.current.request['session'][id] = value;
+        WebEvent.current.request.session![id] = value;
     }
 }

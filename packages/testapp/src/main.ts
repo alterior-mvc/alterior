@@ -11,7 +11,7 @@ WebServerEngine.default = ExpressEngine;
 @WebService()
 export class MyService {
     @Mount('/openapi')
-    openapi: OpenApiController;
+    openapi!: OpenApiController;
     
     @Get()
     async info() {

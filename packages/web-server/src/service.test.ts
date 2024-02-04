@@ -1,11 +1,10 @@
-import { describe, it } from "razmin";
-import { teststrap } from "./teststrap";
-import { WebService, WebServiceAnnotation } from "./service";
-import { Mount, Get } from "./metadata";
-import { OpenApiController } from "./openapi";
-import { expect } from "chai";
+import { ModuleAnnotation, ValueProvider } from "@alterior/di";
 import { AppOptionsAnnotation } from "@alterior/runtime";
-import { ModuleAnnotation } from "@alterior/di";
+import { expect } from "chai";
+import { describe, it } from "razmin";
+import { Get } from "./metadata";
+import { WebService, WebServiceAnnotation } from "./service";
+import { teststrap } from "./teststrap";
 
 describe("WebServiceDecorator", () => {
 	it('should work for a simple use case', async () => {
@@ -42,12 +41,14 @@ describe("WebServiceDecorator", () => {
         expect(appOptionsAnnotation).to.not.eq(null);
         expect(moduleAnnotation).to.not.eq(null);
 
-        expect(appOptionsAnnotation.options.version).to.eq('1.2.3');
-        expect(moduleAnnotation.providers.length).to.eq(1);
-        expect(moduleAnnotation.providers[0]['provide']).to.eq('foo');
-        expect(moduleAnnotation.providers[0]['useValue']).to.eq(123);
+        expect(appOptionsAnnotation?.options?.version).to.eq('1.2.3');
+        expect(moduleAnnotation?.providers.length).to.eq(1);
 
-        let webServerModule = moduleAnnotation.imports.find(x => typeof x === 'function' && x.name === 'WebServerModule');
+        let provider = <ValueProvider>moduleAnnotation?.providers?.[0];
+        expect(provider.provide).to.eq('foo');
+        expect(provider.useValue).to.eq(123);
+
+        let webServerModule = moduleAnnotation?.imports.find(x => typeof x === 'function' && x.name === 'WebServerModule');
         expect(webServerModule).to.exist;
     });
 

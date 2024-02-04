@@ -5,5 +5,4 @@ export * from './application';
 export * from './modules';
 export * from './reflector';
 export * from './roles.service';
-export * from './service';
 export * from './expose';

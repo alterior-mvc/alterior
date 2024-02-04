@@ -1,8 +1,10 @@
 
-export * from './route';
+export * from './route-description';
+export * from './route-instance';
+export * from './route-method-metadata';
+export * from './route-method-parameter';
+export * from './route-param-description';
 export * from './controller';
-export * from './upload';
-export * from './web-server-ref';
 export * from './middleware';
 export * from './metadata';
 export * from './response';
@@ -11,11 +13,9 @@ export * from './service';
 export * from './input';
 export * from './web-server-options';
 export * from './web-server-engine';
-export * from './web-server-ref';
 export * from './web-server-setup-error';
 export * from './web-server';
 export * from './service-description';
 export * from './service-description-ref';
-export * from './web-service-compiler';
 export * from './certificate-generator';
 export * from './reactive-socket';

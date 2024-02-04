@@ -1,26 +1,32 @@
 import * as forge from 'node-forge';
 
 export interface GeneratorOptions {
-    days? : number;
-    extensions? : any[]; // todo
-    algorithm? : 'sha256';
-    pkcs7? : boolean;
-    clientCertificate? : boolean;
-    clientCertificateCN? : string;
-    keySize? : number;
-    keyPair? : { privateKey : string, publicKey : string };
+    days?: number;
+    extensions?: any[]; // todo
+    algorithm?: 'sha256';
+    pkcs7?: boolean;
+    clientCertificate?: boolean;
+    clientCertificateCN?: string;
+    keySize?: number;
+    keyPair?: { privateKey: string, publicKey: string };
 }
 
 export interface GeneratedCertificate {
-    private : string;
-    public : string;
-    cert : string;
+    private: string;
+    public: string;
+    cert: string;
+    pkcs7: string | null;
+    fingerprint: string;
+    clientPrivate: string | null;
+    clientPublic: string | null;
+    clientCert: string | null;
+    clientPkcs7: string | null;
 }
 
-export type CertAttributes = { name? : string, shortName? : string, value : string }[];
+export type CertAttributes = { name?: string, shortName?: string, value: string }[];
 
 export class CertificateGenerator {
-    private toPositiveHex(hexString) {
+    private toPositiveHex(hexString: string) {
         // a hexString is considered negative if it's most significant bit is 1
         // because serial numbers use ones' complement notation
         // this RFC in section 4.1.2.2 requires serial numbers to be positive
@@ -35,7 +41,7 @@ export class CertificateGenerator {
         return mostSignificantHexAsInt.toString() + hexString.substring(1);
     }
 
-    private getAlgorithm(key) {
+    private getAlgorithm(key: string) {
         switch (key) {
             case 'sha256':
                 return forge.md.sha256.create();
@@ -44,7 +50,7 @@ export class CertificateGenerator {
         }
     }
 
-    async generate(attrs : CertAttributes, options : GeneratorOptions = {}): Promise<GeneratedCertificate> {
+    async generate(attrs: CertAttributes, options: GeneratorOptions = {}): Promise<GeneratedCertificate> {
         options = options || {};
 
         let generatePem = (keyPair: { privateKey: string, publicKey: string }) => {
@@ -99,29 +105,29 @@ export class CertificateGenerator {
                 }]
             }]);
 
-            cert.sign(forge.pki.privateKeyFromPem(keyPair.privateKey), this.getAlgorithm(options && options.algorithm));
+            cert.sign(forge.pki.privateKeyFromPem(keyPair.privateKey), this.getAlgorithm(options?.algorithm ?? 'sha256'));
 
             const fingerprint = forge.md.sha1
                 .create()
                 .update(forge.asn1.toDer(forge.pki.certificateToAsn1(cert)).getBytes())
                 .digest()
                 .toHex()
-                .match(/.{2}/g)
+                .match(/.{2}/g)!
                 .join(':');
 
-            let pem = {
+            let pem: GeneratedCertificate = {
                 private: keyPair.privateKey,
                 public: keyPair.publicKey,
                 cert: forge.pki.certificateToPem(cert),
                 pkcs7: null,
                 fingerprint: fingerprint,
-                clientprivate: null,
-                clientpublic: null,
-                clientcert: null,
-                clientpkcs7: null
+                clientPrivate: null,
+                clientPublic: null,
+                clientCert: null,
+                clientPkcs7: null
             };
 
-            if (options && options.pkcs7) {
+            if (options?.pkcs7) {
                 let p7 = forge.pkcs7.createSignedData();
                 p7.addCertificate(cert);
                 pem.pkcs7 = forge.pkcs7.messageToPem(p7);
@@ -156,32 +162,26 @@ export class CertificateGenerator {
                 // Sign client cert with root cert
                 clientcert.sign(forge.pki.privateKeyFromPem(keyPair.privateKey));
 
-                pem.clientprivate = forge.pki.privateKeyToPem(clientkeys.privateKey);
-                pem.clientpublic = forge.pki.publicKeyToPem(clientkeys.publicKey);
-                pem.clientcert = forge.pki.certificateToPem(clientcert);
+                pem.clientPrivate = forge.pki.privateKeyToPem(clientkeys.privateKey);
+                pem.clientPublic = forge.pki.publicKeyToPem(clientkeys.publicKey);
+                pem.clientCert = forge.pki.certificateToPem(clientcert);
 
                 if (options.pkcs7) {
                     let clientp7 = forge.pkcs7.createSignedData();
                     clientp7.addCertificate(clientcert);
-                    pem.clientpkcs7 = forge.pkcs7.messageToPem(clientp7);
+                    pem.clientPkcs7 = forge.pkcs7.messageToPem(clientp7);
                 }
             }
 
             let caStore = forge.pki.createCaStore();
             caStore.addCertificate(cert);
 
-            try {
-                forge.pki.verifyCertificateChain(caStore, [cert],
-                    function (vfd, depth, chain) {
-                        if (vfd !== true) {
-                            throw new Error('Certificate could not be verified.');
-                        }
-                        return true;
-                    });
-            }
-            catch (ex) {
-                throw new Error(ex);
-            }
+            forge.pki.verifyCertificateChain(caStore, [cert],
+                (vfd, depth, chain) => {
+                    if (vfd !== true)
+                        throw new Error('Certificate could not be verified.');
+                    return true;
+                });
 
             return pem;
         };
@@ -196,9 +196,9 @@ export class CertificateGenerator {
                         return reject(err);
 
                     try {
-                        return resolve({ 
-                            privateKey: forge.pki.privateKeyToPem(keyPair.privateKey), 
-                            publicKey: forge.pki.publicKeyToPem(keyPair.publicKey) 
+                        return resolve({
+                            privateKey: forge.pki.privateKeyToPem(keyPair.privateKey),
+                            publicKey: forge.pki.publicKeyToPem(keyPair.publicKey)
                         });
                     } catch (ex) {
                         return reject(ex);
@@ -207,6 +207,6 @@ export class CertificateGenerator {
             });
         }
 
-        return generatePem(keyPair);
+        return generatePem(keyPair!);
     }
 }

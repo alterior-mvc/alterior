@@ -1,11 +1,9 @@
 import { suite } from 'razmin';
 import { expect } from 'chai';
 import { WebService } from './service';
-import { Get, Controller, Mount } from './metadata';
+import { Get } from './metadata';
 import { teststrap } from './teststrap';
-import { Module } from '@alterior/di';
 import { Application } from '@alterior/runtime';
-import * as fetch from 'node-fetch';
 
 suite(describe => {
     describe('@Controller', it => {

@@ -2,6 +2,8 @@ import { suite } from 'razmin';
 import { prepareMiddleware, Middleware } from './middleware';
 import { ReflectiveInjector, Inject, InjectionToken } from '@alterior/di';
 import { expect } from 'chai';
+import { MiddlewareDefinition, MiddlewareFunction, WebRequest } from './metadata';
+import { ServerResponse } from 'http';
 
 suite(describe => {
 	describe('prepareMiddleware', it => {
@@ -12,17 +14,17 @@ suite(describe => {
 
             @Middleware()
             class SampleMiddleware {
-                handle(req, res, next) {
+                handle(req: WebRequest, res: ServerResponse, next: () => void) {
                     observedReq = req;
                     observedRes = res;
-                    observedNext = next;        
+                    observedNext = next;
                 }
             }
 
-            let preparedMiddleware = prepareMiddleware(injector, SampleMiddleware);
+            let preparedMiddleware = <MiddlewareFunction>prepareMiddleware(injector, SampleMiddleware);
 
-            let passedReq = {};
-            let passedRes = {};
+            let passedReq = <WebRequest>{};
+            let passedRes = <ServerResponse>{};
             let passedNext = () => {};
 
             preparedMiddleware(passedReq, passedRes, passedNext);
@@ -50,7 +52,7 @@ suite(describe => {
                     observedSampleInjectable = sampleInjectable;
                 }
 
-                handle(req, res, next) {
+                handle(req: WebRequest, res: ServerResponse, next: () => void) {
                 }
             }
 
@@ -62,17 +64,17 @@ suite(describe => {
             let injector = ReflectiveInjector.resolveAndCreate([]);
             let observedReq, observedRes, observedNext;
 
-            function connectMiddleware(req, res, next) {
+            let connectMiddleware: MiddlewareDefinition = (req, res, next) => {
                 observedReq = req;
                 observedRes = res;
                 observedNext = next;
             }
 
-            let preparedMiddleware = prepareMiddleware(injector, connectMiddleware);
+            let preparedMiddleware = <MiddlewareFunction>prepareMiddleware(injector, connectMiddleware);
             expect(preparedMiddleware).to.be.equal(connectMiddleware);
 
-            let passedReq = {};
-            let passedRes = {};
+            let passedReq = <WebRequest>{};
+            let passedRes = <ServerResponse>{};
             let passedNext = () => {};
 
             preparedMiddleware(passedReq, passedRes, passedNext);

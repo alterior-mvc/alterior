@@ -1,9 +1,9 @@
-import { MetadataName, Annotation } from "@alterior/annotations";
+import { Annotation, MetadataName } from "@alterior/annotations";
 
-export class InputOptions {
-	type : string;
-	name : string;
-	default? : any;
+export interface InputOptions {
+	type: string;
+	name?: string;
+	default?: any;
 }
 
 /**
@@ -12,13 +12,13 @@ export class InputOptions {
  */
 @MetadataName('@alterior/web-server:Input')
 export class InputAnnotation extends Annotation {
-	constructor(options : InputOptions) {
+	constructor(options: InputOptions) {
 		super(options);
 	}
 
-	type : string;
-	name : string;
-	default? : any;
+	type!: string;
+	name?: string;
+	default?: any;
 }
 
 export interface QueryParamOptions {
@@ -26,19 +26,19 @@ export interface QueryParamOptions {
 	 * Specify a default value for this parameter when it is not present 
 	 * in the request.
 	 */
-	default : any;
+	default: any;
 }
 
 /**
  * Apply to a parameter to indicate that it represents a query parameter (ie foo in /bar?foo=1)
  * @param name 
  */
- export function QueryParam(name? : string, options? : QueryParamOptions) {
+export function QueryParam(name?: string, options?: QueryParamOptions) {
 	return InputAnnotation.decorator({
-		validTargets: [ 'parameter' ],
+		validTargets: ['parameter'],
 		allowMultiple: false
-	})({ 
-		type: 'queryParam', 
+	})({
+		type: 'queryParam',
 		name,
 		default: options?.default
 	});
@@ -48,13 +48,12 @@ export interface QueryParamOptions {
  * Apply to a parameter to indicate that it represents a query parameter (ie foo in /bar?foo=1)
  * @param name 
  */
- export function QueryParams() {
+export function QueryParams() {
 	return InputAnnotation.decorator({
-		validTargets: [ 'parameter' ],
+		validTargets: ['parameter'],
 		allowMultiple: false
 	})({
 		type: 'queryParams',
-		name: null,
 		default: {}
 	});
 }
@@ -63,13 +62,13 @@ export interface QueryParamOptions {
  * Apply to a parameter to indicate that it represents a path parameter (ie 'thing' in /hello/:thing)
  * @param name 
  */
-export function PathParam(name? : string) {
+export function PathParam(name?: string) {
 	return InputAnnotation.decorator({
-		validTargets: [ 'parameter' ],
+		validTargets: ['parameter'],
 		allowMultiple: false
-	})({ 
-		type: 'path', 
-		name 
+	})({
+		type: 'path',
+		name
 	});
 }
 
@@ -78,10 +77,10 @@ export function PathParam(name? : string) {
  */
 export function Body() {
 	return InputAnnotation.decorator({
-		validTargets: [ 'parameter' ],
+		validTargets: ['parameter'],
 		allowMultiple: false
-	})({ 
-		type: 'body', 
-		name: '' 
+	})({
+		type: 'body',
+		name: ''
 	});
 }

@@ -31,10 +31,10 @@ export const METHOD_PARAMETER_ANNOTATIONS_KEY = '__parameter__metadata__';
  * Represents an Annotation subclass from the perspective of using it to 
  * construct itself by passing an options object.
  */
-interface AnnotationConstructor<AnnoT extends Annotation, TS extends any[]> {
+type AnnotationConstructor<AnnoT extends Annotation, TS extends any[]> = {
     new (...args: TS): AnnoT;
     getMetadataName(): string;
-}
+} & typeof Annotation;
 
 /**
  * Represents a decorator which accepts an Annotation's options object.
@@ -512,8 +512,8 @@ export class Annotation implements IAnnotation {
     public static getForClass<T extends Annotation, TS extends any[]>(
         this: AnnotationConstructor<T, TS>, 
         type: any
-    ): T {
-        return (this as any).getAllForClass(type)[0];
+    ): T | undefined {
+        return this.getAllForClass(type)[0];
     }
 
     /**
@@ -548,8 +548,8 @@ export class Annotation implements IAnnotation {
         this: AnnotationConstructor<T, TS>, 
         type: any,
         methodName: string
-    ): T {
-        return (this as any).getAllForMethod(type, methodName)[0];
+    ): T | undefined {
+        return this.getAllForMethod(type, methodName)[0];
     }
     
     /**
@@ -584,7 +584,7 @@ export class Annotation implements IAnnotation {
         this: AnnotationConstructor<T, TS>, 
         type: any,
         propertyName: string
-    ): T {
+    ): T | undefined {
         return (this as any).getAllForProperty(type, propertyName)[0];
     }
     

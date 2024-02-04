@@ -1,7 +1,7 @@
 import { Logger } from "@alterior/logging";
-import { WebEvent } from "./metadata";
-import { RouteInstance } from "./route";
+import { MiddlewareDefinition, WebEvent } from "./metadata";
 import * as tls from 'tls';
+import { RouteInstance } from "./route-instance";
 
 type Protocol = 'h2'
 	| 'spdy/3.1'
@@ -87,7 +87,7 @@ export interface WebServerOptions {
 	/**
 	 * Connect-style middleware that should be run before the final request handler
 	 */
-    middleware? : (Function | [ string, Function ])[];
+    middleware? : MiddlewareDefinition[];
 
 	/**
 	 * Whether or not to hide exception details from the web response output
