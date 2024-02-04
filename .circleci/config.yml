@@ -57,4 +57,3 @@ workflows:
       - node-21
       - node-20
       - node-18
-      - node-16
