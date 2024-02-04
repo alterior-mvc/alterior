@@ -1,4 +1,8 @@
 # ⏭ vNext [4.0]
+- `@/runtime`
+  * **Breaking**: `Application.bootstrap()` now returns `Promise<Application>` instead of `Application`
+  * You can now specify the `prepare` option on your modules in order to perform an operation before the application 
+    is bootstrapped. This can be used to connect to databases, for instance.
 - `@/web-server`: **Breaking**: Renamed WebConduit to ReactiveSocket, and `WebServer#startConduit()` to 
   `WebServer#startReactiveSocket()`
   

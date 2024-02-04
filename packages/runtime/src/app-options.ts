@@ -9,7 +9,8 @@ export interface ApplicationOptions {
 	name?: string;
 
 	/**
-	 * Version of the service
+	 * Version of the service. If not specified, Alterior will try to read this from your package.json, 
+	 * if we are in an environment where that's possible.
 	 */
 	version?: string;
 	

@@ -116,9 +116,9 @@ export class Application {
 	/**
 	 * Bootstrap an Alterior application.
 	 */
-	public static bootstrap(entryModule: Function, options: ApplicationOptions = {}): Application {
+	public static bootstrap(entryModule: Function, options: ApplicationOptions = {}): Promise<Application> {
 		let executionContext = new ExecutionContext();
-		return executionContext.runSync(() => {
+		return executionContext.run(async () => {
 			this.validateEntryModule(entryModule);
 
 			options = {
@@ -131,7 +131,13 @@ export class Application {
 				...options
 			};
 	
-			let runtime = new Runtime(entryModule, options);
+			let modules = Runtime.resolveModules(entryModule);
+
+			// Wait for all modules to be ready before proceeding. This can be used to connect to databases or 
+			// remote services or otherwise prepare the modules before bootstrapping happens.
+			await Promise.all(modules.map(m => m.metadata?.prepare?.()));
+
+			let runtime = new Runtime(modules, options);
 	
 			executionContext.application = runtime.getService(Application);
 			

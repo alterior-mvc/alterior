@@ -16,8 +16,8 @@ import { RoleConfigurationMode, RolesService } from "./roles.service";
  * the module instances and running lifecycle events.
  */
 export class Runtime {
-    constructor(entryModule: Function, options: ApplicationOptions) {
-        this.definitions = this.resolveModuleDefinitions(entryModule);
+    constructor(modules: ModuleDefinition[], options: ApplicationOptions) {
+        this.definitions = modules;
         this.injector = this.resolveInjector(this.determineProviders(options));
         this.instances = this.definitions.map(defn => new ModuleInstance(defn, this.injector.get(defn.target)));
     }
@@ -259,19 +259,7 @@ export class Runtime {
         process.exit();
     }
 
-    /**
-     * Retrieve the ModuleAnnotation for a given Module definition, whether it be a class annotated
-     * with `@Module()` or a plain object with `$module` which configures a module class.
-     * 
-     * This is an alias of ModuleAnnotation.getForClass(module)
-     * 
-     * @param module 
-     */
-    public getMetadataForModule(module: ModuleLike): ModuleAnnotation {
-        return ModuleAnnotation.getForClass(module);
-    }
-
-    private isConfiguredModule(module: ModuleLike): module is ConfiguredModule {
+    private static isConfiguredModule(module: ModuleLike): module is ConfiguredModule {
         return '$module' in module;
     }
 
@@ -281,7 +269,7 @@ export class Runtime {
      * so resolveModule() on the same runtime object will not work, preventing 
      * loops.
      */
-    private resolveModuleDefinitions(module: ModuleLike, visited: ModuleLike[] = []): ModuleDefinition[] {
+    public static resolveModules(module: ModuleLike, visited: ModuleLike[] = []): ModuleDefinition[] {
 
         // Prevent infinite recursion
 
@@ -301,7 +289,7 @@ export class Runtime {
             module = AnonymousConfigurationModule;
         }
 
-        let metadata = this.getMetadataForModule(module);
+        let metadata = ModuleAnnotation.getForClass(module);
         let definitions: ModuleDefinition[] = [
             {
                 target: module,
@@ -317,7 +305,7 @@ export class Runtime {
                     throw new Error(`Failed to resolve module referenced in position ${position} by ${module.toString()}`);
                 }
 
-                definitions.push(...this.resolveModuleDefinitions(importedModule, visited));
+                definitions.push(...this.resolveModules(importedModule, visited));
                 ++position;
             }
         }
