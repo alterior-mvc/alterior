@@ -1,30 +1,31 @@
-import fastify, { FastifyInstance } from "fastify";
-import { WebEvent, WebServerEngine, ConnectMiddleware } from '@alterior/web-server';
+import { ConnectApp, MiddlewareDefinition, WebEvent, WebRequest, WebServerEngine } from '@alterior/web-server';
 
+import fastify, { FastifyReply } from "fastify";
 import * as http from 'http';
 
-export type FastifyConnectMiddleware = ConnectMiddleware & fastify.FastifyInstance<http.Server, http.IncomingMessage, http.ServerResponse>;
+export type FastifyConnectMiddleware = ConnectApp & fastify.FastifyInstance<http.Server, WebRequest, http.ServerResponse>;
 
 export class FastifyEngine extends WebServerEngine {
-	readonly app = <FastifyConnectMiddleware & FastifyInstance>fastify();
+	readonly app = <FastifyConnectMiddleware>fastify();
 	readonly providers = [];
 
 	override sendJsonBody(routeEvent : WebEvent, body : any) {
 		routeEvent.response.setHeader('Content-Type', 'application/json');
-		routeEvent.response['send'](body);
+		(routeEvent.response as unknown as FastifyReply<http.ServerResponse>)
+			.send(body);
 	}
 
 	addConnectMiddleware(path : string, middleware : any) {
 		this.app.use(path, middleware);
 	}
 	
-	addRoute(method : string, path : string, handler : (event : WebEvent) => void, middleware?) {
+	addRoute(method : string, path : string, handler : (event : WebEvent) => void, middleware?: MiddlewareDefinition[]) {
 		if (!middleware)
 			middleware = [];
-		this.app[this.getRegistrarName(method)](
+		(this.app as any)[this.getRegistrarName(method)](
 			path, 
 			...middleware, 
-			(req, res) => {
+			(req: WebRequest, res: http.ServerResponse) => {
 				return handler(new WebEvent(req, res));
 			}
 		);

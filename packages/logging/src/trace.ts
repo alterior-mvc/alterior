@@ -40,7 +40,7 @@ export function setTracingEnabled(enabled : boolean) {
 class Thing {
     @ConsoleTrace()
     static doSomething(data : any, stuff : number) {
-        console.log("ALMOST...");
+        console.log("Almost...");
         try {
             this.anotherSomething(stuff);
         } catch (e) {
@@ -49,7 +49,7 @@ class Thing {
     }
     @ConsoleTrace()
     static anotherSomething(stuff : number) {
-        console.log("NAH...");
+        console.log("Nah...");
         throw new Error('Uh oh');
     }
 }
@@ -57,9 +57,9 @@ class Thing {
  * When executed, one may see:
 ```sh
 Thing#doSomething({"stuff":321,"other":"nice"}, 12333) {
-ALMOST...
+Almost...
 Thing#anotherSomething(12333) {
-   NAH...
+   Nah...
    (!!) Exception:
         Error: Uh oh
 } // [Exception] Thing#anotherSomething(12333)
@@ -89,8 +89,8 @@ export function Trace() {
             if (!ENABLED)
                 return;
             
-            let originalMethod : Function = site.propertyDescriptor.value;
-            site.propertyDescriptor.value = function (...args) {
+            let originalMethod : Function = site.propertyDescriptor!.value;
+            site.propertyDescriptor!.value = function (...args: any[]) {
                 let type : Function;
                 let isStatic : boolean = false;
 
@@ -135,12 +135,12 @@ export function Trace() {
 
                 let methodSpec = `${ConsoleColors.cyan(`${typeName}${sep}${site.propertyKey}`)}(${argStrings.join(', ')})`;
                 logger.debug(`${methodSpec} {`);
-                let value;
+                let value: any;
 
-                let finish = (message?) => {
+                let finish = (message?: string) => {
                     let time = Date.now() - startedAt;
-                    let components = [message || ConsoleColors.green(`Done`)];
-                    let timingColor = m => m;
+                    let components = [message ?? ConsoleColors.green(`Done`)];
+                    let timingColor = (m: string) => m;
                     let showTiming = time > 3;
 
                     if (time > 20) {
@@ -174,7 +174,7 @@ export function Trace() {
                     throw e;
                 }
                 
-                if (value && value.then) {
+                if (value?.then) {
                     let promise : Promise<any> = value;
                     value = promise.then(() => {
                         finish(ConsoleColors.green(`Resolved`));
@@ -202,8 +202,8 @@ export function ReportExceptionsToConsole() {
         },
 
         invoke(site) {
-            let originalMethod : Function = site.propertyDescriptor.value;
-            site.propertyDescriptor.value = function (...args) {
+            let originalMethod : Function = site.propertyDescriptor!.value;
+            site.propertyDescriptor!.value = function (...args: any[]) {
                 let type : Function;
                 let isStatic : boolean = false;
 

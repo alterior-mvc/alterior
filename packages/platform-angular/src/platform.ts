@@ -1,7 +1,5 @@
-/// <reference types="zone.js" />
-
 import { Application } from '@alterior/runtime';
-import { Module } from '@alterior/di';
+import { Module, ModuleLike } from '@alterior/di';
 import { Provider as AngularProvider } from '@angular/core';
 
 /**
@@ -31,10 +29,10 @@ export class AngularPlatform {
    * 
    * @param entryModule 
    */
-  static bootstrap(entryModule): AngularProvider[] {
-    let app = Application.bootstrap(entryModule);
+  static async bootstrap(entryModule: Function): Promise<AngularProvider[]> {
+    let app = await Application.bootstrap(entryModule);
     return app.runtime.providers.map(provider => {
-      let token = provider['provide'] ? provider['provide'] : provider;
+      let token = 'provide' in provider ? provider.provide : provider;
       return { 
         provide: token, 
         useValue: app.injector.get(token)
@@ -51,7 +49,7 @@ export class AngularPlatform {
    * 
    * @param imports The set of Alterior modules you wish to bootstrap
    */
-  static bridge(...imports) {
+  static bridge(...imports: ModuleLike[]) {
     @Module({ imports })
     class DynamicEntryModule {}
 

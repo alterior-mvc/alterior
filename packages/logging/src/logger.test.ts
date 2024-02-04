@@ -5,31 +5,27 @@ import * as os from 'os';
 import * as path from 'path';
 import * as fs from 'fs';
 
-const SAMPLE_LOG_MESSAGE_1 : LogEvent = { type: 'message', message: 'ABCDEF', date: new Date(), severity: 'info', context: null, contextLabel: null, sourceLabel: null };
-const SAMPLE_LOG_MESSAGE_2 : LogEvent = { type: 'message', message: '123456', date: new Date(), severity: 'info', context: null, contextLabel: null, sourceLabel: null };
-const SAMPLE_LOG_MESSAGE_3 : LogEvent = { type: 'message', message: 'TUVXYZ', date: new Date(), severity: 'info', context: null, contextLabel: null, sourceLabel: null };
+const SAMPLE_LOG_MESSAGE_1 : LogEvent = { type: 'message', message: 'ABCDEF', date: new Date(), severity: 'info', context: null };
+const SAMPLE_LOG_MESSAGE_2 : LogEvent = { type: 'message', message: '123456', date: new Date(), severity: 'info', context: null };
+const SAMPLE_LOG_MESSAGE_3 : LogEvent = { type: 'message', message: 'TUVXYZ', date: new Date(), severity: 'info', context: null };
 
-function SAMPLE_LOG_MESSAGE(message) : LogEvent {
+function SAMPLE_LOG_MESSAGE(message: string) : LogEvent {
     return { 
         type: 'message',
         message, 
         date: new Date(), 
         severity: 'info', 
-        context: null, 
-        contextLabel: null, 
-        sourceLabel: null 
+        context: null
     };
 }
 
-function SAMPLE_LOG_MESSAGE_FATAL(message) : LogEvent {
+function SAMPLE_LOG_MESSAGE_FATAL(message: string) : LogEvent {
     return { 
         type: 'message',
         message, 
         date: new Date(), 
         severity: 'fatal', 
-        context: null, 
-        contextLabel: null, 
-        sourceLabel: null 
+        context: null
     };
 }
 
@@ -51,7 +47,7 @@ suite(describe => {
         });
 
         it('defaults to ConsoleLogger', async () => {
-            let logger = new Logger(undefined);
+            let logger = new Logger();
             let logger2 = new Logger(new LoggingOptionsRef({ }));
 
 
@@ -177,7 +173,7 @@ suite(describe => {
     describe('ConsoleLogger', it => {
         
         function patchConsole(buffer : string[]) {
-            let originalLog;
+            let originalLog: any;
             function patch() {
                 originalLog = console.log;
                 console.log = message => {
@@ -213,7 +209,7 @@ suite(describe => {
         }
 
         it('should obey silly formats', () => {
-            let buffer = [];
+            let buffer: string[] = [];
             patchConsole(buffer)
                 .run(() => {
                     let logger = new ConsoleLogger('ABCDEF');
@@ -228,7 +224,7 @@ suite(describe => {
         })
 
         it('should understand format variable substitution', () => {
-            let buffer = [];
+            let buffer: string[] = [];
             patchConsole(buffer)
                 .run(() => {
                     let logger = new ConsoleLogger('%severity%|%message%');

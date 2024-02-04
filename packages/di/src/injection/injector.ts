@@ -78,8 +78,9 @@ export abstract class Injector {
    * - Returns the `notFoundValue` otherwise
    */
   abstract get<T>(token: Type<T> | InjectionToken<T>, notFoundValue?: T, options?: InjectorGetOptions): T;
+  
   /**
-   * @deprecated from v4.0.0 use Type<T> or InjectionToken<T>
+   * @internal
    * @suppress {duplicate}
    */
   abstract get(token: any, notFoundValue?: any): any;

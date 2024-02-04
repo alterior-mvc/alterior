@@ -1,5 +1,5 @@
 import { Injectable, Optional } from '@alterior/di';
-import { ExecutionContext, Application } from '@alterior/runtime';
+import { ExecutionContext, Application, Constructor } from '@alterior/runtime';
 
 export type LogSeverity = 'debug' | 'info' | 'warning' | 'error' | 'fatal';
 
@@ -10,11 +10,11 @@ export class LoggingOptionsRef {
     constructor(readonly options: LoggingOptions) {
     }
 
-    public static get currentRef(): LoggingOptionsRef {
+    public static get currentRef(): LoggingOptionsRef | null {
         if (!ExecutionContext.current || !ExecutionContext.current.application)
            return null;
 
-        return ExecutionContext.current.application.inject(LoggingOptionsRef, null);
+        return ExecutionContext.current.application.inject(LoggingOptionsRef);
     }
 
     public static get current(): LoggingOptions {
@@ -144,7 +144,13 @@ export class LogFormatter {
         if (typeof this.logFormat === 'function')
             return this.logFormat(message);
            
-        return this.segments.map(x => x.type == 'parameter' ? this.formatParameter(x.value, message[x.value]): x.value).join('');
+        return this.segments
+            .map(x => x.type == 'parameter' 
+                ? this.formatParameter(x.value, message[x.value as keyof LogEvent])
+                : x.value
+            )
+            .join('')
+        ;
     }
 }
 
@@ -194,7 +200,7 @@ export class FileLogger implements LogListener {
     }
 
     private formatter: LogFormatter;
-    private _fdReady: Promise<number>;
+    private _fdReady: Promise<number> | undefined;
 
     get ready() {
         return this._fdReady;
@@ -250,7 +256,7 @@ export interface LoggingOptions {
 
 export class ZonedLogger {
     constructor(
-        @Optional() protected optionsRef: LoggingOptionsRef,
+        @Optional() protected optionsRef?: LoggingOptionsRef,
         protected app?: Application,
         sourceLabel?: string
     ) {
@@ -258,12 +264,10 @@ export class ZonedLogger {
     }
     
     clone() {
-        let logger = new ZonedLogger(this.optionsRef, this.app, this._sourceLabel);
-        Object.keys(this).filter(x => typeof this[x] !== 'function').forEach(key => logger[key] = this[key]);
-        return logger;
+        return new (this.constructor as Constructor<this>)(this.optionsRef, this.app, this._sourceLabel);
     }
 
-    protected _sourceLabel: string = undefined;
+    protected _sourceLabel?: string;
 
     get sourceLabel() {
         return this._sourceLabel;
@@ -274,7 +278,7 @@ export class ZonedLogger {
     public static get current(): ZonedLogger {
         return Zone.current.get(Logger.ZONE_LOCAL_NAME) 
             ?? ExecutionContext.current?.application?.inject(Logger)
-            ?? new ZonedLogger(null, null)
+            ?? new ZonedLogger()
         ;
     }
 
@@ -391,16 +395,11 @@ export class ZonedLogger {
 @Injectable()
 export class Logger extends ZonedLogger {
     constructor(
-        @Optional() optionsRef: LoggingOptionsRef,
-        app?: Application
+        @Optional() optionsRef?: LoggingOptionsRef,
+        app?: Application,
+        sourceLabel?: string
     ) {
-        super(optionsRef, app);
-    }
-    
-    clone() {
-        let logger = new Logger(this.optionsRef);
-        Object.keys(this).filter(x => typeof this[x] !== 'function').forEach(key => logger[key] = this[key]);
-        return logger;
+        super(optionsRef, app, sourceLabel);
     }
 
     withSource(sourceLabel: string | Object) {

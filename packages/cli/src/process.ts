@@ -1,15 +1,15 @@
 import * as childProcess from 'child_process';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { Observable, ReplaySubject, Subject, firstValueFrom } from 'rxjs';
 import * as os from 'os';
 import { fileExists, pathCombine } from './utils';
 
 export interface ProcessExitedEvent {
-    code : number;
+    code : number | null;
     signal : NodeJS.Signals;
 }
 
 export interface ProcessResult {
-    code : number;
+    code : number | null;
     signal : NodeJS.Signals;
 }
 
@@ -37,7 +37,7 @@ export class Process {
 
     static whichCache : Record<string,string> = {};
 
-    static async which(command : string): Promise<string> {
+    static async which(command : string): Promise<string | undefined> {
 
         if (this.whichCache[command])
             return this.whichCache[command];
@@ -47,7 +47,7 @@ export class Process {
         if (os.platform() === 'win32')
             colon = ';';
            
-        let dirs = process.env.PATH.split(colon);
+        let dirs = process.env.PATH?.split(colon) ?? [];
 
         let options = Promise.all(
             dirs.map(async dir => {
@@ -66,9 +66,11 @@ export class Process {
             })
         );
 
-        let path = (await options).filter(x => x)[0];
+        let path = (await options).find(x => x);
 
-        this.whichCache[command] = path;
+        if (path)
+            this.whichCache[command] = path;
+
         return path;
     }
 
@@ -91,7 +93,7 @@ export class Process {
 
     static async run(psi : ProcessStartInfo) : Promise<ProcessResult> {
         let proc = await this.start(psi);
-        let result = await proc.exited.toPromise();
+        let result = await firstValueFrom(proc.exited);
         return result;
     }
 }

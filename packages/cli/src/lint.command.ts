@@ -9,7 +9,7 @@ export class LintCommand {
 
     runner = new CommandRunner();
 
-    private dir : string;
+    private dir! : string;
 
     private reportLintError(code : string, message : string) {
         console.error(`[${code}] ${message}`);

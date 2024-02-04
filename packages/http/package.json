@@ -46,5 +46,8 @@
     "tslib": "^2.3.1",
     "xhr2": "^0.1.4"
   },
-  "gitHead": "5c18a5ddde7719d8f439fcf22804280fb56cf255"
+  "gitHead": "5c18a5ddde7719d8f439fcf22804280fb56cf255",
+  "devDependencies": {
+    "razmin": "^1.2.3"
+  }
 }

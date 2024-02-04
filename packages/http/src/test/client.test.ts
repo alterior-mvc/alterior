@@ -12,6 +12,7 @@ import {expect} from 'chai';
 import {HttpClient} from '../client';
 import {HttpErrorResponse, HttpEventType, HttpResponse} from '../response';
 import {HttpClientTestingBackend} from '../testing/backend';
+import { firstValueFrom } from 'rxjs';
 
 describe('HttpClient', () => {
   let client: HttpClient = null !;
@@ -74,7 +75,7 @@ describe('HttpClient', () => {
       backend.expectOne('/test').flush(body);
     });
     it('that returns a stream of events', done => {
-      client.get('/test', {observe: 'events'}).pipe(toArray()).toPromise().then(events => {
+      firstValueFrom(client.get('/test', {observe: 'events'}).pipe(toArray())).then(events => {
         expect(events.length).to.eq(2);
         let x = HttpResponse;
         expect(events[0].type).to.eq(HttpEventType.Sent);

@@ -11,7 +11,7 @@ suite(describe => {
             setTracingEnabled(true);
 
             try {
-                let log = [];
+                let log: any[] = [];
 
                 interceptConsole((method, original, console, args) => {
                     log.push({ method, original, console, args });

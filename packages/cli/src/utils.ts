@@ -149,7 +149,7 @@ export async function readJsonFile<T = any>(filename : string) : Promise<T> {
 
             try {
                 res(JSON.parse(buf.toString('utf-8')));
-            } catch (e) {
+            } catch (e: any) {
                 rej(new Error(`Failed to read JSON file '${filename}': ${e.message} -- JSON was ${buf.toString('utf-8')}`));
             }
         })
@@ -180,7 +180,7 @@ export async function writeTextFile(filename : string, content : string) {
 /**
  * https://stackoverflow.com/a/46759625/1995204
  */
-export function isConstructor(f) {
+export function isConstructor(f: Function) {
     if (f === Symbol)
         return false;
 

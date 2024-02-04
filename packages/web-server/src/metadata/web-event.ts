@@ -12,7 +12,7 @@ export interface ServerSentEvent {
 }
 
 export interface QueryParamMap {
-	[key: string]: string | string[] | QueryParamMap | QueryParamMap[];
+	[key: string]: string | string[] | QueryParamMap | QueryParamMap[] | undefined;
 }
 
 export interface WebRequest extends http.IncomingMessage {

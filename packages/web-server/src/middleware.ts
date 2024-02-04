@@ -1,7 +1,7 @@
 import { Annotation, MetadataName } from '@alterior/annotations';
-import { Injector } from '@alterior/di';
+import { Injector, Type } from '@alterior/di';
 import { Constructor } from '@alterior/runtime';
-import { MiddlewareDefinition } from './metadata';
+import { MiddlewareDefinition, MiddlewareFunction } from './metadata';
 
 @MetadataName('@alterior/web-server:Middleware')
 export class MiddlewareAnnotation extends Annotation { }
@@ -14,7 +14,7 @@ export function prepareMiddleware(injector: Injector, middleware: MiddlewareDefi
 
 	let middlewareMetadata = MiddlewareAnnotation.getForClass(middleware);
 	if (middlewareMetadata) {
-		let instance = injector.get(middleware);
+		let instance = injector.get(<Type<{ handle: MiddlewareFunction }>>middleware);
 		return (req, res, next) => instance.handle(req, res, next);
 	}
 

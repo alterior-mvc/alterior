@@ -4,6 +4,7 @@ import { Injectable, InjectionToken, ModuleAnnotation, inject } from '@alterior/
 import { AppOptionsAnnotation, ApplicationOptions } from './app-options';
 import { ApplicationArgs } from './args';
 import { Runtime } from './runtime';
+import { Constructor } from './reflector';
 
 export class ApplicationOptionsRef {
 	constructor(
@@ -84,10 +85,11 @@ export class Application {
 		return this.runtime.injector;
 	}
 
-	inject<T>(ctor: { new(...args: any[]): T }, notFoundValue?: T): T;
-	inject<T>(ctor: InjectionToken<T>, notFoundValue?: T): T;
-	inject<T>(ctor: unknown, notFoundValue?: unknown): unknown;
-	inject<T>(ctor: any, notFoundValue?: any): any {
+	inject<T>(ctor: Constructor<T>): T;
+	inject<T>(token: InjectionToken<T>): T;
+	inject<T, U>(ctor: Constructor<T>, notFoundValue: U): T | U;
+	inject<T, U>(token: InjectionToken<T>, notFoundValue: U): T | U;
+	inject(ctor: any, notFoundValue?: any): any {
 		return this.injector.get(ctor, notFoundValue);
 	}
 

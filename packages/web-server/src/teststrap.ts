@@ -1,4 +1,4 @@
-import { Module } from "@alterior/di";
+import { Module, Type } from "@alterior/di";
 import { Application, AppOptions, AppOptionsAnnotation } from "@alterior/runtime";
 import supertest from 'supertest';
 import { WebServer } from './web-server';
@@ -23,7 +23,7 @@ export function teststrap(module : Function, options? : WebServerOptions) {
             silent: true
         });
         
-        let server = WebServer.for(app.injector.get(module));
+        let server = WebServer.for(app.injector.get(<Type<any>>module));
         server.options.silent = true;
         server.engine.app(req, res, next);
     });

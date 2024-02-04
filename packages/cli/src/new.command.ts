@@ -1,12 +1,12 @@
+import { Constructor } from '@alterior/runtime';
+import inquirer from 'inquirer';
 import * as path from 'path';
 import { CommandRunner } from './command-runner';
-import { ServiceGenerator } from './service-generator';
+import { Generator } from './generator';
 import { GeneratorCanceled } from './generator-canceled';
 import { GeneratorError } from './generator-error';
 import { LibraryGenerator } from './library-generator';
-import { Generator } from './generator';
-import { Constructor } from '@alterior/runtime';
-import inquirer from 'inquirer';
+import { ServiceGenerator } from './service-generator';
 
 export class NewCommand {
     constructor() {
@@ -14,7 +14,7 @@ export class NewCommand {
 
     runner = new CommandRunner();
 
-    generators : Record<string, typeof Generator> = {
+    generators: Record<string, typeof Generator> = {
         service: ServiceGenerator,
         library: LibraryGenerator
     }
@@ -28,7 +28,7 @@ export class NewCommand {
         }
     }
 
-    async run(args : string[]) {
+    async run(args: string[]) {
         let showUsage = () => console.error(`usage: alt new [<type>] <folder>`);
         if (args.length < 1) {
             showUsage();
@@ -36,9 +36,9 @@ export class NewCommand {
             console.error();
             return 1;
         }
-        
-        let type: string;
-        let name: string;
+
+        let type: string | undefined;
+        let name!: string;
 
         if (args.length === 2) {
             type = args[0];
@@ -48,9 +48,9 @@ export class NewCommand {
         }
 
         if (!type) {
-            console.log();    
+            console.log();
             let answers = await inquirer.prompt<{ type: string }>([
-                { 
+                {
                     message: 'What type of project are you creating?',
                     name: 'type',
                     choices: [
@@ -65,7 +65,7 @@ export class NewCommand {
             type = answers.type;
         }
 
-        let generatorCtor = <Constructor<Generator>> <unknown> this.generators[type];
+        let generatorCtor = <Constructor<Generator>><unknown>this.generators[type];
 
         if (!generatorCtor) {
             showUsage();
@@ -83,7 +83,7 @@ export class NewCommand {
         } catch (e) {
             if (e instanceof GeneratorCanceled)
                 return 0;
-               
+
             if (e instanceof GeneratorError) {
                 console.error(`alt new: ${e.message}`);
                 return 1;

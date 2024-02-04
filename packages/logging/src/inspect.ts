@@ -5,11 +5,15 @@
 import { ConsoleColors } from '@alterior/common';
 
 export interface InspectOptions {
-    stylize: (str, styleType) => any;
+    stylize: (str: string, styleType: string) => any;
     depth?: number;
     colors?: boolean;
     showHidden?: boolean;
     customInspect?: boolean;
+}
+
+interface Context extends InspectOptions {
+    seen: any[];
 }
 
 /**
@@ -22,13 +26,11 @@ export interface InspectOptions {
  */
 /* legacy: obj, showHidden, depth, colors*/
 
+
 export function inspect(obj : any, opts? : InspectOptions): string {
     // default options
-    interface Context extends InspectOptions {
-        seen: any[];
-    }
 
-    var ctx: Context = {
+    let ctx: Context = {
         seen: [],
         stylize: stylizeNothing
     };
@@ -62,15 +64,15 @@ const CONSOLE_COLOR_STYLES = {
 /**
  * Pass the string through with no stylization.
  */
-export function stylizeNothing(str, styleType) {
+export function stylizeNothing(str: string, styleType: string) {
     return str;
 }
 
-function isBoolean(arg) {
+function isBoolean(arg: unknown): arg is boolean {
     return typeof arg === 'boolean';
 }
 
-function isUndefined(arg) {
+function isUndefined(arg: unknown): arg is undefined {
     return arg === void 0;
 }
 
@@ -78,65 +80,58 @@ function isUndefined(arg) {
  * Use console colors to style the string. Suitable for output to
  * terminals with ANSI color support.
  */
-export function stylizeWithConsoleColors(str, styleType) {
-    var style = CONSOLE_COLOR_STYLES[styleType];
-    return style ? ConsoleColors[style](str) : str;
+export function stylizeWithConsoleColors(str: string, styleType: string) {
+    let style = CONSOLE_COLOR_STYLES[styleType as keyof typeof CONSOLE_COLOR_STYLES];
+    return style ? ConsoleColors[style as keyof typeof ConsoleColors](str) : str;
 }
 
-function isFunction(arg) {
+function isFunction(arg: unknown): arg is Function {
     return typeof arg === 'function';
 }
 
-function isString(arg) {
+function isString(arg: unknown): arg is string {
     return typeof arg === 'string';
 }
 
-function isNumber(arg) {
+function isNumber(arg: unknown): arg is number {
     return typeof arg === 'number';
 }
 
-function isNull(arg) {
+function isNull(arg: unknown): arg is null {
     return arg === null;
 }
 
-function hasOwn(obj, prop) {
+function hasOwn(obj: object, prop: string) {
     return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-function isRegExp(re) {
-    return isObject(re) && objectToString(re) === '[object RegExp]';
+function isRegExp(re: unknown): re is RegExp {
+    return re instanceof RegExp;
 }
 
-function isObject(arg) {
+function isObject(arg: unknown): arg is object {
     return typeof arg === 'object' && arg !== null;
 }
 
-function isError(e) {
-    return isObject(e) &&
-        (objectToString(e) === '[object Error]' || e instanceof Error);
+function isError(e: unknown): e is Error {
+    return isObject(e) && e instanceof Error;
 }
 
-function isDate(d) {
-    return isObject(d) && objectToString(d) === '[object Date]';
+function isDate(d: unknown): d is Date {
+    return isObject(d) && d instanceof Date;
 }
 
-function objectToString(o) {
-    return Object.prototype.toString.call(o);
-}
+function arrayToHash(array: any[]) {
+    let hash: Record<string, boolean> = {};
 
-function arrayToHash(array) {
-    var hash = {};
-
-    array.forEach(function (val, idx) {
-        hash[val] = true;
-    });
+    array.forEach(val => hash[val] = true);
 
     return hash;
 }
 
-function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
-    var output = [];
-    for (var i = 0, l = value.length; i < l; ++i) {
+function formatArray(ctx: Context, value: unknown[], recurseTimes: number | null, visibleKeys: Record<string, boolean>, keys: string[]) {
+    let output = [];
+    for (let i = 0, l = value.length; i < l; ++i) {
         if (hasOwn(value, String(i))) {
             output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
                 String(i), true));
@@ -153,11 +148,11 @@ function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
     return output;
 }
 
-function formatError(value) {
+function formatError(value: Error) {
     return '[' + Error.prototype.toString.call(value) + ']';
 }
 
-function formatValue(ctx, value, recurseTimes) {
+function formatValue(ctx: Context, value: any, recurseTimes: number | null): string {
     // Provide a hook for user-specified inspect functions.
     // Check that value is an object with an inspect function on it
     if (ctx.customInspect &&
@@ -167,7 +162,7 @@ function formatValue(ctx, value, recurseTimes) {
         value.inspect !== inspect &&
         // Also filter out any prototype objects using the circular check.
         !(value.constructor && value.constructor.prototype === value)) {
-        var ret = value.inspect(recurseTimes, ctx);
+        let ret = value.inspect(recurseTimes, ctx);
         if (!isString(ret)) {
             ret = formatValue(ctx, ret, recurseTimes);
         }
@@ -175,14 +170,14 @@ function formatValue(ctx, value, recurseTimes) {
     }
 
     // Primitive types cannot have properties
-    var primitive = formatPrimitive(ctx, value);
+    let primitive = formatPrimitive(ctx, value);
     if (primitive) {
         return primitive;
     }
 
     // Look up the keys of the object.
-    var keys = Object.keys(value);
-    var visibleKeys = arrayToHash(keys);
+    let keys = Object.keys(value);
+    let visibleKeys = arrayToHash(keys);
 
     try {
         if (ctx.showHidden && Object.getOwnPropertyNames) {
@@ -202,7 +197,7 @@ function formatValue(ctx, value, recurseTimes) {
     // Some type of object without properties can be shortcutted.
     if (keys.length === 0) {
         if (isFunction(value)) {
-            var name = value.name ? ': ' + value.name : '';
+            let name = value.name ? ': ' + value.name : '';
             return ctx.stylize('[Function' + name + ']', 'special');
         }
         if (isRegExp(value)) {
@@ -216,7 +211,7 @@ function formatValue(ctx, value, recurseTimes) {
         }
     }
 
-    var base = '', array = false, braces = ['{', '}'];
+    let base = '', array = false, braces = ['{', '}'];
 
     // Make Array say that they are Array
     if (Array.isArray(value)) {
@@ -226,7 +221,7 @@ function formatValue(ctx, value, recurseTimes) {
 
     // Make functions say that they are functions
     if (isFunction(value)) {
-        var n = value.name ? ': ' + value.name : '';
+        let n = value.name ? ': ' + value.name : '';
         base = ' [Function' + n + ']';
     }
 
@@ -245,11 +240,11 @@ function formatValue(ctx, value, recurseTimes) {
         base = ' ' + formatError(value);
     }
 
-    if (keys.length === 0 && (!array || value.length == 0)) {
+    if (keys.length === 0 && (!array || value.length === 0)) {
         return braces[0] + base + braces[1];
     }
 
-    if (recurseTimes < 0) {
+    if ((recurseTimes || 0) < 0) {
         if (isRegExp(value)) {
             return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
         } else {
@@ -259,7 +254,7 @@ function formatValue(ctx, value, recurseTimes) {
 
     ctx.seen.push(value);
 
-    var output;
+    let output;
     if (array) {
         output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
     } else {
@@ -273,25 +268,11 @@ function formatValue(ctx, value, recurseTimes) {
     return reduceToSingleString(output, base, braces);
 }
 
-function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
-    var name, str, desc;
-    desc = { value: void 0 };
-    try {
-        // ie6 › navigator.toString
-        // throws Error: Object doesn't support this property or method
-        desc.value = value[key];
-    } catch (e) {
-        // ignore
-    }
-    try {
-        // ie10 › Object.getOwnPropertyDescriptor(window.location, 'hash')
-        // throws TypeError: Object doesn't support this action
-        if (Object.getOwnPropertyDescriptor) {
-            desc = Object.getOwnPropertyDescriptor(value, key) || desc;
-        }
-    } catch (e) {
-        // ignore
-    }
+function formatProperty(ctx: Context, value: any, recurseTimes: number | null, visibleKeys: Record<string, boolean>, key: string, array: boolean): string {
+    let name;
+    let desc = Object.getOwnPropertyDescriptor(value, key) ?? { value: value[key] };
+    let str: string | undefined;
+
     if (desc.get) {
         if (desc.set) {
             str = ctx.stylize('[Getter/Setter]', 'special');
@@ -315,7 +296,7 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
             }
             if (str.indexOf('\n') > -1) {
                 if (array) {
-                    str = str.split('\n').map(function (line) {
+                    str = str.split('\n').map(line => {
                         return '    ' + line;
                     }).join('\n').substr(2);
                 } else {
@@ -330,7 +311,7 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
     }
     if (isUndefined(name)) {
         if (array && key.match(/^\d+$/)) {
-            return str;
+            return str!;
         }
         name = JSON.stringify('' + key);
         if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
@@ -347,11 +328,11 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
     return name + ': ' + str;
 }
 
-function formatPrimitive(ctx, value) {
+function formatPrimitive(ctx: Context, value: unknown) {
     if (isUndefined(value))
         return ctx.stylize('undefined', 'undefined');
     if (isString(value)) {
-        var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+        let simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
             .replace(/'/g, "\\'")
             .replace(/\\"/g, '"') + '\'';
         return ctx.stylize(simple, 'string');
@@ -365,9 +346,9 @@ function formatPrimitive(ctx, value) {
         return ctx.stylize('null', 'null');
 }
 
-function reduceToSingleString(output, base, braces) {
-    var numLinesEst = 0;
-    var length = output.reduce(function (prev, cur) {
+function reduceToSingleString(output: string[], base: string, braces: string[]) {
+    let numLinesEst = 0;
+    let length = output.reduce(function (prev, cur) {
         numLinesEst++;
         if (cur.indexOf('\n') >= 0) numLinesEst++;
         return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;

@@ -1,4 +1,4 @@
-import { Injector, Provider, ReflectiveInjector } from "@alterior/di";
+import { Injector, Provider, ReflectiveInjector, Type } from "@alterior/di";
 import { ControllerAnnotation, ControllerOptions, MiddlewareDefinition, MountOptions } from "./metadata";
 import { RouteReflector } from "./metadata/route-reflector-private";
 import { prepareMiddleware } from "./middleware";
@@ -21,7 +21,7 @@ export class ControllerInstance {
 		pathPrefix: string = '',
 		readonly isModule = false
 	) {
-		this.instance = this.injector.get(this.type);
+		this.instance = this.injector.get(<Type<any>>this.type);
 		this.options = ControllerAnnotation.getForClass(this.type)?.options ?? {};
 		this.pathPrefix = this.combinePaths(pathPrefix, this.options.basePath);
 		this.routes = this.findRoutes();
@@ -54,7 +54,7 @@ export class ControllerInstance {
 			let controller = mount.controller;
 			let mountInjector = this.injector;
 			let providers: Provider[] = (mount.options || {} as MountOptions).providers || [];
-			let existingInstance = mountInjector.get(controller, null);
+			let existingInstance = mountInjector.get(<Type<any>>controller, null);
 
 			// If the controller is not provided by the injector, or if the mounter has customized the providers,
 			// then create a new injector that can provide the controller 

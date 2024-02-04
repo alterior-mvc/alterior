@@ -2,12 +2,12 @@ import * as uuid from 'uuid';
 import * as http from 'http';
 import * as ws from 'ws';
 
-import { Injector, ReflectiveInjector, Module, Provider } from "@alterior/di";
+import { Injector, ReflectiveInjector, Module, Provider, Type } from "@alterior/di";
 import { prepareMiddleware } from "./middleware";
-import { MiddlewareDefinition, MiddlewareFunction, WebEvent } from "./metadata";
+import { MiddlewareDefinition, MiddlewareFunction, WebEvent, WebRequest } from "./metadata";
 import { ApplicationOptions, Application, AppOptionsAnnotation, AppOptions } from '@alterior/runtime';
 import { LogSeverity, Logger } from '@alterior/logging';
-import { WebServerEngine } from './web-server-engine';
+import { ConnectApp, WebServerEngine } from './web-server-engine';
 import { ParameterDisplayFormatter, RequestReporter, RequestReporterFilter, WebServerOptions } from './web-server-options';
 import { ServiceDescription } from './service-description';
 import { ServiceDescriptionRef } from './service-description-ref';
@@ -107,15 +107,21 @@ export class WebServer {
 		class EntryModule {
 		}
 
-		let app = Application.bootstrap(
+		let appReady = Application.bootstrap(
 			EntryModule,
 			Object.assign({}, options, {
 				autostart: false
 			})
 		);
 
-		return WebServer.for(app.injector.get(entryModule))
-			.engine.app;
+		let connectApp: ConnectApp;
+
+		return async (req: WebRequest, res: http.ServerResponse) => {
+			connectApp ??= WebServer.for((await appReady).injector.get(<Type<any>>entryModule))
+				.engine.app;
+
+			connectApp(req, res);
+		}
 	}
 
 	/**
