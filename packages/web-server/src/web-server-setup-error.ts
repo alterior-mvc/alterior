@@ -1,4 +1,4 @@
-import { BaseErrorT } from "@alterior/common";
+import { BaseError } from "@alterior/common";
 
-export class WebServerSetupError extends BaseErrorT {
+export class WebServerSetupError extends BaseError {
 }

@@ -1,7 +1,7 @@
 
 
 export class BaseError extends Error {
-    constructor(message : string, options?: ErrorOptions) {
+    constructor(message : string, options?: any) {
         super(message, options);
     }
 
