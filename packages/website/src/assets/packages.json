@@ -1,0 +1,17 @@
+[
+  "annotations",
+  "cli",
+  "command-line",
+  "common",
+  "di",
+  "express",
+  "fastify",
+  "http",
+  "logging",
+  "platform-angular",
+  "platform-nodejs",
+  "runtime",
+  "tasks",
+  "terminal",
+  "web-server"
+]

@@ -9,3 +9,5 @@ foobar*/
 example-app/
 lerna-debug.log
 *.tsbuildinfo
+.angular
+packages/website/src/assets/docs
