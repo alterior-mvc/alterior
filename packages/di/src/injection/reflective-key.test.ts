@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { KeyRegistry } from './reflective_key';
+import { KeyRegistry } from './reflective-key';
 import { suite, beforeEach } from 'razmin';
 import { expect } from 'chai';
 

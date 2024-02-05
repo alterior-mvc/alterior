@@ -40,7 +40,8 @@
   },
   "dependencies": {
     "@alterior/annotations": "^3.6.4",
-    "@alterior/common": "^3.6.4"
+    "@alterior/common": "^3.6.4",
+    "tslib": "^2.6.2"
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.13",

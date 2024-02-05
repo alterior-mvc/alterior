@@ -6,19 +6,22 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { ConcreteType, Type } from './facade/type';
-import { Injector, InjectorGetOptions, THROW_IF_NOT_FOUND } from './injector';
-import { SelfAnnotation, SkipSelfAnnotation, InjectAnnotation, OptionalAnnotation, Optional, SkipAnnotation, Skip } from './metadata';
-import { Provider, ClassProvider, ProviderWithDependencies, isTypeProvider } from './provider';
-import { cyclicDependencyError, instantiationError, noProviderError, outOfBoundsError } from './reflective_errors';
-import { ReflectiveKey } from './reflective_key';
+import { Annotation } from '@alterior/annotations';
+import { CyclicDependencyError, InstantiationError, NoProviderError, OutOfBoundsError } from './errors';
+import { ConcreteType } from './facade/type';
+import { runInInjectionContext } from './injection-context';
+import { Injector } from './injector';
+import { InjectorGetOptions } from './injector-get-options';
+import { InjectAnnotation, Optional, OptionalAnnotation, SelfAnnotation, Skip, SkipAnnotation, SkipSelfAnnotation } from './metadata';
+import { ClassProvider, Provider, ProviderWithDependencies, isTypeProvider } from './provider';
+import { ReflectiveKey } from './reflective-key';
 import {
   ReflectiveDependency,
   ResolvedReflectiveFactory,
   ResolvedReflectiveProvider,
   resolveReflectiveProviders,
-} from './reflective_provider';
-import { Annotation } from '@alterior/annotations';
+} from './reflective-provider';
+import { THROW_IF_NOT_FOUND } from './throw-if-not-found';
 
 // Threshold for the dynamic version
 const UNDEFINED = new Object();
@@ -406,7 +409,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
 
   getProviderAtIndex(index: number): ResolvedReflectiveProvider {
     if (index < 0 || index >= this._providers.length) {
-      throw outOfBoundsError(index);
+      throw new OutOfBoundsError(index);
     }
     return this._providers[index];
   }
@@ -414,7 +417,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
   /** @internal */
   _new(provider: ResolvedReflectiveProvider): any {
     if (this._constructionCounter++ > this._getMaxNumberOfObjects()) {
-      throw cyclicDependencyError(this, provider.key);
+      throw new CyclicDependencyError(this, provider.key);
     }
     return this._instantiateProvider(provider);
   }
@@ -450,11 +453,11 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
 
     let obj: any;
     try {
-      Injector._runInInjectionContext(this, provider.key.token, () => {
+      runInInjectionContext(this, provider.key.token, () => {
         obj = factory(...deps);
       });
     } catch (e: any) {
-      throw instantiationError(this, e, e.stack, provider.key);
+      throw new InstantiationError(this, provider.key, { cause: e });
     }
 
     return obj;
@@ -498,7 +501,7 @@ export class ReflectiveInjector_ implements ReflectiveInjector {
     if (notFoundValue !== THROW_IF_NOT_FOUND) {
       return notFoundValue;
     } else {
-      throw noProviderError(this, key);
+      throw new NoProviderError(this, key);
     }
   }
 

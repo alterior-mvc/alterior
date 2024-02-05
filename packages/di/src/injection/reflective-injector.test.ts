@@ -20,14 +20,13 @@ import {
   Self,
   forwardRef,
 } from '.';
-import { ReflectiveInjector_ } from './reflective_injector';
-import { ResolvedReflectiveProvider_ } from './reflective_provider';
-import { getOriginalError } from './facade/errors';
+import { ReflectiveInjector_ } from './reflective-injector';
+import { ResolvedReflectiveProvider_ } from './reflective-provider';
 
 import { isPresent, stringify } from './facade/lang';
 import { suite } from 'razmin';
 import { SelfAnnotation, InjectAnnotation } from './metadata';
-import { inject } from './injector.js';
+import { inject } from './inject';
 
 class Engine {}
 
@@ -366,7 +365,7 @@ suite(describe => {
         throw 'Must throw';
       } catch (e: any) {
         expect(e.message).to.contain(`Error during instantiation of Engine! (${stringify(Car)} -> Engine)`);
-        expect(getOriginalError(e) instanceof Error).to.be.ok;
+        expect(e.cause instanceof Error).to.be.ok;
         expect(e.keys[0].token).to.equal(Engine);
       }
     });

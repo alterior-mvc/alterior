@@ -9,13 +9,13 @@
 import { reflector } from './reflection/reflection';
 import { Type } from './facade/type';
 
-import { resolveForwardRef } from './forward_ref';
-import { InjectionToken } from './injection_token';
+import { resolveForwardRef } from './forward-ref';
+import { InjectionToken } from './injection-token';
 import { SkipSelfAnnotation, SelfAnnotation, InjectAnnotation, OptionalAnnotation, SkipAnnotation } from './metadata';
 import { ClassProvider, ExistingProvider, FactoryProvider, Provider, TypeProvider, ValueProvider } from './provider';
-import { invalidProviderError, mixingMultiProvidersWithRegularProvidersError, noAnnotationError } from './reflective_errors';
-import { ReflectiveKey } from './reflective_key';
+import { ReflectiveKey } from './reflective-key';
 import { Annotation } from '@alterior/annotations';
+import { InvalidProviderError, MixingMultiProvidersWithRegularProvidersError, NoAnnotationError } from './errors';
 
 interface NormalizedProvider extends TypeProvider, ValueProvider, ClassProvider, ExistingProvider, FactoryProvider {}
 
@@ -162,7 +162,7 @@ export function mergeResolvedReflectiveProviders(
     const existing = normalizedProvidersMap.get(provider.key.id);
     if (existing) {
       if (provider.multiProvider !== existing.multiProvider) {
-        throw mixingMultiProvidersWithRegularProvidersError(existing, provider);
+        throw new MixingMultiProvidersWithRegularProvidersError(existing, provider);
       }
       if (provider.multiProvider) {
         for (let j = 0; j < provider.resolvedFactories.length; j++) {
@@ -200,7 +200,7 @@ function _normalizeProviders(providers: Provider[], res: Provider[]): Normalized
     } else if (b instanceof Array) {
       _normalizeProviders(b as Provider[], res);
     } else {
-      throw invalidProviderError(b);
+      throw new InvalidProviderError(b);
     }
   });
 
@@ -224,7 +224,7 @@ function _dependenciesFor(typeOrFunc: any): ReflectiveDependency[] {
     console.error(`Some parameters for ${typeOrFunc.name || typeOrFunc} are null:`);
     console.dir(params);
 
-    throw noAnnotationError(typeOrFunc, params);
+    throw new NoAnnotationError(typeOrFunc, params);
   }
   return params.map(p => _extractToken(typeOrFunc, p, params));
 }
@@ -269,7 +269,7 @@ function _extractToken(typeOrFunc: any, metadata: any[] | any, params: any[][]):
   } else {
     // console.error(`Failed to find token ${typeOrFunc.name || typeOrFunc}:`);
     // console.dir(params);
-    throw noAnnotationError(typeOrFunc, params);
+    throw new NoAnnotationError(typeOrFunc, params);
   }
 }
 

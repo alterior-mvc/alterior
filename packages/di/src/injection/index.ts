@@ -14,12 +14,21 @@
 
 export * from './metadata';
 
-export { forwardRef, resolveForwardRef, ForwardRefFn } from './forward_ref';
+export { forwardRef, resolveForwardRef, ForwardRefFn } from './forward-ref';
 
-export { Injector, inject } from './injector';
-export { ReflectiveInjector } from './reflective_injector';
+export * from './forward-ref';
+export * from './inject-options';
+export * from './inject';
+export * from './injection-token';
+export * from './injection-context';
+export * from './injector-get-options';
+export * from './null-injector';
+export * from './provider';
+
+export { Injector } from './injector';
+export { ReflectiveInjector } from './reflective-injector';
 export { Provider, TypeProvider, ValueProvider, ClassProvider, ExistingProvider, FactoryProvider } from './provider';
-export { ResolvedReflectiveFactory, ResolvedReflectiveProvider } from './reflective_provider';
-export { ReflectiveKey } from './reflective_key';
-export { InjectionToken, OpaqueToken } from './injection_token';
+export { ResolvedReflectiveFactory, ResolvedReflectiveProvider } from './reflective-provider';
+export { ReflectiveKey } from './reflective-key';
+export { InjectionToken, OpaqueToken } from './injection-token';
 export { Type, isType } from './facade/type';

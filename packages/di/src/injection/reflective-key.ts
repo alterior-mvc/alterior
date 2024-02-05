@@ -7,8 +7,7 @@
  */
 
 import { stringify } from './facade/lang';
-
-import { resolveForwardRef } from './forward_ref';
+import { resolveForwardRef } from './forward-ref';
 
 /**
  * A unique object used for retrieving items from the {@link ReflectiveInjector}.
