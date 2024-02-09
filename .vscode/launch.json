@@ -51,6 +51,16 @@
 			"sourceMaps": true
 		},
 		{
+			"name": "di - Launch Tests",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceRoot}/packages/di/dist/test.js",
+			"cwd": "${workspaceRoot}/packages/di",
+			"runtimeArgs": [ "--nolazy" ],
+			"console": "internalConsole",
+			"sourceMaps": true
+		},
+		{
 			"name": "Attach",
 			"type": "node",
 			"request": "attach",

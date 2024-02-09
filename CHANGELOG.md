@@ -22,6 +22,7 @@
 - `@/di`
   * **Breaking** The `Injector#get(token: any, defaultValue?: any): any` overload has been removed. Instead, pass the 
     class you are interested in (`Type<T>`), or the injection token you are interested in (`InjectionToken<T>`).
+  * Introduces a new set of error classes which are now used when throwing injection related errors.
   * You can now use `injectionContext()` to acquire the current injection context. You can use this to acquire the 
     `injector` which is currently resolving a provider or access the `token` currently being resolved. This can be 
     used to make new `inject()`-like functions for more specific purposes.

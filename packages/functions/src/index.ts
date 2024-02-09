@@ -1,9 +1,16 @@
+import { Subscription } from 'rxjs';
+import { Logger } from '@alterior/logging';
+
+import { rimraf } from "rimraf";
+import mkdirp from "mkdirp";
+
 import * as fs from 'fs';
 import * as os from "os";
 import * as path from "path";
 import * as process from "process";
 import * as readline from 'readline';
 import * as crypto from "crypto";
+import * as net from "net";
 
 export function formEncode(obj : any) {
     return Object
@@ -336,4 +343,132 @@ export function omit<T extends object, U extends keyof T>(value: T, excluded: U[
         (Object.entries(value) as [ U, unknown ][])
             .filter(([ k, v ]) => !excluded.includes(k))
     ) as Omit<T, U>;
+}
+
+export function rightPad(str: string, length: number) {
+    str = String(str);
+
+    while (str.length < length)
+        str += ' ';
+
+    return str;
+}
+
+export function leftPad(str: string, length: number) {
+    str = String(str);
+
+    while (str.length < length)
+        str = ' ' + str;
+
+    return str;
+}
+
+export async function removeAll(path : string) : Promise<void> {
+    await rimraf(path);
+}
+
+export async function makeDirectory(path : string) {
+    // It seems like the async version returns before all directories exist.
+    await mkdirp.sync(path);
+}
+
+export async function makeDirectorySync(path : string) {
+    await mkdirp.sync(path);
+}
+
+export async function removeFile(filename: string) {
+    return await new Promise<void>((resolve, reject) => {
+        fs.unlink(filename, (err) => {
+            if (err)
+                reject(err);
+            else
+                resolve();
+        });
+    });
+}
+
+export function pause(millis : number): Promise<void> {
+    return new Promise((resolve, reject) => setTimeout(() => {
+        resolve();
+    }, millis));
+}
+
+export function copyFile(from: string, to: string) {
+    return new Promise<void>((resolve, reject) => {
+        fs.copyFile(from, to, err => err ? reject(err) : resolve());
+    });
+}
+
+export function moveFile(from: string, to: string) {
+    return new Promise<void>((resolve, reject) => {
+        fs.rename(from, to, err => err ? reject(err) : resolve());
+    });
+}
+
+export async function listDirectory(path: string) {
+    return await new Promise<string[]>((resolve, reject) => {
+        fs.readdir(path, (err, files) => {
+            if (err)
+                reject(err);
+            else
+                resolve(files);
+        });
+    });
+}
+
+export async function tcpConnect(host: string, port: number) {
+    let socket = new net.Socket();
+    let connected = new Promise<void>((resolve, reject) => {
+        socket.once('ready', () => resolve());
+        socket.once('error', err => reject(err));
+    });
+
+    socket.connect(port, host);
+    await connected;
+
+    return socket;
+}
+
+export function sleep(time: number) {
+    return new Promise(resolve => setTimeout(resolve, time));
+}
+
+/**
+ * Create a new object which has a subset of keys.
+ * 
+ * @param object 
+ * @param props 
+ * @returns 
+ */
+export function filterObject<T extends object, U extends keyof T>(object : T, props : U[]): Pick<T, U> {
+    return props.reduce((o, p) => (p in object ? o[p] = object[p] : undefined, o), <Pick<T, U>>{});
+}
+
+export function clamp(value: number, min: number, max: number) {
+    return Math.max(min, Math.min(max, value));
+}
+
+export function batch<T>(values: T[], perBatch: number): T[][] {
+    let batches: T[][] = [];
+    while (values.length > 0) {
+        batches.push(values.splice(0, perBatch));
+    }
+
+    return batches;
+}
+
+export async function runPeriodically(logger: Logger, interval: number, func: () => Promise<void>) {
+    let ended = false;
+
+    while (!ended) {
+        try {
+            await func();
+        } catch (e: any) {
+            logger.error(`Error: ${e.stack ?? e}`);
+        }
+        
+        await timeout(interval);
+    }
+
+    return new Subscription(() => ended = true);
 }
