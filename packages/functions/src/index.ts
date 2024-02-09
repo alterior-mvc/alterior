@@ -1,16 +1,13 @@
-import { Subscription } from 'rxjs';
-import { Logger } from '@alterior/logging';
-
-import { rimraf } from "rimraf";
 import mkdirp from "mkdirp";
+import { rimraf } from "rimraf";
 
+import * as crypto from "crypto";
 import * as fs from 'fs';
+import * as net from "net";
 import * as os from "os";
 import * as path from "path";
 import * as process from "process";
 import * as readline from 'readline';
-import * as crypto from "crypto";
-import * as net from "net";
 
 export function formEncode(obj : any) {
     return Object
@@ -455,20 +452,4 @@ export function batch<T>(values: T[], perBatch: number): T[][] {
     }
 
     return batches;
-}
-
-export async function runPeriodically(logger: Logger, interval: number, func: () => Promise<void>) {
-    let ended = false;
-
-    while (!ended) {
-        try {
-            await func();
-        } catch (e: any) {
-            logger.error(`Error: ${e.stack ?? e}`);
-        }
-        
-        await timeout(interval);
-    }
-
-    return new Subscription(() => ended = true);
 }

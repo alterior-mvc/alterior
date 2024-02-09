@@ -1,9 +1,8 @@
 export * from './injection/metadata';
 export * from './modules';
 export { 
-    Injector, 
     InjectionToken,
-    ReflectiveInjector,
+    Injector,
     Provider,
     ClassProvider,
     ExistingProvider,

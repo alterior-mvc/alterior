@@ -1,12 +1,4 @@
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-
-import { ConcreteType } from './facade/type';
+import { ConcreteType } from './type';
 
 /**
  * @whatItDoes Configures the {@link Injector} to return an instance of `Type` when `Type' is used

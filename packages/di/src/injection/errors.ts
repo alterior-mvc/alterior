@@ -1,21 +1,13 @@
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
+import { stringify } from './stringify';
+import { Type } from './type';
 
-import { stringify } from './facade/lang';
-import { Type } from './facade/type';
-
-import { ReflectiveInjector } from './reflective-injector';
-import { ReflectiveKey } from './reflective-key';
+import { Injector } from './injector';
+import { Key } from './key';
 
 export abstract class InjectionError extends Error {
     constructor(
-        injector: ReflectiveInjector,
-        key: ReflectiveKey,
+        injector: Injector,
+        key: Key,
         options?: ErrorOptions
     ) {
         super(undefined, options);
@@ -26,10 +18,10 @@ export abstract class InjectionError extends Error {
 
     //abstract get message(): string;
 
-    readonly keys: ReflectiveKey[];
-    injectors: ReflectiveInjector[];
+    readonly keys: Key[];
+    readonly injectors: Injector[];
 
-    addKey(injector: ReflectiveInjector, key: ReflectiveKey): void {
+    addKey(injector: Injector, key: Key): void {
         this.injectors.push(injector);
         this.keys.push(key);
     }

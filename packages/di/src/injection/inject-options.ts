@@ -1,4 +1,3 @@
-
 /**
  * Type of the options argument to `inject`.
  *

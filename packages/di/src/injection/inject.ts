@@ -1,4 +1,4 @@
-import { Type } from "./facade/type";
+import { Type } from "./type";
 import { InjectOptions } from "./inject-options";
 import { injectionContext } from "./injection-context";
 import { InjectionToken } from "./injection-token";

@@ -16,11 +16,11 @@ export function injectionContext(): InjectionContext {
 /**
  * @internal
  */
-export function runInInjectionContext(injector: Injector, token: Object, callback: () => void) {
+export function runInInjectionContext<T>(injector: Injector, token: Object, callback: () => T): T {
     let previousContext = CURRENT_INJECTION_CONTEXT_STORAGE.context;
     CURRENT_INJECTION_CONTEXT_STORAGE.context = { injector, token };
     try {
-        callback();
+        return callback();
     } finally {
         CURRENT_INJECTION_CONTEXT_STORAGE.context = previousContext;
     }
