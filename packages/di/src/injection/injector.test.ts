@@ -462,16 +462,20 @@ suite(describe => {
       }).to.throw(/Cannot mix multi providers and regular providers/);
     });
 
-    it('should resolve forward references', () => {
-      const providers = Injector.resolve([
-        () => Engine,
-        [{ provide: () => BrokenEngine, useClass: () => Engine }],
-      ]);
-
+    it('should resolve forward references for injection tokens', () => {
+      const injector = Injector.resolveAndCreate([ [{ provide: () => BrokenEngine, useClass: Engine }] ]);
+      expect(injector.get(BrokenEngine)).to.be.instanceOf(Engine);
+    });
+    
+    it('should resolve forward references for TypeProvider', () => {
+      const providers = Injector.resolve([ () => Engine ]);
       const engineProvider = providers[0];
-      const brokenEngineProvider = providers[1];
-
       expect(engineProvider.resolvedFactories[0]() instanceof Engine).to.eq(true);
+    });
+
+    it('should resolve forward references for ClassProvider', () => {
+      const providers = Injector.resolve([ [{ provide: () => BrokenEngine, useClass: () => Engine }] ]);
+      const brokenEngineProvider = providers[0];
       expect(brokenEngineProvider.resolvedFactories[0]() instanceof Engine).to.eq(true);
     });
   });

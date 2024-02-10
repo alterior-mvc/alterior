@@ -30,28 +30,29 @@ injector.get(TestService).hello();  // Prints `Hello! The time is <current date>
 
 ```
 
-## Providers
+# Providers
 
 An Injector is defined by a set of Providers. A Provider specifies an
 injection token to be provided as well as the value which should be 
 injected when the framework encounters the injection token. 
 
-There are a number of Provider types:
-- **Value**: Specify an existing value that should be provided  
-  `{ provide: TOKEN, useValue: 123 }`
+There are a variety of supported `Provider` types:
+- **`TypeProvider`**: eg `MyClass`  
+  The injector will satisfy `inject(MyClass)` by calling `new MyClass()`. This is equivalent to 
+  specifying a class provider of `{ provide: MyClass, useClass: MyClass }`. The injection library will normalize these into class providers for you.
 
-- **Factory**: Define a factory function that will be called in order to create the value that should be provided  
-  `{ provide: TOKEN, useFactory: () => 123 }`
+- **`ClassProvider`**: eg `{ provide: TOKEN, useClass: MyClass }`  
+  The injector will satisfy `inject(TOKEN)` by constructing the given class using `new`.  
 
-- **Existing**: Define the provided value by specifying another injection token to resolve  
-  `{ provide: TOKEN, useExisting: 'ANOTHERTOKEN' }`
+- **`ValueProvider`**: eg `{ provide: TOKEN, useValue: 123 }`  
+  The injector will satisfy `inject(TOKEN)` with an existing value.
 
-- **Class**: The injector will instantiate the given class and use the new instance as the provided value  
-  `{ provide: TOKEN, useClass: MyClass }`
+- **`FactoryProvider`**: eg `{ provide: TOKEN, useFactory: () => 123 }`  
+  The injector will satisfy `inject(TOKEN)` with the result of invoking a factory function. You can 
+  use `inject()` within the factory function to obtain any needed dependencies.
 
-As a shortcut, you can pass a constructor function (class) without wrapping 
-it in a useClass Provider object. Doing so with class `ABC` is the equivalent of specifying 
-`{ provide: ABC, useClass: ABC }`
+- **`ExistingProvider`**: eg `{ provide: TOKEN, useExisting: ANOTHERTOKEN }`  
+  The injector will satisfy `inject(TOKEN)` with the same value as `inject(ANOTHER_TOKEN)`.
 
 # Multi-Providers
 
@@ -59,12 +60,19 @@ Usually a dependency is resolved from a single provider. In some cases it may be
 to contribute parts of a single dependency. To support that use case, you can mark the providers as `multi: true`. When
 you do this, `inject(TOKEN)` will return an array containing the values of all the multi-providers.
 
-## Non-unique Providers
+# Forward References
+
+In some cases (such as circular imports or non-hoisted definitions), the value of a given symbol may not be available 
+until the entire source file (or both source files) have finished their initial execution. The injector library provides
+a mechanism for dealing with this called "forward references". Forward references can be used in the `provide` and 
+`useClass` provider properties, as well as for TypeProviders (ie `() => MyType`)
+
+# Non-unique Providers
 
 Class and factory providers are singleton-like by default; only one instantiation will be created. You can set the 
 `unique` option to be `false` to cause a new instantiation to happen per injection. 
 
-## Imperative Injection
+# Imperative Injection
 
 The `inject()` method is the primary way to tell the injector what dependencies your class needs. This function can 
 only be called while a dependency is being instantiated (ie, during a class's constructor or during the factory of a 
@@ -73,7 +81,7 @@ factory provider).
 In addition to `inject()`, you can obtain the _injection context_ itself using `injectionContext()`. This grants you 
 access to the injector itself as well as the token that is currently being instantiated.
 
-## Injecting the Injector
+# Injecting the Injector
 
 All injectors are capable of providing the injector itself. While this might seem unnecessary, since 
 `injector.get(token)` is equivalent to `inject(token)`, you may need to retain the injector for use after instantiation
@@ -92,7 +100,7 @@ let injector = inject(Injector);
 
 We recommend using `injectionContext().injector` instead, which is type-safe.
 
-## Creating Injectors
+# Creating Injectors
 
 ```typescript
 let injector = Injector.resolveAndCreate([ /* providers */ ], parent?);
@@ -103,7 +111,7 @@ injector to `resolveAndCreate()` then the tokens provided by the parent
 injector become available in the new injector (assuming they are not 
 overridden).
 
-## Getting Values
+# Getting Values
 
 Once you've obtained an `Injector` you can use `Injector#get()` to obtain the value for a particular injection token:
 
@@ -129,3 +137,7 @@ let instance = injector.get(MyClass, null);
 Here `instance` will be `null` if `injector` does not provide `MyClass`. 
 Note: You cannot pass `undefined` here as `get()` will act as if you 
 did not pass the second parameter at all. Use `null` instead.
+
+# Credit
+
+This library was originally derived from the [`injection-js`](https://www.npmjs.com/package/injection-js) package, which is itself was originally derived from Angular 4's dependency injector.
