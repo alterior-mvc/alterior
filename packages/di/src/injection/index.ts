@@ -4,11 +4,6 @@
  * The `di` module provides dependency injection container services.
  */
 
-export * from './metadata';
-
-export { forwardRef, resolveForwardRef, ForwardRefFn } from './forward-ref';
-
-export * from './forward-ref';
 export * from './inject-options';
 export * from './inject';
 export * from './injection-token';

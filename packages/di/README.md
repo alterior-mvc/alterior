@@ -2,51 +2,33 @@
 
 [![Version](https://img.shields.io/npm/v/@alterior/di.svg)](https://www.npmjs.com/package/@alterior/di)
 
-Alterior supports dependency injection using the same patterns as in 
-Angular applications. `@alterior/di` is responsible for providing the
-underlying dependency injection mechanism.
+Provides a flexible dependency injection system. The system provided here is used extensively throughout the 
+Alterior framework, but you can use it independently as well.
 
-Injectors created via this library are _heirarchical_. This is an 
-important concept which is used throughout the Alterior framework. 
-Injectors provide the dependencies specified when they are resolved
-and if no matching dependency is found, the request is forwarded 
-to the parent injector.
+Injectors created via this library are heirarchical. Along with a set of dependency injection providers, an injector 
+can reference a "parent" injector. If no matching dependency is found, the request is forwarded to the parent injector.
 
 ```typescript
-import { ReflectiveInjector, Injectable } from '@alterior/di';
+import { Injector, inject } from '@alterior/di';
 
-@Injectable()
 class TestService {
-    constructor(readonly date : Date) {
-    }
-
+    readonly date = inject(Date);
     hello() {
         console.log(`Hello! The time is ${this.date.toString()}`);
     }
 }
 
-let injector = ReflectiveInjector.resolveAndCreate([
+let injector = Injector.resolveAndCreate([
     { provide: 'Test', useValue: 123 },
     { provide: Date, useValue: new Date() },
     TestService
 ]);
 
-console.log(injector.get('Test'));
-console.log(injector.get(Date));
-injector.get(TestService).hello();
+console.log(injector.get('Test'));  // prints 123
+console.log(injector.get(Date));    // prints the current date
+injector.get(TestService).hello();  // Prints `Hello! The time is <current date>`
+
 ```
-
-## Injectors
-
-The `Injector` class is abstract. It has exactly one exposed method:
-`get(token : any) : any`. The library ships with `ReflectiveInjector`
-which uses Typescript's runtime type reflection (requires `emitDecoratorMetadata`) in order to determine which dependencies are 
-requested by a constructor function. Because Typescript only emits 
-type metadata for elements which are annotated with a decorator, you 
-must decorate any class that participates in DI with the `@Injectable()`
-decorator. Since the mere presence of a decorator causes metadata to be 
-emitted, you do not need `@Injectable()` if there is any other decorator 
-already applied, but it is good practice to include it nonetheless.
 
 ## Providers
 
@@ -68,7 +50,22 @@ There are a number of Provider types:
   `{ provide: 'TOKEN', useClass: MyClass }`
 
 As a shortcut, you can pass a constructor function (class) without wrapping 
-it in a useClass Provider object. Doing so with class `ABC` is the equivalent of specifying `{ provide: ABC, useClass: ABC }`
+it in a useClass Provider object. Doing so with class `ABC` is the equivalent of specifying 
+`{ provide: ABC, useClass: ABC }`
+
+## Non-unique Providers
+
+Class and factory providers are singleton-like by default; only one instantiation will be created. You can set the 
+`unique` option to be `false` to cause a new instantiation to happen per injection. 
+
+## Imperative Injection
+
+The `inject()` method is the primary way to tell the injector what dependencies your class needs. This function can 
+only be called while a dependency is being instantiated (ie, during a class's constructor or during the factory of a 
+factory provider).
+
+In addition to `inject()`, you can obtain the _injection context_ itself using `injectionContext()`. This grants you 
+access to the injector itself as well as the token that is currently being instantiated.
 
 ## Creating Injectors
 

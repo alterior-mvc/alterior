@@ -20,8 +20,18 @@
     accepts a `compiler` option.
 - `@/mongodb`: New package for ergonomically connecting to MongoDB from within your Alterior applications
 - `@/di`
-  * **Breaking** The `Injector#get(token: any, defaultValue?: any): any` overload has been removed. Instead, pass the 
+  * **Breaking**: The `Injector#get(token: any, defaultValue?: any): any` overload has been removed. Instead, pass the 
     class you are interested in (`Type<T>`), or the injection token you are interested in (`InjectionToken<T>`).
+  * **Breaking**: The `Injector` abstract base class is removed and `ReflectiveInjector` is renamed as `Injector`.
+    Similarly, numerous naming changes around the API surface remove the "reflective" designator.
+  * **Breaking**: Constructor parameter injection is no longer available. Please use property injection via `inject()`
+    instead. Classes constructed by the injector will receive no constructor parameters. Accordingly, the 
+    `@Injectable` decorator and all decorators previously used with constructor parameters are removed. You do not need 
+    to decorate injectable classes using `@Injectable`.
+  * **Breaking**: Factory providers no longer receive arguments, and the `deps` property of factory providers is removed.
+    If you need to inject a dependency into a factory function, simply use `inject()` as you normally would.
+  * Adds a `unique` option to class and factory providers which causes such a provider to be resolved every time an 
+    injection occurs instead of only once.
   * Introduces a new set of error classes which are now used when throwing injection related errors.
   * You can now use `injectionContext()` to acquire the current injection context. You can use this to acquire the 
     `injector` which is currently resolving a provider or access the `token` currently being resolved. This can be 

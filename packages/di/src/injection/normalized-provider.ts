@@ -1,4 +1,4 @@
-import { ClassProvider, ExistingProvider, FactoryProvider, TypeProvider, ValueProvider } from "./provider";
+import { ClassProvider, ExistingProvider, FactoryProvider, ValueProvider } from "./provider";
 
-export interface NormalizedProvider extends TypeProvider, ValueProvider, 
+export interface NormalizedProvider extends ValueProvider, 
     ClassProvider, ExistingProvider, FactoryProvider { }

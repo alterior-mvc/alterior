@@ -24,7 +24,24 @@ import { ConcreteType } from './type';
  *
  * @stable
  */
-export type TypeProvider = ConcreteType<any>;
+export type TypeProvider = ConcreteType<any> | (() => ConcreteType<any>);
+
+interface ProviderBase {
+  /**
+   * An injection token. (Typically an instance of `Type` or `InjectionToken`, but can be `any`).
+   */
+  provide: any;
+
+  /**
+   * If true, then injector returns an array of instances. This is useful to allow multiple
+   * providers spread across many files to provide configuration information to a common token.
+   *
+   * ### Example
+   *
+   * {@example core/di/ts/provider_spec.ts region='MultiProviderAspect'}
+   */
+  multi?: boolean;
+}
 
 /**
  * @whatItDoes Configures the {@link Injector} to return a value for a token.
@@ -42,26 +59,11 @@ export type TypeProvider = ConcreteType<any>;
  *
  * @stable
  */
-export interface ValueProvider {
-  /**
-   * An injection token. (Typically an instance of `Type` or `InjectionToken`, but can be `any`).
-   */
-  provide: any;
-
+export interface ValueProvider extends ProviderBase {
   /**
    * The value to inject.
    */
   useValue: any;
-
-  /**
-   * If true, then injector returns an array of instances. This is useful to allow multiple
-   * providers spread across many files to provide configuration information to a common token.
-   *
-   * ### Example
-   *
-   * {@example core/di/ts/provider_spec.ts region='MultiProviderAspect'}
-   */
-  multi?: boolean;
 }
 
 /**
@@ -86,26 +88,17 @@ export interface ValueProvider {
  *
  * @stable
  */
-export interface ClassProvider {
-  /**
-   * An injection token. (Typically an instance of `Type` or `InjectionToken`, but can be `any`).
-   */
-  provide: any;
-
+export interface ClassProvider extends ProviderBase {
   /**
    * Class to instantiate for the `token`.
    */
-  useClass: ConcreteType<any>;
+  useClass: ConcreteType<any> | (() => ConcreteType<any>);
 
   /**
-   * If true, then injector returns an array of instances. This is useful to allow multiple
-   * providers spread across many files to provide configuration information to a common token.
-   *
-   * ### Example
-   *
-   * {@example core/di/ts/provider_spec.ts region='MultiProviderAspect'}
+   * When true (the default), the class will only be constructed once, and all injections will share it.
+   * When false, the class will be constructed each time an injection occurs.
    */
-  multi?: boolean;
+  unique?: boolean;
 }
 
 /**
@@ -124,26 +117,11 @@ export interface ClassProvider {
  *
  * @stable
  */
-export interface ExistingProvider {
-  /**
-   * An injection token. (Typically an instance of `Type` or `InjectionToken`, but can be `any`).
-   */
-  provide: any;
-
+export interface ExistingProvider extends ProviderBase {
   /**
    * Existing `token` to return. (equivalent to `injector.get(useExisting)`)
    */
   useExisting: any;
-
-  /**
-   * If true, then injector returns an array of instances. This is useful to allow multiple
-   * providers spread across many files to provide configuration information to a common token.
-   *
-   * ### Example
-   *
-   * {@example core/di/ts/provider_spec.ts region='MultiProviderAspect'}
-   */
-  multi?: boolean;
 }
 
 /**
@@ -168,33 +146,18 @@ export interface ExistingProvider {
  *
  * @stable
  */
-export interface FactoryProvider {
-  /**
-   * An injection token. (Typically an instance of `Type` or `InjectionToken`, but can be `any`).
-   */
-  provide: any;
-
+export interface FactoryProvider extends ProviderBase {
   /**
    * A function to invoke to create a value for this `token`. The function is invoked with
    * resolved values of `token`s in the `deps` field.
    */
-  useFactory: Function;
+  useFactory: () => any;
 
   /**
-   * A list of `token`s which need to be resolved by the injector. The list of values is then
-   * used as arguments to the `useFactory` function.
+   * When true (the default), the factory will only be called once, and all injections will share the same value.
+   * When false, the factory will be called each time an injection occurs.
    */
-  deps?: any[];
-
-  /**
-   * If true, then injector returns an array of instances. This is useful to allow multiple
-   * providers spread across many files to provide configuration information to a common token.
-   *
-   * ### Example
-   *
-   * {@example core/di/ts/provider_spec.ts region='MultiProviderAspect'}
-   */
-  multi?: boolean;
+  unique?: boolean;
 }
 
 /**

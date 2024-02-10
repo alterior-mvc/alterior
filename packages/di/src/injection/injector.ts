@@ -1,15 +1,12 @@
-import { Annotation } from '@alterior/annotations';
+import { Dependency } from './dependency';
 import { CyclicDependencyError, InjectionError, InstantiationError, NoProviderError, OutOfBoundsError } from './errors';
-import { ConcreteType } from './type';
 import { runInInjectionContext } from './injection-context';
 import { InjectorGetOptions } from './injector-get-options';
-import { InjectAnnotation, Optional, OptionalAnnotation, SelfAnnotation, Skip, SkipAnnotation, SkipSelfAnnotation } from './metadata';
-import { ClassProvider, Provider, ProviderWithDependencies, isTypeProvider } from './provider';
 import { Key } from './key';
-import { THROW_IF_NOT_FOUND } from './throw-if-not-found';
-import { ResolvedProvider } from './resolved-provider';
+import { Provider } from './provider';
 import { ResolvedFactory } from './resolved-factory';
-import { Dependency } from './dependency';
+import { ResolvedProvider } from './resolved-provider';
+import { THROW_IF_NOT_FOUND } from './throw-if-not-found';
 
 // Threshold for the dynamic version
 const UNDEFINED = new Object();
@@ -60,11 +57,10 @@ export class Injector {
     private _parent: Injector | null;
     private keyIds: number[];
     private instances: any[];
-    private _useSelf = new SelfAnnotation();
     private get maxNumberOfObjects() { return this.instances.length; }
 
     get(token: any, notFoundValue: any = THROW_IF_NOT_FOUND, options?: InjectorGetOptions): any {
-        return this.getByKey(Key.get(token), options?.self ? this._useSelf : null, notFoundValue);
+        return this.getByKey(Key.get(token), options?.self ? 'self' : 'default', notFoundValue);
     }
 
     /**
@@ -192,7 +188,7 @@ export class Injector {
      * ```
      */
     instantiate(provider: ResolvedProvider): any {
-        if (provider.multiProvider) {
+        if (provider.multi) {
             const res = new Array(provider.resolvedFactories.length);
             for (let i = 0; i < provider.resolvedFactories.length; ++i) {
                 res[i] = this.instantiateFromFactory(provider, provider.resolvedFactories[i]);
@@ -227,24 +223,17 @@ export class Injector {
 
     private instantiateFromFactory(
         provider: ResolvedProvider, 
-        ResolvedReflectiveFactory: ResolvedFactory
+        factory: () => any
     ): any {
-        const factory = ResolvedReflectiveFactory.factory;
-
-        let deps: any[];
         try {
-            deps = ResolvedReflectiveFactory.dependencies.map(dep => this.getByReflectiveDependency(dep));
-        } catch (e: unknown) {
+            return runInInjectionContext(this, provider.key.token, factory);
+        } catch (e: any) {
             if (e instanceof InjectionError) {
                 e.addKey(this, provider.key);
+                throw e;
+            } else {
+                throw new InstantiationError(this, provider.key, { cause: e });
             }
-            throw e;
-        }
-
-        try {
-            return runInInjectionContext(this, provider.key.token, () => factory(...deps));
-        } catch (e: any) {
-            throw new InstantiationError(this, provider.key, { cause: e });
         }
     }
 
@@ -254,13 +243,13 @@ export class Injector {
         return this.getByKey(dep.key, dep.visibility, dep.optional ? null : THROW_IF_NOT_FOUND);
     }
 
-    private getByKey(key: Key, visibility: SelfAnnotation | SkipSelfAnnotation | null, notFoundValue: any): any {
+    private getByKey(key: Key, visibility: 'default' | 'self' | 'skip-self', notFoundValue: any): any {
         // tslint:disable-next-line:no-use-before-declare
         if (key === Key.get(Injector)) {
             return this;
         }
 
-        if (visibility instanceof SelfAnnotation) {
+        if (visibility === 'self') {
             return this.getByKeySelf(key, notFoundValue);
         } else {
             return this.getByKeyDefault(key, notFoundValue, visibility);
@@ -271,7 +260,10 @@ export class Injector {
         for (let i = 0; i < this.keyIds.length; i++) {
             if (this.keyIds[i] === keyId) {
                 if (this.instances[i] === UNDEFINED) {
-                    this.instances[i] = this.construct(this._providers[i]);
+                    const provider = this._providers[i];
+                    if (!provider.unique)
+                        return this.instantiate(provider);
+                    this.instances[i] = this.construct(provider);
                 }
 
                 return this.instances[i];
@@ -297,8 +289,8 @@ export class Injector {
     }
 
     /** @internal */
-    private getByKeyDefault(key: Key, notFoundValue: any, visibility: SelfAnnotation | SkipSelfAnnotation | null): any {
-        let injector = visibility instanceof SkipSelfAnnotation ? this._parent : this;
+    private getByKeyDefault(key: Key, notFoundValue: any, visibility: 'self' | 'skip-self' | 'default'): any {
+        let injector = visibility === 'skip-self' ? this._parent : this;
 
         while (injector) {
             const obj = injector.getByKeyId(key.id);
@@ -396,70 +388,6 @@ export class Injector {
             Injector.resolve(providers),
             parent
         );
-    }
-
-    /**
-     * Extract the dependencies of the given providers
-     * @param providers 
-     */
-    static reflectDependencies(provider: Provider): ProviderWithDependencies {
-        if (isTypeProvider(provider)) {
-            provider = {
-                provide: provider,
-                useClass: <ConcreteType<any>>provider
-            };
-        }
-
-        if (!('useClass' in provider))
-            return provider;
-
-        let classProvider: ClassProvider = <any>provider;
-
-        const paramsAnnotations = Annotation.getAllForConstructorParameters(classProvider.useClass);
-        let params = Reflect.getOwnMetadata('design:paramtypes', classProvider.useClass);
-        let deps = [];
-
-        if (classProvider.useClass.length > 0 && typeof params === 'undefined') {
-            throw new Error(
-                `missing-reflection: No reflection metadata available `
-                + `for ${classProvider.useClass.name}`
-            );
-        }
-
-        if (params && params.length > 0) {
-            for (let i = 0; i < params.length; ++i) {
-                let param = params[i];
-                let paramAnnotations = paramsAnnotations[i] || [];
-
-                let injectAnnotation = <InjectAnnotation>paramAnnotations.find(x => x instanceof InjectAnnotation);
-                let skipAnnotation = <SkipAnnotation>paramAnnotations.find(x => x instanceof SkipAnnotation);
-                let optionalAnnotation = <OptionalAnnotation>paramAnnotations.find(x => x instanceof OptionalAnnotation);
-
-                let token = param;
-
-                if (injectAnnotation) {
-                    token = injectAnnotation.token;
-                }
-
-                let dep: any = token;
-
-                if (skipAnnotation) {
-                    dep = [Skip, token]
-                } else if (optionalAnnotation) {
-                    dep = [Optional, token];
-                } else {
-                    dep = token;
-                }
-
-                deps.push(dep);
-            }
-        }
-
-        return <ProviderWithDependencies>{
-            provide: classProvider.provide,
-            useClass: classProvider.useClass,
-            deps
-        }
     }
 
     /**

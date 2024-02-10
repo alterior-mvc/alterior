@@ -1,10 +1,11 @@
 import { Type } from './type';
 
 import { InvalidProviderError, MixingMultiProvidersWithRegularProvidersError } from './errors';
+import { inject } from './inject';
 import { Key } from './key';
 import { NormalizedProvider } from './normalized-provider';
 import { Provider } from './provider';
-import { ResolvedFactory } from './resolved-factory';
+import { resolveForwardRef } from './forward-ref';
 
 /**
  * An internal resolved representation of a {@link Provider} used by the {@link Injector}.
@@ -34,15 +35,20 @@ export class ResolvedProvider {
     /**
      * Factory function which can return an instance of an object represented by a key.
      */
-    public resolvedFactories: ResolvedFactory[],
+    public resolvedFactories: (() => any)[],
 
     /**
      * Indicates if the provider is a multi-provider or a regular provider.
      */
-    public multiProvider: boolean
+    public multi: boolean,
+
+    /**
+     * Indicates if the provider is unique (instantiated once) or non-unique (instantiated each time it is used)
+     */
+    public unique: boolean
   ) { }
 
-  get resolvedFactory(): ResolvedFactory {
+  get resolvedFactory(): Function {
     return this.resolvedFactories[0];
   }
 
@@ -55,9 +61,24 @@ export class ResolvedProvider {
   static from(provider: NormalizedProvider): ResolvedProvider {
     return new ResolvedProvider(
       Key.get(provider.provide),
-      [ResolvedFactory.from(provider)],
-      provider.multi || false
+      [this.resolveFactory(provider)],
+      provider.multi ?? false,
+      provider.unique ?? true
     );
+  }
+
+  private static resolveFactory(provider: NormalizedProvider) {
+    if (provider.useClass) {
+      const klass = resolveForwardRef(provider.useClass);
+      return () => new klass();
+    }
+    
+    if (provider.useExisting)
+      return () => inject(provider.useExisting);
+    else if (provider.useFactory)
+      return provider.useFactory;
+    else
+      return () => provider.useValue;
   }
 
   /**
@@ -83,10 +104,10 @@ export class ResolvedProvider {
       const provider = providers[i];
       const existing = normalizedProvidersMap.get(provider.key.id);
       if (existing) {
-        if (provider.multiProvider !== existing.multiProvider) {
+        if (provider.multi !== existing.multi) {
           throw new MixingMultiProvidersWithRegularProvidersError(existing, provider);
         }
-        if (provider.multiProvider) {
+        if (provider.multi) {
           for (let j = 0; j < provider.resolvedFactories.length; j++) {
             existing.resolvedFactories.push(provider.resolvedFactories[j]);
           }
@@ -95,8 +116,13 @@ export class ResolvedProvider {
         }
       } else {
         let resolvedProvider: ResolvedProvider;
-        if (provider.multiProvider) {
-          resolvedProvider = new ResolvedProvider(provider.key, provider.resolvedFactories.slice(), provider.multiProvider);
+        if (provider.multi) {
+          resolvedProvider = new ResolvedProvider(
+            provider.key, 
+            provider.resolvedFactories.slice(), 
+            provider.multi,
+            provider.unique
+          );
         } else {
           resolvedProvider = provider;
         }
@@ -115,8 +141,9 @@ export class ResolvedProvider {
    */
   private static normalizeProviders(providers: Provider[], res: Provider[]): NormalizedProvider[] {
     providers.forEach(b => {
-      if (b instanceof Type) {
-        res.push({ provide: b, useClass: b });
+      if (b instanceof Function) {
+        let type = resolveForwardRef(b);
+        res.push({ provide: type, useClass: type });
       } else if (b && typeof b === 'object' && (b as any).provide !== undefined) {
         res.push(b as NormalizedProvider);
       } else if (b instanceof Array) {

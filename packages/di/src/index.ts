@@ -1,4 +1,3 @@
-export * from './injection/metadata';
 export * from './modules';
 export { 
     InjectionToken,

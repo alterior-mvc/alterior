@@ -8,7 +8,7 @@ export interface InjectionContext {
 
 export function injectionContext(): InjectionContext {
     if (CURRENT_INJECTION_CONTEXT_STORAGE.context === null)
-        throw new Error(`Can only be called during creation of a dependency injection provider.`);
+        throw new Error(`Can only be called during instantiation of a dependency injection provider.`);
 
     return { ...CURRENT_INJECTION_CONTEXT_STORAGE.context };
 }
