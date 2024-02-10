@@ -70,7 +70,7 @@ access to the injector itself as well as the token that is currently being insta
 ## Creating Injectors
 
 ```typescript
-let injector = ReflectiveInjector.resolveAndCreate([ /* providers */ ], parent?);
+let injector = Injector.resolveAndCreate([ /* providers */ ], parent?);
 ```
 
 Use `resolveAndCreate()` to create a new injector. If you passed a parent 

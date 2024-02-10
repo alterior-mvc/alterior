@@ -3,13 +3,13 @@ import { resolveForwardRef } from './forward-ref';
 import { KeyRegistry } from './key-registry';
 
 /**
- * A unique object used for retrieving items from the {@link ReflectiveInjector}.
+ * A unique object used for retrieving items from the {@link Injector}.
  *
  * Keys have:
  * - a system-wide unique `id`.
  * - a `token`.
  *
- * `Key` is used internally by {@link ReflectiveInjector} because its system-wide unique `id` allows
+ * `Key` is used internally by {@link Injector} because its system-wide unique `id` allows
  * the
  * injector to store created objects in a more efficient way.
  *

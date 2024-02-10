@@ -16,6 +16,6 @@ export { Provider, TypeProvider, ValueProvider, ClassProvider, ExistingProvider,
 export { ResolvedFactory } from './resolved-factory';
 export { ResolvedProvider } from './resolved-provider';
 
-export { Key as ReflectiveKey } from './key';
+export { Key } from './key';
 export { InjectionToken, OpaqueToken } from './injection-token';
 export { Type, isType } from './type';

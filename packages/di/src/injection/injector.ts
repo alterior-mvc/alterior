@@ -33,7 +33,7 @@ const UNDEFINED = new Object();
  *   constructor(public engine:Engine) {}
  * }
  *
- * var injector = ReflectiveInjector.resolveAndCreate([Car, Engine]);
+ * var injector = Injector.resolveAndCreate([Car, Engine]);
  * var car = injector.get(Car);
  * expect(car instanceof Car).toBe(true);
  * expect(car.engine instanceof Engine).toBe(true);
@@ -69,7 +69,7 @@ export class Injector {
      * For example:
      * 
      * ```typescript
-     * var parent = ReflectiveInjector.resolveAndCreate([]);
+     * var parent = Injector.resolveAndCreate([]);
      * var child = parent.resolveAndCreateChild([]);
      * expect(child.parent).toBe(parent);
      * ```
@@ -90,7 +90,7 @@ export class Injector {
      * class ParentProvider {}
      * class ChildProvider {}
      *
-     * var parent = ReflectiveInjector.resolveAndCreate([ParentProvider]);
+     * var parent = Injector.resolveAndCreate([ParentProvider]);
      * var child = parent.resolveAndCreateChild([ChildProvider]);
      *
      * expect(child.get(ParentProvider) instanceof ParentProvider).toBe(true);
@@ -103,8 +103,7 @@ export class Injector {
      * See {@link Injector#resolve} and {@link Injector#createChildFromResolved}.
      */
     resolveAndCreateChild(providers: Provider[]): Injector {
-        const ResolvedReflectiveProviders = Injector.resolve(providers);
-        return this.createChildFromResolved(ResolvedReflectiveProviders);
+        return this.createChildFromResolved(Injector.resolve(providers));
     }
 
     /**
@@ -118,10 +117,10 @@ export class Injector {
      * class ParentProvider {}
      * class ChildProvider {}
      *
-     * var parentProviders = ReflectiveInjector.resolve([ParentProvider]);
-     * var childProviders = ReflectiveInjector.resolve([ChildProvider]);
+     * var parentProviders = Injector.resolve([ParentProvider]);
+     * var childProviders = Injector.resolve([ChildProvider]);
      *
-     * var parent = ReflectiveInjector.fromResolvedProviders(parentProviders);
+     * var parent = Injector.fromResolvedProviders(parentProviders);
      * var child = parent.createChildFromResolved(childProviders);
      *
      * expect(child.get(ParentProvider) instanceof ParentProvider).toBe(true);
@@ -152,7 +151,7 @@ export class Injector {
      *   constructor(public engine:Engine) {}
      * }
      *
-     * var injector = ReflectiveInjector.resolveAndCreate([Engine]);
+     * var injector = Injector.resolveAndCreate([Engine]);
      *
      * var car = injector.resolveAndInstantiate(Car);
      * expect(car.engine).toBe(injector.get(Engine));
@@ -180,8 +179,8 @@ export class Injector {
      *   constructor(public engine:Engine) {}
      * }
      *
-     * var injector = ReflectiveInjector.resolveAndCreate([Engine]);
-     * var carProvider = ReflectiveInjector.resolve([Car])[0];
+     * var injector = Injector.resolveAndCreate([Engine]);
+     * var carProvider = Injector.resolve([Car])[0];
      * var car = injector.instantiateResolved(carProvider);
      * expect(car.engine).toBe(injector.get(Engine));
      * expect(car).not.toBe(injector.instantiateResolved(carProvider));
@@ -235,12 +234,6 @@ export class Injector {
                 throw new InstantiationError(this, provider.key, { cause: e });
             }
         }
-    }
-
-    private getByReflectiveDependency(dep: Dependency): any {
-        if (dep.skip)
-            return undefined;
-        return this.getByKey(dep.key, dep.visibility, dep.optional ? null : THROW_IF_NOT_FOUND);
     }
 
     private getByKey(key: Key, visibility: 'default' | 'self' | 'skip-self', notFoundValue: any): any {
@@ -338,11 +331,11 @@ export class Injector {
      *   constructor(public engine:Engine) {}
      * }
      *
-     * var providers = ReflectiveInjector.resolve([Car, [[Engine]]]);
+     * var providers = Injector.resolve([Car, [[Engine]]]);
      *
      * expect(providers.length).toEqual(2);
      *
-     * expect(providers[0] instanceof ResolvedReflectiveProvider).toBe(true);
+     * expect(providers[0] instanceof ResolvedProvider).toBe(true);
      * expect(providers[0].key.displayName).toBe("Car");
      * expect(providers[0].dependencies.length).toEqual(1);
      * expect(providers[0].factory).toBeDefined();
@@ -375,7 +368,7 @@ export class Injector {
      *   constructor(public engine:Engine) {}
      * }
      *
-     * var injector = ReflectiveInjector.resolveAndCreate([Car, Engine]);
+     * var injector = Injector.resolveAndCreate([Car, Engine]);
      * expect(injector.get(Car) instanceof Car).toBe(true);
      * ```
      *
@@ -407,8 +400,8 @@ export class Injector {
      *   constructor(public engine:Engine) {}
      * }
      *
-     * var providers = ReflectiveInjector.resolve([Car, Engine]);
-     * var injector = ReflectiveInjector.fromResolvedProviders(providers);
+     * var providers = Injector.resolve([Car, Engine]);
+     * var injector = Injector.fromResolvedProviders(providers);
      * expect(injector.get(Car) instanceof Car).toBe(true);
      * ```
      * @experimental
