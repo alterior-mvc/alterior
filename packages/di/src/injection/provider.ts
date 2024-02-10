@@ -1,9 +1,9 @@
 import { ConcreteType } from './type';
 
 /**
- * @whatItDoes Configures the {@link Injector} to return an instance of `Type` when `Type' is used
+ * Configures the {@link Injector} to return an instance of `Type` when `Type' is used
  * as token.
- * @howToUse
+ * 
  * ```
  * @Injectable()
  * class MyService {}
@@ -11,18 +11,8 @@ import { ConcreteType } from './type';
  * const provider: TypeProvider = MyService;
  * ```
  *
- * @description
- *
  * Create an instance by invoking the `new` operator and supplying additional arguments.
  * This form is a short form of `TypeProvider`;
- *
- * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
- *
- * ### Example
- *
- * {@example core/di/ts/provider_spec.ts region='TypeProvider'}
- *
- * @stable
  */
 export type TypeProvider = ConcreteType<any> | (() => ConcreteType<any>);
 
@@ -35,29 +25,16 @@ interface ProviderBase {
   /**
    * If true, then injector returns an array of instances. This is useful to allow multiple
    * providers spread across many files to provide configuration information to a common token.
-   *
-   * ### Example
-   *
-   * {@example core/di/ts/provider_spec.ts region='MultiProviderAspect'}
    */
   multi?: boolean;
 }
 
 /**
- * @whatItDoes Configures the {@link Injector} to return a value for a token.
- * @howToUse
+ * Configures the {@link Injector} to return a value for a token.
+ * 
  * ```
  * const provider: ValueProvider = {provide: 'someToken', useValue: 'someValue'};
  * ```
- *
- * @description
- * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
- *
- * ### Example
- *
- * {@example core/di/ts/provider_spec.ts region='ValueProvider'}
- *
- * @stable
  */
 export interface ValueProvider extends ProviderBase {
   /**
@@ -67,26 +44,14 @@ export interface ValueProvider extends ProviderBase {
 }
 
 /**
- * @whatItDoes Configures the {@link Injector} to return an instance of `useClass` for a token.
- * @howToUse
+ * Configures the {@link Injector} to return an instance of `useClass` for a token.
+ * 
  * ```
  * @Injectable()
  * class MyService {}
  *
  * const provider: ClassProvider = {provide: 'someToken', useClass: MyService};
  * ```
- *
- * @description
- * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
- *
- * ### Example
- *
- * {@example core/di/ts/provider_spec.ts region='ClassProvider'}
- *
- * Note that following two providers are not equal:
- * {@example core/di/ts/provider_spec.ts region='ClassProviderDifference'}
- *
- * @stable
  */
 export interface ClassProvider extends ProviderBase {
   /**
@@ -102,20 +67,11 @@ export interface ClassProvider extends ProviderBase {
 }
 
 /**
- * @whatItDoes Configures the {@link Injector} to return a value of another `useExisting` token.
- * @howToUse
- * ```
+ * Configures the {@link Injector} to return a value of another `useExisting` token.
+ * 
+ * ```typescript
  * const provider: ExistingProvider = {provide: 'someToken', useExisting: 'someOtherToken'};
  * ```
- *
- * @description
- * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
- *
- * ### Example
- *
- * {@example core/di/ts/provider_spec.ts region='ExistingProvider'}
- *
- * @stable
  */
 export interface ExistingProvider extends ProviderBase {
   /**
@@ -125,26 +81,14 @@ export interface ExistingProvider extends ProviderBase {
 }
 
 /**
- * @whatItDoes Configures the {@link Injector} to return a value by invoking a `useFactory`
+ * Configures the {@link Injector} to return a value by invoking a `useFactory`
  * function.
- * @howToUse
+ * 
  * ```
  * function serviceFactory() { ... }
  *
  * const provider: FactoryProvider = {provide: 'someToken', useFactory: serviceFactory, deps: []};
  * ```
- *
- * @description
- * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
- *
- * ### Example
- *
- * {@example core/di/ts/provider_spec.ts region='FactoryProvider'}
- *
- * Dependencies can also be marked as optional:
- * {@example core/di/ts/provider_spec.ts region='FactoryProviderOptionalDeps'}
- *
- * @stable
  */
 export interface FactoryProvider extends ProviderBase {
   /**
@@ -161,15 +105,10 @@ export interface FactoryProvider extends ProviderBase {
 }
 
 /**
- * @whatItDoes Describes how the {@link Injector} should be configured.
- * @howToUse
+ * Describes how the {@link Injector} should be configured.
+ * 
  * See {@link TypeProvider}, {@link ValueProvider}, {@link ClassProvider}, {@link ExistingProvider},
  * {@link FactoryProvider}.
- *
- * @description
- * For more details, see the {@linkDocs guide/dependency-injection "Dependency Injection Guide"}.
- *
- * @stable
  */
 export type Provider = TypeProvider | ValueProvider | ClassProvider | ExistingProvider | FactoryProvider | any[];
 

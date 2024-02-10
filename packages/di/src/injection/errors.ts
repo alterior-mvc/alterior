@@ -171,7 +171,6 @@ export class InvalidProviderError extends Error {
  *
  * expect(() => Injector.resolveAndCreate([A,B])).toThrowError();
  * ```
- * @stable
  */
 export class NoAnnotationError extends Error {
     constructor(readonly subject: Type<any> | Function, readonly params: any[][]) {
@@ -205,7 +204,6 @@ export class NoAnnotationError extends Error {
  *
  * expect(() => injector.getAt(100)).toThrowError();
  * ```
- * @stable
  */
 export class OutOfBoundsError extends Error {
     constructor(readonly index: number) {

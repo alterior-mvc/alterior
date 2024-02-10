@@ -44,12 +44,6 @@ export class OpaqueToken {
  * var myInterface = injector.get(new InjectionToken<MyInterface>('SomeToken'));
  * // myInterface is inferred to be MyInterface.
  * ```
- *
- * ### Example
- *
- * {@example core/di/ts/injector_spec.ts region='InjectionToken'}
- *
- * @stable
  */
 export class InjectionToken<T> extends OpaqueToken {
   // This unused property is needed here so that TS can differentiate InjectionToken from

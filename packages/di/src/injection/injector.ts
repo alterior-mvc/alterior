@@ -1,10 +1,8 @@
-import { Dependency } from './dependency';
 import { CyclicDependencyError, InjectionError, InstantiationError, NoProviderError, OutOfBoundsError } from './errors';
 import { runInInjectionContext } from './injection-context';
 import { InjectorGetOptions } from './injector-get-options';
 import { Key } from './key';
 import { Provider } from './provider';
-import { ResolvedFactory } from './resolved-factory';
 import { ResolvedProvider } from './resolved-provider';
 import { THROW_IF_NOT_FOUND } from './throw-if-not-found';
 
@@ -41,8 +39,6 @@ const UNDEFINED = new Object();
  *
  * Notice, we don't use the `new` operator because we explicitly want to have the `Injector`
  * resolve all of the object's dependencies automatically.
- *
- * @stable
  */
 export class Injector {
     private constructor(providers: ResolvedProvider[], parent: Injector | null = null) {

@@ -38,20 +38,26 @@ injected when the framework encounters the injection token.
 
 There are a number of Provider types:
 - **Value**: Specify an existing value that should be provided  
-  `{ provide: 'TOKEN', useValue: 123 }`
+  `{ provide: TOKEN, useValue: 123 }`
 
 - **Factory**: Define a factory function that will be called in order to create the value that should be provided  
-  `{ provide: 'TOKEN', useFactory: () => 123 }`
+  `{ provide: TOKEN, useFactory: () => 123 }`
 
 - **Existing**: Define the provided value by specifying another injection token to resolve  
-  `{ provide: 'TOKEN', useExisting: 'ANOTHERTOKEN' }`
+  `{ provide: TOKEN, useExisting: 'ANOTHERTOKEN' }`
 
 - **Class**: The injector will instantiate the given class and use the new instance as the provided value  
-  `{ provide: 'TOKEN', useClass: MyClass }`
+  `{ provide: TOKEN, useClass: MyClass }`
 
 As a shortcut, you can pass a constructor function (class) without wrapping 
 it in a useClass Provider object. Doing so with class `ABC` is the equivalent of specifying 
 `{ provide: ABC, useClass: ABC }`
+
+# Multi-Providers
+
+Usually a dependency is resolved from a single provider. In some cases it may be helpful to allow multiple providers 
+to contribute parts of a single dependency. To support that use case, you can mark the providers as `multi: true`. When
+you do this, `inject(TOKEN)` will return an array containing the values of all the multi-providers.
 
 ## Non-unique Providers
 
