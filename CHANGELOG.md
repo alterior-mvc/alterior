@@ -30,6 +30,10 @@
     to decorate injectable classes using `@Injectable`.
   * **Breaking**: Factory providers no longer receive arguments, and the `deps` property of factory providers is removed.
     If you need to inject a dependency into a factory function, simply use `inject()` as you normally would.
+  * **Breaking**: The `forwardRef()` function is no longer available. Forward references are still supported for 
+    providers (both for `TypeProvider` and `ClassProvider`), but you no longer need to mark the forward ref using the old 
+    utility function. Instead of `forwardRef(() => MyClass)`, simply use `() => MyClass`. The injector library will 
+    detect this and automatically dereference the forward reference.
   * Adds a `unique` option to class and factory providers which causes such a provider to be resolved every time an 
     injection occurs instead of only once.
   * Introduces a new set of error classes which are now used when throwing injection related errors.
