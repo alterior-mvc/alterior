@@ -1,6 +1,6 @@
 import { suite } from 'razmin';
 import { prepareMiddleware, Middleware } from './middleware';
-import { ReflectiveInjector, Inject, InjectionToken } from '@alterior/di';
+import { InjectionToken, Injector, inject } from '@alterior/di';
 import { expect } from 'chai';
 import { MiddlewareDefinition, MiddlewareFunction, WebRequest } from './metadata';
 import { ServerResponse } from 'http';
@@ -19,7 +19,7 @@ suite(describe => {
                 }
             }
 
-            let injector = ReflectiveInjector.resolveAndCreate([ SampleMiddleware ]);
+            let injector = Injector.resolveAndCreate([ SampleMiddleware ]);
             let preparedMiddleware = <MiddlewareFunction>prepareMiddleware(injector, SampleMiddleware);
 
             let passedReq = <WebRequest>{};
@@ -36,23 +36,20 @@ suite(describe => {
 
 		it('should support injection into DI middleware', async () => {
             let SAMPLE_INJECTABLE_TOKEN = new InjectionToken('FOO_TOKEN');
-            let observedSampleInjectable;
+            let observedSampleInjectable: unknown;
             let sampleInjectableValue = {};
 
             @Middleware()
             class SampleMiddleware {
-                constructor(
-                    @Inject(SAMPLE_INJECTABLE_TOKEN)
-                    sampleInjectable : string
-                ) {
-                    observedSampleInjectable = sampleInjectable;
+                constructor() {
+                    observedSampleInjectable = inject(SAMPLE_INJECTABLE_TOKEN);
                 }
 
                 handle(req: WebRequest, res: ServerResponse, next: () => void) {
                 }
             }
 
-            let injector = ReflectiveInjector.resolveAndCreate([
+            let injector = Injector.resolveAndCreate([
                 SampleMiddleware,
                 { provide: SAMPLE_INJECTABLE_TOKEN, useValue: sampleInjectableValue }
             ]);
@@ -61,7 +58,7 @@ suite(describe => {
         });
         
 		it('should pass connect middleware through unchanged', async () => {
-            let injector = ReflectiveInjector.resolveAndCreate([]);
+            let injector = Injector.resolveAndCreate([]);
             let observedReq, observedRes, observedNext;
 
             let connectMiddleware: MiddlewareDefinition = (req, res, next) => {

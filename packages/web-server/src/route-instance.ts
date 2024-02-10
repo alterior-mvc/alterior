@@ -1,6 +1,6 @@
 import { Annotations } from "@alterior/annotations";
 import { ArgumentError, ArgumentNullError, getParameterNames } from "@alterior/common";
-import { Injector, Provider, ReflectiveInjector } from '@alterior/di';
+import { Injector, Provider } from '@alterior/di';
 import { InputAnnotation } from "./input";
 import { RouteDefinition, RouteOptions, WebEvent } from "./metadata";
 import { prepareMiddleware } from "./middleware";
@@ -93,7 +93,7 @@ export class RouteInstance {
 	private prepareMiddleware() {
 		// Procure an injector which can handle injecting the middlewares' providers
 
-		let childInjector = ReflectiveInjector.resolveAndCreate(
+		let childInjector = Injector.resolveAndCreate(
 			<Provider[]>this.middleware.filter(x => Reflect.getMetadata('alterior:middleware', x)),
 			this.injector
 		);

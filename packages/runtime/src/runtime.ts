@@ -1,7 +1,7 @@
 import { Environment, Time } from "@alterior/common";
 import {
     ConfiguredModule, Injector, Module, ModuleAnnotation, ModuleLike, ModuleOptions,
-    Provider, ReflectiveInjector
+    Provider
 } from "@alterior/di";
 import { omit } from "@alterior/functions";
 import { ApplicationOptions } from "./app-options";
@@ -188,9 +188,9 @@ export class Runtime {
      * @param injector 
      */
     private resolveInjector(providers: Provider[]) {
-        let dependenciesInjector: ReflectiveInjector;
+        let dependenciesInjector: Injector;
         try {
-            dependenciesInjector = ReflectiveInjector.resolveAndCreate(providers);
+            dependenciesInjector = Injector.resolveAndCreate(providers);
         } catch (e) {
             console.error(`Failed to resolve injector:`);
             console.error(e);
@@ -201,11 +201,11 @@ export class Runtime {
             throw e;
         }
 
-        let moduleInjector: ReflectiveInjector;
+        let moduleInjector: Injector;
         let moduleProviders = this.definitions.map(x => x.target);
 
         try {
-            moduleInjector = ReflectiveInjector.resolveAndCreate(
+            moduleInjector = Injector.resolveAndCreate(
                 moduleProviders,
                 dependenciesInjector
             );

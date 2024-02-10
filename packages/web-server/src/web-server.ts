@@ -2,7 +2,7 @@ import * as uuid from 'uuid';
 import * as http from 'http';
 import * as ws from 'ws';
 
-import { Injector, ReflectiveInjector, Module, Provider, Type } from "@alterior/di";
+import { Injector, Module, Provider, Type } from "@alterior/di";
 import { prepareMiddleware } from "./middleware";
 import { MiddlewareDefinition, MiddlewareFunction, WebEvent, WebRequest } from "./metadata";
 import { ApplicationOptions, Application, AppOptionsAnnotation, AppOptions } from '@alterior/runtime';
@@ -63,7 +63,7 @@ export class WebServer {
 				+ `or provide a WebServerEngine via dependency injection.`
 			);
 		}
-		return ReflectiveInjector.resolveAndCreate([
+		return Injector.resolveAndCreate([
 			{ provide: WebServerEngine, useClass: WebServerEngine.default }
 		], this._injector).get(WebServerEngine, null);
 	}
@@ -138,7 +138,7 @@ export class WebServer {
 			}
 		];
 
-		let ownInjector = ReflectiveInjector.resolveAndCreate(providers, injector);
+		let ownInjector = Injector.resolveAndCreate(providers, injector);
 		return ownInjector;
 	}
 

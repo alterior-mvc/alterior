@@ -67,6 +67,25 @@ factory provider).
 In addition to `inject()`, you can obtain the _injection context_ itself using `injectionContext()`. This grants you 
 access to the injector itself as well as the token that is currently being instantiated.
 
+## Injecting the Injector
+
+All injectors are capable of providing the injector itself. While this might seem unnecessary, since 
+`injector.get(token)` is equivalent to `inject(token)`, you may need to retain the injector for use after instantiation
+is complete, or use it to create a child injector. 
+
+Since Injectors are not directly constructable (you must use the `Injector.create()` family of methods), Typescript 
+will not let you directly pass `Injector` to `inject()` as in:
+
+```typescript
+let injector = inject(Injector);
+// -------------------^
+//  Argument of type 'typeof Injector' is not assignable to parameter of type 'Type<Injector> | InjectionToken<Injector>'.
+//   Type 'typeof Injector' is not assignable to type 'ConcreteType<Injector>'.
+//     Cannot assign a 'private' constructor type to a 'public' constructor type.ts(2345)
+```
+
+We recommend using `injectionContext().injector` instead, which is type-safe.
+
 ## Creating Injectors
 
 ```typescript

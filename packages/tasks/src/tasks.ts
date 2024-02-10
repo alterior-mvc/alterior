@@ -1,5 +1,6 @@
 import { Annotation, MetadataName, AnnotationDecorator } from "@alterior/annotations";
-import { Injectable, InjectionToken, Optional, Injector, Provider, ReflectiveInjector } from "@alterior/di";
+import { InjectionToken, Injector, Provider, inject } from "@alterior/di";
+import { injectionContext } from "@alterior/di/dist/injection";
 import BullQueue from "bull";
 
 export interface TaskModuleOptions {
@@ -16,7 +17,6 @@ export interface TaskModuleOptions {
  * For instance: `[ provide: QUEUE_OPTIONS, useValue: new TaskClientOptionsRef({ optionsHere }) ]`
  * 
  */
-@Injectable()
 export class TaskModuleOptionsRef {
     constructor(options: TaskModuleOptions) {
         this.options = options;
@@ -129,13 +129,10 @@ interface TaskWorkerEntry<T extends Worker = any> {
     sync: RemoteService<T>;
 }
 
-
-@Injectable()
 export class TaskQueueClient {
-    constructor(
-        @Optional()
-        private optionsRef: TaskModuleOptionsRef
-    ) {
+    private optionsRef = inject(TaskModuleOptionsRef, { optional: true });
+
+    constructor() {
         this._queue = new BullQueue(this.queueName, this.queueOptions);
     }
 
@@ -178,14 +175,9 @@ export class TaskQueueClient {
     }
 }
 
-@Injectable()
 export class TaskWorkerRegistry {
-    constructor(
-        private injector: Injector,
-        private client: TaskQueueClient
-    ) {
-
-    }
+    private injector = injectionContext().injector;
+    private client = inject(TaskQueueClient);
 
     private _entries: { [name: string]: TaskWorkerEntry } = {};
 
@@ -223,7 +215,7 @@ export class TaskWorkerRegistry {
 
     registerClasses(classes: Function[]) {
         let taskClasses: Constructor<Worker>[] = classes as any;
-        let ownInjector = ReflectiveInjector.resolveAndCreate(taskClasses as Provider[], this.injector);
+        let ownInjector = Injector.resolveAndCreate(taskClasses as Provider[], this.injector);
         taskClasses.forEach(taskClass => this.registerClass(ownInjector, taskClass));
     }
 }

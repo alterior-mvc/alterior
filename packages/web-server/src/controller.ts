@@ -1,4 +1,4 @@
-import { Injector, Provider, ReflectiveInjector, Type } from "@alterior/di";
+import { Injector, Provider, Type } from "@alterior/di";
 import { ControllerAnnotation, ControllerOptions, MiddlewareDefinition, MountOptions } from "./metadata";
 import { RouteReflector } from "./metadata/route-reflector-private";
 import { prepareMiddleware } from "./middleware";
@@ -62,7 +62,7 @@ export class ControllerInstance {
 			if (!existingInstance || providers.length > 0) {
 				providers.push(controller as Provider);
 				try {
-					mountInjector = ReflectiveInjector.resolveAndCreate(providers, this.injector);
+					mountInjector = Injector.resolveAndCreate(providers, this.injector);
 				} catch (e) {
 					console.error(`Failed to resolve and create dependency injector for mount with path '${mount.path}'`);
 					console.error(e);
@@ -139,7 +139,7 @@ export class ControllerInstance {
 
 	private prepareMiddleware(): any[] {
 		// Procure an injector which can handle injecting the middlewares' providers
-		let childInjector = ReflectiveInjector.resolveAndCreate(
+		let childInjector = Injector.resolveAndCreate(
 			<Provider[]>this.middleware.filter(x => Reflect.getMetadata('alterior:middleware', x)), 
 			this.injector
 		);
