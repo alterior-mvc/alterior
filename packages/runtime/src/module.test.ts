@@ -1,18 +1,17 @@
 import { describe, it } from 'razmin';
-import { Module, Injector, Inject, Injectable, Optional, InjectionToken } from '@alterior/di';
+import { Module, Injector, InjectionToken, inject, ConfiguredModule } from '@alterior/di';
 import { Application } from './application';
 import { expect } from 'chai';
 import { Time, Environment } from '@alterior/common';
+import { injectionContext } from '@alterior/di/dist/injection';
 
 describe("Modules", () => {
     it('allows injection of the Injector', async () => {
         let sawInjector: Injector | null = null;
-        @Module({
-
-        })
+        @Module()
         class TestModule {
-            constructor(injector: Injector) {
-                sawInjector = injector;
+            constructor() {
+                sawInjector = injectionContext().injector;
             }
         }
 
@@ -20,7 +19,7 @@ describe("Modules", () => {
 
         expect(sawInjector).not.to.be.null;
 
-        let directInjectedInjector = sawInjector!.get(Injector);
+        let directInjectedInjector = sawInjector!.get(Injector as any);
 
         expect(directInjectedInjector).not.to.be.null;
         expect(directInjectedInjector).to.equal(sawInjector);
@@ -29,15 +28,16 @@ describe("Modules", () => {
 
     it('uses providers for dependency injection', async () => {
         let sawFoo: number | null = null;
+        const FOO = new InjectionToken<number>('FOO');
 
         @Module({
             providers: [
-                { provide: "foo", useValue: 123 }
+                { provide: FOO, useValue: 123 }
             ]
         })
         class TestModule {
-            constructor(@Inject('foo') foo: number) {
-                sawFoo = foo;
+            constructor() {
+                sawFoo = inject(FOO);
             }
         }
 
@@ -46,10 +46,11 @@ describe("Modules", () => {
     });
     it('provides providers of imported modules', async () => {
         let sawFoo: number | null = null;
+        const FOO = new InjectionToken<number>('FOO');
 
         @Module({
             providers: [
-                { provide: "foo", useValue: 123456 }
+                { provide: FOO, useValue: 123456 }
             ]
         })
         class SubModule { }
@@ -58,8 +59,8 @@ describe("Modules", () => {
             imports: [SubModule]
         })
         class TestModule {
-            constructor(@Inject('foo') foo: number) {
-                sawFoo = foo;
+            constructor() {
+                sawFoo = inject(FOO);
             }
         }
 
@@ -71,10 +72,10 @@ describe("Modules", () => {
     });
     it('does not fail with multiple instances of the same shared dependency', async () => {
         let sawFoo: number | null = null;
-
+        const FOO = new InjectionToken<number>('FOO');
         @Module({
             providers: [
-                { provide: "foo", useValue: 123456 }
+                { provide: FOO, useValue: 123456 }
             ]
         })
         class DependencyModule { }
@@ -88,8 +89,8 @@ describe("Modules", () => {
             imports: [SubModule, DependencyModule]
         })
         class TestModule {
-            constructor(@Inject('foo') foo: number) {
-                sawFoo = foo;
+            constructor() {
+                sawFoo = inject(FOO);
             }
         }
 
@@ -108,7 +109,6 @@ describe("Modules", () => {
             bar?: number;
         }
 
-        @Injectable()
         class DependencyConfig implements DependencyConfigInterface {
             constructor(config: DependencyConfigInterface) {
                 Object.assign(this, config);
@@ -118,20 +118,15 @@ describe("Modules", () => {
             bar: number = 98765;
         }
 
-        @Injectable()
         class DependencyService {
-            constructor(
-                @Optional()
-                private config: DependencyConfig
-            ) {
-            }
+            private config = inject(DependencyConfig, { optional: true });
 
             getFoo() {
-                return this.config.foo;
+                return this.config?.foo;
             }
 
             getBar() {
-                return this.config.bar;
+                return this.config?.bar;
             }
         }
 
@@ -158,9 +153,10 @@ describe("Modules", () => {
             imports: [SubModule, DependencyModule.configure({ bar: 999 })]
         })
         class TestModule {
-            constructor(service: DependencyService) {
-                sawFoo = service.getFoo();
-                sawBar = service.getBar();
+            service = inject(DependencyService);
+            constructor() {
+                sawFoo = this.service.getFoo() ?? null;
+                sawBar = this.service.getBar() ?? null;
             }
         }
 
@@ -235,8 +231,8 @@ describe("Modules", () => {
 
         @Module()
         class TestModule {
-            constructor(time: Time) {
-                observedTime = time;
+            constructor() {
+                observedTime = inject(Time);
             }
         }
 
@@ -266,8 +262,8 @@ describe("Modules", () => {
             providers: [{ provide: Time, useClass: FakeTime }]
         })
         class TestModule {
-            constructor(time: Time) {
-                observedTime = time;
+            constructor() {
+                observedTime = inject(Time);
             }
         }
 
@@ -283,8 +279,8 @@ describe("Modules", () => {
         let observedEnv: Environment | undefined;
         @Module()
         class TestModule {
-            constructor(env: Environment) {
-                observedEnv = env;
+            constructor() {
+                observedEnv = inject(Environment);
             }
         }
 
@@ -303,8 +299,8 @@ describe("Modules", () => {
 
         @Module({ providers: [{ provide: Environment, useClass: FakeEnvironment }] })
         class TestModule {
-            constructor(env: Environment) {
-                observedEnv = env;
+            constructor() {
+                observedEnv = inject(Environment);
             }
         }
 
@@ -317,30 +313,20 @@ describe("Modules", () => {
     it('allows an injection token within a module', async () => {
         let log = '';
 
-        const ITEM = new InjectionToken('A THING');
+        const ITEM = new InjectionToken<{ foo: number }>('A THING');
 
-        @Injectable()
         class Options {
-            constructor(
-                @Inject(ITEM)
-                readonly options: any
-            ) {
-            }
+            readonly options = inject(ITEM);
         }
 
-        @Injectable()
         class MyService {
-            constructor(
-                readonly options: Options
-            ) {
-
-            }
+            readonly options = inject(Options);
         }
 
         @Module()
         class DependencyModule {
             static configure() {
-                return {
+                return <ConfiguredModule>{
                     $module: DependencyModule,
                     providers: [
                         { provide: ITEM, useValue: { foo: 123 } },
@@ -355,10 +341,7 @@ describe("Modules", () => {
             imports: [DependencyModule.configure()]
         })
         class TestModule {
-            constructor(
-                private service: MyService
-            ) {
-            }
+            private service = inject(MyService);
 
             altOnInit() {
                 log += this.service.options.options.foo;

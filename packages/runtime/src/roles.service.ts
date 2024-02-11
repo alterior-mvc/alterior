@@ -1,4 +1,4 @@
-import { Injectable, inject } from "@alterior/di";
+import { inject } from "@alterior/di";
 import { timeout, InvalidOperationError, ArgumentError } from "@alterior/common";
 import { ApplicationOptionsRef } from "./application";
 
@@ -65,7 +65,6 @@ export interface RoleState extends RoleRegistration {
  * so that they can be easily turned on and off when the application is called.
  * 
  */
-@Injectable()
 export class RolesService {
     private appOptionsRef = inject(ApplicationOptionsRef);
     

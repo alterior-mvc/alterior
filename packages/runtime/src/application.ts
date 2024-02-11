@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import { Injectable, InjectionToken, ModuleAnnotation, inject } from '@alterior/di';
+import { InjectionToken, ModuleAnnotation, inject } from '@alterior/di';
 import { AppOptionsAnnotation, ApplicationOptions } from './app-options';
 import { ApplicationArgs } from './args';
 import { Runtime } from './runtime';
@@ -67,7 +67,6 @@ export class ExecutionContext {
 /**
  * Handles bootstrapping the application.
  */
-@Injectable()
 export class Application {
 	readonly runtime = inject(Runtime);
 	private _optionsRef = inject(ApplicationOptionsRef);
