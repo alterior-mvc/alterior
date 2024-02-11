@@ -1,8 +1,5 @@
 import { Key } from "./key";
 
-/**
- * @internal
- */
 export class KeyRegistry {
     private _allKeys = new Map<Object, Key>();
 
