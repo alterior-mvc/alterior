@@ -37,10 +37,10 @@
     "docs": "typedoc src"
   },
   "dependencies": {
-    "@alterior/annotations": "^3.6.4",
-    "@alterior/common": "^3.6.4",
-    "@alterior/di": "^3.6.4",
-    "@alterior/runtime": "^3.6.5",
+    "@alterior/annotations": "^3.6.7",
+    "@alterior/common": "^3.6.7",
+    "@alterior/di": "^3.6.7",
+    "@alterior/runtime": "^3.6.7",
     "mongodb": "^6.3.0",
     "rxjs": "^7.8.0"
   },
