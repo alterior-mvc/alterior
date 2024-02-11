@@ -1,10 +1,7 @@
-/**
- * (C) 2017-2019 William Lahti
- */
-
 import { Mutator } from "@alterior/annotations";
 import { ConsoleColors, indentConsole, coalesce } from '@alterior/common';
-import { LoggingOptionsRef, DEFAULT_LISTENERS, Logger } from "./logger";
+import { Logger } from "./logger";
+import { LoggingOptionsRef } from "./logging-options-ref";
 
 let ENABLED : boolean = false;
 
@@ -36,35 +33,38 @@ export function setTracingEnabled(enabled : boolean) {
  * 
  * For example, given a class:
  * 
-```
-class Thing {
-    @ConsoleTrace()
-    static doSomething(data : any, stuff : number) {
-        console.log("Almost...");
-        try {
-            this.anotherSomething(stuff);
-        } catch (e) {
-
-        }
-    }
-    @ConsoleTrace()
-    static anotherSomething(stuff : number) {
-        console.log("Nah...");
-        throw new Error('Uh oh');
-    }
-}
-```
- * When executed, one may see:
-```sh
-Thing#doSomething({"stuff":321,"other":"nice"}, 12333) {
-Almost...
-Thing#anotherSomething(12333) {
-   Nah...
-   (!!) Exception:
-        Error: Uh oh
-} // [Exception] Thing#anotherSomething(12333)
-} // [Done, 6ms] Thing#doSomething({"stuff":321,"other":"nice"}, 12333)
  * ```
+ * class Thing {
+ *     @Trace()
+ *     static doSomething(data : any, stuff : number) {
+ *         console.log("Almost...");
+ *         try {
+ *             this.anotherSomething(stuff);
+ *         } catch (e) {
+ * 
+ *         }
+ *     }
+ *     @Trace()
+ *     static anotherSomething(stuff : number) {
+ *         console.log("Nah...");
+ *         throw new Error('Uh oh');
+ *     }
+ * }
+ * ```
+ * 
+ *  * When executed, one may see:
+ * 
+ * ```sh
+ * Thing#doSomething({"stuff":321,"other":"nice"}, 12333) {
+ * Almost...
+ * Thing#anotherSomething(12333) {
+ *    Nah...
+ *    (!!) Exception:
+ *         Error: Uh oh
+ * } // [Exception] Thing#anotherSomething(12333)
+ * } // [Done, 6ms] Thing#doSomething({"stuff":321,"other":"nice"}, 12333)
+ * ```
+ * 
  */
 export function Trace() {
     return Mutator.define({
