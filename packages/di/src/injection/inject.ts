@@ -4,6 +4,8 @@ import { injectionContext } from "./injection-context";
 import { InjectionToken } from "./injection-token";
 import { THROW_IF_NOT_FOUND } from "./throw-if-not-found";
 
+const UNDEFINED = {}
+
 /**
  * Get an injectable value by token from the current injector. This can only be used during creation of an injectable
  * (ie during class construction). It will throw otherwise.
@@ -14,18 +16,25 @@ import { THROW_IF_NOT_FOUND } from "./throw-if-not-found";
  *          for the given token, `null` is returned.
  */
 export function inject<T = unknown>(token: Type<T> | InjectionToken<T>): T;
-export function inject<T = unknown>(token: Type<T> | InjectionToken<T>, options: InjectOptions & { optional: true }): T | null;
+export function inject<T = unknown>(token: Type<T> | InjectionToken<T>, options: InjectOptions & { optional: true }): T | undefined;
 export function inject<T = unknown>(token: Type<T> | InjectionToken<T>, options: InjectOptions & { optional?: false | undefined }): T;
-export function inject<T = unknown>(token: Type<T> | InjectionToken<T>, options?: InjectOptions): T | null {
-    let injector = injectionContext().injector;
-  
+export function inject<T = unknown>(token: Type<T> | InjectionToken<T>, options?: InjectOptions): T | undefined {
+    let injector = injectionContext({ optional: options?.allowMissingContext ?? false })?.injector;
+    if (!injector)
+        return undefined;
+
     if (options?.skipSelf ?? false)
-      injector = injector.parent ?? injector;
-  
-    return injector.get(
-      token, 
-      options?.optional === true ? null : <any>THROW_IF_NOT_FOUND,
-      { self: options?.self ?? false }
+        injector = injector.parent ?? injector;
+
+    
+    let value = injector.get(
+        token,
+        options?.optional === true ? UNDEFINED : <any>THROW_IF_NOT_FOUND,
+        { self: options?.self ?? false }
     );
-  }
-  
+
+    if (value === UNDEFINED)
+        return undefined;
+
+    return value;
+}
