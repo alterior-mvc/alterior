@@ -1,17 +1,15 @@
 import { Module } from "@alterior/di";
-import { Logger, LoggingOptions, LoggingOptionsRef } from "./logger";
+import { Logger } from "./logger";
+import { LoggingOptions } from "./logging-options";
+import { LoggingOptionsRef } from "./logging-options-ref";
 
 @Module({
     providers: [
-        Logger
+        { provide: Logger, useClass: Logger, unique: false }
     ]
 })
 export class LoggingModule {
     static configure(options : LoggingOptions = {}) {
-        return LoggingModule.forRoot(options);
-    }
-
-    static forRoot(options : LoggingOptions = {}) {
         return { 
             $module: LoggingModule, 
             providers: [

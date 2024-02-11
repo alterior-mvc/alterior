@@ -1,20 +1,28 @@
 import { suite } from 'razmin';
-import { Logger, LoggingOptionsRef, ConsoleLogger, FileLogger, LogFormatter, LogEvent } from './logger';
+import { Logger } from './logger';
 import { expect } from 'chai';
 import * as os from 'os';
 import * as path from 'path';
 import * as fs from 'fs';
+import { LogEvent } from './log-event';
+import { LoggingOptionsRef } from './logging-options-ref';
+import { Injector } from '@alterior/di';
+import { LoggingOptions } from './logging-options';
+import { ConsoleLogger } from './console-logger';
+import { FileLogger } from './file-logger';
+import { LogFormatter } from './log-formatter';
 
-const SAMPLE_LOG_MESSAGE_1 : LogEvent = { type: 'message', message: 'ABCDEF', date: new Date(), severity: 'info', context: null };
-const SAMPLE_LOG_MESSAGE_2 : LogEvent = { type: 'message', message: '123456', date: new Date(), severity: 'info', context: null };
-const SAMPLE_LOG_MESSAGE_3 : LogEvent = { type: 'message', message: 'TUVXYZ', date: new Date(), severity: 'info', context: null };
+const SAMPLE_LOG_MESSAGE_1 : LogEvent = { type: 'message', message: 'ABCDEF', data: {}, date: new Date(), severity: 'info', context: null };
+const SAMPLE_LOG_MESSAGE_2 : LogEvent = { type: 'message', message: '123456', data: {}, date: new Date(), severity: 'info', context: null };
+const SAMPLE_LOG_MESSAGE_3 : LogEvent = { type: 'message', message: 'TUVXYZ', data: {}, date: new Date(), severity: 'info', context: null };
 
 function SAMPLE_LOG_MESSAGE(message: string) : LogEvent {
     return { 
         type: 'message',
-        message, 
-        date: new Date(), 
-        severity: 'info', 
+        message,
+        data: {},
+        date: new Date(),
+        severity: 'info',
         context: null
     };
 }
@@ -24,31 +32,42 @@ function SAMPLE_LOG_MESSAGE_FATAL(message: string) : LogEvent {
         type: 'message',
         message, 
         date: new Date(), 
+        data: {},
         severity: 'fatal', 
         context: null
     };
+}
+
+function loggerWithOptions(options: LoggingOptions) {
+    return Injector.resolveAndCreate([ 
+        Logger, 
+        { 
+            provide: LoggingOptionsRef, 
+            useValue: new LoggingOptionsRef(options)
+        }
+    ]).get(Logger);
 }
 
 suite(describe => {
     describe('Logger', it => {
         it('calls each listener', async () => {
             let result = '';
-            let logger = new Logger(new LoggingOptionsRef({
+            let logger = new Logger({
                 listeners: [
-                    { async log(message) { result += `a${message.message}`; } },
-                    { async log(message) { result += `b${message.message}`; } }
+                    { async log(message: LogEvent) { result += `a${message.message}`; } },
+                    { async log(message: LogEvent) { result += `b${message.message}`; } }
                 ]
-            }));
+            });
 
-            await logger.log('X');
-            await logger.log('Y');
+            await logger.info('X');
+            await logger.info('Y');
 
             expect(result).to.eq('aXbXaYbY');
         });
 
         it('defaults to ConsoleLogger', async () => {
             let logger = new Logger();
-            let logger2 = new Logger(new LoggingOptionsRef({ }));
+            let logger2 = new Logger({});
 
 
             expect(logger.listeners.length).to.eq(1);
@@ -58,7 +77,7 @@ suite(describe => {
         });
 
         it('supports execution-based context', async () => {
-            let logger = new Logger(new LoggingOptionsRef({ listeners: [] }));
+            let logger = new Logger({ listeners: [] });
 
             expect(logger.context).to.not.exist;
             expect(logger.contextLabel).to.not.exist;
@@ -89,7 +108,7 @@ suite(describe => {
         });
 
         it('supports child loggers with a specific source', async () => {
-            let logger = new Logger(new LoggingOptionsRef({ listeners: [] }));
+            let logger = new Logger({ listeners: [] });
 
             expect(logger.sourceLabel).to.not.exist;
 
@@ -113,18 +132,20 @@ suite(describe => {
 
             await logger.open();
 
-            await logger.log({ 
-                type: 'message', 
-                message: 'TUVXYZ', 
-                date: new Date(), 
+            await logger.log({
+                type: 'message',
+                message: 'TUVXYZ',
+                data: {},
+                date: new Date(),
                 severity: 'info'
             });
             
             let contents2 = fs.readFileSync(filename).toString().split(/\n/g);
 
-            await logger.log({ 
+            await logger.log({
                 type: 'message',
-                message: '123456', 
+                message: '123456',
+                data: {},
                 date: new Date(), 
                 severity: 'info'
             });

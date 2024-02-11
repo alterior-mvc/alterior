@@ -2,9 +2,8 @@
 
 [![Version](https://img.shields.io/npm/v/@alterior/logging.svg)](https://www.npmjs.com/package/@alterior/logging)
 
-## Overview
-
-Provides a dependency-injected logger with support for pluggable listeners and log context tracking using `Zone.js`
+Provides a dependency-injected logger with support for pluggable listeners and log context tracking using Alterior's
+Execution Contexts.
 
 ## Installation
 
@@ -14,29 +13,16 @@ npm install @alterior/logging
 
 ## Usage 
 
-This module is intended to be used as part of an Alterior application. Several of the higher level first-party Alterior modules use this logger already, so it is a natural fit.
-
-The module provides a `Logger` injectable when `LoggingModule` is imported into your Alterior application:
+The module provides `Logger` when `LoggingModule` is imported into your Alterior application.
 
 ```typescript
-@Module({
+import { LoggingModule, Logger } from '@alterior/logging';
+
+@WebService({
     imports: [ LoggingModule ]
 })
-export class MyEntryModule { }
-```
-
-Once the module is imported, you can inject `Logger` into your services, controllers, tasks, etc:
-
-```typescript
-import { Logger } from '@alterior/logging';
-// ...
-
-@Controller('/foo')
-export class MyController {
-    constructor(
-        private logger : Logger
-    ) {
-    }
+export class MyEntryModule { 
+    private logger = inject(Logger);
 
     @Get('/')
     get() {
@@ -45,6 +31,17 @@ export class MyController {
 }
 
 // [2019-03-05T00:12:44Z] [source="MyController"] info: Hello, world!
+```
+
+## Configuration
+
+To configure the module, import it into your entry module and specify options in the call to `configure()`:
+
+```typescript
+@Module({
+    imports: [ LoggingModule.configure({ /* ... */ }) ]
+})
+export class MyEntryModule { }
 ```
 
 ## Subloggers (Source Labels)
@@ -94,17 +91,6 @@ especially when there is heavy concurrency within a single log file (ie web serv
 ```
 [2019-03-05T00:12:44Z] [source="MyService" context="GET /foo | 1443c985-c4be-47f7-9e9c-941c21913def"] info: Hello, world!
 [2019-03-05T00:12:44Z] [source="MyService" context="TaskWorker | MyBackgroundWorker"] info: Hello, world!
-```
-
-## Configuration
-
-To configure the module, import it into your entry module and specify options in the call to `configure()`:
-
-```typescript
-@Module({
-    imports: [ LoggingModule.configure({ /* ... */ }) ]
-})
-export class MyEntryModule { }
 ```
 
 ### `listeners`
