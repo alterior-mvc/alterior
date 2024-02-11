@@ -1,6 +1,6 @@
 {
   "name": "@alterior/express",
-  "version": "3.6.5",
+  "version": "3.6.7",
   "description": "Access Express state within an Alterior app",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -37,14 +37,14 @@
     "docs": "typedoc src"
   },
   "dependencies": {
-    "@alterior/di": "^3.6.4",
-    "@alterior/logging": "^3.6.5",
-    "@alterior/web-server": "^3.6.5",
+    "@alterior/di": "^3.6.7",
+    "@alterior/logging": "^3.6.7",
+    "@alterior/web-server": "^3.6.7",
     "express": "^4.17.3"
   },
   "devDependencies": {
     "@types/express": "^4.17.15",
     "@types/serve-static": "1.15.0"
   },
-  "gitHead": "5e232d07529b9d9f0d5aeba04e08d6e571998720"
+  "gitHead": "87f31ea4078faaca53b45573c6a0013cdb40dd07"
 }

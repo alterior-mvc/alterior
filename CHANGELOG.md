@@ -41,6 +41,10 @@
     `injector` which is currently resolving a provider or access the `token` currently being resolved. This can be 
     used to make new `inject()`-like functions for more specific purposes.
 
+# v3.6.7
+- `@/runtime`
+  * `RoleRegistration#instance` is now optional. When not specified, the only way to target a role is by its identifier.
+ 
 # v3.6.6
 - `@/common`
   * Alterior's standard error classes now extend from `Error`

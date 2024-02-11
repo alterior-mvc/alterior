@@ -1,6 +1,6 @@
 {
   "name": "@alterior/terminal",
-  "version": "3.1.12",
+  "version": "3.6.7",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "publishConfig": {
@@ -27,5 +27,6 @@
     "test": "npm run build && node dist/test",
     "docs": "typedoc src",
     "prepublishOnly": "npm test"
-  }
+  },
+  "gitHead": "87f31ea4078faaca53b45573c6a0013cdb40dd07"
 }

@@ -19,7 +19,7 @@ export interface RoleRegistration {
      * The instance of the module being registered. This should be `this` for the caller in most cases, as it should be 
      * called from an Alterior module's `altOnInit()` method.
      */
-    instance : any;
+    instance? : any;
 
     /**
      * Set to false to cause this role to be disabled unless explicitly asked for. When unspecified, the default is 
@@ -86,7 +86,7 @@ export class RolesService {
         let roleState : RoleState = Object.assign(
             role,
             {
-                class: role.instance.constructor,
+                class: role.instance?.constructor ?? {},
                 running: false
             }
         );

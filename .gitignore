@@ -13,3 +13,5 @@ lerna-debug.log
 *.tsbuildinfo
 cli-test/
 bombardier.exe
+.angular
+packages/website/src/assets/docs
