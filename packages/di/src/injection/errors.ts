@@ -54,8 +54,6 @@ export abstract class InjectionError extends Error {
  * Thrown when trying to retrieve a dependency by key from {@link Injector}, but the
  * {@link Injector} does not have a {@link Provider} for the given key.
  *
- * ### Example ([live demo](http://plnkr.co/edit/vq8D3FRB9aGbnWJqtEPE?p=preview))
- *
  * ```typescript
  * class A {
  *   constructor(b:B) {}
@@ -73,8 +71,6 @@ export class NoProviderError extends InjectionError {
 
 /**
  * Thrown when dependencies form a cycle.
- *
- * ### Example ([live demo](http://plnkr.co/edit/wYQdNos0Tzql3ei1EV9j?p=info))
  *
  * ```typescript
  * var injector = Injector.resolveAndCreate([
@@ -98,8 +94,6 @@ export class CyclicDependencyError extends InjectionError {
  *
  * The `InstantiationError` class contains the original error plus the dependency graph which caused
  * this object to be instantiated.
- *
- * ### Example ([live demo](http://plnkr.co/edit/7aWYdcqTQsP0eNqEdUAf?p=preview))
  *
  * ```typescript
  * class A {
@@ -132,8 +126,6 @@ export class InstantiationError extends InjectionError {
  * Thrown when an object other then {@link Provider} (or `Type`) is passed to {@link Injector}
  * creation.
  *
- * ### Example ([live demo](http://plnkr.co/edit/YatCFbPAMCL0JSSQ4mvH?p=preview))
- *
  * ```typescript
  * expect(() => Injector.resolveAndCreate(["not a type"])).toThrowError();
  * ```
@@ -149,8 +141,6 @@ export class InvalidProviderError extends Error {
  *
  * Lack of annotation information prevents the {@link Injector} from determining which dependencies
  * need to be injected into the constructor.
- *
- * ### Example ([live demo](http://plnkr.co/edit/rHnZtlNS7vJOPQ6pcVkm?p=preview))
  *
  * ```typescript
  * class A {
@@ -195,8 +185,6 @@ export class NoAnnotationError extends Error {
 /**
  * Thrown when getting an object by index.
  *
- * ### Example ([live demo](http://plnkr.co/edit/bRs0SX2OTQiJzqvjgl8P?p=preview))
- *
  * ```typescript
  * class A {}
  *
@@ -214,8 +202,6 @@ export class OutOfBoundsError extends Error {
 // TODO: add a working example after alpha38 is released
 /**
  * Thrown when a multi provider and a regular provider are bound to the same token.
- *
- * ### Example
  *
  * ```typescript
  * expect(() => Injector.resolveAndCreate([

@@ -14,8 +14,6 @@ import { resolveForwardRef } from './forward-ref';
  *
  * It can be created manually, as follows:
  *
- * ### Example ([live demo](http://plnkr.co/edit/RfEnhh8kUEI0G3qsnIeT?p%3Dpreview&p=preview))
- *
  * ```typescript
  * var resolvedProviders = Injector.resolve([{ provide: 'message', useValue: 'Hello' }]);
  * var injector = Injector.fromResolvedProviders(resolvedProviders);

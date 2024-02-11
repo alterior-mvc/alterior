@@ -85,8 +85,6 @@ export class Injector {
      * The passed-in providers can be an array of `Type`, {@link Provider},
      * or a recursive array of more providers.
      *
-     * ### Example ([live demo](http://plnkr.co/edit/opB3T4?p=preview))
-     *
      * ```typescript
      * class ParentProvider {}
      * class ChildProvider {}
@@ -111,8 +109,6 @@ export class Injector {
      * Creates a child injector from previously resolved providers.
      *
      * This API is the recommended way to construct injectors in performance-sensitive parts.
-     *
-     * ### Example ([live demo](http://plnkr.co/edit/VhyfjN?p=preview))
      *
      * ```typescript
      * class ParentProvider {}
@@ -140,8 +136,6 @@ export class Injector {
      *
      * The created object does not get cached by the injector.
      *
-     * ### Example ([live demo](http://plnkr.co/edit/yvVXoB?p=preview))
-     *
      * ```typescript
      * @Injectable()
      * class Engine {
@@ -167,8 +161,6 @@ export class Injector {
      * Instantiates an object using a resolved provider in the context of the injector.
      *
      * The created object does not get cached by the injector.
-     *
-     * ### Example ([live demo](http://plnkr.co/edit/ptCImQ?p=preview))
      *
      * ```typescript
      * @Injectable()
@@ -320,8 +312,6 @@ export class Injector {
      * A resolution is a process of flattening multiple nested arrays and converting individual
      * providers into an array of {@link ResolvedProvider}s.
      *
-     * ### Example ([live demo](http://plnkr.co/edit/AiXTHi?p=preview))
-     *
      * ```typescript
      * @Injectable()
      * class Engine {
@@ -357,8 +347,6 @@ export class Injector {
      * The passed-in providers can be an array of `Type`, {@link Provider},
      * or a recursive array of more providers.
      *
-     * ### Example ([live demo](http://plnkr.co/edit/ePOccA?p=preview))
-     *
      * ```typescript
      * @Injectable()
      * class Engine {
@@ -388,8 +376,6 @@ export class Injector {
      * Creates an injector from previously resolved providers.
      *
      * This API is the recommended way to construct injectors in performance-sensitive parts.
-     *
-     * ### Example ([live demo](http://plnkr.co/edit/KrSMci?p=preview))
      *
      * ```typescript
      * @Injectable()

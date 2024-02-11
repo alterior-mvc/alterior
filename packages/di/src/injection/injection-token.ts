@@ -1,8 +1,6 @@
 /**
  * Creates a token that can be used in a DI Provider.
  *
- * ### Example ([live demo](http://plnkr.co/edit/Ys9ezXpj2Mnoy3Uc8KBp?p=preview))
- *
  * ```typescript
  * var t = new OpaqueToken("value");
  *
