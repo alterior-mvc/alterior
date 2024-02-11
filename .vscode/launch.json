@@ -61,6 +61,16 @@
 			"sourceMaps": true
 		},
 		{
+			"name": "logging - Launch Tests",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceRoot}/packages/logging/dist/test.js",
+			"cwd": "${workspaceRoot}/packages/logging",
+			"runtimeArgs": [ "--nolazy" ],
+			"console": "internalConsole",
+			"sourceMaps": true
+		},
+		{
 			"name": "Attach",
 			"type": "node",
 			"request": "attach",
