@@ -6,7 +6,7 @@ import { Key } from './key';
 import { Provider } from './provider';
 import { ResolvedProvider } from './resolved-provider';
 import { THROW_IF_NOT_FOUND } from './throw-if-not-found';
-import { Type } from './type';
+import { ConcreteType, Type } from './type';
 
 // Threshold for the dynamic version
 const UNDEFINED = new Object();
@@ -395,6 +395,17 @@ export class Injector {
     static fromResolvedProviders(providers: ResolvedProvider[], parent: Injector | null = null): Injector {
         // tslint:disable-next-line:no-use-before-declare
         return new Injector(providers, parent);
+    }
+
+    /**
+     * Construct an instance of the given type by creating a temporary injector with the given providers. 
+     * 
+     * @param type 
+     * @param providers 
+     * @returns 
+     */
+    static construct<T>(type: ConcreteType<T>, providers: Provider[], parent?: Injector): T {
+        return this.resolveAndCreate([ type, ...providers ], parent).get(type);
     }
 
 }

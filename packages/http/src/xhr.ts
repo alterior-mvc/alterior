@@ -6,13 +6,13 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {Injectable} from '@alterior/di';
-import {Observable, Observer} from 'rxjs';
+import { inject } from '@alterior/di';
+import { Observable, Observer } from 'rxjs';
 
-import {HttpBackend} from './backend';
-import {HttpHeaders} from './headers';
-import {HttpRequest} from './request';
-import {HttpDownloadProgressEvent, HttpErrorResponse, HttpEvent, HttpEventType, HttpHeaderResponse, HttpJsonParseError, HttpResponse, HttpUploadProgressEvent} from './response';
+import { HttpBackend } from './backend';
+import { HttpHeaders } from './headers';
+import { HttpRequest } from './request';
+import { HttpDownloadProgressEvent, HttpErrorResponse, HttpEvent, HttpEventType, HttpHeaderResponse, HttpJsonParseError, HttpResponse, HttpUploadProgressEvent } from './response';
 
 const XSSI_PREFIX = /^\)\]\}',?\n/;
 
@@ -20,7 +20,7 @@ const XSSI_PREFIX = /^\)\]\}',?\n/;
  * Determine an appropriate URL for the response, by checking either
  * XMLHttpRequest.responseURL or the X-Request-URL header.
  */
-function getResponseUrl(xhr: any): string|null {
+function getResponseUrl(xhr: any): string | null {
   if ('responseURL' in xhr && xhr.responseURL) {
     return xhr.responseURL;
   }
@@ -39,12 +39,9 @@ export abstract class XhrFactory { abstract build(): XMLHttpRequest; }
 
 /**
  * A factory for @{link HttpXhrBackend} that uses the `XMLHttpRequest` browser API.
- *
- *
  */
-@Injectable()
 export class BrowserXhr implements XhrFactory {
-  constructor() {}
+  constructor() { }
   build(): any { return <any>(new XMLHttpRequest()); }
 }
 
@@ -61,12 +58,9 @@ interface PartialResponse {
 /**
  * An `HttpBackend` which uses the XMLHttpRequest API to send
  * requests to a backend server.
- *
- *
  */
-@Injectable()
 export class HttpXhrBackend implements HttpBackend {
-  constructor(private xhrFactory: XhrFactory) {}
+  private xhrFactory = inject(XhrFactory);
 
   /**
    * Process a request and return a stream of response events.
@@ -125,7 +119,7 @@ export class HttpXhrBackend implements HttpBackend {
       // two events, it doesn't make sense to parse them twice. So headerResponse
       // caches the data extracted from the response whenever it's first parsed,
       // to ensure parsing isn't duplicated.
-      let headerResponse: HttpHeaderResponse|null = null;
+      let headerResponse: HttpHeaderResponse | null = null;
 
       // partialFromXhr extracts the HttpHeaderResponse from the current XMLHttpRequest
       // state, and memoizes it into headerResponse.
@@ -146,7 +140,7 @@ export class HttpXhrBackend implements HttpBackend {
         const url = getResponseUrl(xhr) || req.url;
 
         // Construct the HttpHeaderResponse and memoize it.
-        headerResponse = new HttpHeaderResponse({headers, status, statusText, url});
+        headerResponse = new HttpHeaderResponse({ headers, status, statusText, url });
         return headerResponse;
       };
 
@@ -156,10 +150,10 @@ export class HttpXhrBackend implements HttpBackend {
       // First up is the load event, which represents a response being fully available.
       const onLoad = () => {
         // Read response state from the memoized partial data.
-        let {headers, status, statusText, url} = partialFromXhr();
+        let { headers, status, statusText, url } = partialFromXhr();
 
         // The body will be read out if present.
-        let body: any|null = null;
+        let body: any | null = null;
 
         if (status !== 204) {
           // Use XMLHttpRequest.response if set, responseText otherwise.
@@ -315,7 +309,7 @@ export class HttpXhrBackend implements HttpBackend {
 
       // Fire the request, and notify the event stream that it was fired.
       xhr.send(reqBody);
-      observer.next({type: HttpEventType.Sent});
+      observer.next({ type: HttpEventType.Sent });
 
       // This is the return from the Observable function, which is the
       // request cancellation handler.

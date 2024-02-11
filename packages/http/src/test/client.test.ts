@@ -13,13 +13,15 @@ import {HttpClient} from '../client';
 import {HttpErrorResponse, HttpEventType, HttpResponse} from '../response';
 import {HttpClientTestingBackend} from '../testing/backend';
 import { firstValueFrom } from 'rxjs';
+import { Injector } from '@alterior/di';
+import { HttpBackend, HttpHandler } from '../backend';
 
 describe('HttpClient', () => {
   let client: HttpClient = null !;
   let backend: HttpClientTestingBackend = null !;
   beforeEach(() => {
     backend = new HttpClientTestingBackend();
-    client = new HttpClient(backend);
+    client = Injector.construct(HttpClient, [ { provide: HttpHandler, useValue: backend } ]);
   });
   afterEach(() => { backend.verify(); });
   describe('makes a basic request', () => {

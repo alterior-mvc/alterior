@@ -6,17 +6,18 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {Injectable, Module, ConfiguredModule, Injector} from '@alterior/di';
-import {Observable} from 'rxjs';
+import { ConfiguredModule, Module, inject } from '@alterior/di';
+import { Observable } from 'rxjs';
 
-import {HttpBackend, HttpHandler} from './backend';
-import {HttpClient} from './client';
-import {HTTP_INTERCEPTORS, HttpInterceptor, HttpInterceptorHandler, NoopInterceptor} from './interceptor';
-import {HttpRequest} from './request';
-import {HttpEvent} from './response';
-import {BrowserXhr, HttpXhrBackend, XhrFactory} from './xhr';
-import {HttpXsrfInterceptor, HttpXsrfTokenExtractor, XSRF_COOKIE_NAME, XSRF_HEADER_NAME} from './xsrf';
-import { ServerXhr, zoneWrappedInterceptingHandler } from './server';
+import { injectionContext } from '@alterior/di/dist/injection';
+import { HttpBackend, HttpHandler } from './backend';
+import { HttpClient } from './client';
+import { HTTP_INTERCEPTORS, HttpInterceptor, HttpInterceptorHandler, NoopInterceptor } from './interceptor';
+import { HttpRequest } from './request';
+import { HttpEvent } from './response';
+import { SERVER_HTTP_PROVIDERS } from './server';
+import { BrowserXhr, HttpXhrBackend, XhrFactory } from './xhr';
+import { HttpXsrfInterceptor, XSRF_COOKIE_NAME, XSRF_HEADER_NAME } from './xsrf';
 
 /**
  * An injectable `HttpHandler` that applies multiple interceptors
@@ -27,19 +28,18 @@ import { ServerXhr, zoneWrappedInterceptingHandler } from './server';
  * on `HttpInterceptingHandler` itself.
  * @see `HttpInterceptor`
  */
-@Injectable()
 export class HttpInterceptingHandler implements HttpHandler {
-  private chain: HttpHandler|null = null;
-
-  constructor(private backend: HttpBackend, private injector: Injector) {}
+  private chain: HttpHandler | null = null;
+  private backend = inject(HttpBackend);
+  private injector = injectionContext().injector;
 
   handle(req: HttpRequest<any>): Observable<HttpEvent<any>> {
     if (this.chain === null) {
       const interceptors = this.injector.get(HTTP_INTERCEPTORS, []);
       this.chain = interceptors.reduceRight(
-          (next, interceptor) => new HttpInterceptorHandler(next, interceptor), this.backend);
+        (next, interceptor) => new HttpInterceptorHandler(next, interceptor), this.backend);
     }
-    
+
     return this.chain.handle(req);
   }
 }
@@ -53,12 +53,12 @@ export class HttpInterceptingHandler implements HttpHandler {
  *
  */
 export function interceptingHandler(
-    backend: HttpBackend, interceptors: HttpInterceptor[] | null = []): HttpHandler {
+  backend: HttpBackend, interceptors: HttpInterceptor[] | null = []): HttpHandler {
   if (!interceptors) {
     return backend;
   }
   return interceptors.reduceRight(
-      (next, interceptor) => new HttpInterceptorHandler(next, interceptor), backend);
+    (next, interceptor) => new HttpInterceptorHandler(next, interceptor), backend);
 }
 
 /**
@@ -91,9 +91,9 @@ export function jsonpCallbackContext(): Object {
 @Module({
   providers: [
     HttpXsrfInterceptor,
-    {provide: HTTP_INTERCEPTORS, useExisting: HttpXsrfInterceptor, multi: true},
-    {provide: XSRF_COOKIE_NAME, useValue: 'XSRF-TOKEN'},
-    {provide: XSRF_HEADER_NAME, useValue: 'X-XSRF-TOKEN'},
+    { provide: HTTP_INTERCEPTORS, useExisting: HttpXsrfInterceptor, multi: true },
+    { provide: XSRF_COOKIE_NAME, useValue: 'XSRF-TOKEN' },
+    { provide: XSRF_HEADER_NAME, useValue: 'X-XSRF-TOKEN' },
   ],
 })
 export class HttpClientXsrfModule {
@@ -104,7 +104,7 @@ export class HttpClientXsrfModule {
     return {
       $module: HttpClientXsrfModule,
       providers: [
-        {provide: HttpXsrfInterceptor, useClass: NoopInterceptor},
+        { provide: HttpXsrfInterceptor, useClass: NoopInterceptor },
       ],
     };
   }
@@ -124,8 +124,8 @@ export class HttpClientXsrfModule {
     return {
       $module: HttpClientXsrfModule,
       providers: [
-        options.cookieName ? {provide: XSRF_COOKIE_NAME, useValue: options.cookieName} : [],
-        options.headerName ? {provide: XSRF_HEADER_NAME, useValue: options.headerName} : [],
+        options.cookieName ? { provide: XSRF_COOKIE_NAME, useValue: options.cookieName } : [],
+        options.headerName ? { provide: XSRF_HEADER_NAME, useValue: options.headerName } : [],
       ],
     };
   }
@@ -154,39 +154,32 @@ export class HttpClientXsrfModule {
    */
   providers: [
     HttpClient,
-    {provide: HttpHandler, useClass: HttpInterceptingHandler},
+    { provide: HttpHandler, useClass: HttpInterceptingHandler },
     HttpXhrBackend,
-    {provide: HttpBackend, useExisting: HttpXhrBackend},
+    { provide: HttpBackend, useExisting: HttpXhrBackend },
     BrowserXhr,
-    {provide: XhrFactory, useExisting: BrowserXhr},
+    { provide: XhrFactory, useExisting: BrowserXhr },
   ],
 })
 export class HttpClientModule {
 
-  public static forRoot(config? : HttpClientConfig) {
+  public static forRoot(config?: HttpClientConfig) {
     let providers = [];
 
     if (!config)
       config = {};
-    
+
     if (!config.platform) {
       // Autodetect the backend
 
-      if (typeof document !== 'undefined') 
+      if (typeof document !== 'undefined')
         config.platform = 'browser';
-      else 
+      else
         config.platform = 'server';
     }
 
     if (config.platform === 'server') {
-      providers.push(
-        {provide: XhrFactory, useClass: ServerXhr}, 
-        {
-          provide: HttpHandler,
-          useFactory: zoneWrappedInterceptingHandler,
-          deps: [HttpBackend, Injector]
-        }
-      );
+      providers.push(...SERVER_HTTP_PROVIDERS);
     } else if (config.platform === 'browser') {
       // Default configuration is browser.
     }
@@ -204,5 +197,5 @@ export interface HttpClientConfig {
    * to disable loading a built-in implementation (so you can 
    * provide your own).
    */
-  platform? : 'server' | 'browser' | null;
+  platform?: 'server' | 'browser' | null;
 }

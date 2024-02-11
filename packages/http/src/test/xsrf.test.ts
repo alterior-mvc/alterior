@@ -10,9 +10,10 @@ import {expect} from 'chai';
 
 import {HttpHeaders} from '../headers';
 import {HttpRequest} from '../request';
-import {HttpXsrfInterceptor, HttpXsrfTokenExtractor} from '../xsrf';
+import {HttpXsrfInterceptor, HttpXsrfTokenExtractor, XSRF_HEADER_NAME} from '../xsrf';
 
 import {HttpClientTestingBackend} from '../testing/backend';
+import { Injector } from '@alterior/di';
 
 class SampleTokenExtractor extends HttpXsrfTokenExtractor {
   constructor(private token: string|null) { super(); }
@@ -23,7 +24,11 @@ class SampleTokenExtractor extends HttpXsrfTokenExtractor {
 {
   describe('HttpXsrfInterceptor', () => {
     let backend: HttpClientTestingBackend;
-    const interceptor = new HttpXsrfInterceptor(new SampleTokenExtractor('test'), 'X-XSRF-TOKEN');
+    const interceptor = Injector.construct(HttpXsrfInterceptor, [ 
+      { provide: HttpXsrfTokenExtractor, useValue: new SampleTokenExtractor('test') }, 
+      { provide: XSRF_HEADER_NAME, useValue: 'X-XSRF-TOKEN' } 
+    ]);
+
     beforeEach(() => { backend = new HttpClientTestingBackend(); });
     it('applies XSRF protection to outgoing requests', () => {
       interceptor.intercept(new HttpRequest('POST', '/test', {}), backend).subscribe();
@@ -55,7 +60,11 @@ class SampleTokenExtractor extends HttpXsrfTokenExtractor {
       req.flush({});
     });
     it('does not set the header for a null token', () => {
-      const interceptor = new HttpXsrfInterceptor(new SampleTokenExtractor(null), 'X-XSRF-TOKEN');
+      const interceptor = Injector.construct(HttpXsrfInterceptor, [ 
+        { provide: HttpXsrfTokenExtractor, useValue: new SampleTokenExtractor(null) }, 
+        { provide: XSRF_HEADER_NAME, useValue: 'X-XSRF-TOKEN' } 
+      ]);
+
       interceptor.intercept(new HttpRequest('POST', '/test', {}), backend).subscribe();
       const req = backend.expectOne('/test');
       expect(req.request.headers.has('X-XSRF-TOKEN')).to.equal(false);

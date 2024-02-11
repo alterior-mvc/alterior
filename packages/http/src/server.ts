@@ -8,8 +8,8 @@
 
 import * as xhr2 from 'xhr2';
 
-import {Injectable, Injector, Provider} from '@alterior/di';
-import {Observable, Observer, Subscription} from 'rxjs';
+import { Injector, Provider, inject } from '@alterior/di';
+import { Observable, Observer, Subscription } from 'rxjs';
 import { HttpEvent } from './response';
 import { HttpRequest } from './request';
 import { HttpHandler, HttpBackend } from './backend';
@@ -24,7 +24,6 @@ function validateRequestUrl(url: string): void {
   }
 }
 
-@Injectable()
 export class ServerXhr implements BrowserXhr {
   build(): XMLHttpRequest { return new xhr2.XMLHttpRequest(); }
 }
@@ -32,9 +31,9 @@ export class ServerXhr implements BrowserXhr {
 export abstract class ZoneMacroTaskWrapper<S, R> {
   wrap(request: S): Observable<R> {
     return new Observable((observer: Observer<R>) => {
-      let task: Task = null !;
+      let task: Task = null!;
       let scheduled: boolean = false;
-      let sub: Subscription|null = null;
+      let sub: Subscription | null = null;
       let savedResult: any = null;
       let savedError: any = null;
 
@@ -44,24 +43,24 @@ export abstract class ZoneMacroTaskWrapper<S, R> {
 
         const delegate = this.delegate(request);
         sub = delegate.subscribe(
-            res => savedResult = res,
-            err => {
-              if (!scheduled) {
-                throw new Error(
-                    'An http observable was completed twice. This shouldn\'t happen, please file a bug.');
-              }
-              savedError = err;
-              scheduled = false;
-              task.invoke();
-            },
-            () => {
-              if (!scheduled) {
-                throw new Error(
-                    'An http observable was completed twice. This shouldn\'t happen, please file a bug.');
-              }
-              scheduled = false;
-              task.invoke();
-            });
+          res => savedResult = res,
+          err => {
+            if (!scheduled) {
+              throw new Error(
+                'An http observable was completed twice. This shouldn\'t happen, please file a bug.');
+            }
+            savedError = err;
+            scheduled = false;
+            task.invoke();
+          },
+          () => {
+            if (!scheduled) {
+              throw new Error(
+                'An http observable was completed twice. This shouldn\'t happen, please file a bug.');
+            }
+            scheduled = false;
+            task.invoke();
+          });
       };
 
       const cancelTask = (_task: Task) => {
@@ -88,7 +87,7 @@ export abstract class ZoneMacroTaskWrapper<S, R> {
       // scheduleMacroTask, the request will hit MockBackend and the response will be
       // sent, causing task.invoke() to be called.
       const _task = Zone.current.scheduleMacroTask(
-          'ZoneMacroTaskWrapper.subscribe', onComplete, {}, () => null, cancelTask);
+        'ZoneMacroTaskWrapper.subscribe', onComplete, {}, () => null, cancelTask);
       scheduleTask(_task);
 
       return () => {
@@ -107,9 +106,8 @@ export abstract class ZoneMacroTaskWrapper<S, R> {
   protected abstract delegate(request: S): Observable<R>;
 }
 
-export class ZoneClientBackend extends
-    ZoneMacroTaskWrapper<HttpRequest<any>, HttpEvent<any>> implements HttpBackend {
-  constructor(private backend: HttpBackend) { super(); }
+export class ZoneClientBackend extends ZoneMacroTaskWrapper<HttpRequest<any>, HttpEvent<any>> implements HttpBackend {
+  private backend = inject(HttpInterceptingHandler);
 
   handle(request: HttpRequest<any>): Observable<HttpEvent<any>> { return this.wrap(request); }
 
@@ -118,16 +116,8 @@ export class ZoneClientBackend extends
   }
 }
 
-export function zoneWrappedInterceptingHandler(backend: HttpBackend, injector: Injector) {
-  const realBackend: HttpBackend = new HttpInterceptingHandler(backend, injector);
-  return new ZoneClientBackend(realBackend);
-}
-
 export const SERVER_HTTP_PROVIDERS: Provider[] = [
-  {provide: XhrFactory, useClass: ServerXhr}, 
-  {
-    provide: HttpHandler,
-    useFactory: zoneWrappedInterceptingHandler,
-    deps: [HttpBackend, Injector]
-  }
+  { provide: XhrFactory, useClass: ServerXhr },
+  { provide: HttpHandler, useClass: ZoneClientBackend },
+  HttpInterceptingHandler
 ];

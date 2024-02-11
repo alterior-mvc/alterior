@@ -13,9 +13,10 @@ import {toArray} from 'rxjs/operators';
 
 import {HttpRequest} from '../request';
 import {HttpDownloadProgressEvent, HttpErrorResponse, HttpEvent, HttpEventType, HttpHeaderResponse, HttpResponse, HttpResponseBase, HttpUploadProgressEvent} from '../response';
-import {HttpXhrBackend} from '../xhr';
+import {HttpXhrBackend, XhrFactory} from '../xhr';
 
 import {MockXhrFactory} from './xhr.mock';
+import { Injector } from '@alterior/di';
 
 function trackEvents(obs: Observable<HttpEvent<any>>): HttpEvent<any>[] {
   const events: HttpEvent<any>[] = [];
@@ -35,7 +36,7 @@ const XSSI_PREFIX = ')]}\'\n';
     let backend: HttpXhrBackend = null !;
     beforeEach(() => {
       factory = new MockXhrFactory();
-      backend = new HttpXhrBackend(factory);
+      backend = Injector.construct(HttpXhrBackend, [ { provide: XhrFactory, useValue: factory } ]);
     });
     it('emits status immediately', () => {
       const events = trackEvents(backend.handle(TEST_POST));
