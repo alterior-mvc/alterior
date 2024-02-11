@@ -3,9 +3,6 @@
 /**
  * @alterior/annotations
  * A class library for handling Typescript metadata decorators via "annotation" classes
- * 
- * (C) 2017-2019 William Lahti
- * 
  */
 
 import { NotSupportedError } from '@alterior/common';
