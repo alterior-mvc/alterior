@@ -9,6 +9,7 @@
  */
 
 import { NotSupportedError } from '@alterior/common';
+import { Constructor } from '@alterior/common';
 
 /**
  * Represents an annotation which could be stored in the standard annotation lists 
@@ -31,20 +32,17 @@ export const METHOD_PARAMETER_ANNOTATIONS_KEY = '__parameter__metadata__';
  * Represents an Annotation subclass from the perspective of using it to 
  * construct itself by passing an options object.
  */
-type AnnotationConstructor<AnnoT extends Annotation, TS extends any[]> = {
-    new (...args: TS): AnnoT;
-    getMetadataName(): string;
-} & typeof Annotation;
+type AnnotationConstructor<AnnoT extends Annotation> = Constructor<AnnoT> & typeof Annotation;
 
 /**
  * Represents a decorator which accepts an Annotation's options object.
  */
-export interface AnnotationDecorator<TS extends any[]> {
-    (...args: TS): (target: any, ...args: any[]) => void;
-    (...args: TS): (target: any) => void;
-    (...args: TS): (target: any, propertyKey: string) => void;
-    (...args: TS): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
-    (...args: TS): (target: any, propertyKey: string, index: number) => void;
+export interface AnnotationDecorator<ConstructorT extends Constructor<T>, T> {
+    (...args: ConstructorParameters<ConstructorT>): (target: any, ...args: any[]) => void;
+    (...args: ConstructorParameters<ConstructorT>): (target: any) => void;
+    (...args: ConstructorParameters<ConstructorT>): (target: any, propertyKey: string) => void;
+    (...args: ConstructorParameters<ConstructorT>): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
+    (...args: ConstructorParameters<ConstructorT>): (target: any, propertyKey: string, index: number) => void;
 }
 
 export interface DecoratorSite {
@@ -55,11 +53,13 @@ export interface DecoratorSite {
     index?: number;
 }
 
-export interface AnnotationDecoratorOptions<AnnoT, TS extends any[] = []> {
-    factory?: (target: DecoratorSite, ...args: TS) => AnnoT | void;
+export interface AnnotationDecoratorOptions<AnnoConstructorT extends Constructor<AnnoT>, AnnoT> {
+    factory?: (target: DecoratorSite, ...args: ConstructorParameters<AnnoConstructorT>) => AnnoT | undefined;
     validTargets?: ('class' | 'property' | 'method' | 'parameter')[];
     allowMultiple?: boolean;
 }
+
+export type MutatorOptions = Omit<AnnotationDecoratorOptions<any, any>, 'factory'>;
 
 /**
  * Thrown when a caller attempts to decorate an annotation target when the 
@@ -98,15 +98,15 @@ export class AnnotationTargetError extends NotSupportedError {
  * @param ctor 
  * @param options 
  */
-function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
-    ctor: AnnotationConstructor<AnnoT, TS> & typeof Annotation, 
-    options?: AnnotationDecoratorOptions<AnnoT, TS>
-): AnnotationDecorator<TS> 
+function makeDecorator<AnnoConstructorT extends AnnotationConstructor<AnnoT>, AnnoT extends Annotation>(
+    ctor: AnnoConstructorT, 
+    options?: AnnotationDecoratorOptions<AnnoConstructorT, AnnoT>
+): AnnotationDecorator<AnnoConstructorT, AnnoT>
 {
     if (!ctor)
         throw new Error(`Cannot create decorator: Passed class reference was undefined/null: This can happen due to circular dependencies.`);
 
-    let factory: (target: DecoratorSite, ...args: TS) => AnnoT | void = (target, ...args) => new ctor(...args);
+    let factory: (target: DecoratorSite, ...args: ConstructorParameters<AnnoConstructorT>) => AnnoT | undefined = (target, ...args) => <AnnoT> new ctor(...args);
     let validTargets: string[] = ['class', 'method', 'property', 'parameter'];
     let allowMultiple = false;
 
@@ -119,7 +119,7 @@ function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
             allowMultiple = options.allowMultiple;
     }
 
-    return (...decoratorArgs: TS) => {
+    return (...decoratorArgs: ConstructorParameters<AnnoConstructorT>) => {
         return (target, ...args: any[]) => {
 
             // Note that checking the length is not enough, because for properties
@@ -253,7 +253,7 @@ export function MetadataName(name: string) {
 
 export interface MutatorDefinition {
     invoke: (site: DecoratorSite) => void;
-    options?: AnnotationDecoratorOptions<void>;
+    options?: MutatorOptions;
 }
 
 /**
@@ -267,11 +267,14 @@ export class Mutator {
     /** 
      * Low-level method to ceate a new mutation decorator (mutator) based on the given function.
      * Use `Mutator.define()` instead.
+     * 
+     * @internal
      */
-    public static create(mutator: (target: DecoratorSite, ...args: any[]) => void, options?: AnnotationDecoratorOptions<void>) {
+    public static create(mutator: (target: DecoratorSite, ...args: any[]) => void, options?: MutatorOptions) {
         return Annotation.decorator(Object.assign({}, options || {}, {
             factory: (target: DecoratorSite, ...args: any[]) => {
                 mutator(target, ...args);
+                return undefined;
             }
         }));
     }
@@ -404,16 +407,16 @@ export class Annotation implements IAnnotation {
      * @param options Allows for specifying options which will modify the behavior of the decorator. 
      *  See the DecoratorOptions documentation for more information.
      */
-    public static decorator<T extends Annotation, TS extends any[]>(
-        this: AnnotationConstructor<T, TS> & typeof Annotation, 
-        options?: AnnotationDecoratorOptions<T, TS>
-    ): AnnotationDecorator<TS> {
+    public static decorator<ConstructorT extends AnnotationConstructor<T> & typeof Annotation, T extends Annotation>(
+        this: ConstructorT, 
+        options?: AnnotationDecoratorOptions<ConstructorT, T>
+    ): AnnotationDecorator<ConstructorT, T> {
         if (this === Annotation) {
             if (!options || !options.factory) {
                 throw new Error(`When calling Annotation.decorator() to create a mutator, you must specify a factory (or use Mutator.decorator())`);
             }
         }
-        return makeDecorator<T, TS>(this, options);
+        return makeDecorator<ConstructorT, T>(this, options);
     }
 
     /**
@@ -476,8 +479,8 @@ export class Annotation implements IAnnotation {
      * @param this 
      * @param annotations 
      */
-    public static filter<T extends Annotation, TS extends any[]>(
-        this: AnnotationConstructor<T, TS>,
+    public static filter<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
+        this: ConstructorT,
         annotations: IAnnotation[]
     ): T[] {
         return annotations.filter(
@@ -492,8 +495,8 @@ export class Annotation implements IAnnotation {
      * @param this 
      * @param type The class to check
      */
-    public static getAllForClass<T extends Annotation, TS extends any[]>(
-        this: AnnotationConstructor<T, TS>, 
+    public static getAllForClass<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
+        this: ConstructorT, 
         type: any
     ): T[] {
         return (Annotations.getClassAnnotations(type) as T[])
@@ -509,11 +512,11 @@ export class Annotation implements IAnnotation {
      * @param this 
      * @param type 
      */
-    public static getForClass<T extends Annotation, TS extends any[]>(
-        this: AnnotationConstructor<T, TS>, 
+    public static getForClass<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
+        this: ConstructorT, 
         type: any
     ): T | undefined {
-        return this.getAllForClass(type)[0];
+        return this.getAllForClass<ConstructorT, T>(type)[0];
     }
 
     /**
@@ -525,8 +528,8 @@ export class Annotation implements IAnnotation {
      * @param type The class where the method is defined
      * @param methodName The name of the method to check
      */
-    public static getAllForMethod<T extends Annotation, TS extends any[]>(
-        this: AnnotationConstructor<T, TS>, 
+    public static getAllForMethod<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
+        this: ConstructorT, 
         type: any, 
         methodName: string
     ): T[] {
@@ -544,12 +547,12 @@ export class Annotation implements IAnnotation {
      * @param type The class where the method is defined
      * @param methodName The name of the method to check
      */
-    public static getForMethod<T extends Annotation, TS extends any[]>(
-        this: AnnotationConstructor<T, TS>, 
+    public static getForMethod<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
+        this: ConstructorT, 
         type: any,
         methodName: string
     ): T | undefined {
-        return this.getAllForMethod(type, methodName)[0];
+        return this.getAllForMethod<ConstructorT, T>(type, methodName)[0];
     }
     
     /**
@@ -561,8 +564,8 @@ export class Annotation implements IAnnotation {
      * @param type The class where the property is defined
      * @param propertyName The name of the property to check
      */
-    public static getAllForProperty<T extends Annotation, TS extends any[]>(
-        this: AnnotationConstructor<T, TS>, 
+    public static getAllForProperty<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
+        this: ConstructorT, 
         type: any, 
         propertyName: string
     ): T[] {
@@ -580,8 +583,8 @@ export class Annotation implements IAnnotation {
      * @param type The class where the property is defined
      * @param propertyName The name of the property to check
      */
-    public static getForProperty<T extends Annotation, TS extends any[]>(
-        this: AnnotationConstructor<T, TS>, 
+    public static getForProperty<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
+        this: ConstructorT, 
         type: any,
         propertyName: string
     ): T | undefined {
@@ -597,8 +600,8 @@ export class Annotation implements IAnnotation {
      * @param type The class where the method is defined
      * @param methodName The name of the method where parameter annotations should be checked for
      */
-    public static getAllForParameters<T extends Annotation, TS extends any[]>(
-        this: AnnotationConstructor<T, TS>, 
+    public static getAllForParameters<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
+        this: ConstructorT, 
         type: any, 
         methodName: string
     ): T[][] {
@@ -616,8 +619,8 @@ export class Annotation implements IAnnotation {
      * @param this 
      * @param type The class where constructor parameter annotations should be checked for
      */
-    public static getAllForConstructorParameters<T extends Annotation, TS extends any[]>(
-        this: AnnotationConstructor<T, TS>, 
+    public static getAllForConstructorParameters<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
+        this: ConstructorT, 
         type: any
     ): T[][] {
         

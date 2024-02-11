@@ -9,15 +9,18 @@
   to use Alterior 3.
 - `@/runtime`
   * **Breaking**: `Application.bootstrap()` now returns `Promise<Application>` instead of `Application`
-  * You can now specify the `prepare` option on your modules in order to perform an operation before the application 
-    is bootstrapped. This can be used to connect to databases, for instance.
   * **Breaking**: The experimental `@Service` annotation and the corresponding `ServiceCompiler` interface have 
     been removed.
+  * An error is now thrown if the dependency injection providers specified within your application conflict with each other
+  * You can now specify the `prepare` option on your modules in order to perform an operation before the application 
+    is bootstrapped. This can be used to connect to databases, for instance.
 - `@/web-server`
   * **Breaking**: Renamed WebConduit to ReactiveSocket, and `WebServer#startConduit()` to 
     `WebServer#startReactiveSocket()`
   * **Breaking**: The experimental `WebServiceCompiler` class is no longer available, and `@WebService` no longer 
     accepts a `compiler` option.
+- `@/logging`
+  * **Breaking**: Removed `LoggingModule.forRoot()`. Use `LoggingModule.configure()` instead.
 - `@/mongodb`: New package for ergonomically connecting to MongoDB from within your Alterior applications
 - `@/di`
   * **Breaking**: The `Injector#get(token: any, defaultValue?: any): any` overload has been removed. Instead, pass the 
@@ -40,7 +43,9 @@
   * You can now use `injectionContext()` to acquire the current injection context. You can use this to acquire the 
     `injector` which is currently resolving a provider or access the `token` currently being resolved. This can be 
     used to make new `inject()`-like functions for more specific purposes.
-
+- `@/annotations`
+  * The type transformations used by annotations has been improved to take advantage of modern Typescript features, 
+    allowing for better intellisense.
 # v3.6.7
 - `@/runtime`
   * `RoleRegistration#instance` is now optional. When not specified, the only way to target a role is by its identifier.

@@ -188,6 +188,26 @@ export class Runtime {
      * @param injector 
      */
     private resolveInjector(providers: Provider[]) {
+        let resolvedProviders = Injector.resolve(providers);
+        let keys = new Set<any>();
+        let duplicateKeys = new Set<any>();
+
+        for (let provider of resolvedProviders) {
+            if (!provider.multi && keys.has(provider.key)) {
+                duplicateKeys.add(provider.key);
+            }
+
+            keys.add(provider.key);
+        }
+
+        if (duplicateKeys.size > 0) {
+            // TODO: this error should be improved.
+            throw new Error(
+                `The following providers are specified multiple times: `
+                + `${Array.from(duplicateKeys).map(x => `${x.name ?? x}`).join(', ')}`
+            );
+        }
+
         let dependenciesInjector: Injector;
         try {
             dependenciesInjector = Injector.resolveAndCreate(providers);
