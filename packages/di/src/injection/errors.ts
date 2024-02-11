@@ -67,7 +67,7 @@ export abstract class InjectionError extends Error {
 export class NoProviderError extends InjectionError {
     get message() {
         const first = stringify(this.keys[0].token);
-        return `No provider for ${first}!${this.constructResolvingPath(this.keys)}`;
+        return `No provider for ${first}${this.constructResolvingPath(this.keys)}`;
     }
 }
 
@@ -89,7 +89,7 @@ export class NoProviderError extends InjectionError {
  */
 export class CyclicDependencyError extends InjectionError {
     get message() {
-        return `Cannot instantiate cyclic dependency!${this.constructResolvingPath(this.keys)}`;
+        return `Cannot instantiate cyclic dependency${this.constructResolvingPath(this.keys)}`;
     }
 }
 
@@ -123,7 +123,7 @@ export class InstantiationError extends InjectionError {
     get message() {
         const first = stringify(this.keys[0].token);
         return `${(this.cause as Error).message ?? 'Unknown error'}: `
-            + `Error during instantiation of ${first}!${this.constructResolvingPath(this.keys)}.`
+            + `Error during instantiation of ${first}${this.constructResolvingPath(this.keys)}.`
             ;
     }
 }

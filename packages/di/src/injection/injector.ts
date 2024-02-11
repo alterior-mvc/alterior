@@ -1,10 +1,12 @@
 import { CyclicDependencyError, InjectionError, InstantiationError, NoProviderError, OutOfBoundsError } from './errors';
 import { runInInjectionContext } from './injection-context';
+import { InjectionToken } from './injection-token';
 import { InjectorGetOptions } from './injector-get-options';
 import { Key } from './key';
 import { Provider } from './provider';
 import { ResolvedProvider } from './resolved-provider';
 import { THROW_IF_NOT_FOUND } from './throw-if-not-found';
+import { Type } from './type';
 
 // Threshold for the dynamic version
 const UNDEFINED = new Object();
@@ -55,6 +57,9 @@ export class Injector {
     private instances: any[];
     private get maxNumberOfObjects() { return this.instances.length; }
 
+    get<T = unknown>(token: Type<T> | InjectionToken<T>): T;
+    get<T = unknown, U = unknown>(token: Type<T> | InjectionToken<T>, notFoundValue: U): T | U;
+    get<T = unknown, U = unknown>(token: Type<T> | InjectionToken<T>, notFoundValue: U, options: InjectorGetOptions): T | U;
     get(token: any, notFoundValue: any = THROW_IF_NOT_FOUND, options?: InjectorGetOptions): any {
         return this.getByKey(Key.get(token), options?.self ? 'self' : 'default', notFoundValue);
     }

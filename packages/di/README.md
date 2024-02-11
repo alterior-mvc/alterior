@@ -18,13 +18,15 @@ class TestService {
     }
 }
 
+const TEST = new InjectionToken<number>('Test');
+
 let injector = Injector.resolveAndCreate([
-    { provide: 'Test', useValue: 123 },
+    { provide: TEST, useValue: 123 },
     { provide: Date, useValue: new Date() },
     TestService
 ]);
 
-console.log(injector.get('Test'));  // prints 123
+console.log(injector.get(TEST));    // prints 123
 console.log(injector.get(Date));    // prints the current date
 injector.get(TestService).hello();  // Prints `Hello! The time is <current date>`
 
@@ -124,7 +126,8 @@ an exception will be thrown. You can change this behavior by passing
 a second parameter to `get()`:
 
 ```typescript
-let number = injector.get('SomeNumber', 999);
+const SOME_NUMBER = new InjectionToken<number>;
+let number = injector.get(SOME_NUMBER, 999);
 ```
 
 Here `number` will be `999` if `injector` does not provide `'SomeNumber'`.

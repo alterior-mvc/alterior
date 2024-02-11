@@ -33,7 +33,7 @@ class Car {
 }
 
 class CarWithOptionalEngine {
-  engine = inject(Engine, { optional: true });
+  engine = inject(Engine, { optional: true }) ?? null;
 }
 
 class CarWithDashboard {
@@ -100,15 +100,15 @@ function createInjector(providers: Provider[], parent: Injector | null = null): 
 suite(describe => {
   describe('Injector.empty', it => {
     it('should throw if no arg is given', () => {
-      expect(() => Injector.empty.get('someToken')).to.throw('No provider for someToken!');
+      expect(() => Injector.empty.get('someToken' as any)).to.throw('No provider for someToken');
     });
 
     it('should throw if THROW_IF_NOT_FOUND is given', () => {
-      expect(() => Injector.empty.get('someToken', THROW_IF_NOT_FOUND)).to.throw('No provider for someToken!');
+      expect(() => Injector.empty.get('someToken' as any, THROW_IF_NOT_FOUND)).to.throw('No provider for someToken');
     });
 
     it('should return the default value', () => {
-      expect(Injector.empty.get('someToken', 'notFound')).to.equal('notFound');
+      expect(Injector.empty.get('someToken' as any, 'notFound')).to.equal('notFound');
     });
   });
   describe(`Injector`, it => {
@@ -191,38 +191,43 @@ suite(describe => {
     });
 
     it('should support multiProviders', () => {
+      const CAR_MODELS = new InjectionToken<Car[]>('CAR_MODELS');
       const injector = createInjector([
         Engine,
-        { provide: Car, useClass: SportsCar, multi: true },
-        { provide: Car, useClass: CarWithOptionalEngine, multi: true },
+        { provide: CAR_MODELS, useClass: SportsCar, multi: true },
+        { provide: CAR_MODELS, useClass: CarWithOptionalEngine, multi: true },
       ]);
 
-      const cars = injector.get(Car);
+      const cars = injector.get(CAR_MODELS);
       expect(cars.length).to.equal(2);
       expect(cars[0] instanceof SportsCar).to.be.ok;
       expect(cars[1] instanceof CarWithOptionalEngine).to.be.ok;
     });
 
     it('should support multiProviders that are created using useExisting', () => {
-      const injector = createInjector([Engine, SportsCar, { provide: Car, useExisting: SportsCar, multi: true }]);
+      const CAR_MODELS = new InjectionToken<Car[]>('CAR_MODELS');
+      const injector = createInjector([Engine, SportsCar, { provide: CAR_MODELS, useExisting: SportsCar, multi: true }]);
 
-      const cars = injector.get(Car);
+      const cars = injector.get(CAR_MODELS);
       expect(cars.length).to.equal(1);
       expect(cars[0]).to.eq(injector.get(SportsCar));
     });
 
     it('should throw when the aliased provider does not exist', () => {
-      const injector = createInjector([{ provide: 'car', useExisting: SportsCar }]);
-      const e = `No provider for ${stringify(SportsCar)}! (car -> ${stringify(SportsCar)})`;
-      expect(() => injector.get('car')).to.throw(e);
+      const injector = createInjector([{ provide: Car, useExisting: SportsCar }]);
+      const e = `No provider for ${stringify(SportsCar)} (${stringify(Car)} -> ${stringify(SportsCar)})`;
+      expect(() => injector.get(Car)).to.throw(e);
     });
 
     it('should handle forwardRef in useExisting', () => {
+      const ORIGINAL_ENGINE = new InjectionToken<Engine>('ORIGINAL_ENGINE');
+      const ALIASED_ENGINE = new InjectionToken<Engine>('ALIASED_ENGINE');
+
       const injector = createInjector([
-        { provide: 'originalEngine', useClass: () => Engine },
-        { provide: 'aliasedEngine', useExisting: () => 'originalEngine' },
+        { provide: ORIGINAL_ENGINE, useClass: () => Engine },
+        { provide: ALIASED_ENGINE, useExisting: () => ORIGINAL_ENGINE },
       ]);
-      expect(injector.get('aliasedEngine') instanceof Engine).to.be.ok;
+      expect(injector.get(ALIASED_ENGINE) instanceof Engine).to.be.ok;
     });
 
     it('should support optional dependencies', () => {
@@ -246,9 +251,10 @@ suite(describe => {
     });
 
     it('should use non-type tokens', () => {
-      const injector = createInjector([{ provide: 'token', useValue: 'value' }]);
+      const TOKEN = new InjectionToken<string>('TOKEN');
+      const injector = createInjector([{ provide: TOKEN, useValue: 'value' }]);
 
-      expect(injector.get('token')).to.equal('value');
+      expect(injector.get(TOKEN)).to.equal('value');
     });
 
     it('should throw when given invalid providers', () => {
@@ -261,18 +267,18 @@ suite(describe => {
       const parent = createInjector([]);
       const child = parent.resolveAndCreateChild([]);
 
-      expect(child.get(Injector)).to.eq(child);
+      expect(child.get(Injector as any)).to.eq(child);
     });
 
     it('should throw when no provider defined', () => {
       const injector = createInjector([]);
-      expect(() => injector.get('NonExisting')).to.throw('No provider for NonExisting!');
+      expect(() => injector.get(new InjectionToken('NonExisting'))).to.throw('No provider for InjectionToken NonExisting');
     });
 
     it('should show the full path when no provider', () => {
       const injector = createInjector([CarWithDashboard, Engine, Dashboard]);
       expect(() => injector.get(CarWithDashboard)).to.throw(
-        `No provider for DashboardSoftware! (${stringify(CarWithDashboard)} -> ${stringify(Dashboard)} -> DashboardSoftware)`
+        `No provider for DashboardSoftware (${stringify(CarWithDashboard)} -> ${stringify(Dashboard)} -> DashboardSoftware)`
       );
     });
 
@@ -280,7 +286,7 @@ suite(describe => {
       const injector = createInjector([Car, { provide: Engine, useClass: CyclicEngine }]);
 
       expect(() => injector.get(Car)).to.throw(
-        `Cannot instantiate cyclic dependency! (${stringify(Car)} -> ${stringify(Engine)} -> ${stringify(Car)})`
+        `Cannot instantiate cyclic dependency (${stringify(Car)} -> ${stringify(Engine)} -> ${stringify(Car)})`
       );
     });
 
@@ -292,7 +298,7 @@ suite(describe => {
         injector.get(Car);
         throw 'Must throw';
       } catch (e: any) {
-        expect(e.message).to.contain(`Error during instantiation of Engine! (${stringify(Car)} -> Engine)`);
+        expect(e.message).to.contain(`Error during instantiation of Engine (${stringify(Car)} -> Engine)`);
         expect(e.cause instanceof Error).to.be.ok;
         expect(e.keys[0].token).to.equal(Engine);
       }
@@ -303,7 +309,7 @@ suite(describe => {
 
       const injector = createInjector([Car, { provide: Engine, useFactory: () => (isBroken ? new BrokenEngine(): new Engine()) }]);
 
-      expect(() => injector.get(Car)).to.throw('Broken Engine: Error during instantiation of Engine! (Car -> Engine).');
+      expect(() => injector.get(Car)).to.throw('Broken Engine: Error during instantiation of Engine (Car -> Engine).');
 
       isBroken = false;
 
@@ -311,8 +317,9 @@ suite(describe => {
     });
 
     it('should support null values', () => {
-      const injector = createInjector([{ provide: 'null', useValue: null }]);
-      expect(injector.get('null')).to.eq(null);
+      const NULL = new InjectionToken<null>('NULL');
+      const injector = createInjector([{ provide: NULL, useValue: null }]);
+      expect(injector.get(NULL)).to.eq(null);
     });
   });
 
@@ -396,7 +403,7 @@ suite(describe => {
       it('should throw when not requested provider on self', () => {
         const parent = Injector.resolveAndCreate([Engine]);
         const child = parent.resolveAndCreateChild([Car]);
-        expect(() => child.get(Car)).to.throw(`No provider for Engine!`);
+        expect(() => child.get(Car)).to.throw(`No provider for Engine`);
       });
     });
 

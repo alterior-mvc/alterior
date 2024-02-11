@@ -37,6 +37,8 @@
     providers (both for `TypeProvider` and `ClassProvider`), but you no longer need to mark the forward ref using the old 
     utility function. Instead of `forwardRef(() => MyClass)`, simply use `() => MyClass`. The injector library will 
     detect this and automatically dereference the forward reference.
+  * **Breaking**: `inject()` now return `undefined` instead of `null` when the injection is optional and there is no 
+    provider for the requested dependency.
   * Adds a `unique` option to class and factory providers which causes such a provider to be resolved every time an 
     injection occurs instead of only once.
   * Introduces a new set of error classes which are now used when throwing injection related errors.

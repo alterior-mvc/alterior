@@ -495,8 +495,8 @@ export class Annotation implements IAnnotation {
      * @param this 
      * @param type The class to check
      */
-    public static getAllForClass<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
-        this: ConstructorT, 
+    public static getAllForClass<T extends Annotation>(
+        this: Constructor<T> & typeof Annotation, 
         type: any
     ): T[] {
         return (Annotations.getClassAnnotations(type) as T[])
@@ -512,11 +512,11 @@ export class Annotation implements IAnnotation {
      * @param this 
      * @param type 
      */
-    public static getForClass<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
-        this: ConstructorT, 
+    public static getForClass<T extends Annotation>(
+        this: Constructor<T> & typeof Annotation, 
         type: any
     ): T | undefined {
-        return this.getAllForClass<ConstructorT, T>(type)[0];
+        return this.getAllForClass<T>(type)[0];
     }
 
     /**
@@ -528,8 +528,8 @@ export class Annotation implements IAnnotation {
      * @param type The class where the method is defined
      * @param methodName The name of the method to check
      */
-    public static getAllForMethod<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
-        this: ConstructorT, 
+    public static getAllForMethod<T extends Annotation>(
+        this: Constructor<T> & typeof Annotation, 
         type: any, 
         methodName: string
     ): T[] {
@@ -547,12 +547,12 @@ export class Annotation implements IAnnotation {
      * @param type The class where the method is defined
      * @param methodName The name of the method to check
      */
-    public static getForMethod<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
-        this: ConstructorT, 
+    public static getForMethod<T extends Annotation>(
+        this: Constructor<T> & typeof Annotation, 
         type: any,
         methodName: string
     ): T | undefined {
-        return this.getAllForMethod<ConstructorT, T>(type, methodName)[0];
+        return this.getAllForMethod<T>(type, methodName)[0];
     }
     
     /**
@@ -564,8 +564,8 @@ export class Annotation implements IAnnotation {
      * @param type The class where the property is defined
      * @param propertyName The name of the property to check
      */
-    public static getAllForProperty<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
-        this: ConstructorT, 
+    public static getAllForProperty<T extends Annotation>(
+        this: Constructor<T> & typeof Annotation, 
         type: any, 
         propertyName: string
     ): T[] {
@@ -583,8 +583,8 @@ export class Annotation implements IAnnotation {
      * @param type The class where the property is defined
      * @param propertyName The name of the property to check
      */
-    public static getForProperty<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
-        this: ConstructorT, 
+    public static getForProperty<T extends Annotation>(
+        this: Constructor<T> & typeof Annotation, 
         type: any,
         propertyName: string
     ): T | undefined {
@@ -600,8 +600,8 @@ export class Annotation implements IAnnotation {
      * @param type The class where the method is defined
      * @param methodName The name of the method where parameter annotations should be checked for
      */
-    public static getAllForParameters<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
-        this: ConstructorT, 
+    public static getAllForParameters<T extends Annotation>(
+        this: Constructor<T> & typeof Annotation, 
         type: any, 
         methodName: string
     ): T[][] {
@@ -619,8 +619,8 @@ export class Annotation implements IAnnotation {
      * @param this 
      * @param type The class where constructor parameter annotations should be checked for
      */
-    public static getAllForConstructorParameters<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
-        this: ConstructorT, 
+    public static getAllForConstructorParameters<T extends Annotation>(
+        this: Constructor<T> & typeof Annotation, 
         type: any
     ): T[][] {
         
