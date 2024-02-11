@@ -48,6 +48,7 @@
 - `@/annotations`
   * The type transformations used by annotations has been improved to take advantage of modern Typescript features, 
     allowing for better intellisense.
+
 # v3.6.7
 - `@/runtime`
   * `RoleRegistration#instance` is now optional. When not specified, the only way to target a role is by its identifier.
