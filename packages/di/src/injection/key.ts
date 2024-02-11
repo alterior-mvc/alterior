@@ -16,7 +16,6 @@ import { KeyRegistry } from './key-registry';
  * `Key` should not be created directly. {@link Injector} creates keys automatically when
  * resolving
  * providers.
- * @experimental
  */
 export class Key {
   /**

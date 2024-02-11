@@ -22,8 +22,6 @@ import { resolveForwardRef } from './forward-ref';
  *
  * expect(injector.get('message')).toEqual('Hello');
  * ```
- *
- * @experimental
  */
 export class ResolvedProvider {
   constructor(

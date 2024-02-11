@@ -405,7 +405,6 @@ export class Injector {
      * var injector = Injector.fromResolvedProviders(providers);
      * expect(injector.get(Car) instanceof Car).toBe(true);
      * ```
-     * @experimental
      */
     static fromResolvedProviders(providers: ResolvedProvider[], parent: Injector | null = null): Injector {
         // tslint:disable-next-line:no-use-before-declare
