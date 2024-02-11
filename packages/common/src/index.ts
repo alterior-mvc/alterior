@@ -2,6 +2,7 @@ export * from './zones';
 export * from './clone';
 export * from './coalesce';
 export * from './colors';
+export * from './constructor';
 export * from './console';
 export * from './environment';
 export * from './errors';
