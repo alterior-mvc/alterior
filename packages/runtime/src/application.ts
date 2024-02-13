@@ -198,6 +198,8 @@ export class Application {
 			if (options.autostart)
 				runtime.start();
 
+			runtime.fireEvent('AfterStart');
+
 			return executionContext.application;
 		});
 	}
