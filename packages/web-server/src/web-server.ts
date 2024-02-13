@@ -323,7 +323,21 @@ export class WebServer {
 		);
 	};
 
-	public static DEFAULT_REQUEST_REPORTER: RequestReporter = (reportingEvent: 'starting' | 'finished', event: WebEvent, source: string, logger: Logger) => {
+	/**
+	 * Provides the default request logging behavior. This can be overridden by providing the requestReporter option
+	 * when setting up the server.
+	 * 
+	 * @param reportingEvent 
+	 * @param event 
+	 * @param source 
+	 * @param logger 
+	 */
+	public static DEFAULT_REQUEST_REPORTER: RequestReporter = (
+		reportingEvent: 'starting' | 'finished', 
+		event: WebEvent, 
+		source: string, 
+		logger: Logger
+	) => {
 		let metadata = event.metadata[REPORTING_STATE] ??= { startedAt: Date.now(), state: 'running' };
 
 		let logRequest = () => {
@@ -420,7 +434,8 @@ export class WebServer {
 
 			logger.log(
 				`${displayState ? `[${displayState}] ` : ``}${(method ?? '<UNKNOWN>').toUpperCase()} ${host}${path}${queryString} » ${source} [${timeDelta} ms]${statusSuffix}`,
-				{ severity }
+				{},
+				severity
 			);
 
 		}

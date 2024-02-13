@@ -10,10 +10,28 @@ type Protocol = 'h2'
 	| 'http/1.1'
 	| 'http/1.0';
 
+/**
+ * Defines the shape of a request reporting function. A function of this shape can be provided via the `requestReporter`
+ * option when setting up a `@WebService`.
+ */
 export type RequestReporter = (reportingEvent: 'starting' | 'finished', event: WebEvent, source: string, logger: Logger) => void;
+
+/**
+ * Defines the shape of a request reporting filter function. This can be used to reduce the noise when a large amount of 
+ * trivial requests are logged. These can be provided via the `requestReporterFilters` option when setting up a 
+ * `@WebService`.
+ */
 export type RequestReporterFilter = (event: WebEvent, source: string) => boolean;
+
+/**
+ * Defines the shape of a function which formats parameters for display while reporting requests via the web server's
+ * `Logger`. Can be specified via the `parameterDisplayFormatter` option when setting up a `@WebService`.
+ */
 export type ParameterDisplayFormatter = (event: WebEvent, value: any, forKey: string) => string;
 
+/**
+ * Specifies options when setting up a `@WebService` class.
+ */
 export interface WebServerOptions {
 	/**
 	 * The primary port this service is available on. When TLS is specified via certificate/privateKey
