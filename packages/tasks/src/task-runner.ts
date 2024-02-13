@@ -1,13 +1,8 @@
-import { Injectable, Inject } from "@alterior/di";
-import { QUEUE_OPTIONS, TaskJob, TaskAnnotation, TaskModuleOptionsRef, TaskModuleOptions, TaskWorkerRegistry, Constructor, Worker, RemoteWorker, RemoteService } from "./tasks";
-import { InvalidOperationError, ArgumentError } from "@alterior/common";
+import { inject } from "@alterior/di";
+import { Constructor, RemoteService, RemoteWorker, TaskWorkerRegistry, Worker } from "./tasks";
 
-@Injectable()
 export class TaskRunner {
-    constructor(
-        private _registry : TaskWorkerRegistry
-    ) {
-    }
+    private _registry = inject(TaskWorkerRegistry);
 
     get registry() {
         return this._registry;

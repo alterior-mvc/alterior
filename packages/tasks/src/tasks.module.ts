@@ -1,10 +1,9 @@
-import { Module, Injectable, Optional } from "@alterior/di";
-import { OnInit, Application, RolesService, Constructor } from "@alterior/runtime";
-import * as Queue from "bull";
-import { TaskModuleOptions, TaskModuleOptionsRef, TaskQueueClient, TaskWorkerRegistry } from "./tasks";
+import { Module, inject } from "@alterior/di";
+import { Logger, LoggingModule } from "@alterior/logging";
+import { Application, OnInit, RolesService } from "@alterior/runtime";
 import { TaskRunner } from "./task-runner";
 import { TaskWorker } from "./task-worker";
-import { Logger, LoggingModule } from "@alterior/logging";
+import { TaskModuleOptions, TaskModuleOptionsRef, TaskQueueClient, TaskWorkerRegistry } from "./tasks";
 
 /**
  * Import this into your application module to run tasks enqueued by other 
@@ -22,16 +21,12 @@ import { Logger, LoggingModule } from "@alterior/logging";
     ]
 })
 export class TasksModule implements OnInit {
-    constructor(
-        private app: Application,
-        private rolesService: RolesService,
-        private client: TaskQueueClient,
-        private workerRegistry: TaskWorkerRegistry,
-        private logger: Logger,
-        @Optional() private _options: TaskModuleOptionsRef
-    ) {
-
-    }
+    private app = inject(Application);
+    private rolesService = inject(RolesService);
+    private client = inject(TaskQueueClient);
+    private workerRegistry = inject(TaskWorkerRegistry);
+    private logger = inject(Logger);
+    private _options = inject(TaskModuleOptionsRef, { optional: true });
 
     /**
      * Used when importing this module from the root (app) module
