@@ -49,6 +49,11 @@
   * The type transformations used by annotations has been improved to take advantage of modern Typescript features, 
     allowing for better intellisense.
 
+# v3.7.0
+- `@/runtime`
+  * A new lifecycle event `altAfterStart` can be used to run code after all modules' `altOnStart` callbacks have 
+    completed and all effective roles have been started (see `RolesService`).
+
 # v3.6.7
 - `@/runtime`
   * `RoleRegistration#instance` is now optional. When not specified, the only way to target a role is by its identifier.
