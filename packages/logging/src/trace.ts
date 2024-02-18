@@ -1,7 +1,8 @@
 import { Mutator } from "@alterior/annotations";
-import { ConsoleColors, indentConsole, coalesce } from '@alterior/common';
+import { ConsoleColors, coalesce, indentConsole } from '@alterior/common';
+import { ExecutionContext } from "@alterior/runtime";
 import { Logger } from "./logger";
-import { LoggingOptionsRef } from "./logging-options-ref";
+import { LOGGING_OPTIONS } from "./logging-options";
 
 let ENABLED : boolean = false;
 
@@ -78,8 +79,7 @@ export function Trace() {
             // - When used inside an Alterior app, we will not trace by default.
             // - If optionsRef.options.tracing is set to true, we trace.
 
-            let optionsRef = LoggingOptionsRef.currentRef;
-            let options = optionsRef ? (optionsRef.options || {}) : null;
+            let options = ExecutionContext.current?.application?.inject(LOGGING_OPTIONS, null);
             let enabled = options ? coalesce(options.tracing, false) : true;
             let logger = Logger.current;
 

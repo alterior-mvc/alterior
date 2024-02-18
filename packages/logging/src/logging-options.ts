@@ -1,5 +1,8 @@
+import { InjectionToken } from "@alterior/di";
 import { LogListener } from "./log-listener";
 import { LogSeverity } from "./log-severity";
+
+export const LOGGING_OPTIONS = new InjectionToken<LoggingOptions>("LOGGING_OPTIONS");
 
 export interface LoggingOptions {
     /**

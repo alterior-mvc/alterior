@@ -1,8 +1,6 @@
 import { WebEvent } from './metadata';
 import { Constructor } from '@alterior/runtime';
-import { Injectable } from '@alterior/di';
 
-@Injectable()
 export class Session {
     static current<T>(this : Constructor<T>): T {
         return new Proxy(new (<any>this)(), {

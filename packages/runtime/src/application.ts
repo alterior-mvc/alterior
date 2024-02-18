@@ -1,19 +1,20 @@
 import 'reflect-metadata';
 
-import { InjectionToken, ModuleAnnotation, inject } from '@alterior/di';
+import { InjectionToken, inject } from '@alterior/di';
 import { AppOptionsAnnotation, ApplicationOptions } from './app-options';
 import { ApplicationArgs } from './args';
 import { Runtime } from './runtime';
 import { Constructor } from './reflector';
+import { ModuleAnnotation } from './module-annotation';
 
 export class ApplicationOptionsRef {
 	constructor(
 		options: ApplicationOptions
 	) {
-		this.options = Object.assign({}, options);
+		this.ApplicationRoles = Object.assign({}, options);
 	}
 
-	readonly options: ApplicationOptions;
+	readonly ApplicationRoles: ApplicationOptions;
 }
 
 /**
@@ -72,12 +73,12 @@ export class Application {
 	private _optionsRef = inject(ApplicationOptionsRef);
 	private _args = inject(ApplicationArgs);
 	
-	public start() {
-		this.runtime.start();
+	public async start() {
+		await this.runtime.start();
 	}
 
-	public stop() {
-		this.runtime.stop();
+	public async stop() {
+		await this.runtime.stop();
 	}
 
 	get injector() {
@@ -97,7 +98,7 @@ export class Application {
 	}
 
 	get options(): ApplicationOptions {
-		return this._optionsRef.options;
+		return this._optionsRef.ApplicationRoles;
 	}
 
 	private static validateEntryModule(module: Function) {
@@ -142,18 +143,7 @@ export class Application {
 	
 			executionContext.application = runtime.getService(Application);
 			
-			runtime.fireEvent('OnInit');
-			runtime.configure();
-	
-			if (runtime.selfTest) {
-				console.log(`[Self Test] ✔ Looks good!`);
-				process.exit(0);
-			}
-			
-			if (options.autostart)
-				runtime.start();
-
-			runtime.fireEvent('AfterStart');
+			await runtime.init();
 
 			return executionContext.application;
 		});

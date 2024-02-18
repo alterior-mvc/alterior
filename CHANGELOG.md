@@ -11,6 +11,13 @@
   * **Breaking**: `Application.bootstrap()` now returns `Promise<Application>` instead of `Application`
   * **Breaking**: The experimental `@Service` annotation and the corresponding `ServiceCompiler` interface have 
     been removed.
+  * Any module method can now be decorated with `@LifecycleEvent(eventName)` and run automatically when the given 
+    lifecycle event occurs. Convenience decorators are provided for the existing built-in lifecycle events: 
+    `@OnInit()`, `@OnStart()`, `@OnStop()` and `@AfterStart()`.
+  * **Breaking**: The convention-based `altOnInit()`, `altOnStart()`, `altOnStop()` and `altAfterStart()` lifecycle events are no 
+    longer supported. If Alterior encounters them an error will be printed and they will not be executed.
+  * **Breaking**: `RolesService` has been renamed `ApplicationRoles`
+  * **Breaking**: Roles are now identified exclusively using their declared identifier (as opposed to their containing Module class). Consequently functionality related to this feature has been removed.
   * An error is now thrown if the dependency injection providers specified within your application conflict with each other
   * You can now specify the `prepare` option on your modules in order to perform an operation before the application 
     is bootstrapped. This can be used to connect to databases, for instance.
@@ -23,6 +30,7 @@
   * **Breaking**: Removed `LoggingModule.forRoot()`. Use `LoggingModule.configure()` instead.
 - `@/mongodb`: New package for ergonomically connecting to MongoDB from within your Alterior applications
 - `@/di`
+  * **Breaking**: The `@Module` decorator and associated exports have been moved to `@alterior/runtime`.
   * **Breaking**: The `Injector#get(token: any, defaultValue?: any): any` overload has been removed. Instead, pass the 
     class you are interested in (`Type<T>`), or the injection token you are interested in (`InjectionToken<T>`).
   * **Breaking**: The `Injector` abstract base class is removed and `ReflectiveInjector` is renamed as `Injector`.
@@ -39,6 +47,11 @@
     detect this and automatically dereference the forward reference.
   * **Breaking**: `inject()` now return `undefined` instead of `null` when the injection is optional and there is no 
     provider for the requested dependency.
+  * **Breaking**: `Provider` types are now generic and type-safe. You must use an appropriate `Type<T>`, `InjectionToken<T>`,
+    or a forward-referencing version of such as the `provide` token, and the `useValue`, `useClass`, `useFactory` or 
+    `useExisting` properties must be type-compatible with the typed provider token you specify.
+  * A new `provide()` function is available which provides a more ergonomic way to create providers (ie
+    `provide(TOKEN).usingValue(123)`)
   * Adds a `unique` option to class and factory providers which causes such a provider to be resolved every time an 
     injection occurs instead of only once.
   * Introduces a new set of error classes which are now used when throwing injection related errors.

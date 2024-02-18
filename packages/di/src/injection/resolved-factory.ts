@@ -20,13 +20,12 @@ export class ResolvedFactory {
    */
   static from(provider: NormalizedProvider): Function {
     if (provider.useClass) {
-      const ctor = isConstructor(provider.useClass) ? (provider.useClass as ConcreteType<any>) 
-        : (provider.useClass as () => ConcreteType<any>)();
+      const ctor = provider.useClass;
       return () => new ctor();
     }
     
     if (provider.useExisting)
-      return () => inject(provider.useExisting);
+      return () => inject(provider.useExisting!);
     else if (provider.useFactory)
       return provider.useFactory;
     else

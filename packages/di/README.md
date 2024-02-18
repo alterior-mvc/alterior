@@ -9,7 +9,7 @@ Injectors created via this library are heirarchical. Along with a set of depende
 can reference a "parent" injector. If no matching dependency is found, the request is forwarded to the parent injector.
 
 ```typescript
-import { Injector, inject } from '@alterior/di';
+import { Injector, inject, provide } from '@alterior/di';
 
 class TestService {
     readonly date = inject(Date);
@@ -21,8 +21,8 @@ class TestService {
 const TEST = new InjectionToken<number>('Test');
 
 let injector = Injector.resolveAndCreate([
-    { provide: TEST, useValue: 123 },
-    { provide: Date, useValue: new Date() },
+    provide(TEST).usingValue(123),
+    provide(Date).usingValue(new Date()),
     TestService
 ]);
 
@@ -41,33 +41,34 @@ injected when the framework encounters the injection token.
 There are a variety of supported `Provider` types:
 - **`TypeProvider`**: eg `MyClass`  
   The injector will satisfy `inject(MyClass)` by calling `new MyClass()`. This is equivalent to 
-  specifying a class provider of `{ provide: MyClass, useClass: MyClass }`. The injection library will normalize these into class providers for you.
+  specifying a class provider of `provide(MyClass).usingClass(MyClass)`. The injection library will normalize these into class providers for you.
 
-- **`ClassProvider`**: eg `{ provide: TOKEN, useClass: MyClass }`  
+- **`ClassProvider`**: eg `provide(TOKEN).usingClass(MyClass)`  
   The injector will satisfy `inject(TOKEN)` by constructing the given class using `new`.  
 
-- **`ValueProvider`**: eg `{ provide: TOKEN, useValue: 123 }`  
+- **`ValueProvider`**: eg `provide(TOKEN).usingValue(123)`  
   The injector will satisfy `inject(TOKEN)` with an existing value.
 
-- **`FactoryProvider`**: eg `{ provide: TOKEN, useFactory: () => 123 }`  
+- **`FactoryProvider`**: eg `provide(TOKEN).usingFactory(() => 123)`  
   The injector will satisfy `inject(TOKEN)` with the result of invoking a factory function. You can 
   use `inject()` within the factory function to obtain any needed dependencies.
 
-- **`ExistingProvider`**: eg `{ provide: TOKEN, useExisting: ANOTHERTOKEN }`  
+- **`ExistingProvider`**: eg `provide(TOKEN).using(ANOTHERTOKEN)`  
   The injector will satisfy `inject(TOKEN)` with the same value as `inject(ANOTHER_TOKEN)`.
 
 # Multi-Providers
 
 Usually a dependency is resolved from a single provider. In some cases it may be helpful to allow multiple providers 
-to contribute parts of a single dependency. To support that use case, you can mark the providers as `multi: true`. When
-you do this, `inject(TOKEN)` will return an array containing the values of all the multi-providers.
+to contribute parts of a single dependency. To support that use case, you can mark the providers with the `multi: true`
+option (`provide(TOKEN, { multi: true })`). When you do this, `inject(TOKEN)` will return an array containing the 
+values of all the multi-providers.
 
 # Forward References
 
 In some cases (such as circular imports or non-hoisted definitions), the value of a given symbol may not be available 
 until the entire source file (or both source files) have finished their initial execution. The injector library provides
-a mechanism for dealing with this called "forward references". Forward references can be used in the `provide` and 
-`useClass` provider properties, as well as for TypeProviders (ie `() => MyType`)
+a mechanism for dealing with this called "forward references". Forward references can be used in tokens 
+(`provide(() => MyType)`) and class positions (`provide(AbstractType).usingClass(() => MyType)` or `() => MyType`).
 
 # Non-unique Providers
 

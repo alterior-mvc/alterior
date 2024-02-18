@@ -1,16 +1,15 @@
-import { suite } from 'razmin';
-import { Logger } from './logger';
+import { Injector } from '@alterior/di';
 import { expect } from 'chai';
+import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import * as fs from 'fs';
-import { LogEvent } from './log-event';
-import { LoggingOptionsRef } from './logging-options-ref';
-import { Injector } from '@alterior/di';
-import { LoggingOptions } from './logging-options';
+import { suite } from 'razmin';
 import { ConsoleLogger } from './console-logger';
 import { FileLogger } from './file-logger';
+import { LogEvent } from './log-event';
 import { LogFormatter } from './log-formatter';
+import { Logger } from './logger';
+import { LOGGING_OPTIONS, LoggingOptions } from './logging-options';
 
 const SAMPLE_LOG_MESSAGE_1 : LogEvent = { type: 'message', message: 'ABCDEF', data: {}, date: new Date(), severity: 'info', context: null };
 const SAMPLE_LOG_MESSAGE_2 : LogEvent = { type: 'message', message: '123456', data: {}, date: new Date(), severity: 'info', context: null };
@@ -42,8 +41,8 @@ function loggerWithOptions(options: LoggingOptions) {
     return Injector.resolveAndCreate([ 
         Logger, 
         { 
-            provide: LoggingOptionsRef, 
-            useValue: new LoggingOptionsRef(options)
+            provide: LOGGING_OPTIONS, 
+            useValue: options
         }
     ]).get(Logger);
 }

@@ -1,4 +1,4 @@
-import { ModuleAnnotation } from "@alterior/di";
+import { ModuleAnnotation } from "./module-annotation";
 
 /**
  * Combines a module annotation and a target class into a single 

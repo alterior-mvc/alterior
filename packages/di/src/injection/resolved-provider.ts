@@ -70,7 +70,7 @@ export class ResolvedProvider {
     }
     
     if (provider.useExisting)
-      return () => inject(provider.useExisting);
+      return () => inject(provider.useExisting!);
     else if (provider.useFactory)
       return provider.useFactory;
     else
@@ -135,13 +135,14 @@ export class ResolvedProvider {
    * @param res 
    * @returns 
    */
-  private static normalizeProviders(providers: Provider[], res: Provider[]): NormalizedProvider[] {
+  private static normalizeProviders(providers: Provider[], res: NormalizedProvider[]): NormalizedProvider[] {
     providers.forEach(b => {
       if (b instanceof Function) {
         let type = resolveForwardRef(b);
         res.push({ provide: type, useClass: type });
       } else if (b && typeof b === 'object' && (b as any).provide !== undefined) {
-        res.push(b as NormalizedProvider);
+        let normalizedProvider = b as NormalizedProvider;
+        res.push({ ...normalizedProvider, useClass: resolveForwardRef(normalizedProvider.useClass) });
       } else if (b instanceof Array) {
         this.normalizeProviders(b as Provider[], res);
       } else {

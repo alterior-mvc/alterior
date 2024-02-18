@@ -1,5 +1,5 @@
-import { ModuleAnnotation, ValueProvider } from "@alterior/di";
-import { AppOptionsAnnotation } from "@alterior/runtime";
+import { InjectionToken, ValueProvider } from "@alterior/di";
+import { AppOptionsAnnotation, Application, ModuleAnnotation } from "@alterior/runtime";
 import { expect } from "chai";
 import { describe, it } from "razmin";
 import { Get } from "./metadata";
@@ -23,9 +23,11 @@ describe("WebServiceDecorator", () => {
 	});
 
     it('should attach the correct metadata', async () => {
+        const FOO = new InjectionToken<number>('FOO');
+
         @WebService({
             version: '1.2.3',
-            providers: [ { provide: 'foo', useValue: 123 } ],
+            providers: [ { provide: FOO, useValue: 123 } ],
             server: {
                 port: 12321
             }
@@ -44,8 +46,8 @@ describe("WebServiceDecorator", () => {
         expect(appOptionsAnnotation?.options?.version).to.eq('1.2.3');
         expect(moduleAnnotation?.providers.length).to.eq(1);
 
-        let provider = <ValueProvider>moduleAnnotation?.providers?.[0];
-        expect(provider.provide).to.eq('foo');
+        let provider = <ValueProvider<number>>moduleAnnotation?.providers?.[0];
+        expect(provider.provide).to.eq(FOO);
         expect(provider.useValue).to.eq(123);
 
         let webServerModule = moduleAnnotation?.imports.find(x => typeof x === 'function' && x.name === 'WebServerModule');
@@ -71,5 +73,87 @@ describe("WebServiceDecorator", () => {
             .expect(200, {ok: true});
            
         expect(instances.length).to.equal(1, 'Only one instance of TestService should have been created');
+    });
+    
+    it('should execute onInit once', async () => {
+        let initialized = 0;
+
+        @WebService()
+        class FakeModule {
+            [WebService.onInit]() {
+                initialized += 1;
+            }
+            @Get('/foo')
+            getX() {
+                return Promise.resolve({ ok: true });
+            }
+        }
+
+        await teststrap(FakeModule)
+            .get('/foo')
+            .expect(200, { ok: true })
+            ;
+
+        expect(initialized, `Controller's onInit event should have run exactly once`)
+            .to.equal(1);
+    });
+    it('should execute onStart once', async () => {
+        let started = 0;
+
+        @WebService({
+            server: { port: 32552 }
+        })
+        class FakeModule {
+            [WebService.onInit]() {
+                started += 1;
+            }
+
+            @Get('/foo')
+            getX() {
+                return Promise.resolve({ ok: true });
+            }
+        }
+
+        let app = await Application.bootstrap(FakeModule, { silent: true });
+        let response = await fetch('http://localhost:32552/foo');
+        expect(response.status).to.equal(200);
+
+        expect(started, `Controller's onStart should have run exactly once`)
+            .to.equal(1);
+
+        app.stop();
+    });
+    it('should execute both onInit and onStart once each', async () => {
+        let started = 0;
+        let initialized = 0;
+
+        @WebService({
+            server: { port: 32553 }
+        })
+        class FakeModule {
+            [WebService.onInit]() {
+                initialized += 1;
+            }
+
+            [WebService.onStart]() {
+                started += 1;
+            }
+
+            @Get('/foo')
+            getX() {
+                return Promise.resolve({ ok: true });
+            }
+        }
+
+        let app = await Application.bootstrap(FakeModule, { silent: true });
+        let response = await fetch('http://localhost:32553/foo');
+        expect(response.status).to.equal(200);
+
+        expect(initialized, `Controller's onInit should have run exactly once`)
+            .to.equal(1);
+        expect(started, `Controller's onStart should have run exactly once`)
+            .to.equal(1);
+
+        app.stop();
     });
 });

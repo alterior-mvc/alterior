@@ -2,7 +2,6 @@ import { describe } from "razmin";
 import { Session } from "./session";
 import { expect } from "chai";
 import { WebEvent } from './metadata';
-import { Injectable } from '@alterior/di';
 
 describe('Session', it => {
     it('transparently requests properties via get()', () => {
@@ -25,7 +24,6 @@ describe('Session', it => {
             return (target: any, propertyKey: string) => {};
         }
         
-        @Injectable()
         class FooSession extends Session {
             @nothing()
             bar? : number;

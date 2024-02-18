@@ -1,9 +1,10 @@
 import { Injector, Provider, Type } from "@alterior/di";
-import { ControllerAnnotation, ControllerOptions, MiddlewareDefinition, MountOptions } from "./metadata";
+import { ALT_ON_LISTEN, ControllerAnnotation, ControllerOptions, MiddlewareDefinition, MountOptions } from "./metadata";
 import { RouteReflector } from "./metadata/route-reflector-private";
 import { prepareMiddleware } from "./middleware";
 import { WebServer } from "./web-server";
 import { RouteInstance } from "./route-instance";
+import { ALT_ON_INIT, ALT_ON_START, ALT_ON_STOP, fireLifecycleEvent, handleLegacyLifecycleEvent } from '@alterior/runtime';
 
 export interface ControllerContext {
 	pathPrefix?: string;
@@ -25,10 +26,10 @@ export class ControllerInstance {
 		this.options = ControllerAnnotation.getForClass(this.type)?.options ?? {};
 		this.pathPrefix = this.combinePaths(pathPrefix, this.options.basePath);
 		this.routes = this.findRoutes();
-		
+
 		// Ensure indexes are valid.
 
-		this.middleware = [ ...(this.options?.middleware ?? []) ];
+		this.middleware = [...(this.options?.middleware ?? [])];
 		let invalidIndex = this.middleware.findIndex(x => !x);
 		if (invalidIndex >= 0)
 			throw new Error(`Controller '${this.type}' provided null/undefined middleware at position ${invalidIndex}`);
@@ -140,7 +141,7 @@ export class ControllerInstance {
 	private prepareMiddleware(): any[] {
 		// Procure an injector which can handle injecting the middlewares' providers
 		let childInjector = Injector.resolveAndCreate(
-			<Provider[]>this.middleware.filter(x => Reflect.getMetadata('alterior:middleware', x)), 
+			<Provider[]>this.middleware.filter(x => Reflect.getMetadata('alterior:middleware', x)),
 			this.injector
 		);
 
@@ -149,14 +150,24 @@ export class ControllerInstance {
 		return this.middleware.map(x => prepareMiddleware(childInjector, x));
 	}
 
-	initialize() {
-		if (!this.isModule && this.instance && typeof this.instance.altOnInit === 'function')
-			this.instance.altOnInit();
+	private _initialized = false;
+
+	async initialize() {
+		if (this._initialized)
+			return;
+
+		this._initialized = true;
+
+		if (!this.isModule)
+			await this.fireLifecycleEvent(ALT_ON_INIT);
+
+		for (let controller of this.controllers)
+			await controller.initialize();
 	}
 
-	start() {
-		if (!this.isModule && this.instance && typeof this.instance.altOnStart === 'function')
-			this.instance.altOnStart();
+	async start() {
+		if (!this.isModule)
+			await this.fireLifecycleEvent(ALT_ON_START);
 	}
 
 	/**
@@ -164,13 +175,25 @@ export class ControllerInstance {
 	 * @param server 
 	 */
 	listen(server: WebServer) {
-		if (this.instance && typeof this.instance.altOnListen === 'function')
-			this.instance.altOnListen(server);
+		this.fireLifecycleEvent(ALT_ON_LISTEN);
 	}
 
-	stop() {
-		if (!this.isModule && this.instance && typeof this.instance.altOnStop === 'function')
-			this.instance.altOnStop();
+	async stop() {
+		if (!this.isModule)
+			await this.fireLifecycleEvent(ALT_ON_STOP);
+	}
+
+	/**
+	 * Fire a particular lifecycle event on this controller. You should only call this directly if you are 
+	 * implementing custom lifecycle events.
+	 * 
+	 * @param eventName The event to fire
+	 */
+	async fireLifecycleEvent(eventName: symbol) {
+		if (this.instance) {
+			await fireLifecycleEvent(this.instance, eventName);
+			handleLegacyLifecycleEvent(this.server.logger, this.instance, eventName);
+		}
 	}
 
 	mount(webServer: WebServer) {

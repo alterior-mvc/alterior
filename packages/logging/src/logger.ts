@@ -1,16 +1,15 @@
 import { inject } from '@alterior/di';
-import { ExecutionContext, Application, Constructor } from '@alterior/runtime';
+import { Application, Constructor, ExecutionContext, RuntimeLogger } from '@alterior/runtime';
 
-import { LogEvent } from './log-event';
-import { LoggingOptionsRef } from './logging-options-ref';
-import { LogOptions } from './log-options';
+import { injectionContext } from '@alterior/di';
 import { DEFAULT_LISTENERS } from './defaults';
+import { LogEvent } from './log-event';
+import { LogOptions } from './log-options';
 import { LogSeverity } from './log-severity';
-import { injectionContext } from '@alterior/di/dist/injection';
-import { LoggingOptions } from './logging-options';
+import { LOGGING_OPTIONS, LoggingOptions } from './logging-options';
 
-export class Logger {
-    protected optionsRef = inject(LoggingOptionsRef, { optional: true, allowMissingContext: true });
+export class Logger implements RuntimeLogger {
+    protected options = inject(LOGGING_OPTIONS, { optional: true, allowMissingContext: true });
     protected app = inject(Application, { allowMissingContext: true });
 
     constructor();
@@ -28,7 +27,7 @@ export class Logger {
             options = args.shift();
 
         if (options)
-            this.optionsRef = new LoggingOptionsRef(options);
+            this.options = options;
 
         this.sourceLabel = sourceLabel ?? injectionContext({ optional: true })?.token?.name;
     }
@@ -51,7 +50,7 @@ export class Logger {
     clone(sourceLabel?: string) {
         let logger = new (this.constructor as Constructor<this>)(sourceLabel ?? this.sourceLabel);
 
-        logger.optionsRef = this.optionsRef;
+        logger.options = this.options;
         logger.app = this.app;
 
         return logger;
@@ -65,8 +64,8 @@ export class Logger {
     static error(message: string, data: Record<string, any>) { this.current.error(message, data); }
 
     get listeners() {
-        if (this.optionsRef?.options?.listeners) {
-            return this.optionsRef.options.listeners;
+        if (this.options?.listeners) {
+            return this.options.listeners;
         }
 
         if (this.app?.options?.silent)

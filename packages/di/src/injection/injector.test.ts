@@ -74,18 +74,18 @@ class NoAnnotations {
 
 function factoryFn(a: any) {}
 
-const dynamicProviders = [
-  { provide: 'provider0', useValue: 1 },
-  { provide: 'provider1', useValue: 1 },
-  { provide: 'provider2', useValue: 1 },
-  { provide: 'provider3', useValue: 1 },
-  { provide: 'provider4', useValue: 1 },
-  { provide: 'provider5', useValue: 1 },
-  { provide: 'provider6', useValue: 1 },
-  { provide: 'provider7', useValue: 1 },
-  { provide: 'provider8', useValue: 1 },
-  { provide: 'provider9', useValue: 1 },
-  { provide: 'provider10', useValue: 1 },
+const dynamicProviders: Provider[] = [
+  { provide: new InjectionToken<number>('provider0'), useValue: 1 },
+  { provide: new InjectionToken<number>('provider1'), useValue: 1 },
+  { provide: new InjectionToken<number>('provider2'), useValue: 1 },
+  { provide: new InjectionToken<number>('provider3'), useValue: 1 },
+  { provide: new InjectionToken<number>('provider4'), useValue: 1 },
+  { provide: new InjectionToken<number>('provider5'), useValue: 1 },
+  { provide: new InjectionToken<number>('provider6'), useValue: 1 },
+  { provide: new InjectionToken<number>('provider7'), useValue: 1 },
+  { provide: new InjectionToken<number>('provider8'), useValue: 1 },
+  { provide: new InjectionToken<number>('provider9'), useValue: 1 },
+  { provide: new InjectionToken<number>('provider10'), useValue: 1 },
 ];
 
 function createInjector(providers: Provider[], parent: Injector | null = null): Injector {

@@ -1,14 +1,14 @@
 import { Environment, Time } from "@alterior/common";
-import {
-    ConfiguredModule, Injector, Module, ModuleAnnotation, ModuleLike, ModuleOptions,
-    Provider
-} from "@alterior/di";
+import { Injector, Provider } from "@alterior/di";
 import { omit } from "@alterior/functions";
 import { ApplicationOptions } from "./app-options";
 import { Application, ApplicationOptionsRef } from "./application";
 import { ApplicationArgs } from "./args";
+import { BuiltinLifecycleEvents, fireLifecycleEvent, handleLegacyLifecycleEvent } from "./lifecycle";
+import { ConfiguredModule, Module, ModuleAnnotation, ModuleLike, ModuleOptions } from "./module-annotation";
 import { ModuleDefinition, ModuleInstance } from "./modules";
-import { RoleConfigurationMode, RolesService } from "./roles.service";
+import { RoleConfigurationMode, ApplicationRoles } from "./roles.service";
+import { DefaultRuntimeLogger, RUNTIME_LOGGER, RuntimeLogger, SilentRuntimeLogger } from "./runtime-logger";
 
 /**
  * Used to construct a runtime environment for a given entry module.
@@ -17,11 +17,19 @@ import { RoleConfigurationMode, RolesService } from "./roles.service";
  */
 export class Runtime {
     constructor(modules: ModuleDefinition[], options: ApplicationOptions) {
+        this.autostart = options.autostart ?? true;
         this.definitions = modules;
         this.injector = this.resolveInjector(this.determineProviders(options));
         this.instances = this.definitions.map(defn => new ModuleInstance(defn, this.injector.get(defn.target)));
+        this.logger = this.injector.get(RUNTIME_LOGGER, options.silent? Runtime.silentLogger : Runtime.defaultLogger);
     }
 
+    readonly autostart: boolean;
+
+    static defaultLogger: RuntimeLogger = new DefaultRuntimeLogger();
+    static silentLogger: RuntimeLogger = new SilentRuntimeLogger();
+    logger: RuntimeLogger;
+    
     /**
      * Contains the definitions for modules found during bootstrapping.
      */
@@ -64,7 +72,7 @@ export class Runtime {
         providers.push(...[
             Application,
             ApplicationArgs,
-            RolesService,
+            ApplicationRoles,
             Environment,
             Time,
             { provide: ApplicationOptionsRef, useValue: new ApplicationOptionsRef(options) },
@@ -80,10 +88,23 @@ export class Runtime {
         return providers;
     }
 
+    async init() {
+        await this.fireEvent(BuiltinLifecycleEvents.onInit);
+        this.configure();
+	
+        if (this.selfTest) {
+            console.log(`[Self Test] ✔ Looks good!`);
+            process.exit(0);
+        }
+
+        if (this.autostart)
+            await this.start();
+    }
+
     /**
      * Perform runtime configuration steps
      */
-    configure() {
+    private configure() {
         let roleEnv = this.injector.get(Environment)
             .get<{
                 ALT_ROLES_ONLY: string,
@@ -106,7 +127,7 @@ export class Runtime {
             roles = roleEnv.ALT_ROLES_DEFAULT_EXCEPT.split(',');
         }
 
-        let rolesService = this.injector.get(RolesService);
+        let rolesService = this.injector.get(ApplicationRoles);
         if (roleMode !== 'default') {
             rolesService.configure({ mode: roleMode, roles });
         }
@@ -162,21 +183,21 @@ export class Runtime {
             }
         }
 
-        let rolesService = this.injector!.get(RolesService);
+        let rolesService = this.injector!.get(ApplicationRoles);
         if (roleMode !== 'default') {
             rolesService.configure({ mode: 'only', roles });
         }
     }
 
     /**
-     * Fire an event to all modules which understand it. Should be upper-camel-case, meaning
-     * to fire the altOnStart() method, send "OnStart". 
+     * Fire an event to all modules which understand it. Will call any methods on module classes which are decorated
+     * with `@LifecycleEvent(eventName)` (or one of the provided convenience forms like `@OnInit`)
      * @param eventName 
      */
-    fireEvent(eventName: string) {
-        for (let modInstance of (this.instances ?? [])) {
-            if (modInstance.instance[`alt${eventName}`])
-                modInstance.instance[`alt${eventName}`]();
+    async fireEvent(eventName: symbol) {
+        for (let entry of (this.instances ?? [])) {
+            await fireLifecycleEvent(entry.instance, eventName);
+            handleLegacyLifecycleEvent(this.logger, entry.instance, eventName);
         }
     }
 
@@ -244,16 +265,16 @@ export class Runtime {
     /**
      * Stop any services, as defined by imported modules of this runtime. For instance, if you import WebServerModule 
      * from @alterior/web-server, calling this will instruct the module to stop serving on the configured port. 
-     * Also builds in a timeout to allow for all services and operations to stop before resolving.
      * 
-     * This will send the `OnStop` lifecycle event to all modules, which triggers the `altOnStop()` method of any module 
-     * which implements it to be called. It also instructs the RolesService to stop any roles which are currently running.
-     * For more information about Roles, see the documentation for RolesService.
+     * This will send the `onStop` lifecycle event to all modules and instruct the RolesService to stop any roles 
+     * which are currently running. For more information about Roles, see the documentation for RolesService.
      */
     async stop() {
-        this.fireEvent('OnStop');
-        let rolesService = this.injector.get(RolesService);
-        rolesService.stopAll();
+        console.log(`RUNTIME STOPPING`);
+        await this.fireEvent(BuiltinLifecycleEvents.onStop);
+        await this.injector.get(ApplicationRoles).stopAll();
+        await this.fireEvent(BuiltinLifecycleEvents.afterStop);
+        console.log(`RUNTIME STOPPED`);
     }
 
     /**
@@ -264,15 +285,16 @@ export class Runtime {
      * which implements it to be called. It also instructs the RolesService to start roles as per it's configuration. 
      * For more information about Roles, see the documentation for RolesService.
      */
-    start() {
-        this.fireEvent('OnStart');
-
-        let rolesService = this.injector.get(RolesService);
-        rolesService.startAll();
+    async start() {
+        console.log(`RUNTIME STARTING`);
+        await this.fireEvent(BuiltinLifecycleEvents.onStart);
+        await this.injector.get(ApplicationRoles).startAll();
+        await this.fireEvent(BuiltinLifecycleEvents.afterStart);
+        console.log(`RUNTIME STARTED`);
     }
 
     /**
-     * Stop all running services and shut down the process
+     * Stop all running services and exit
      */
     async shutdown() {
         await this.stop();

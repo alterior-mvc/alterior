@@ -1,4 +1,3 @@
-export * from './modules';
 export { 
     InjectionToken,
     Injector,
@@ -8,6 +7,10 @@ export {
     FactoryProvider,
     TypeProvider,
     ValueProvider,
+    provide,
+    ProviderBuilder,
+    ProviderToken,
     Type,
-    inject
+    inject,
+    injectionContext,
 } from './injection';

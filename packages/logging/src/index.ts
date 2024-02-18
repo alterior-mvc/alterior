@@ -9,7 +9,6 @@ export * from './log-listener';
 export * from './log-options';
 export * from './log-severity';
 export * from './logger';
-export * from './logging-options-ref';
 export * from './logging-options';
 export * from './trace';
 

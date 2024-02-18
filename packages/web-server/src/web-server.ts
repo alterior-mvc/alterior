@@ -2,10 +2,10 @@ import * as uuid from 'uuid';
 import * as http from 'http';
 import * as ws from 'ws';
 
-import { Injector, Module, Provider, Type } from "@alterior/di";
+import { Injector, Provider, Type } from "@alterior/di";
 import { prepareMiddleware } from "./middleware";
 import { MiddlewareDefinition, MiddlewareFunction, WebEvent, WebRequest } from "./metadata";
-import { ApplicationOptions, Application, AppOptionsAnnotation, AppOptions } from '@alterior/runtime';
+import { ApplicationOptions, Application, AppOptionsAnnotation, AppOptions, Module } from '@alterior/runtime';
 import { LogSeverity, Logger } from '@alterior/logging';
 import { ConnectApp, WebServerEngine } from './web-server-engine';
 import { ParameterDisplayFormatter, RequestReporter, RequestReporterFilter, WebServerOptions } from './web-server-options';
@@ -65,7 +65,7 @@ export class WebServer {
 		}
 		return Injector.resolveAndCreate([
 			{ provide: WebServerEngine, useClass: WebServerEngine.default }
-		], this._injector).get(WebServerEngine, null);
+		], this._injector).get(WebServerEngine);
 	}
 
 	private _injector: Injector;
@@ -191,12 +191,14 @@ export class WebServer {
 	 * Stop the web server. The listening port will be closed.
 	 * @returns 
 	 */
-	stop() {
-		if (!this._httpServer)
+	async stop() {
+		const server = this._httpServer;
+		if (!server)
 			return;
 
-		this._httpServer.close();
-		this._httpServer = undefined;
+		await new Promise<void>((resolve, reject) => server.close((err) => err ? reject(err) : resolve()));
+		if (this._httpServer === server)
+			this._httpServer = undefined;
 	}
 
 	private requestReporter: RequestReporter = WebServer.DEFAULT_REQUEST_REPORTER;

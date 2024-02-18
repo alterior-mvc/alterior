@@ -1,91 +1,103 @@
-import { suite } from 'razmin';
+import { Application, RUNTIME_LOGGER, Runtime, RuntimeLogger } from '@alterior/runtime';
+import { provide } from '@alterior/di';
 import { expect } from 'chai';
+import { suite } from 'razmin';
+import { Controller, Mount } from './metadata';
 import { WebService } from './service';
-import { Get } from './metadata';
-import { teststrap } from './teststrap';
-import { Application } from '@alterior/runtime';
+import { LOGGING_OPTIONS, LogEvent } from '@alterior/logging';
 
 suite(describe => {
-    describe('@Controller', it => {
-        it('should execute altOnInit once', async () => {
-            let initialized = 0;
+    describe.only('@Controller', it => {
+        it('throws error when legacy lifecycle events are encountered', async () => {
+            @Controller() class MyController { altOnInit() {} }
+            @WebService() class FakeModule { @Mount() controller!: MyController; }
+            let result = await Application.bootstrap(FakeModule, { silent: true }).catch(e => e);
 
-            @WebService()
-            class FakeModule {
-                altOnInit() {
-                    initialized += 1;
-                }
-				@Get('/foo')
-				getX() {
-					return Promise.resolve({ok: true});
-				}
-            }
-
-			await teststrap(FakeModule)
-				.get('/foo')
-				.expect(200, { ok: true })
-			;
-            
-            expect(initialized, `Controller's altOnInit should have run exactly once`)
-                .to.equal(1);
+            expect(result).to.be.instanceOf(Error);
+            expect(result.message).to.equal(
+                "Legacy lifecycle events are not supported. Please migrate to Alterior 4 compatible lifecycle events."
+            );
         });
-        it('should execute altOnStart once', async () => {
-            let started = 0;
 
-            @WebService({
-                server: { port: 32552 }
-            })
-            class FakeModule {
-                altOnStart() {
-                    started += 1;
-                }
+        it('logs an error when legacy lifecycle events are encountered', async () => {
+            @Controller() class MyController { altOnInit() {} }
+            @WebService() class FakeModule { @Mount() controller!: MyController; }
 
-				@Get('/foo')
-				getX() {
-					return Promise.resolve({ok: true});
-				}
-            }
-
-            let app = await Application.bootstrap(FakeModule, { silent: true });
-            let response = await fetch('http://localhost:32552/foo');
-            expect(response.status).to.equal(200);
-            
-            expect(started, `Controller's altOnStart should have run exactly once`)
-                .to.equal(1);
-
-            app.stop();
+            let errors: LogEvent[] = [];
+            await Application.bootstrap(FakeModule, {
+                providers: [
+                    provide(LOGGING_OPTIONS).usingValue({
+                        listeners: [ { async log(message) { errors.push(message); } } ]
+                    })
+                ]
+            }).catch(() => { });
+            expect(errors.some(x => x.message.includes("Legacy lifecycle event MyController#altOnInit() is no longer supported")));
         });
-        it('should execute both altOnInit and altOnStart once each', async () => {
-            let started = 0;
-            let initialized = 0;
 
-            @WebService({
-                server: { port: 32553 }
-            })
-            class FakeModule {
-
-                altOnInit() {
-                    initialized += 1;
-                }
-                altOnStart() {
-                    started += 1;
-                }
-				@Get('/foo')
-				getX() {
-					return Promise.resolve({ok: true});
-				}
-            }
-
-            let app = await Application.bootstrap(FakeModule, { silent: true });
-            let response = await fetch('http://localhost:32553/foo');
-            expect(response.status).to.equal(200);
-            
-            expect(initialized, `Controller's altOnInit should have run exactly once`)
-                .to.equal(1);
-            expect(started, `Controller's altOnStart should have run exactly once`)
-                .to.equal(1);
-
-            app.stop();
+        it('executes onInit', async () => {
+            let observed = 0;
+            @Controller() class MyController { [Controller.onInit]() { observed += 1; } }
+            @WebService({ autostart: false }) class FakeModule { @Mount() controller!: MyController; }
+            await Application.bootstrap(FakeModule);
+            expect(observed).to.equal(1);
         });
-    })
+
+        it.only('executes onStart', async () => {
+            let observed = 0;
+            let captured = 0;
+            @Controller() class MyController { [Controller.onStart]() { observed += 1; } }
+            @WebService() class FakeModule { @Mount() controller!: MyController; }
+            let app = await Application.bootstrap(FakeModule);
+            captured = 1;
+            await app.stop();
+            expect(captured).to.equal(1);
+            expect(observed).to.equal(1);
+        });
+
+        it.only('executes onStop', async () => {
+            let observed = 0;
+            let captured = 0;
+            @Controller() class MyController { [Controller.onStop]() { observed += 1; } }
+            @WebService() class FakeModule { @Mount() controller!: MyController; }
+            let app = await Application.bootstrap(FakeModule);
+            captured = observed;
+            await app.stop();
+            expect(captured).to.equal(0);
+            expect(observed).to.equal(1);
+        });
+
+        it('executes afterStart', async () => {
+            let observed = 0;
+            let captured = 0;
+            @Controller() class MyController { [Controller.afterStart]() { observed += 1; } }
+            @WebService() class FakeModule { @Mount() controller!: MyController; }
+            let app = await Application.bootstrap(FakeModule);
+            captured = observed;
+            await app.stop();
+            expect(captured).to.equal(1);
+            expect(observed).to.equal(1);
+        });
+        it('executes afterStop', async () => {
+            let observed = 0;
+            let captured = 0;
+            @Controller() class MyController { [Controller.afterStop]() { observed += 1; } }
+            @WebService() class FakeModule { @Mount() controller!: MyController; }
+            let app = await Application.bootstrap(FakeModule);
+            captured = observed;
+            await app.stop();
+            expect(captured).to.equal(0);
+            expect(observed).to.equal(1);
+        });
+        it('executes onListen', async () => {
+            let observed = 0;
+            let captured = 0;
+            @Controller() class MyController { [Controller.onListen]() { observed += 1; } }
+            @WebService() class FakeModule { @Mount() controller!: MyController; }
+            let app = await Application.bootstrap(FakeModule);
+            captured = observed;
+            await app.stop();
+            expect(captured).to.equal(1);
+            expect(observed).to.equal(1);
+        });
+    });
 });

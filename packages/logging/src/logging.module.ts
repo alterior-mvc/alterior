@@ -1,7 +1,6 @@
-import { Module } from "@alterior/di";
+import { Module } from "@alterior/runtime";
 import { Logger } from "./logger";
-import { LoggingOptions } from "./logging-options";
-import { LoggingOptionsRef } from "./logging-options-ref";
+import { LOGGING_OPTIONS, LoggingOptions } from "./logging-options";
 
 @Module({
     providers: [
@@ -13,7 +12,7 @@ export class LoggingModule {
         return { 
             $module: LoggingModule, 
             providers: [
-                { provide: LoggingOptionsRef, useValue: new LoggingOptionsRef(options) }
+                { provide: LOGGING_OPTIONS, useValue: options }
             ]
         }
     }

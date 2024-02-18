@@ -3,7 +3,8 @@
  */
 
 import { MetadataName, Annotation } from "@alterior/annotations";
-import { Provider } from './injection';
+import { Provider } from '@alterior/di';
+import { BuiltinLifecycleEvents, withBuiltinLifecycleSymbols } from "./lifecycle";
 
 export interface ConfiguredModule extends ModuleOptions {
     $module: ModuleLike;
@@ -47,7 +48,7 @@ export interface ModuleOptions {
     prepare?: () => Promise<void>;
 }
 
-@MetadataName('@alterior/di:Module')
+@MetadataName('@alterior/runtime:Module')
 export class ModuleAnnotation extends Annotation implements ModuleOptions {
     constructor(moduleOptions?: ModuleOptions) {
         super(moduleOptions);
@@ -80,4 +81,6 @@ export class ModuleAnnotation extends Annotation implements ModuleOptions {
 /**
  * Annotation that denotes an Alterior module class.
  */
-export const Module = ModuleAnnotation.decorator();
+const ModuleDecorator = ModuleAnnotation.decorator();
+
+export const Module = withBuiltinLifecycleSymbols(ModuleDecorator);

@@ -20,8 +20,8 @@ export class Property<T>{
     }
 
     private _visibility: Visibility;
-    private _descriptor: PropertyDescriptor | undefined;
-    private _annotations: IAnnotation[] = [];
+    private _descriptor?: PropertyDescriptor;
+    private _annotations?: IAnnotation[];
 
     defineMetadata(key: string, value: string) {
         Reflect.defineMetadata(key, value, this.type, this.name);
@@ -66,12 +66,12 @@ export class Property<T>{
         return this._annotations;
     }
 
-    annotationsOfType<T extends Annotation>(type: Constructor<T>): T[] {
-        return (type as any).filter(this.annotations);
+    annotationsOfType<T extends Annotation>(type: Constructor<T> & typeof Annotation): T[] {
+        return type.filter(this.annotations);
     }
 
-    annotationOfType<T extends Annotation>(type: Constructor<T>): T {
-        return (type as any).filter(this.annotations)[0];
+    annotationOfType<T extends Annotation>(type: Constructor<T> & typeof Annotation): T {
+        return type.filter(this.annotations)[0];
     }
 
     get descriptor(): PropertyDescriptor | undefined {
@@ -105,10 +105,10 @@ export class Method<T> extends Property<T> {
             throw new Error(`No ${isStatic ? 'static' : 'instance'} method found on type ${type.name}`);
     }
 
-    private _parameterNames: string[] = [];
+    private _parameterNames?: string[];
     private _implementation: Function | undefined;
 
-    private _returnType: Type<any> | undefined;
+    private _returnType?: Type<any>;
 
     get host() {
         return this.isStatic ? this.type : this.type.prototype;
@@ -119,13 +119,13 @@ export class Method<T> extends Property<T> {
             let rawType = this.getMetadata('design:returntype');
             if (!rawType)
                 return undefined;
-            this._returnType = new Type<any>(rawType);    
+            this._returnType = new Type<any>(rawType);
         }
 
         return this._returnType;
     }
 
-    private _parameterTypes: (Type<any> | undefined)[] = [];
+    private _parameterTypes?: (Type<any> | undefined)[];
 
     get parameterTypes(): (Type<any> | undefined)[] {
         if (!this._parameterTypes) {
@@ -154,13 +154,17 @@ export class Method<T> extends Property<T> {
         ;
     }
 
-    private _parameterAnnotations: IAnnotation[][] = [];
+    private _parameterAnnotations?: IAnnotation[][];
 
     get parameterAnnotations(): IAnnotation[][] {
         if (!this._parameterAnnotations)
             this._parameterAnnotations = Annotations.getParameterAnnotations(this.type, this.name);
 
         return this._parameterAnnotations;
+    }
+
+    invoke(receiver: T, ...args: any[]) {
+        return (receiver as any)[this.name](...args);
     }
 }
 
@@ -181,7 +185,7 @@ export class ConstructorMethod<T> extends Method<T> {
         super(type, 'constructor');
     }
 
-    private _ctorParameterAnnotations: IAnnotation[][] = [];
+    private _ctorParameterAnnotations?: IAnnotation[][];
     get parameterAnnotations() {
         if (!this._ctorParameterAnnotations)
             this._ctorParameterAnnotations = Annotations.getConstructorParameterAnnotations(this.type);
@@ -198,8 +202,6 @@ export class Parameter<T> {
     ) {
     
     }
-
-    private _annotations: Annotation[] = [];
 
     get annotations() {
         return this.method.parameterAnnotations[this.index];
@@ -235,14 +237,15 @@ export class Parameter<T> {
  */
 export class Type<T extends Object> {
     constructor(
-        private _class: Constructor<T>
+        private _class: Constructor<T>,
+        private _instance?: T
     ) {
     }
 
-    private _propertyNames: string[] = [];
-    private _methodNames: string[] = [];
-    private _fieldNames: string[] = [];
-    private _annotations: IAnnotation[] = [];
+    private _propertyNames?: string[];
+    private _methodNames?: string[];
+    private _fieldNames?: string[];
+    private _annotations?: IAnnotation[];
 
     get name() {
         return this._class.name;
@@ -287,23 +290,39 @@ export class Type<T extends Object> {
     }
 
     private fetchPropertyNames() {
-        this._propertyNames = Object.getOwnPropertyNames(this._class.prototype);
-        for (let propertyName of this._propertyNames) {
+        this._propertyNames = [];
+        this._methodNames = [];
+        this._fieldNames = [];
+
+        for (let propertyName of Object.getOwnPropertyNames(this._class.prototype)) {
+            this._propertyNames.push(propertyName);
+
             if (typeof this._class.prototype[propertyName] === 'function') {
                 this._methodNames.push(propertyName);
             } else {
+                // In ES classes this isn't possible since properties are created and initialized during 
+                // construction. It is possible however if a constructor/prototype is manually created.
                 this._fieldNames.push(propertyName);
             }
         }
+
+        for (let propertyName of Object.getOwnPropertyNames(this._instance ?? {})) {
+            if (!this._fieldNames.includes(propertyName))
+                this._fieldNames.push(propertyName);
+            if (!this._propertyNames.includes(propertyName))
+                this._propertyNames.push(propertyName);
+        }
     }
 
-    private _staticPropertyNames: string[] = [];
-    private _staticMethodNames: string[] = [];
-    private _staticFieldNames: string[] = [];
+    private _staticPropertyNames?: string[];
+    private _staticMethodNames?: string[];
+    private _staticFieldNames?: string[];
 
     private fetchStaticPropertyNames() {
         this._staticPropertyNames = Object.getOwnPropertyNames(this._class).filter(x => !['length', 'prototype', 'name'].includes(x));
-        
+        this._staticFieldNames = [];
+        this._staticMethodNames = [];
+
         for (let propertyName of this._staticPropertyNames) {
             if (typeof (this._class as any)[propertyName] === 'function') {
                 this._staticMethodNames.push(propertyName);
@@ -317,24 +336,24 @@ export class Type<T extends Object> {
         if (!this._staticPropertyNames)
             this.fetchStaticPropertyNames();
 
-        return this._staticPropertyNames.slice();
+        return this._staticPropertyNames!.slice();
     }
 
     get staticMethodNames() {
         if (!this._staticPropertyNames)
             this.fetchStaticPropertyNames();
 
-        return this._staticMethodNames.slice();
+        return this._staticMethodNames!.slice();
     }
 
     get staticFieldNames() {
         if (!this._staticPropertyNames)
             this.fetchStaticPropertyNames();
 
-        return this._staticFieldNames.slice();
+        return this._staticFieldNames!.slice();
     }
 
-    private _staticMethods: Method<T>[] = [];
+    private _staticMethods?: Method<T>[];
     get staticMethods(): Method<T>[] {
         if (this._staticMethods)
             return this._staticMethods;
@@ -344,7 +363,7 @@ export class Type<T extends Object> {
         return this._staticMethods;
     }
 
-    private _staticFields: Field<T>[] = [];
+    private _staticFields?: Field<T>[];
     get staticFields(): Field<T>[] {
         if (this._staticFields)
             return this._staticFields;
@@ -354,7 +373,7 @@ export class Type<T extends Object> {
         return this._staticFields;
     }
 
-    private _staticProperties: Property<T>[] = [];
+    private _staticProperties?: Property<T>[];
     get staticProperties() {
         if (this._staticProperties)
             return this._staticProperties;
@@ -368,24 +387,24 @@ export class Type<T extends Object> {
         if (!this._propertyNames)
             this.fetchPropertyNames();
 
-        return this._propertyNames.slice();
+        return this._propertyNames!.slice();
     }
 
     get methodNames() {
         if (!this._propertyNames)
             this.fetchPropertyNames();
 
-        return this._methodNames.slice();
+        return this._methodNames!.slice();
     }
 
     get fieldNames() {
         if (!this._propertyNames)
             this.fetchPropertyNames();
 
-        return this._fieldNames.slice();
+        return this._fieldNames!.slice();
     }
 
-    private _ctor: ConstructorMethod<T> | undefined;
+    private _ctor?: ConstructorMethod<T>;
     get constructorMethod() {
         if (!this._ctor)
             this._ctor = new ConstructorMethod<T>(this._class);
@@ -393,7 +412,7 @@ export class Type<T extends Object> {
         return this._ctor;
     }
 
-    private _methods: Method<T>[] = [];
+    private _methods?: Method<T>[];
     get methods() {
         if (this._methods)
             return this._methods;
@@ -403,8 +422,13 @@ export class Type<T extends Object> {
         return this._methods;
     }
 
-    private _properties: Property<T>[] = [];
+    private _properties?: Property<T>[];
 
+    /**
+     * Retrieve all field and method properties known for this Type. Note that non-method fields will only be provided
+     * if an example instance was provided when constructing the Type, because instance fields are not enumerable until
+     * the constructor has run.
+     */
     get properties() {
         if (this._properties)
             return this._properties;
@@ -414,8 +438,12 @@ export class Type<T extends Object> {
         return this._properties;
     }
 
-    private _fields: Field<T>[] = [];
+    private _fields?: Field<T>[];
 
+    /**
+     * Retrieve the field properties of this Type. This will be empty if an example instance was not provided when 
+     * constructing the Type since properties are not enumerable until after the constructor has run.
+     */
     get fields() {
         if (this._fields)
             return this._fields;
@@ -432,10 +460,19 @@ export class Type<T extends Object> {
 
 export class Reflector {
     getTypeFromInstance<T extends Object = any>(instance: T): Type<T> {
-        return this.getTypeFromClass<T>(instance.constructor as any);
+        return this.getTypeFromClass(instance.constructor as Constructor<T>, instance);
     }
 
-    getTypeFromClass<T extends object = any>(typeClass: Constructor<T>): Type<T> {
-        return new Type(typeClass);
+    /**
+     * Retrieve a Type<T> for the given constructor and optionally an example instance.
+     * The example instance is used to discover properties, since these aren't enumerable until the class is 
+     * constructed.
+     * 
+     * @param typeClass The class constructor
+     * @param instance An instance of the class used to discover properties.
+     * @returns 
+     */
+    getTypeFromClass<T extends object = any>(typeClass: Constructor<T>, instance?: T): Type<T> {
+        return new Type(typeClass, instance);
     }
 }

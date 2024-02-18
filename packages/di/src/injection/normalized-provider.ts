@@ -1,4 +1,12 @@
-import { ClassProvider, ExistingProvider, FactoryProvider, ValueProvider } from "./provider";
+import { InjectionToken } from "./injection-token";
+import { ConcreteType, Type } from "./type";
 
-export interface NormalizedProvider extends ValueProvider, 
-    ClassProvider, ExistingProvider, FactoryProvider { }
+export interface NormalizedProvider<T = any>  {
+    provide: Type<T> | InjectionToken<T>;
+    useValue?: T;
+    useClass?: ConcreteType<T>;
+    useExisting?: Type<T> | InjectionToken<T>;
+    useFactory?: () => T;
+    multi?: boolean;
+    unique?: boolean;
+}

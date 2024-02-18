@@ -1,9 +1,12 @@
 import { describe, it } from 'razmin';
-import { Module, Injector, InjectionToken, inject, ConfiguredModule } from '@alterior/di';
+import { Injector, InjectionToken, inject } from '@alterior/di';
 import { Application } from './application';
 import { expect } from 'chai';
 import { Time, Environment } from '@alterior/common';
 import { injectionContext } from '@alterior/di/dist/injection';
+import { RUNTIME_LOGGER, RuntimeLogger } from './runtime-logger';
+import { ALT_ON_INIT, LifecycleEvent, OnInit } from './lifecycle';
+import { ConfiguredModule, Module } from './module-annotation';
 
 describe("Modules", () => {
     it('allows injection of the Injector', async () => {
@@ -196,26 +199,131 @@ describe("Modules", () => {
         expect(log).to.eq('dependency;sub;test;');
     });
 
-    it('runs the altOnInit of all modules in dependency-order', async () => {
+    it('throws error when legacy lifecycle events are encountered', async () => {
+        @Module()
+        class TestModule {
+            altOnInit() {}
+        }
+
+        let result = await Application.bootstrap(TestModule, { silent: true }).catch(e => e);
+
+        expect(result).to.be.instanceOf(Error);
+        expect(result.message).to.equal(
+            "Legacy lifecycle events are not supported. Please migrate to Alterior 4 compatible lifecycle events."
+        );
+    });
+
+    it('logs an error when legacy lifecycle events are encountered', async () => {
+        @Module()
+        class TestModule {
+            altOnInit() {}
+        }
+
+        let errors: string[] = [];
+        await Application.bootstrap(TestModule, { 
+            providers: [
+                { 
+                    provide: RUNTIME_LOGGER, 
+                    useValue: <RuntimeLogger>{
+                        trace(message: string) {},
+                        info(message: string) {},
+                        fatal(message: string) {},
+                        debug(message: string) {},
+                        warning(message: string) {},
+                        error(message: string) { errors.push(message); }
+                    }
+                }
+            ]
+        }).catch(() => {});
+        expect(errors.some(x => x.includes("Legacy lifecycle event ModuleInstance#altOnInit() is no longer supported")));
+    });
+
+    it('runs methods decorated with @LifecycleEvent(ALT_ON_INIT)', async () => {
+        let observed = 0;
+        @Module()
+        class TestModule {
+            @LifecycleEvent(ALT_ON_INIT) myInitMethod() { observed += 1; }
+        }
+        await Application.bootstrap(TestModule);
+        expect(observed).to.equal(1);
+    });
+
+    it('runs multiple methods decorated with @LifecycleEvent(ALT_ON_INIT)', async () => {
+        let observed = 0;
+        @Module()
+        class TestModule {
+            @LifecycleEvent(ALT_ON_INIT) myInitMethod() { observed += 1; }
+            @LifecycleEvent(ALT_ON_INIT) myInitMethod2() { observed += 1; }
+        }
+        await Application.bootstrap(TestModule);
+        expect(observed).to.equal(2);
+    });
+
+    it('runs methods decorated with @OnInit', async () => {
+        let observed = 0;
+        @Module()
+        class TestModule {
+            @OnInit() myInitMethod() { observed += 1; }
+        }
+        await Application.bootstrap(TestModule);
+        expect(observed).to.equal(1);
+    });
+
+    it('runs multiple methods decorated with @OnInit', async () => {
+        let observed = 0;
+        @Module()
+        class TestModule {
+            @OnInit() myInitMethod() { observed += 1; }
+            @OnInit() myInitMethod2() { observed += 1; }
+        }
+        await Application.bootstrap(TestModule);
+        expect(observed).to.equal(2);
+    });
+
+    it('runs methods named with ALT_ON_INIT', async () => {
+        let observed = 0;
+        @Module()
+        class TestModule {
+            [ALT_ON_INIT]() { observed += 1; }
+        }
+        await Application.bootstrap(TestModule);
+        expect(observed).to.equal(1);
+    });
+
+    it('runs init lifecycle methods combined', async () => {
+        let observed = 0;
+        @Module()
+        class TestModule {
+            [ALT_ON_INIT]() { observed += 1; }
+            @OnInit() myInitMethod() { observed += 1; }
+            @OnInit() myInitMethod2() { observed += 1; }
+        }
+        await Application.bootstrap(TestModule);
+        expect(observed).to.equal(3);
+    });
+
+    it('runs the init lifecycle events of all modules in dependency-order', async () => {
         let log = '';
 
         @Module()
         class DependencyModule {
-            altOnInit() { log += 'dependency;' }
+            [ALT_ON_INIT]() { 
+                log += 'dependency;' 
+            }
         }
 
         @Module({
             imports: [DependencyModule]
         })
         class SubModule {
-            altOnInit() { log += 'sub;' }
+            [ALT_ON_INIT]() { log += 'sub;' }
         }
 
         @Module({
             imports: [SubModule, DependencyModule]
         })
         class TestModule {
-            altOnInit() { log += 'test;' }
+            [ALT_ON_INIT]() { log += 'test;' }
         }
 
         let application = await Application.bootstrap(TestModule);
@@ -343,7 +451,7 @@ describe("Modules", () => {
         class TestModule {
             private service = inject(MyService);
 
-            altOnInit() {
+            [ALT_ON_INIT]() {
                 log += this.service.options.options.foo;
             }
         }

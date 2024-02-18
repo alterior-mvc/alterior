@@ -1,5 +1,5 @@
 import { Annotation, AnnotationDecorator, MetadataName } from "@alterior/annotations";
-import { Constructor } from "@alterior/runtime";
+import { Constructor, BuiltinLifecycleEvents } from "@alterior/runtime";
 import { IncomingMessage, ServerResponse } from "http";
 
 export let CONTROLLER_CLASSES = [];
@@ -34,6 +34,8 @@ export class ControllerAnnotation extends Annotation {
 	}
 }
 
+export const ALT_ON_LISTEN: unique symbol = Symbol.for('@alterior/web-server:onListen');
+
 /**
  * Mark a class as representing an Alterior controller.
  * 
@@ -41,4 +43,12 @@ export class ControllerAnnotation extends Annotation {
  * 	controller will fall within.
  * @param options 
  */
-export const Controller = ControllerAnnotation.decorator();
+export const Controller = Object.assign(ControllerAnnotation.decorator(), {
+	...BuiltinLifecycleEvents,
+
+	/**
+	 * Well-known name for a Controller method which is executed when the web server begins listening for
+	 * requests.
+	 */
+	onListen: ALT_ON_LISTEN
+} as const);

@@ -1,13 +1,15 @@
 import { inject } from "@alterior/di";
 import { timeout, InvalidOperationError, ArgumentError } from "@alterior/common";
 import { ApplicationOptionsRef } from "./application";
+import { RUNTIME_LOGGER } from "./runtime-logger";
+import { Runtime } from "./runtime";
 
-const SUPPORTED_ROLE_MODES =       [ 'default', 'default-except', 'all-except', 'only' ];
-export type RoleConfigurationMode = 'default' | 'default-except' | 'all-except' | 'only'  ;
+const SUPPORTED_ROLE_MODES = ['default', 'default-except', 'all-except', 'only'];
+export type RoleConfigurationMode = 'default' | 'default-except' | 'all-except' | 'only';
 
 export interface RoleConfiguration {
-    mode : RoleConfigurationMode;
-    roles : any[];
+    mode: RoleConfigurationMode;
+    roles: any[];
 }
 
 /**
@@ -16,91 +18,75 @@ export interface RoleConfiguration {
  */
 export interface RoleRegistration {
     /**
-     * The instance of the module being registered. This should be `this` for the caller in most cases, as it should be 
-     * called from an Alterior module's `altOnInit()` method.
-     */
-    instance? : any;
-
-    /**
      * Set to false to cause this role to be disabled unless explicitly asked for. When unspecified, the default is 
      * true.
      */
     enabledByDefault?: boolean;
-    
+
     /**
      * The identifier that will be matched when interpreting command line role enablements.
      */
-    identifier : string;
+    identifier: string;
 
     /**
      * The human readable name for this role. 
      */
-    name : string;
+    name: string;
 
     /**
      * A short (one sentence) summary which may be shown in command line help output and other places.
      */
-    summary : string;
+    summary: string;
+}
 
+export interface RoleEvents {
     /**
      * Start services associated with this role. 
      * For instance, an HTTP server module would start it's HTTP server.
      */
-    start() : Promise<void>;
+    start(): Promise<void>;
 
     /**
      * Stop services associated with this role.
      */
-    stop() : Promise<void>;
-}
-
-export interface RoleState extends RoleRegistration {
-    class : any;
-    running : boolean;
+    stop(): Promise<void>;
 }
 
 /**
- * Roles allow runtime configuration of which outward facing services to start. 
+ * Roles allow runtime configuration of which parts of an application are currently running. 
  * For instance WebServerModule and TasksModule both register their respective roles, 
- * so that they can be easily turned on and off when the application is called.
- * 
+ * so that they can be easily configured to start or not, as well as be turned on and 
+ * off while the application is running.
  */
-export class RolesService {
+export class ApplicationRoles {
     private appOptionsRef = inject(ApplicationOptionsRef);
-    
+    private logger = inject(RUNTIME_LOGGER, { optional: true }) ?? Runtime.defaultLogger;
+
     silent = this.appOptionsRef.options.silent ?? false;
 
-    _activeRoles : any[] = [];
-    _configuration : RoleConfiguration = { mode: 'default', roles: [] };
-    _roles : RoleState[] = [];
+    private _activeRoles: RoleRegistration[] = [];
+    private _configuration: RoleConfiguration = { mode: 'default', roles: [] };
+    private _roles: RoleRegistration[] = [];
 
-    get configuration() : RoleConfiguration {
+    get configuration(): RoleConfiguration {
         return this._configuration;
     }
 
     /**
      * Register a role which can be managed by this service.
      */
-    registerRole(role : RoleRegistration) {
-        let roleState : RoleState = Object.assign(
-            role,
-            {
-                class: role.instance?.constructor ?? {},
-                running: false
-            }
-        );
-
-        this._roles.push(roleState);
+    registerRole(role: RoleRegistration & RoleEvents) {
+        this._roles.push(role);
     }
 
-    get roles(): RoleState[] {
+    get roles(): RoleRegistration[] {
         return this._roles;
     }
 
     /**
      * Calculate the exact list of roles the configuration currently applies to.
      */
-    get effectiveRoles(): RoleState[] {
+    get effectiveRoles(): RoleRegistration[] {
         let config = this._configuration;
 
         if (config.mode === 'default') {
@@ -108,51 +94,39 @@ export class RolesService {
                 .filter(x => x.enabledByDefault !== false);
         } else if (config.mode == 'all-except') {
             return this._roles
-                .filter(x => !config.roles.includes(x.class) && !config.roles.includes(x.identifier));
+                .filter(x => !config.roles.includes(x.identifier));
         } else if (config.mode == 'default-except') {
             return this._roles
                 .filter(x => x.enabledByDefault !== false)
-                .filter(x => !config.roles.includes(x.class) && !config.roles.includes(x.identifier));
+                .filter(x => !config.roles.includes(x.identifier));
         } else if (config.mode == 'only') {
             return this._roles
-                .filter(x => config.roles.includes(x.class) || config.roles.includes(x.identifier));
+                .filter(x => config.roles.includes(x.identifier));
         }
-        
+
         return [];
     }
 
-    get activeRoles(): RoleState[] {
-        return this._roles.filter(x => x.running);
+    get activeRoles(): RoleRegistration[] {
+        return this._activeRoles.slice();
     }
 
     /**
      * Configure which roles should be run by this service
      */
-    configure(config : RoleConfiguration) {
+    configure(config: RoleConfiguration) {
         if (!SUPPORTED_ROLE_MODES.includes(config.mode))
             throw new InvalidOperationError(`Role mode '${config.mode}' is not supported (supports 'all-except', 'only')`);
-        
-        let missingRoles = config.roles.filter(x => !this.roles.find(y => y.identifier === x || y.class === x));
+
+        let missingRoles = config.roles.filter(x => !this.roles.find(y => y.identifier === x));
         if (missingRoles.length > 0) {
             throw new Error(`The following roles have not been defined: ${missingRoles.join(', ')}. Did you define roles in altOnStart() instead of altOnInit()?`);
         }
-    
+
         this._configuration = config;
     }
 
-    getForModule(roleModuleClass: Function) {
-        let roles = this._roles.filter(x => x.class === roleModuleClass);
-
-        if (roles.length === 0)
-            throw new ArgumentError(`Role module class ${roleModuleClass.name} is not registered`);
-
-        if (roles.length > 0)
-            throw new ArgumentError(`More than one role associated with module '${roleModuleClass.name}'`);
-
-        return roles[0];
-    }
-
-    getById(id : string) {
+    getById(id: string) {
         let role = this._roles.find(x => x.identifier === id);
 
         if (!role)
@@ -161,33 +135,45 @@ export class RolesService {
         return role;
     }
 
+    private getByIdInternal(id: string) {
+        return this.getById(id) as RoleRegistration & RoleEvents;
+    }
+
     async restartAll() {
         await this.stopAll();
         await timeout(1);
         await this.startAll();
     }
 
+    isRunning(identifier: string) {
+        return this.activeRoles.some(x => x.identifier === identifier);
+    }
+
+    async start(identifier: string) {
+        if (this.isRunning(identifier))
+            return;
+
+        const role = this.getByIdInternal(identifier);
+        await role.start();
+        this._activeRoles.push(role);
+        this.logger.info(`Role ${role.identifier} started`);
+    }
+
+    async stop(identifier: string) {
+        if (!this.isRunning(identifier))
+            return;
+
+        const role = this.getByIdInternal(identifier);
+        await role.stop();
+        this._activeRoles = this._activeRoles.filter(x => x !== role);
+        this.logger.info(`Role ${role.identifier} stopped`);
+    }
+
     async startAll() {
-        await Promise.all(
-            this.effectiveRoles
-                .filter(role => !role.running)
-                .map(async role => {
-                    await role.start();
-                    if (!this.silent)
-                        console.log(`** [${role.identifier}] Started`);
-                })
-        );
+        await Promise.all(this.effectiveRoles.map(async role => await this.start(role.identifier)));
     }
 
     async stopAll() {
-
-        await Promise.all(
-            this.activeRoles
-                .map(async role => {
-                    await role.stop();
-                    if (!this.silent)
-                        console.log(`** [${role.identifier}] Stopped`);
-                })
-        );
+        await Promise.all(this.activeRoles.map(async role => await this.stop(role.identifier)));
     }
 }

@@ -1,5 +1,3 @@
-//require('wtfnode').init();
-
 import "zone.js";
 import "reflect-metadata";
 import "source-map-support/register";
@@ -8,13 +6,12 @@ import { suite } from 'razmin';
 import { WebServerEngine } from "./web-server-engine";
 import { MiddlewareDefinition, WebEvent, WebRequest } from "./metadata";
 import { WebServerOptions } from "./web-server-options";
-import * as http from 'http';
 
 import express, { Express } from "express";
-import * as net from "net";
-import { Injectable } from '@alterior/di';
 
-@Injectable()
+import * as http from 'http';
+import * as net from "net";
+
 export class TestWebServerEngine extends WebServerEngine {
 	app = express();
 
@@ -76,6 +73,11 @@ WebServerEngine.default = TestWebServerEngine;
 
 suite()
     .withTimeout(10 * 1000)
+	.withOptions({
+		execution: {
+			verbose: true
+		}
+	})
     .include(['**/*.test.js'])
     .run()
 ;

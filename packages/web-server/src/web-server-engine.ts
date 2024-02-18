@@ -147,7 +147,7 @@ export abstract class WebServerEngine {
 	
 	protected log(severity: LogSeverity, message: string) {
 		if (this.logger)
-			this.logger.log(message, { severity });
+			this.logger.log(message, {}, severity);
 		else if (severity === 'info')
 			console.info(message);
 		else if (severity === 'warning')

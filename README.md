@@ -18,8 +18,9 @@ application.
 
 Alterior strives to provide a strong isomorphic base class library that fills 
 the gaps between ECMAScript and larger BCLs like Java or .NET. In service of 
-this, Alterior ships low-level libraries for handling decorators/annotations, 
-errors and error base classes, dependency injection, an HTTP client, and more. 
+this, Alterior ships foundational libraries with utilities, infrastructure for 
+handling decorators and annotations, reusable errors and error base classes, 
+dependency injection, an HTTP client, and more. 
 
 # Getting Started
 
@@ -178,18 +179,6 @@ export class AppModule implements OnInit {
 
 Application.bootstrap(AppModule);
 ```
-
-### Lifecycle Management
-
-Modules can have any of the following lifecycle methods which act as hooks for running custom behaviors
-
-- **`altOnInit()`** Called when the module is bootstrapped. Implement the `OnInit` interface when using this lifecycle method. 
-- **`altOnStart()`** Called when the overall application is started. Implement the `OnStart` interface when using this lifecycle method.
-- **`altOnStop()`** Called when the overall application is stopped before exiting. Implement the `OnStop` interface when using this lifecycle method.
-- **`RolesService`** The notion of "roles" is used to allow a module to define or react to a certain class of functionality being started or stopped. For instance `@/web-server` adds a `web-server` role which can be enabled or disabled at configuration time to control whether the web server portion of the application is enabled or disabled. Similarly `@/tasks` adds a `task-worker` role. By default all roles 
-are started when the application starts. This can be used to start only a specific portion of an application in a particular environment, for instance having the web server and task worker roles started in development, but splitting these into separate tiers in production.
-
-For more information about lifecycle management, see [the Roles section of the @/runtime documentation](packages/runtime/README.md#roles).
 
 # Packages
 Alterior consists of the following individual NPM packages. You can pull in 

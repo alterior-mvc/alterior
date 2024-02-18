@@ -1,5 +1,5 @@
-import { Module, Type } from "@alterior/di";
-import { Application, AppOptions, AppOptionsAnnotation } from "@alterior/runtime";
+import { Type } from "@alterior/di";
+import { Application, AppOptions, AppOptionsAnnotation, Module } from "@alterior/runtime";
 import supertest from 'supertest';
 import { WebServer } from './web-server';
 import { WebServerOptions } from "./web-server-options";
