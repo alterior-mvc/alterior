@@ -1,9 +1,9 @@
 import { Annotation, AnnotationDecorator, MetadataName } from "@alterior/annotations";
-import * as express from 'express';
+import { ConnectMiddleware } from "../web-server-engine";
 
 export let CONTROLLER_CLASSES = [];
 
-export type MiddlewareDefinition = Function | express.RequestHandler | [ string, express.RequestHandler ];
+export type MiddlewareDefinition = Function | ConnectMiddleware | [ string, ConnectMiddleware ];
 
 export interface ControllerOptions {
 	/**
