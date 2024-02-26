@@ -427,7 +427,7 @@ export class Reflector {
         return this.getTypeFromClass<T>(instance.constructor as any);
     }
 
-    getTypeFromClass<T = any>(typeClass : Constructor<T>): Type<T> {
+    getTypeFromClass<T extends object = any>(typeClass : Constructor<T>): Type<T> {
         return new Type(typeClass);
     }
 }
