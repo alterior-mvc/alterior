@@ -1,8 +1,8 @@
 import { inject } from "@alterior/di";
 import { timeout, InvalidOperationError, ArgumentError } from "@alterior/common";
-import { ApplicationOptionsRef } from "./application";
 import { RUNTIME_LOGGER } from "./runtime-logger";
 import { Runtime } from "./runtime";
+import { APP_OPTIONS } from "./app-options";
 
 const SUPPORTED_ROLE_MODES = ['default', 'default-except', 'all-except', 'only'];
 export type RoleConfigurationMode = 'default' | 'default-except' | 'all-except' | 'only';
@@ -59,10 +59,10 @@ export interface RoleEvents {
  * off while the application is running.
  */
 export class ApplicationRoles {
-    private appOptionsRef = inject(ApplicationOptionsRef);
+    private appOptions = inject(APP_OPTIONS);
     private logger = inject(RUNTIME_LOGGER, { optional: true }) ?? Runtime.defaultLogger;
 
-    silent = this.appOptionsRef.options.silent ?? false;
+    silent = this.appOptions.silent ?? false;
 
     private _activeRoles: RoleRegistration[] = [];
     private _configuration: RoleConfiguration = { mode: 'default', roles: [] };

@@ -1,10 +1,12 @@
 {
 	"compilerOptions": {
-		"experimentalDecorators": true,
 		"target": "ES2016",
 		"strict": true,
 		"sourceMap": true,
 		"declarationMap": true,
+		"experimentalDecorators": true,
+		"forceConsistentCasingInFileNames": true,
+		"noUnusedLocals": true,
 		"outDir": "./dist",
 		"module": "commonjs",
 		"moduleResolution": "node",

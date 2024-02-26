@@ -2,6 +2,7 @@ import { Logger } from "@alterior/logging";
 import { MiddlewareDefinition, WebEvent } from "./metadata";
 import * as tls from 'tls';
 import { RouteInstance } from "./route-instance";
+import { InjectionToken, provide } from "@alterior/di";
 
 type Protocol = 'h2'
 	| 'spdy/3.1'
@@ -28,6 +29,12 @@ export type RequestReporterFilter = (event: WebEvent, source: string) => boolean
  * `Logger`. Can be specified via the `parameterDisplayFormatter` option when setting up a `@WebService`.
  */
 export type ParameterDisplayFormatter = (event: WebEvent, value: any, forKey: string) => string;
+
+export const WEB_SERVER_OPTIONS = new InjectionToken<WebServerOptions>("WEB_SERVER_OPTIONS");
+
+export function provideWebServerOptions(options: WebServerOptions = {}) {
+	return provide(WEB_SERVER_OPTIONS).usingValue(options);
+}
 
 /**
  * Specifies options when setting up a `@WebService` class.

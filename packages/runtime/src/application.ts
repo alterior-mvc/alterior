@@ -1,21 +1,11 @@
 import 'reflect-metadata';
 
 import { InjectionToken, inject } from '@alterior/di';
-import { AppOptionsAnnotation, ApplicationOptions } from './app-options';
+import { APP_OPTIONS, AppOptionsAnnotation, ApplicationOptions } from './app-options';
 import { ApplicationArgs } from './args';
 import { Runtime } from './runtime';
 import { Constructor } from './reflector';
 import { ModuleAnnotation } from './module-annotation';
-
-export class ApplicationOptionsRef {
-	constructor(
-		options: ApplicationOptions
-	) {
-		this.ApplicationRoles = Object.assign({}, options);
-	}
-
-	readonly ApplicationRoles: ApplicationOptions;
-}
 
 /**
  * Represents the current runtime execution context.
@@ -70,8 +60,8 @@ export class ExecutionContext {
  */
 export class Application {
 	readonly runtime = inject(Runtime);
-	private _optionsRef = inject(ApplicationOptionsRef);
-	private _args = inject(ApplicationArgs);
+	readonly options = inject(APP_OPTIONS);
+	readonly args = inject(ApplicationArgs);
 	
 	public async start() {
 		await this.runtime.start();
@@ -91,14 +81,6 @@ export class Application {
 	inject<T, U>(token: InjectionToken<T>, notFoundValue: U): T | U;
 	inject(ctor: any, notFoundValue?: any): any {
 		return this.injector.get(ctor, notFoundValue);
-	}
-
-	get args(): string[] {
-		return this._args.get();
-	}
-
-	get options(): ApplicationOptions {
-		return this._optionsRef.ApplicationRoles;
 	}
 
 	private static validateEntryModule(module: Function) {

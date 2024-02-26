@@ -174,8 +174,8 @@ export class ControllerInstance {
 	 * Notify the controller that it's web service is now listening to the desired port
 	 * @param server 
 	 */
-	listen(server: WebServer) {
-		this.fireLifecycleEvent(ALT_ON_LISTEN);
+	async listen(server: WebServer) {
+		await this.fireLifecycleEvent(ALT_ON_LISTEN);
 	}
 
 	async stop() {

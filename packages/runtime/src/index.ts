@@ -1,7 +1,6 @@
 export * from './app-options';
 export * from './application';
 export * from './args';
-export * from './expose';
 export * from './lifecycle';
 export * from './module-annotation';
 export * from './modules';

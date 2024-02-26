@@ -1,8 +1,7 @@
 import { MiddlewareDefinition } from "./controller";
+import { PublicOptions } from "./public";
 
-export interface RouteOptions {
+export interface RouteOptions extends PublicOptions {
 	middleware?: MiddlewareDefinition[];
-	description?: string;
-	summary?: string;
 	group?: string;
 }

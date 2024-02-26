@@ -1,10 +1,10 @@
 {
-  "name": "@alterior/web-server",
+  "name": "@alterior/communication",
   "version": "3.7.0",
-  "description": "Declarative framework for building REST services",
+  "description": "Remote procedure calls",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
-  "homepage": "https://github.com/alterior-mvc/alterior/blob/main/packages/web-server/README.md",
+  "homepage": "https://github.com/alterior-mvc/alterior/blob/main/packages/communication/README.md",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alterior-mvc/alterior.git"
@@ -14,12 +14,9 @@
   },
   "keywords": [
     "rest",
-    "framework",
+    "rpc",
     "api",
-    "http",
-    "express",
-    "fastify",
-    "webdav"
+    "http"
   ],
   "main": "dist/index.js",
   "module": "dist.esm/index.js",
@@ -37,39 +34,19 @@
     "build:cjs": "tsc -b",
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublishOnly": "npm test",
-    "test": "npm run build && node dist/test.js",
+    "test": "jest --runInBand",
     "docs": "typedoc src"
   },
   "dependencies": {
     "@alterior/annotations": "^3.6.7",
-    "@alterior/common": "^3.6.7",
-    "@alterior/di": "^3.6.7",
-    "@alterior/logging": "^3.7.0",
     "@alterior/runtime": "^3.7.0",
+    "@alterior/di": "^3.6.7",
     "@astronautlabs/conduit": "^0.5.0",
-    "@types/node-forge": "^1.3.11",
-    "body-parser": "^1.20.1",
-    "fast-json-stringify": "^1.21.0",
-    "node-forge": "^1.3.1",
-    "qs": "^6.10.1",
-    "spdy": "^4.0.2",
-    "supertest": "^4.0.2",
     "tslib": "^2.3.1",
-    "uuid": "^8.3.2",
     "ws": "^7.5.5"
   },
-  "peerDependencies": {
-    "reflect-metadata": "^0.1.12",
-    "zone.js": "^0.14.3"
-  },
   "devDependencies": {
-    "@types/body-parser": "^1.19.0",
-    "@types/spdy": "^3.4.9",
-    "@types/supertest": "^2.0.9",
-    "@types/uuid": "^8.3.3",
-    "@types/ws": "^7.4.0",
-    "swagger-editor-dist": "^3.9.0",
-    "wtfnode": "^0.8.1"
+    "@types/ws": "^7.4.0"
   },
   "gitHead": "87f31ea4078faaca53b45573c6a0013cdb40dd07"
 }

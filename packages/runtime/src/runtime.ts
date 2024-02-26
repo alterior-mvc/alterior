@@ -1,8 +1,8 @@
 import { Environment, Time } from "@alterior/common";
 import { Injector, Provider } from "@alterior/di";
 import { omit } from "@alterior/functions";
-import { ApplicationOptions } from "./app-options";
-import { Application, ApplicationOptionsRef } from "./application";
+import { APP_OPTIONS, ApplicationOptions } from "./app-options";
+import { Application } from "./application";
 import { ApplicationArgs } from "./args";
 import { BuiltinLifecycleEvents, fireLifecycleEvent, handleLegacyLifecycleEvent } from "./lifecycle";
 import { ConfiguredModule, Module, ModuleAnnotation, ModuleLike, ModuleOptions } from "./module-annotation";
@@ -75,7 +75,7 @@ export class Runtime {
             ApplicationRoles,
             Environment,
             Time,
-            { provide: ApplicationOptionsRef, useValue: new ApplicationOptionsRef(options) },
+            { provide: APP_OPTIONS, useValue: options },
             ...(options.providers ?? []),
             { provide: Runtime, useValue: this }
         ]);

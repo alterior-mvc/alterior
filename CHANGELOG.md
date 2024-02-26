@@ -4,61 +4,73 @@
 * `@/web-server`: You can now specify routes and mounts using the `route()` and `mount()` functions instead of using 
   decorators.
 
-## Changes
+General
 - **Breaking**: Alterior 4.0 supports Node.js 18 and newer. If you require older Node.js versions, please continue
   to use Alterior 3.
-- `@/runtime`
-  * **Breaking**: `Application.bootstrap()` now returns `Promise<Application>` instead of `Application`
-  * **Breaking**: The experimental `@Service` annotation and the corresponding `ServiceCompiler` interface have 
-    been removed.
-  * Any module method can now be decorated with `@LifecycleEvent(eventName)` and run automatically when the given 
-    lifecycle event occurs. Convenience decorators are provided for the existing built-in lifecycle events: 
-    `@OnInit()`, `@OnStart()`, `@OnStop()` and `@AfterStart()`.
-  * **Breaking**: The convention-based `altOnInit()`, `altOnStart()`, `altOnStop()` and `altAfterStart()` lifecycle events are no 
-    longer supported. If Alterior encounters them an error will be printed and they will not be executed.
-  * **Breaking**: `RolesService` has been renamed `ApplicationRoles`
-  * **Breaking**: Roles are now identified exclusively using their declared identifier (as opposed to their containing Module class). Consequently functionality related to this feature has been removed.
-  * An error is now thrown if the dependency injection providers specified within your application conflict with each other
-  * You can now specify the `prepare` option on your modules in order to perform an operation before the application 
+
+`@/runtime`
+- **Breaking**: `Application.bootstrap()` now returns `Promise<Application>` instead of `Application`
+- **Breaking**: The experimental `@Service` annotation and the corresponding `ServiceCompiler` interface have 
+  been removed.
+- Any module method can now be decorated with `@LifecycleEvent(eventName)` and run automatically when the given 
+  lifecycle event occurs. Convenience decorators are provided for the existing built-in lifecycle events: 
+- `@OnInit()`, `@OnStart()`, `@OnStop()` and `@AfterStart()`.
+- **Breaking**: The convention-based `altOnInit()`, `altOnStart()`, `altOnStop()` and `altAfterStart()` lifecycle events are no 
+  longer supported. If Alterior encounters them an error will be printed and they will not be executed.
+- **Breaking**: `RolesService` has been renamed `ApplicationRoles`
+- **Breaking**: Roles are now identified exclusively using their declared identifier (as opposed to their containing 
+  Module class). Consequently functionality related to this feature has been removed.
+- An error is now thrown if the dependency injection providers specified within your application conflict with each other
+- You can now specify the `prepare` option on your modules in order to perform an operation before the application 
     is bootstrapped. This can be used to connect to databases, for instance.
-- `@/web-server`
-  * **Breaking**: Renamed WebConduit to ReactiveSocket, and `WebServer#startConduit()` to 
-    `WebServer#startReactiveSocket()`
-  * **Breaking**: The experimental `WebServiceCompiler` class is no longer available, and `@WebService` no longer 
-    accepts a `compiler` option.
-- `@/logging`
-  * **Breaking**: Removed `LoggingModule.forRoot()`. Use `LoggingModule.configure()` instead.
-- `@/mongodb`: New package for ergonomically connecting to MongoDB from within your Alterior applications
-- `@/di`
-  * **Breaking**: The `@Module` decorator and associated exports have been moved to `@alterior/runtime`.
-  * **Breaking**: The `Injector#get(token: any, defaultValue?: any): any` overload has been removed. Instead, pass the 
-    class you are interested in (`Type<T>`), or the injection token you are interested in (`InjectionToken<T>`).
-  * **Breaking**: The `Injector` abstract base class is removed and `ReflectiveInjector` is renamed as `Injector`.
-    Similarly, numerous naming changes around the API surface remove the "reflective" designator.
-  * **Breaking**: Constructor parameter injection is no longer available. Please use property injection via `inject()`
-    instead. Classes constructed by the injector will receive no constructor parameters. Accordingly, the 
-    `@Injectable` decorator and all decorators previously used with constructor parameters are removed. You do not need 
-    to decorate injectable classes using `@Injectable`.
-  * **Breaking**: Factory providers no longer receive arguments, and the `deps` property of factory providers is removed.
-    If you need to inject a dependency into a factory function, simply use `inject()` as you normally would.
-  * **Breaking**: The `forwardRef()` function is no longer available. Forward references are still supported for 
-    providers (both for `TypeProvider` and `ClassProvider`), but you no longer need to mark the forward ref using the old 
-    utility function. Instead of `forwardRef(() => MyClass)`, simply use `() => MyClass`. The injector library will 
-    detect this and automatically dereference the forward reference.
-  * **Breaking**: `inject()` now return `undefined` instead of `null` when the injection is optional and there is no 
-    provider for the requested dependency.
-  * **Breaking**: `Provider` types are now generic and type-safe. You must use an appropriate `Type<T>`, `InjectionToken<T>`,
-    or a forward-referencing version of such as the `provide` token, and the `useValue`, `useClass`, `useFactory` or 
-    `useExisting` properties must be type-compatible with the typed provider token you specify.
-  * A new `provide()` function is available which provides a more ergonomic way to create providers (ie
-    `provide(TOKEN).usingValue(123)`)
-  * Adds a `unique` option to class and factory providers which causes such a provider to be resolved every time an 
-    injection occurs instead of only once.
-  * Introduces a new set of error classes which are now used when throwing injection related errors.
-  * You can now use `injectionContext()` to acquire the current injection context. You can use this to acquire the 
+
+`@/web-server`
+- **Breaking**: Renamed WebConduit to ReactiveSocket, and `WebServer#startConduit()` to 
+  `WebServer#startReactiveSocket()`
+- **Breaking**: The experimental `WebServiceCompiler` class is no longer available, and `@WebService` no longer 
+  accepts a `compiler` option.
+- **Breaking**: The `@WebService` system has been redesigned to separate service routing information from 
+  implementation. This allows you to publish the routing information separately from your implementation so that 
+  Alterior can automatically handle generating requests to your backend. Please consult the documentation for 
+  migration tips and further information.
+
+`@/logging`
+- **Breaking**: Removed `LoggingModule.forRoot()`. Use `LoggingModule.configure()` instead.
+
+`@/mongodb`
+  - New package. Ergonomically connect to MongoDB from within your Alterior applications
+
+`@/di`
+- **Breaking**: The `@Module` decorator and associated exports have been moved to `@alterior/runtime`.
+- **Breaking**: The `Injector#get(token: any, defaultValue?: any): any` overload has been removed. Instead, pass the 
+  class you are interested in (`Type<T>`), or the injection token you are interested in (`InjectionToken<T>`).
+- **Breaking**: The `Injector` abstract base class is removed and `ReflectiveInjector` is renamed as `Injector`.
+  Similarly, numerous naming changes around the API surface remove the "reflective" designator.
+- **Breaking**: Constructor parameter injection is no longer available. Please use property injection via `inject()`
+  instead. Classes constructed by the injector will receive no constructor parameters. Accordingly, the 
+  `@Injectable` decorator and all decorators previously used with constructor parameters are removed. You do not need 
+  to decorate injectable classes using `@Injectable`.
+- **Breaking**: Factory providers no longer receive arguments, and the `deps` property of factory providers is removed.
+  If you need to inject a dependency into a factory function, simply use `inject()` as you normally would.
+- **Breaking**: The `forwardRef()` function is no longer available. Forward references are still supported for 
+  providers (both for `TypeProvider` and `ClassProvider`), but you no longer need to mark the forward ref using the old 
+  utility function. Instead of `forwardRef(() => MyClass)`, simply use `() => MyClass`. The injector library will 
+  detect this and automatically dereference the forward reference.
+- **Breaking**: `inject()` now return `undefined` instead of `null` when the injection is optional and there is no 
+  provider for the requested dependency.
+- **Breaking**: `Provider` types are now generic and type-safe. You must use an appropriate `Type<T>`, `InjectionToken<T>`,
+  or a forward-referencing version of such as the `provide` token, and the `useValue`, `useClass`, `useFactory` or 
+  `useExisting` properties must be type-compatible with the typed provider token you specify.
+- A new `provide()` function is available which provides a more ergonomic way to create providers (ie
+  `provide(TOKEN).usingValue(123)`)
+- Adds a `unique` option to class and factory providers which causes such a provider to be resolved every time an 
+  injection occurs instead of only once.
+- Introduces a new set of error classes which are now used when throwing injection related errors.
+- You can now use `injectionContext()` to acquire the current injection context. You can use this to acquire the 
     `injector` which is currently resolving a provider or access the `token` currently being resolved. This can be 
     used to make new `inject()`-like functions for more specific purposes.
-- `@/annotations`
+
+`@/annotations`
   * The type transformations used by annotations has been improved to take advantage of modern Typescript features, 
     allowing for better intellisense.
 

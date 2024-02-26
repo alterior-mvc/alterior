@@ -35,7 +35,6 @@
     "@angular/cli": "^17.0.6",
     "@angular/compiler-cli": "^17.0.0",
     "@types/express": "^4.17.17",
-    "@types/jasmine": "~5.1.0",
     "@types/node": "^18.18.0",
     "esbuild": "^0.19.11",
     "jasmine-core": "~5.1.0",

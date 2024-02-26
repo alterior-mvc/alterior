@@ -1,42 +1,30 @@
 import { Annotation, MetadataName } from "@alterior/annotations";
-import { inject } from "@alterior/di";
+import { InjectionToken, inject, injectMultiple, provide } from "@alterior/di";
 import { Logger, LoggingModule } from '@alterior/logging';
-import { AppOptions, Application, ApplicationOptions, BuiltinLifecycleEvents, Module, ModuleOptions, RolesService } from "@alterior/runtime";
+import { Application, BuiltinLifecycleEvents, Constructor, Module, ModuleOptions, RolesService } from "@alterior/runtime";
 import { ControllerInstance } from './controller';
-import { Controller } from "./metadata";
+import { CONST_HTTP_VERB_MAP, Controller, HTTP_VERBS, HTTP_VERB_MAP, Route, RouteOptions } from "./metadata";
 import { WebServer } from './web-server';
-import { WebServerOptions } from "./web-server-options";
+import { WEB_SERVER_OPTIONS } from "./web-server-options";
 
 import * as conduit from '@astronautlabs/conduit';
-import { timeout } from "@alterior/common";
-
-export type RestClient<T> = {
-    [P in keyof T as T[P] extends ((...args: any[]) => any) ? P : never]:
-    T[P] extends ((...args: any[]) => any)
-    ? (...args: Parameters<T[P]>) => (
-        ReturnType<T[P]> extends Promise<any>
-        ? ReturnType<T[P]>
-        : Promise<ReturnType<T[P]>>
-    )
-    : never
-    ;
-};
-
-export interface ClientOptions { }
-
-export interface RestClientConstructor<T> {
-    new(endpoint: string, options?: ClientOptions): T;
-}
+import { InputAnnotation } from "./input";
 
 /**
  * Options for the web service. Available options are a superset 
  * of the options available for @Module() as well as WebServerModule.configure(...).
  */
-export interface WebServiceOptions extends ApplicationOptions, ModuleOptions {
+export interface WebServiceOptions extends ModuleOptions {
 	/**
 	 * Identity to use when exposing this service via Conduit. When not specified, the name of the class is used.
 	 */
 	identity?: string;
+
+    /**
+     * Human readable description of this web service, used for Conduit discovery and introspection as well 
+     * as OpenAPI/Swagger definitions.
+     */
+    description?: string;
 
     /**
      * Whether this service is discoverable via Conduit. Defaults to true.
@@ -47,23 +35,81 @@ export interface WebServiceOptions extends ApplicationOptions, ModuleOptions {
      * Whether this service is introspectable via Conduit. Defaults to true.
      */
     introspectable?: boolean;
-
-    server?: WebServerOptions;
 }
 
-/**
- * Backing annotation for the @WebService() decorator which is a simple API
- * for constructing a web service using Alterior.
- */
-@MetadataName('@alterior/web-server:WebService')
-export class WebServiceAnnotation extends Annotation {
-    constructor(options?: WebServiceOptions) {
-        super();
+@Module({
+    imports: [LoggingModule]
+})
+class WebServerModule {
+    private app = inject(Application);
+    private rolesService = inject(RolesService);
+    private logger = inject(Logger);
+    private webServerOptions = inject(WEB_SERVER_OPTIONS);
+    private webServiceClasses = injectMultiple(WEB_SERVICE);
+
+    async [Module.onInit]() {
+        let webserver: WebServer;
+
+        webserver = new WebServer(
+            this.app.runtime.injector,
+            this.webServerOptions ?? {},
+            this.logger,
+            this.app.options
+        );
+
+        // Prepare the web service classes and mount them into the web server 
+
+        let serviceInstances: ControllerInstance[] = [];
+
+        for (let webServiceClass of this.webServiceClasses) {
+            let serviceInstance = new ControllerInstance(
+                webserver,
+                webServiceClass,
+                webserver.injector,
+                [],
+                '',
+                true
+            );
+    
+            serviceInstances.push(serviceInstance);
+            await serviceInstance.initialize();
+            serviceInstance.mount(webserver);
+    
+            if (webserver.options.defaultHandler !== null) {
+                webserver.engine.addAnyRoute(ev => {
+                    if (webserver.options.defaultHandler) {
+                        webserver.options.defaultHandler(ev);
+                        return;
+                    }
+    
+                    ev.response.statusCode = 404;
+                    ev.response.setHeader('Content-Type', 'application/json; charset=utf-8');
+                    ev.response.write(JSON.stringify({ error: 'not-found' }));
+                    ev.response.end();
+                });
+            }
+        }
+
+        this.rolesService.registerRole({
+            identifier: 'web-server',
+            instance: this,
+            name: 'Web Server',
+            summary: 'Starts a web server backed by the controllers configured in the module tree',
+            start: async () => {
+                await webserver.start();
+                for (let serviceInstance of serviceInstances) {
+                    await serviceInstance.start();
+                    await serviceInstance.listen(webserver);
+                }
+            },
+            stop: async () => {
+                for (let serviceInstance of serviceInstances) {
+                    await webserver.stop();
+                    await serviceInstance.stop();
+                }
+            }
+        })
     }
-}
-
-export interface WebServiceDecorator {
-    (options?: WebServiceOptions): (target: any, ...args: any[]) => void;
 }
 
 /**
@@ -73,97 +119,73 @@ export interface WebServiceDecorator {
  * REST routes using the @alterior/web-server @Get()/@Post()/etc decorators.
  */
 export const WebService = Object.assign(
-    WebServiceAnnotation.decorator({
-        validTargets: ['class'],
-        factory: (site, options?: WebServiceOptions) => {
-            conduit.Name(options?.identity ?? site.target.name)(site.target);
+    <T> (serviceClientConstructor: WebServiceClientConstructor<T>, options: WebServiceOptions = {}) => {
+        return (target: Constructor<T>) => {
 
+            // Apply Conduit metadata
+
+            conduit.Name(options?.identity ?? target.name)(target);
             if (options?.description)
-                conduit.Description(options.description)(site.target);
+                conduit.Description(options.description)(target);
+            conduit.Discoverable(options?.discoverable ?? true)(target);
+            conduit.Introspectable(options?.introspectable ?? true)(target);
+    
+            Controller('', { group: 'service' })(target);
 
-            conduit.Discoverable(options?.discoverable ?? true)(site.target);
-            conduit.Introspectable(options?.introspectable ?? true)(site.target);
+            // Apply module metadata
 
-            @Module({
-                imports: [LoggingModule]
-            })
-            class WebServerModule {
-                private app = inject(Application);
-                private rolesService = inject(RolesService);
-                private logger = inject(Logger);
+            Module(<Required<ModuleOptions>>{
+                imports: [ 
+                    ...(options?.imports ?? []),
+                    WebServerModule
+                ],
+                prepare: options.prepare,
+                providers: [
+                    ...(options.providers ?? []),
+                    provide(WEB_SERVICE, { multi: true }).usingClass(target)
+                ],
+                tasks: options.tasks
+            })(target);
 
-                async [Module.onInit]() {
-                    let webserver: WebServer;
+            // Apply WebServiceAnnotation
 
-                    webserver = new WebServer(
-                        this.app.runtime.injector,
-                        options?.server ?? {},
-                        this.logger,
-                        this.app.options
-                    );
+            new WebServiceAnnotation(serviceClientConstructor, options).applyToClass(target);
+        };
+    },
+    BuiltinLifecycleEvents,
+    {
+        define: <T>(definer: (t: ReturnType<typeof WebServiceBuilder>) => T): WebServiceClientConstructor<T> => {
+            let serviceInterface = definer(WebServiceBuilder());
 
-                    let serviceInstance = new ControllerInstance(
-                        webserver,
-                        site.target,
-                        webserver.injector,
-                        [],
-                        '',
-                        true
-                    );
+            const constructor: WebServiceClientConstructor<T> = Object.assign(
+                <any><() => WebServiceInterface<T>>(() => {
+                    // TODO
+                }),
+                {
+                    ['interface']: serviceInterface,
+                    http(definer: (r: HttpDecorators<T>) => void) {
+                        definer(
+                            new Proxy<HttpDecorators<T>>({} as any, {
+                                get: (_, p) => {
+                                    if (typeof p === 'string' && Object.keys(HTTP_VERB_MAP).includes(p)) {
+                                        return (path?: string, options?: RouteOptions): MethodDecorator => {
+                                            return Route(HTTP_VERB_MAP[p], path, options);
+                                        };
+                                    }
+                                }
+                            })
+                        );
 
-                    await serviceInstance.initialize();
-                    serviceInstance.mount(webserver);
-
-                    if (webserver.options.defaultHandler !== null) {
-                        webserver.engine.addAnyRoute(ev => {
-                            if (webserver.options.defaultHandler) {
-                                webserver.options.defaultHandler(ev);
-                                return;
-                            }
-
-                            ev.response.statusCode = 404;
-                            ev.response.setHeader('Content-Type', 'application/json; charset=utf-8');
-                            ev.response.write(JSON.stringify({ error: 'not-found' }));
-                            ev.response.end();
-                        });
+                        return this;
                     }
-
-                    this.rolesService.registerRole({
-                        identifier: 'web-server',
-                        instance: this,
-                        name: 'Web Server',
-                        summary: 'Starts a web server backed by the controllers configured in the module tree',
-                        start: async () => {
-                            console.log(`SERVICE STARTING`);
-                            await webserver.start();
-                            await serviceInstance.start();
-                            serviceInstance.listen(webserver);
-                            console.log(`SERVICE STARTED`);
-                        },
-                        stop: async () => {
-                            console.log(`SERVICE STOPPING`);
-                            await webserver.stop();
-                            await serviceInstance.stop();
-                            console.log(`SERVICE STOPPED`);
-                        }
-                    })
                 }
-            }
+            );
 
-            options = Object.assign({}, options);
+            constructor.http
 
-            if (!options.imports)
-                options.imports = [];
-
-            options.imports.push(WebServerModule);
-            Controller('', { group: 'service' })(site.target);
-            Module(options)(site.target);
-            AppOptions(options)(site.target);
-
-            return new WebServiceAnnotation(options);
-        }
-    }),
-    BuiltinLifecycleEvents
+            return constructor;
+        },
+    }
 );
 
 export class RestClientError extends Error {
@@ -171,3 +193,42 @@ export class RestClientError extends Error {
         super(message);
     }
 }
+
+///////////////////////////////////////////////////////////////////
+
+// PROBLEM: All of this loses the decorator metadata. We could force 
+// the implementation method to have a decorator on it (would double for 
+// ensuring the developer doesn't forget that the method is published),
+// but the generated client would then not have this information at runtime.
+// The client needs this information in order to create an HTTP request
+
+const FooInterface = WebService
+    .define(t => ({
+        info: t.method<[thing: string], { description: string }>(
+            t.documentation({
+                summary: 'Provides information about the given thing'
+            })
+        )
+    }))
+    .http(r => [
+        r.get('/:thing').bind((r, i) => i.info(r.path('thing')))
+    ])
+;
+
+type FooInterface = typeof FooInterface.interface;
+
+@WebService(FooInterface)
+export class FooConcrete {
+    async info(thing: string) {
+        return { description: `That thing is named ${thing}` };
+    }
+}
+
+let x = new FooInterface('blah');
+let y: FooInterface;
+
+y = x;
+
+
+x.info(123);
+

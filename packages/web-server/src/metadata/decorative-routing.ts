@@ -1,11 +1,10 @@
+import { Annotation } from '@alterior/annotations';
 import { disallowNativeAsync } from '@alterior/common';
-import { Expose } from '@alterior/runtime';
-import { RouteOptions } from './route-options';
-import { RouteDefinition } from './route-definition';
-import { MountOptions } from './mount-options';
 import { MountDefinition } from './mount-definition';
-
-import * as conduit from '@astronautlabs/conduit';
+import { MountOptions } from './mount-options';
+import { Public } from './public';
+import { RouteDefinition } from './route-definition';
+import { RouteOptions } from './route-options';
 
 export function Get(path?: string, options?: RouteOptions) { return Route('GET', path, options); }
 export function Put(path?: string, options?: RouteOptions) { return Route('PUT', path, options); }
@@ -14,14 +13,22 @@ export function Delete(path?: string, options?: RouteOptions) { return Route('DE
 export function Options(path?: string, options?: RouteOptions) { return Route('OPTIONS', path, options); }
 export function Patch(path?: string, options?: RouteOptions) { return Route('PATCH', path, options); }
 
-export function Route(method: string, path?: string, options?: RouteOptions) {
-	return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
-		disallowNativeAsync((target as any)[propertyKey]);
-		conduit.Method()(target, propertyKey);
-		if (options?.description)
-			conduit.Description(options?.description)(target, propertyKey);
+export class RouteAnnotation extends Annotation {
+	constructor(
+		readonly method: string, 
+		readonly path?: string, 
+		readonly options?: RouteOptions
+	) {
+		super();
+	}
+}
 
-		Expose()(target, propertyKey, descriptor);
+export const Route = RouteAnnotation.decorator({
+	factory: (site, method, path, options) => {
+		const { target, propertyKey } = site.target;
+		disallowNativeAsync((target as any)[propertyKey]);
+
+		Public(options)(target, propertyKey);
 
 		if (!target.hasOwnProperty('alterior:routes')) {
 			Object.defineProperty(target, 'alterior:routes', {
@@ -36,8 +43,10 @@ export function Route(method: string, path?: string, options?: RouteOptions) {
 			options: options || {},
 			path: path || ''
 		});
-	};
-}
+
+		return new RouteAnnotation(method, path, options);
+	}
+});
 
 export function Mount(path?: string, options?: MountOptions) {
 	return function (target: any, propertyKey: string): void {

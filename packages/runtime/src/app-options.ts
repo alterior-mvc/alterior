@@ -1,5 +1,7 @@
-import { Annotation, AnnotationDecorator, MetadataName } from '@alterior/annotations';
-import { Provider } from '@alterior/di';
+import { Annotation, MetadataName } from '@alterior/annotations';
+import { InjectionToken, Provider } from '@alterior/di';
+
+export const APP_OPTIONS = new InjectionToken<ApplicationOptions>("APPLICATION_OPTIONS");
 
 export interface ApplicationOptions {
 	
@@ -63,7 +65,7 @@ export interface ApplicationOptions {
 /**
  * Used to attach an ApplicationOptions object onto a class definition.
  */
-@MetadataName('@alterior/di:Application')
+@MetadataName('@alterior/runtime:Application')
 export class AppOptionsAnnotation extends Annotation {
 	constructor(readonly options?: ApplicationOptions) {
 		super();

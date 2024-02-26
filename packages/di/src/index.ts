@@ -12,5 +12,6 @@ export {
     ProviderToken,
     Type,
     inject,
+    injectMultiple,
     injectionContext,
 } from './injection';

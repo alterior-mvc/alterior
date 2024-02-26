@@ -6,33 +6,28 @@ A framework for building well-structured applications and isomorphic libraries i
 
 # Overview
 
-Alterior is an isomorphic framework for building service-oriented applications composed of executable modules which participate in dependency injection and declare 
-components. 
+Alterior is a framework for building applications composed of executable modules, which themselves are composed of service classes provided via dependency injection.
 
-Alterior's Modules are well-defined units of execution which have a defined lifecycle, 
-and respond to standardized lifecycle events. This makes them suitable for use as a 
+Alterior's Modules are well-defined units of execution which respond to lifecycle events. This makes them suitable for use as a 
 primary vehicle for top-level general purpose code, such as a server or even a desktop 
 application. 
 
-## Class Libraries
+## Batteries Included
 
-Alterior strives to provide a strong isomorphic base class library that fills 
-the gaps between ECMAScript and larger BCLs like Java or .NET. In service of 
-this, Alterior ships foundational libraries with utilities, infrastructure for 
+Alterior bridges the gap between ECMAScript and languages with larger BCLs such as Java or .NET. Alterior ships with foundational libraries for utilities, infrastructure for 
 handling decorators and annotations, reusable errors and error base classes, 
 dependency injection, an HTTP client, and more. 
 
 # Getting Started
 
-Alterior is **not just a REST framework**, but that's certainly it's most common usage.
+Alterior is **not just a REST framework**, but web services are first class citizens.
 
 ```typescript
 import '@alterior/platform-nodejs';
+import '@alterior/express';
+
 import { WebService, Get, WebServerEngine } from '@alterior/web-server';
 import { Application } from '@alterior/runtime';
-import { ExpressEngine } from '@alterior/express';
-
-WebServerEngine.default = ExpressEngine;
 
 @WebService()
 export class MyWebService {
@@ -51,8 +46,9 @@ For more information on building web services with Alterior, see [@alterior/web-
 
 ## Consuming your web service
 
-A web service built with Alterior can be consumed on the client transparently. This is an example of a [Transparent Service](https://github.com/alterior-mvc/alterior/wiki/TransparentServicesPlanning)
+By following Alterior's structural and packaging conventions web services can be consumed on the client transparently. 
 
+For example, an Angular frontend can c
 ```typescript
 import { MyWebService } from '@example/my-backend';
 import { Component } from '@angular/core';

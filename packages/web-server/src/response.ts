@@ -45,7 +45,7 @@ export class Response {
 	/**
 	 * Throw this response as an `HttpError`
 	 */
-	public throw() {
+	public throw(): never {
 		throw new HttpError(this.status, this.body, this.headers);
 	}
 

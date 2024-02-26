@@ -64,6 +64,13 @@ export class Injector {
         return this.getByKey(Key.get(token), options?.self ? 'self' : 'default', notFoundValue);
     }
 
+    getMultiple<T = unknown>(token: Type<T> | InjectionToken<T>): T[];
+    getMultiple<T = unknown, U = unknown>(token: Type<T> | InjectionToken<T>, notFoundValue: U): T[] | U;
+    getMultiple<T = unknown, U = unknown>(token: Type<T> | InjectionToken<T>, notFoundValue: U, options: InjectorGetOptions): T[] | U;
+    getMultiple(token: any, notFoundValue: any = THROW_IF_NOT_FOUND, options?: InjectorGetOptions): any {
+        return this.getByKey(Key.get(token), options?.self ? 'self' : 'default', notFoundValue);
+    }
+
     /**
      * Parent of this injector.
      *
