@@ -1,5 +1,10 @@
 # ⏭ vNext
 
+# v3.7.1
+- `@/web-server`: Remove direct type references to `express`
+- `@/di`: Fix type of `Injector#parent` when using `strictNullChecks`
+- `@/runtime`: Add missing object type constraint on `Reflector#getTypeFromClass`
+
 # v3.7.0
 - `@/runtime`
   * A new lifecycle event `altAfterStart` can be used to run code after all modules' `altOnStart` callbacks have 
