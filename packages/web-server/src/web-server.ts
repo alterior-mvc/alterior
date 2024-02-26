@@ -56,14 +56,22 @@ export class WebServer {
 		}
 
 		this.installGlobalMiddleware();
-		this.websockets = new ws.Server({ noServer: true });
+		this._websockets = new ws.Server({ noServer: true });
 		this.requestReporter = options?.requestReporter ?? this.requestReporter;
 		this.requestReporterFilters = options?.requestReporterFilters ?? this.requestReporterFilters;
 	}
 
 	private _injector: Injector;
 	readonly options: WebServerOptions;
-	readonly websockets: ws.Server;
+	private _websockets: ws.Server;
+
+	/**
+	 * Websocket server instance. 
+	 * @type ws.Server
+	 */
+	get websockets(): any {
+		return this._websockets;
+	}
 
 	private _httpServer: http.Server;
 	get httpServer() { return this._httpServer; }
@@ -466,7 +474,7 @@ export class WebServer {
 
 		return await new Promise<WebSocket>((resolve, reject) => {
 			this
-				.websockets
+				._websockets
 				.handleUpgrade(
 					WebEvent.request,
 					WebEvent.request.socket,
