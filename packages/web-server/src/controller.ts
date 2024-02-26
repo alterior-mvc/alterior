@@ -2,8 +2,8 @@ import { WebServer } from "./web-server";
 import { Provider, ReflectiveInjector, Injector } from "@alterior/di";
 import { RouteInstance } from './route';
 import { ControllerAnnotation, ControllerOptions, MountOptions, RouteReflector, MiddlewareDefinition } from "./metadata";
-import * as express from 'express';
 import { prepareMiddleware } from "./middleware";
+import { ConnectMiddleware } from "./web-server-engine";
 
 export interface ControllerContext {
 	pathPrefix? : string;
@@ -209,7 +209,7 @@ export class ControllerInstance {
 		this.resolvedMiddleware = middleware.map(x => prepareMiddleware(childInjector, x));
 	}
 
-	resolvedMiddleware : express.RequestHandler[];
+	resolvedMiddleware : ConnectMiddleware[];
 
 	initialize() {
 		if (!this.isModule && this.instance && typeof this.instance.altOnInit === 'function') 
