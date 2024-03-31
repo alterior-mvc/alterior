@@ -1,5 +1,14 @@
 # ⏭ vNext
 
+# v3.7.4
+- `@/runtime`: Add `parentInjector` bootstrap option to allow for more complex application bootstrapping.
+
+# v3.7.3
+- `@/platform-angular`: Increase the Angular versions allowed by peer dependency
+
+# v3.7.2 
+- `@/di`: Remove unused `zone.js` peer dependency
+
 # v3.7.1
 - `@/web-server`: Remove direct type references to `express`
 - `@/di`: Fix type of `Injector#parent` when using `strictNullChecks`

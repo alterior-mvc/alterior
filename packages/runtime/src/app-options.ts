@@ -1,5 +1,5 @@
 import { Annotation, AnnotationDecorator, MetadataName } from '@alterior/annotations';
-import { Provider } from '@alterior/di';
+import { Injector, Provider } from '@alterior/di';
 
 export interface ApplicationOptions {
 	
@@ -57,6 +57,12 @@ export interface ApplicationOptions {
 	 * Additional dependency injection providers to include in the application's injector.
 	 */
 	providers?: Provider[];
+
+	/**
+	 * An injector to use as the parent of the application injector. Optional, useful when doing more complex 
+	 * application bootstrapping.
+	 */
+	parentInjector?: Injector;
 }
 
 /**

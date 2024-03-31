@@ -171,7 +171,7 @@ export class Application {
 	
 			let injector: ReflectiveInjector;
 			try {
-				injector = ReflectiveInjector.resolveAndCreate(providers);
+				injector = ReflectiveInjector.resolveAndCreate(providers, options.parentInjector);
 			} catch (e) {
 				console.error(`Failed to resolve injector:`);
 				console.error(e);
