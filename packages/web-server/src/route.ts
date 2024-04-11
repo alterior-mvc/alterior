@@ -1,5 +1,3 @@
-import * as express from 'express';
-import * as uuid from 'uuid';
 import * as bodyParser from 'body-parser';
 import { IAnnotation } from "@alterior/annotations";
 import { InputAnnotation } from "./input";
@@ -567,7 +565,7 @@ export class RouteInstance {
 	}
 
 	/**
-	 * Installs this route into the given Express application. 
+	 * Installs this route into the given web server application. 
 	 * @param app 
 	 */
 	mount(pathPrefix : string) {

@@ -44,7 +44,7 @@ export class WebServer {
 
 		if (!this._engine) {
 			this._engine = ReflectiveInjector.resolveAndCreate([
-				{ provide: WebServerEngine, useClass: WebServerEngine.default }
+				{ provide: WebServerEngine, useClass: options.engine ?? WebServerEngine.default }
 			], this._injector).get(WebServerEngine, null);
 		}
 
@@ -162,16 +162,12 @@ export class WebServer {
 		return this._injector;
 	}
 
-	// public get express() {
-	//     return this.expressApp;
-	// }
-
 	get serviceDescription() {
 		return this._serviceDescription;
 	}
 
 	/**
-	 * Install the registered global middleware onto our Express 
+	 * Install the registered global middleware onto our web server 
 	 * application.
 	 */
 	private installGlobalMiddleware() {
@@ -537,7 +533,7 @@ export class WebServer {
 	}
 
 	/**
-	 * Installs this route into the given Express application. 
+	 * Installs this route into the given web server application. 
 	 * @param app 
 	 */
 	addRoute(definition: RouteDescription, method: string, path: string, handler: (event: WebEvent) => void, middleware = []) {

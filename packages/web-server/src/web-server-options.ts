@@ -2,6 +2,8 @@ import { Logger } from "@alterior/logging";
 import { WebEvent } from "./metadata";
 import { RouteInstance } from "./route";
 import * as tls from 'tls';
+import { WebServerEngine } from "./web-server-engine";
+import { Constructor } from "@alterior/runtime";
 
 type Protocol = 'h2'
 	| 'spdy/3.1'
@@ -21,6 +23,11 @@ export interface WebServerOptions {
 	 * HTTP, set this field to the secure port and set 
 	 */
 	port? : number;
+
+	/**
+	 * Override the default web server engine
+	 */
+	engine?: Constructor<WebServerEngine>;
 
 	/**
 	 * When using TLS via certificate/privateKey or sniHandler (and thus HTTPS is served), 

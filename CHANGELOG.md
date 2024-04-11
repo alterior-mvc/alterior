@@ -2,6 +2,10 @@
 
 # vNext
 
+- `@/web-server`: 
+    - Added the ability to override the default web server engine on specific `@WebService` classes
+    - Fixes an issue where installing Express' Typescript types alongside `@/web-server` may have been needed even 
+      though `@/web-server` does not have a direct dependency on Express
 - `@/common`: `getParameterNames()` will now look for a `__parameterNames` property and use that before trying to 
   introspect the function, which allows code that transforms/replaces functions to carry parameter name metadata 
   across more easily.

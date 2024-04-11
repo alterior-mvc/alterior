@@ -136,7 +136,7 @@ export class ControllerInstance {
 			this.instance[mount.propertyKey] = instance.instance;
 		}
 
-		// Register all of our routes with Express
+		// Register all of our routes with the web server
 
 		this._routes = routeDefinitions.map(
 			definition => new RouteInstance(

@@ -310,7 +310,7 @@ suite(describe => {
 			;
 		});
 
-		it('should be injecting express URL parameters when appropriate', async () => {
+		it('should be injecting route URL parameters when appropriate', async () => {
 
 			let observedBar;
 			let observedBaz;
