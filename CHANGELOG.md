@@ -1,5 +1,15 @@
 # ⏭ vNext
 
+# vNext
+
+- `@/common`: `getParameterNames()` will now look for a `__parameterNames` property and use that before trying to 
+  introspect the function, which allows code that transforms/replaces functions to carry parameter name metadata 
+  across more easily.
+- `@/annotations`: 
+    - When running a mutator against a function, preserve parameter names by setting a `__parameterNames`
+      property on the resulting function, containing the parameter names of the original function.
+    - Type safety has been improved around `Mutator.create()` and `Mutator.define()`
+
 # v3.7.4
 - `@/runtime`: Add `parentInjector` bootstrap option to allow for more complex application bootstrapping.
 

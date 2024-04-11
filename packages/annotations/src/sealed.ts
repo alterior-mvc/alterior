@@ -2,7 +2,8 @@
  * (C) 2017-2019 William Lahti
  */
 
-import { Mutator, AnnotationDecorator } from "./annotations";
+import { AnnotationDecorator } from "./annotations";
+import { Mutator } from './mutator';
 
 /**
  * Seal a class and its instances.

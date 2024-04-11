@@ -29,7 +29,16 @@ let AFTER_CLOSING_PAREN = /^([^)]*)\).*$/mg;
  * Get the names of the parameters of the given function.
  * @param fn 
  */
-export function getParameterNames(fn): string[] {
+export function getParameterNames(fn: Function): string[] {
+
+  // Sometimes the user may want to transform or replace a function, which may cause us to lose access to 
+  // the parameter names. To provide an escape hatch for that use case, we'll check if the given function
+  // has been annotated with parameter names already.
+
+  if ('__parameterNames' in fn) {
+    return fn['__parameterNames'] as string[];
+  }
+
   let code = fn.toString()
     .replace(SPACES, '')
     .replace(COMMENTS, '')
