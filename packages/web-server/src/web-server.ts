@@ -44,7 +44,7 @@ export class WebServer {
 
 		if (!this._engine) {
 			this._engine = ReflectiveInjector.resolveAndCreate([
-				{ provide: WebServerEngine, useClass: options.engine ?? WebServerEngine.default }
+				{ provide: WebServerEngine, useClass: options?.engine ?? WebServerEngine.default }
 			], this._injector).get(WebServerEngine, null);
 		}
 
