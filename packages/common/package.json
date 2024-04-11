@@ -1,6 +1,6 @@
 {
   "name": "@alterior/common",
-  "version": "3.6.7",
+  "version": "3.7.5",
   "description": "Useful utilities for Typescript apps",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
