@@ -1,5 +1,12 @@
 # ⏭ vNext
 
+# v3.7.6
+
+- `@/web-server`: [(!!) Potential security issue] Fixes an issue which causes the optional secondary HTTP listener to 
+  be enabled even when not configured. This would cause Alterior web services to listen on a random high TCP port in 
+  addition to the primary port you configure. This may be security impacting for some deployment / firewall 
+  configurations.
+
 # v3.7.5
 
 - `@/web-server`: 

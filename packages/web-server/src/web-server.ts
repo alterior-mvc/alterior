@@ -196,7 +196,8 @@ export class WebServer {
 			);
 		}
 
-		this._insecureHttpServer = await this.engine.listenInsecurely(this.options);
+		if (this.options.insecurePort)
+			this._insecureHttpServer = await this.engine.listenInsecurely(this.options);
 	}
 
 	/**
