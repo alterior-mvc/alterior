@@ -1,9 +1,9 @@
-import { Annotation, AnnotationDecorator, MetadataName } from "@alterior/annotations";
-import { ConnectMiddleware } from "../web-server-engine";
+import { Annotation, MetadataName } from "@alterior/annotations";
+import { MiddlewareProvider } from "../middleware";
 
 export let CONTROLLER_CLASSES = [];
 
-export type MiddlewareDefinition = Function | ConnectMiddleware | [ string, ConnectMiddleware ];
+export type MiddlewareDefinition = MiddlewareProvider | [ string, MiddlewareProvider ];
 
 export interface ControllerOptions {
 	/**
@@ -20,6 +20,19 @@ export interface ControllerOptions {
 	 * Middleware to be applied to all route methods for this controller.
 	 */
 	middleware? : MiddlewareDefinition[];
+	
+	/**
+	 * Connect-style middleware that should be run before route-specific middleware 
+	 * has been run.
+	 */
+    preRouteMiddleware? : (MiddlewareProvider)[];
+
+	/**
+	 * Connect-style middleware that should be run after route-specific middleware 
+	 * has been run.
+	 */
+    postRouteMiddleware? : (MiddlewareProvider)[];
+
 }
 
 @MetadataName('@alterior/web-server:Controller')

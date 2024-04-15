@@ -1,4 +1,25 @@
 # ⏭ vNext
+
+- `@/web-server`
+    * Route-specific middleware can now use `WebEvent.current` to acquire the web event being processed. While middleware
+      has always had access to the request/response pair, the current WebEvent also provides access to the controller and 
+      method which is about to be executed, amongst other things. This enables middleware to introspect the method call 
+      that is about to occur, enabling a broad set of use cases that were previously impossible. NOTE: Global and 
+      controller-level middleware cannot access `WebEvent.current` as they occur before any Alterior-specific 
+      processing occurs.
+    * Alterior-style middleware classes are now resolved *per request*, allowing dependency injection providers to 
+      differ per call. This has been used to allow `WebEvent` to be dependency injected as an alternative way of 
+      acquiring it.
+    * The new `preRouteMiddleware` and `postRouteMiddleware` options allow you to specify route-specific middleware at 
+      the global and controller levels, enabling you to use the new introspection capabilities without specifying 
+      middleware on every route. The order of application is: (1) global pre-middleware, (2) controller pre-middleware,
+      (3) route-specific middleware, (4) controller post-middleware, (5) global post-middleware.
+    * It is no longer necessary to mark middleware classes with `@Middleware()`. All classes are now treated as 
+      Alterior-style middleware (dependency injected, implements a `handle()` method). This is not a breaking change 
+      since passing a class not marked with `@Middleware()` would have caused a runtime error prior. As a result of 
+      this `@Middleware()` has been deprecated, and will be removed in 4.0.0.
+    * Correctness change: The type safety of the middleware-related properties of `WebServerOptions`, `@Controller()` and 
+      the `@Route()` family of decorators has been strengthened.
 - `@/common`: Adds `leftPad()`, `rightPad()`, `zeroPad()` and `isConstructor()`
 
 # v3.7.6

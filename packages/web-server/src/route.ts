@@ -2,14 +2,15 @@ import * as bodyParser from 'body-parser';
 import { IAnnotation } from "@alterior/annotations";
 import { InputAnnotation } from "./input";
 import { WebEvent, RouteDefinition, RouteOptions } from "./metadata";
-import { ReflectiveInjector, Provider, Injector } from '@alterior/di';
-import { prepareMiddleware } from "./middleware";
+import { Injector } from '@alterior/di';
+import { MiddlewareProvider, prepareMiddleware } from "./middleware";
 import { Annotations } from "@alterior/annotations";
 import { WebServer } from "./web-server";
 import { WebServerSetupError } from "./web-server-setup-error";
-import { HttpError, ArgumentError, ArgumentNullError, getParameterNames } from "@alterior/common";
+import { HttpError, ArgumentError, ArgumentNullError, getParameterNames, isConstructor } from "@alterior/common";
 import { Response } from './response';
 import { ellipsize } from './utils';
+import { ConnectMiddleware } from './web-server-engine';
 
 export interface RouteDescription {
 	definition : RouteDefinition;
@@ -229,7 +230,8 @@ export class RouteInstance {
 		readonly server : WebServer,
 		readonly controllerInstance : any,
         readonly injector : Injector,
-        readonly parentMiddleware: any[],
+        readonly preMiddleware: any[],
+		readonly postMiddleware: any[],
         readonly parentGroup: string,
         readonly controllerType : Function,
         readonly routeTable : any[],
@@ -309,7 +311,13 @@ export class RouteInstance {
 		
 		// Load up the defined middleware for this route
 		let route = this.definition;
-		let middleware = [].concat(route.options.middleware || []);
+		let middleware = [
+			...this.server.options.preRouteMiddleware,
+			...this.preMiddleware,
+			...(route.options.middleware ?? []),
+			...this.postMiddleware,
+			...this.server.options.postRouteMiddleware
+		];
 
 		// Ensure indexes are valid.
 
@@ -317,17 +325,10 @@ export class RouteInstance {
 		if (invalidIndex >= 0)
 			throw new Error(`Route '${route.path}' provided null middleware at position ${invalidIndex}`);
 
-		// Procure an injector which can handle injecting the middlewares' providers
-
-		let middlewareProviders : Provider[] = middleware.filter(x => Reflect.getMetadata('alterior:middleware', x));
-		let childInjector = ReflectiveInjector.resolveAndCreate(middlewareProviders, this.injector);
-
-		let args : any[] = [ route.path ];
-
 		// Prepare the middlewares (if they are DI middlewares, they get injected)
 
 		this.middleware = middleware;
-		this.resolvedMiddleware = middleware.map(x => prepareMiddleware(childInjector, x));
+		this.resolvedMiddleware = middleware.map(x => prepareMiddleware(this.injector, x));
 
 		// Automatically handle body parsing 
 
@@ -358,8 +359,8 @@ export class RouteInstance {
 		}
 	}
 
-	middleware : any[];
-	resolvedMiddleware : any[];
+	middleware : MiddlewareProvider[];
+	resolvedMiddleware : ConnectMiddleware[];
 
 	private prepareMethodMetadata() {
 		let controller = this.controllerType;
@@ -489,6 +490,13 @@ export class RouteInstance {
 		;
 		reportSource = `${controllerType.name}.${route.method}(${displayableParams.join(', ')})`;
 
+		// Middleware
+
+		await event.context(async () => {
+			for (let item of this.resolvedMiddleware)
+				await new Promise<void>(resolve => item(event.request, event.response, resolve));
+		});
+
 		this.server.reportRequest('starting', event, reportSource);
 		try { // To finally report request completion.
 
@@ -576,7 +584,7 @@ export class RouteInstance {
 			this.definition.httpMethod, 
 			`${pathPrefix || ''}${this.definition.path}`,
 			ev => this.execute(this.controllerInstance, ev), 
-			this.resolvedMiddleware
+			[]
 		);
 	}
 }

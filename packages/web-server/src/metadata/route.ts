@@ -1,6 +1,7 @@
 import { shallowClone, disallowNativeAsync } from '@alterior/common';
 import { Provider } from '@alterior/di';
 import { Expose } from '@alterior/runtime';
+import { MiddlewareProvider } from '../middleware';
 
 export class RouteReflector {
 	constructor(type : Function, mountPath? : string) {
@@ -68,7 +69,7 @@ export interface RouteDefinition {
 }
 
 export interface RouteOptions {
-	middleware?: Function[];
+	middleware?: MiddlewareProvider[];
 	description?: string;
 	summary?: string;
 	group?: string;

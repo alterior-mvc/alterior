@@ -143,7 +143,8 @@ export class ControllerInstance {
 				this.server, 
 				this.instance,
 				this.injector, 
-				this.middleware, 
+				this.options.preRouteMiddleware ?? [], 
+				this.options.postRouteMiddleware ?? [],
 				this.group, 
 				this.type, 
 				this.routeTable,
@@ -198,15 +199,9 @@ export class ControllerInstance {
 		if (invalidIndex >= 0)
 			throw new Error(`Controller '${this.type}' provided null middleware at position ${invalidIndex}`);
 
-		// Procure an injector which can handle injecting the middlewares' providers
-
-		let middlewareProviders : Provider[] = <any[]>middleware.filter(x => Reflect.getMetadata('alterior:middleware', x));
-
-		let childInjector = ReflectiveInjector.resolveAndCreate(middlewareProviders, this.injector);
-
 		// Prepare the middlewares (if they are DI middlewares, they get injected)
 
-		this.resolvedMiddleware = middleware.map(x => prepareMiddleware(childInjector, x));
+		this.resolvedMiddleware = middleware.map(x => prepareMiddleware(this.injector, x));
 	}
 
 	resolvedMiddleware : ConnectMiddleware[];
