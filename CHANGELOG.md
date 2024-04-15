@@ -1,4 +1,5 @@
 # ⏭ vNext
+- `@/common`: Adds `leftPad()`, `rightPad()`, `zeroPad()` and `isConstructor()`
 
 # v3.7.6
 
