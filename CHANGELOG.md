@@ -1,5 +1,7 @@
 # ⏭ vNext
 
+# v3.8.0
+
 - `@/web-server`
     * Route-specific middleware can now use `WebEvent.current` to acquire the web event being processed. While middleware
       has always had access to the request/response pair, the current WebEvent also provides access to the controller and 
