@@ -314,7 +314,7 @@ export function age(timestamp: Date) {
 }
 
 /**
- * https://stackoverflow.com/a/46759625/1995204
+ * https://stackoverflow.com/a/46759625
  */
 export function isConstructor(f) {
     if (f === Symbol)

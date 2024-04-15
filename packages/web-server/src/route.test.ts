@@ -19,7 +19,7 @@ function fakeAppVarietyOfMethods() {
 			silent: true,
 			middleware: [
 				(req, res, next) => { 
-					res.header('Content-Type', 'application/json'); 
+					res.setHeader('Content-Type', 'application/json'); 
 					next(); 
 				}
 			]
@@ -270,7 +270,7 @@ suite(describe => {
 				@Get('/foo', {
 					middleware: [
 						(req, res, next) => {
-							req.fun = 'funfun';
+							req['fun'] = 'funfun';
 							next();
 						}
 					]
@@ -291,7 +291,7 @@ suite(describe => {
 				server: {
 					middleware: [
 						['/foo', (req, res, next) => {
-							req.fun = 'funfun';
+							req['fun'] = 'funfun';
 							next();
 						}]
 					]

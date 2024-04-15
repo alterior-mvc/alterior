@@ -54,7 +54,10 @@ suite(describe => {
                 }
             }
 
-            prepareMiddleware(injector, SampleMiddleware);
+            let connectMiddleware = prepareMiddleware(injector, SampleMiddleware);
+
+            connectMiddleware();
+
             expect(observedSampleInjectable).to.be.equal(sampleInjectableValue)
         });
         

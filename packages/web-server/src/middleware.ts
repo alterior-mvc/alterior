@@ -1,6 +1,6 @@
 import { Injector, ReflectiveInjector } from '@alterior/di';
 import { Annotation, MetadataName } from '@alterior/annotations';
-import { isConstructor } from '@alterior/common';
+import { isClass } from '@alterior/common';
 import type * as http from 'http';
 import { ConnectMiddleware } from './web-server-engine';
 import { Constructor } from '@alterior/runtime';
@@ -27,7 +27,7 @@ export function prepareMiddleware(injector : Injector, middleware: any) {
 	if (!middleware)
 		throw new Error(`Invalid middleware passed to prepareMiddleware()`);
 
-	if (!isConstructor(middleware))
+	if (!isClass(middleware))
 		return middleware;
 
 	

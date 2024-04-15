@@ -312,11 +312,11 @@ export class RouteInstance {
 		// Load up the defined middleware for this route
 		let route = this.definition;
 		let middleware = [
-			...this.server.options.preRouteMiddleware,
+			...(this.server.options?.preRouteMiddleware ?? []),
 			...this.preMiddleware,
 			...(route.options.middleware ?? []),
 			...this.postMiddleware,
-			...this.server.options.postRouteMiddleware
+			...(this.server.options?.postRouteMiddleware ?? [])
 		];
 
 		// Ensure indexes are valid.
@@ -460,6 +460,20 @@ export class RouteInstance {
 		let route = this.definition;
 		let controllerType = this.controllerType;
 
+		// Middleware
+
+		await event.context(async () => {
+			try {
+				for (let item of this.resolvedMiddleware)
+					await new Promise<void>((resolve, reject) => item(event.request, event.response, (err?: any) => err ? reject(err) : resolve()));
+			} catch (e) {
+				console.error(`Caught exception:`);
+				console.error(e);
+
+				throw e;
+			}
+		});
+
 		// Execute our function by resolving the parameter factories into a set of parameters to provide to the 
 		// function.
 
@@ -489,13 +503,6 @@ export class RouteInstance {
 			.map(param => ellipsize(this.server.options.longParameterThreshold ?? 100, param))
 		;
 		reportSource = `${controllerType.name}.${route.method}(${displayableParams.join(', ')})`;
-
-		// Middleware
-
-		await event.context(async () => {
-			for (let item of this.resolvedMiddleware)
-				await new Promise<void>(resolve => item(event.request, event.response, resolve));
-		});
 
 		this.server.reportRequest('starting', event, reportSource);
 		try { // To finally report request completion.
