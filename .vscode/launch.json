@@ -1,6 +1,7 @@
 {
 	"version": "0.2.0",
 	"configurations": [
+		
 		{
 			"name": "@/http - Tests",
 			"type": "node",
@@ -10,6 +11,25 @@
 			"stopOnEntry": false,
 			"cwd": "${workspaceRoot}/packages/http",
 			"preLaunchTask": "npm: build - packages/http",
+			"runtimeExecutable": null,
+			"runtimeArgs": [
+				"--nolazy"
+			],
+			"env": {
+				"NODE_ENV": "development"
+			},
+			"console": "internalConsole",
+			"sourceMaps": true
+		},
+		{
+			"name": "@/web-server - Tests",
+			"type": "node",
+			"request": "launch",
+			"program": "dist/test.js",
+			"args": [],
+			"stopOnEntry": false,
+			"cwd": "${workspaceRoot}/packages/web-server",
+			"preLaunchTask": "npm: build - packages/web-server",
 			"runtimeExecutable": null,
 			"runtimeArgs": [
 				"--nolazy"
