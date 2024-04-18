@@ -1,9 +1,9 @@
 import { Annotation, Annotations, IAnnotation } from "@alterior/annotations";
 import { getParameterNames } from "@alterior/common";
 
-export interface Constructor<T> {
-    new(...args) : T;
-}
+export type Constructor<T> = new(...args) => T;
+export type AbstractConstructor<T> = abstract new(...args) => T;
+export type AnyConstructor<T> = Constructor<T> | AbstractConstructor<T>;
 
 export type Visibility = 'private' | 'public' | 'protected';
 

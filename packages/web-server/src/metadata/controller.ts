@@ -1,5 +1,6 @@
 import { Annotation, MetadataName } from "@alterior/annotations";
 import { MiddlewareProvider } from "../middleware";
+import { Interceptor } from "../web-server-options";
 
 export let CONTROLLER_CLASSES = [];
 
@@ -21,6 +22,11 @@ export interface ControllerOptions {
 	 */
 	middleware? : MiddlewareDefinition[];
 	
+	/**
+	 * Wrap execution of controller methods with these interceptors. Earlier interceptors run first.
+	 */
+	interceptors?: Interceptor[];
+
 	/**
 	 * Connect-style middleware that should be run before route-specific middleware 
 	 * has been run.

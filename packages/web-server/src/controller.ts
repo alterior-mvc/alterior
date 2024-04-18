@@ -145,6 +145,7 @@ export class ControllerInstance {
 				this.injector, 
 				this.options.preRouteMiddleware ?? [], 
 				this.options.postRouteMiddleware ?? [],
+				this.options.interceptors ?? [],
 				this.group, 
 				this.type, 
 				this.routeTable,

@@ -17,6 +17,9 @@ export type RequestReporter = (reportingEvent: 'starting' | 'finished', event: W
 export type RequestReporterFilter = (event: WebEvent, source: string) => boolean;
 export type ParameterDisplayFormatter = (event: WebEvent, value: any, forKey: string) => string;
 
+export type InterceptedAction = (...args: any[]) => any;
+export type Interceptor = (action: InterceptedAction, ...args: any[]) => any;
+
 export interface WebServerOptions {
 	/**
 	 * The primary port to listen on. When TLS is specified via certificate/privateKey
@@ -108,6 +111,11 @@ export interface WebServerOptions {
 	 * has been run.
 	 */
     postRouteMiddleware? : (MiddlewareProvider)[];
+
+	/**
+	 * Wrap the execution of all controller methods. Earlier interceptors run first.
+	 */
+	interceptors?: Interceptor[];
 
 	/**
 	 * Whether or not to hide exception details from the web response output

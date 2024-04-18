@@ -11,6 +11,7 @@ import { HttpError, ArgumentError, ArgumentNullError, getParameterNames, isConst
 import { Response } from './response';
 import { ellipsize } from './utils';
 import { ConnectMiddleware } from './web-server-engine';
+import { Interceptor } from './web-server-options';
 
 export interface RouteDescription {
 	definition : RouteDefinition;
@@ -232,6 +233,7 @@ export class RouteInstance {
         readonly injector : Injector,
         readonly preMiddleware: any[],
 		readonly postMiddleware: any[],
+		readonly interceptors: Interceptor[],
         readonly parentGroup: string,
         readonly controllerType : Function,
         readonly routeTable : any[],
@@ -509,9 +511,22 @@ export class RouteInstance {
 
 			let result;
 
+			let interceptors = [
+				...this.server.options.interceptors ?? [],
+				...this.interceptors ?? [],
+				...this.definition.options.interceptors ?? [],
+			].reverse();
+
 			try {
 				result = await event.context(async () => {
-					return await instance[route.method](...resolvedParams);
+					let action = (...params) => instance[route.method](...params);
+					for (let interceptor of interceptors) {
+						let inner = action;
+						action = (...params) => interceptor(inner, ...params);
+					}
+
+					return await action(...resolvedParams);
+
 				});
 			} catch (e) {
 				event.metadata['uncaughtError'] = e;

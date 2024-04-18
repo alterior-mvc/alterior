@@ -1,5 +1,17 @@
 # ⏭ vNext
 
+# v3.9.0
+
+- `@/web-server`
+    * Adds support for "interceptors". Interceptors let you wrap the execution of all controller methods in
+      the web service. They can be defined in the optionss for `@WebService()`, `@Controller` or the `@Route()` family
+      of decorators. They are similar to applying a mutator, but without needing to use decorators, and without needing 
+      to declare the interception on every controller method. Use `WebEvent.current` to access details about the request.
+    * Adds `@Intercept()` decorator as a convenient way to apply a function conforming to the `Interceptor` type directly
+      to a method definition. 
+    * `WebEvent.inject()` is a convenience function for `WebEvent.current.get()`
+    * `webEvent.inject()` is a convenience function for `webEvent.server.injector.get()`
+
 # v3.8.0
 
 - `@/web-server`

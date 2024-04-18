@@ -2,6 +2,7 @@ import { shallowClone, disallowNativeAsync } from '@alterior/common';
 import { Provider } from '@alterior/di';
 import { Expose } from '@alterior/runtime';
 import { MiddlewareProvider } from '../middleware';
+import { Interceptor } from '../web-server-options';
 
 export class RouteReflector {
 	constructor(type : Function, mountPath? : string) {
@@ -71,6 +72,13 @@ export interface RouteDefinition {
 export interface RouteOptions {
 	middleware?: MiddlewareProvider[];
 	description?: string;
+
+	/**
+	 * Wrap execution of this method with the given interceptors. Earlier interceptors run first. 
+	 * Technically this is the same as using a mutating decorator (see Mutator.create() from `@/annotations`)
+	 * or using the `@Intercept()` helper decorator, but it is provided here for API symmetry.
+	 */
+	interceptors?: Interceptor[];
 	summary?: string;
 	group?: string;
 }
