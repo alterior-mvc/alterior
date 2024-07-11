@@ -1,5 +1,10 @@
 # ⏭ vNext
 
+# v3.9.2
+
+- `@/web-server`
+    * Fixed an issue where `Session.current().foo = 123` would not set the session variable as expected.
+
 # v3.9.1
 - `@/web-server`
     * The `Session` class is now exported properly.
