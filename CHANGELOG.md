@@ -1,5 +1,12 @@
 # ⏭ vNext
 
+# v3.9.3
+
+- `@/express`
+    * `ExpressEvent` now properly exposes `current` as an Express-specific `WebEvent`, 
+      `request` as `express.Request` and `response` as `express.Response` as intended.
+      Previously this class returned the same values as `WebEvent` which was not useful.
+
 # v3.9.2
 
 - `@/web-server`
