@@ -20,3 +20,4 @@ export * from './web-service-compiler';
 export * from './certificate-generator';
 export * from './web-conduit';
 export * from './intercept';
+export * from './session';

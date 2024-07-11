@@ -1,5 +1,9 @@
 # ⏭ vNext
 
+# v3.9.1
+- `@/web-server`
+    * The `Session` class is now exported properly.
+
 # v3.9.0
 
 - `@/web-server`
