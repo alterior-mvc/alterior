@@ -1,6 +1,6 @@
 {
   "name": "@alterior/testapp",
-  "version": "3.9.2",
+  "version": "3.9.3",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@alterior/common": "^3.9.1",
-    "@alterior/express": "^3.9.2",
+    "@alterior/express": "^3.9.3",
     "@alterior/runtime": "^3.9.1",
     "@alterior/web-server": "^3.9.2"
   },
