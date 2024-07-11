@@ -6,15 +6,15 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {beforeEach, afterEach, describe, it} from 'razmin';
-import {toArray} from 'rxjs/operators';
-import {expect} from 'chai';
-import {HttpClient} from '../client';
-import {HttpErrorResponse, HttpEventType, HttpResponse} from '../response';
-import {HttpClientTestingBackend} from '../testing/backend';
-import { firstValueFrom } from 'rxjs';
 import { Injector } from '@alterior/di';
-import { HttpBackend, HttpHandler } from '../backend';
+import { expect } from 'chai';
+import { afterEach, beforeEach, describe, it } from 'razmin';
+import { firstValueFrom } from 'rxjs';
+import { toArray } from 'rxjs/operators';
+import { HttpHandler } from '../backend';
+import { HttpClient } from '../client';
+import { HttpErrorResponse, HttpEventType, HttpResponse } from '../response';
+import { HttpClientTestingBackend } from '../testing/backend';
 
 describe('HttpClient', () => {
   let client: HttpClient = null !;
@@ -79,6 +79,7 @@ describe('HttpClient', () => {
     it('that returns a stream of events', done => {
       firstValueFrom(client.get('/test', {observe: 'events'}).pipe(toArray())).then(events => {
         expect(events.length).to.eq(2);
+        // @ts-ignore unused
         let x = HttpResponse;
         expect(events[0].type).to.eq(HttpEventType.Sent);
         expect(events[1].type).to.eq(HttpEventType.Response);

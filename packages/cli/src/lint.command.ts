@@ -18,9 +18,14 @@ export class LintCommand {
     }
 
     private async checkAccess() {
+        
+        // @ts-ignore unused
         let buildConfig = await readJsonFile<BuildConfig>(pathCombine(this.dir, 'alterior.json'));
         let pkgConfig = new PackageConfiguration(getWorkingDirectory());
+        
+        // @ts-ignore unused
         let currentAccess = await pkgConfig.getPackageAccess();
+        
         // if (currentAccess !== buildConfig.packageAccess) {
         //     this.reportLintError(
         //         'PackageAccessMismatch', 
@@ -80,9 +85,11 @@ export class LintCommand {
     }
 
     private async checkMainTS() {
+        // @ts-ignore unused
         let pkgJson = await readJsonFile(pathCombine(this.dir, 'package.json'));
 
         let guessedMainTS = 'src/main.ts';
+        // @ts-ignore unused
         let jsEntrypointFile = 'dist/main.js';
 
         if (!await fileExists(guessedMainTS)) {

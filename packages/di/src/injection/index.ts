@@ -17,5 +17,5 @@ export { ResolvedFactory } from './resolved-factory';
 export { ResolvedProvider } from './resolved-provider';
 
 export { Key } from './key';
-export { InjectionToken, OpaqueToken } from './injection-token';
+export { InjectionToken } from './injection-token';
 export { Type, isType } from './type';

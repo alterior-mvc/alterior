@@ -1,5 +1,4 @@
-import { readFile } from "fs";
-import { pathCombine, readJsonFile, readFileLines, fileExists, writeFileLines, writeJsonFile, removeTaggedLineRange, lineRangeTagStart, lineRangeTagEnd, replaceTaggedLineRange } from "./utils";
+import { fileExists, lineRangeTagEnd, lineRangeTagStart, pathCombine, readFileLines, readJsonFile, replaceTaggedLineRange, writeFileLines, writeJsonFile } from "./utils";
 
 export class PackageConfiguration {
     constructor(readonly directory : string) {

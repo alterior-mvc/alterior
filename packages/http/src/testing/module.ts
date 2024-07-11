@@ -6,12 +6,12 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {HttpBackend} from '../backend';
-import {HttpClientModule} from '../module';
-import {Module} from '@alterior/di';
+import { Module } from '@alterior/runtime';
+import { HttpBackend } from '../backend';
+import { HttpClientModule } from '../module';
 
-import {HttpTestingController} from './api';
-import {HttpClientTestingBackend} from './backend';
+import { HttpTestingController } from './api';
+import { HttpClientTestingBackend } from './backend';
 
 
 /**

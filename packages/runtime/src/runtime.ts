@@ -19,7 +19,7 @@ export class Runtime {
     constructor(modules: ModuleDefinition[], options: ApplicationOptions) {
         this.autostart = options.autostart ?? true;
         this.definitions = modules;
-        this.injector = this.resolveInjector(this.determineProviders(options));
+        this.injector = this.resolveInjector(this.determineProviders(options), options.parentInjector);
         this.instances = this.definitions.map(defn => new ModuleInstance(defn, this.injector.get(defn.target)));
         this.logger = this.injector.get(RUNTIME_LOGGER, options.silent? Runtime.silentLogger : Runtime.defaultLogger);
     }
@@ -208,7 +208,7 @@ export class Runtime {
      * 
      * @param injector 
      */
-    private resolveInjector(providers: Provider[]) {
+    private resolveInjector(providers: Provider[], parentInjector: Injector | undefined) {
         let resolvedProviders = Injector.resolve(providers);
         let keys = new Set<any>();
         let duplicateKeys = new Set<any>();
@@ -231,7 +231,7 @@ export class Runtime {
 
         let dependenciesInjector: Injector;
         try {
-            dependenciesInjector = Injector.resolveAndCreate(providers);
+            dependenciesInjector = Injector.resolveAndCreate(providers, parentInjector);
         } catch (e) {
             console.error(`Failed to resolve injector:`);
             console.error(e);

@@ -1,5 +1,6 @@
 import { Annotation, MetadataName } from '@alterior/annotations';
 import { InjectionToken, Provider } from '@alterior/di';
+import { Injector } from '@alterior/di';
 
 export const APP_OPTIONS = new InjectionToken<ApplicationOptions>("APPLICATION_OPTIONS");
 
@@ -60,6 +61,12 @@ export interface ApplicationOptions {
 	 * Additional dependency injection providers to include in the application's injector.
 	 */
 	providers?: Provider[];
+
+	/**
+	 * An injector to use as the parent of the application injector. Optional, useful when doing more complex 
+	 * application bootstrapping.
+	 */
+	parentInjector?: Injector;
 }
 
 /**

@@ -19,3 +19,5 @@ export * from './service-description';
 export * from './service-description-ref';
 export * from './certificate-generator';
 export * from './reactive-socket';
+export * from './intercept';
+export * from './session';

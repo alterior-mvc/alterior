@@ -6,6 +6,7 @@ import { StringTerminalDriver, TerminalDriverSelector } from "./terminal";
 describe('CommandLineProcessor', it => {
     let terminalDriver = new StringTerminalDriver();
     let processor = new CommandLineProcessor();
+    //@ts-ignore unused
     let exitCode: number | undefined;
 
     before(() => {
@@ -141,7 +142,6 @@ describe('CommandLineProcessor', it => {
     });
     it('allows commands to have subcommands', () => {
         let executed = 0;
-        let receivedArgs: string[] = [];
         processor.command('hello', cmd => 
             cmd
                 .command('world', cmd => 

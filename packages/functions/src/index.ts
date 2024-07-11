@@ -253,7 +253,7 @@ export function timespan(amount: string | number): number {
     if (!result)
         throw new TypeError(`Cannot parse timespan '${amount}'!`);
 
-    let [full, numStr, unit] = result;
+    let [_, numStr, unit] = result;
     let number = Number(numStr);
 
     switch (unit) {
@@ -321,7 +321,7 @@ export function age(timestamp: Date) {
 }
 
 /**
- * https://stackoverflow.com/a/46759625/1995204
+ * https://stackoverflow.com/a/46759625
  */
 export function isConstructor(f: Function) {
     if (f === Symbol)

@@ -1,5 +1,5 @@
 import { lazySubject } from './lazy-subject';
-import { BehaviorSubject, Subject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 /**
  * Wait a specified amount of time before resolving.

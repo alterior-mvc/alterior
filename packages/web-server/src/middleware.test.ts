@@ -2,8 +2,9 @@ import { suite } from 'razmin';
 import { prepareMiddleware, Middleware } from './middleware';
 import { InjectionToken, Injector, inject } from '@alterior/di';
 import { expect } from 'chai';
-import { MiddlewareDefinition, MiddlewareFunction, WebRequest } from './metadata';
+import { MiddlewareDefinition, WebRequest } from './metadata';
 import { ServerResponse } from 'http';
+import { ConnectMiddleware } from './web-server-engine';
 
 suite(describe => {
 	describe('prepareMiddleware', it => {
@@ -20,7 +21,7 @@ suite(describe => {
             }
 
             let injector = Injector.resolveAndCreate([ SampleMiddleware ]);
-            let preparedMiddleware = <MiddlewareFunction>prepareMiddleware(injector, SampleMiddleware);
+            let preparedMiddleware = <ConnectMiddleware>prepareMiddleware(injector, SampleMiddleware);
 
             let passedReq = <WebRequest>{};
             let passedRes = <ServerResponse>{};
@@ -39,7 +40,6 @@ suite(describe => {
             let observedSampleInjectable: unknown;
             let sampleInjectableValue = {};
 
-            @Middleware()
             class SampleMiddleware {
                 constructor() {
                     observedSampleInjectable = inject(SAMPLE_INJECTABLE_TOKEN);
@@ -48,12 +48,16 @@ suite(describe => {
                 handle(req: WebRequest, res: ServerResponse, next: () => void) {
                 }
             }
-
+            
+            // MERGE TODO: Injector
             let injector = Injector.resolveAndCreate([
                 SampleMiddleware,
                 { provide: SAMPLE_INJECTABLE_TOKEN, useValue: sampleInjectableValue }
             ]);
-            prepareMiddleware(injector, SampleMiddleware);
+
+            let connectMiddleware = prepareMiddleware(injector, SampleMiddleware);
+            connectMiddleware();
+            
             expect(observedSampleInjectable).to.be.equal(sampleInjectableValue)
         });
         
@@ -67,7 +71,7 @@ suite(describe => {
                 observedNext = next;
             }
 
-            let preparedMiddleware = <MiddlewareFunction>prepareMiddleware(injector, connectMiddleware);
+            let preparedMiddleware = <ConnectMiddleware>prepareMiddleware(injector, connectMiddleware);
             expect(preparedMiddleware).to.be.equal(connectMiddleware);
 
             let passedReq = <WebRequest>{};

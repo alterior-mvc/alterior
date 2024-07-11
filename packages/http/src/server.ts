@@ -8,16 +8,17 @@
 
 import * as xhr2 from 'xhr2';
 
-import { Injector, Provider, inject } from '@alterior/di';
+import { Provider, inject } from '@alterior/di';
 import { Observable, Observer, Subscription } from 'rxjs';
-import { HttpEvent } from './response';
-import { HttpRequest } from './request';
-import { HttpHandler, HttpBackend } from './backend';
-import { XhrFactory, BrowserXhr } from './xhr';
+import { HttpBackend, HttpHandler } from './backend';
 import { HttpInterceptingHandler } from './module';
+import { HttpRequest } from './request';
+import { HttpEvent } from './response';
+import { BrowserXhr, XhrFactory } from './xhr';
 
 const isAbsoluteUrl = /^[a-zA-Z\-\+.]+:\/\//;
 
+// @ts-ignore unused
 function validateRequestUrl(url: string): void {
   if (!isAbsoluteUrl.test(url)) {
     throw new Error(`URLs requested via Http on the server must be absolute. URL: ${url}`);

@@ -1,7 +1,7 @@
 import { InjectionToken } from '@alterior/di';
 import { Documentation, DocumentationAnnotation } from './documentation';
 import { HttpRoute, HttpRoutesBuilder, httpRoutes } from './http';
-import { ConcreteConstructor, Method, allowConstruction } from './types';
+import { Method, allowConstruction } from './types';
 
 function ServiceBuilder() {
     return {
@@ -31,6 +31,7 @@ interface MethodIntrospection {
     decorators: MethodDecorator[];
 }
 
+// @ts-ignore unused
 type ServiceIntrospection<T> = { readonly [P in keyof T as T[P] extends Method ? P : never]: MethodIntrospection; };
 
 export const COMMUNICATION_SERVICE_CLASS = new InjectionToken<any>("COMMUNICATION_SERVICE_CLASS");
@@ -95,9 +96,6 @@ export function Service(identity: string) {
             Object.defineProperty(serviceConstructor, 'name', {
                 value: `ServiceClient[${identity}]`
             });
-
-            let arr = [128, 56, 22, 9, 3244];
-            let arr2 = arr.sort();
 
             return allowConstruction(serviceConstructor);
         },

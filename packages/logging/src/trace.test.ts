@@ -2,7 +2,6 @@ import { suite } from "razmin";
 import { Trace, setTracingEnabled, getTracingEnabled } from "./trace";
 import { interceptConsole } from "@alterior/common";
 import { expect } from 'chai';
-import { inspect } from "./inspect";
 
 suite(describe => {
     describe('Trace', it => {
@@ -34,6 +33,7 @@ suite(describe => {
                         }
                     }
         
+                    // @ts-ignore unused
                     let thing = new Thing();
                     Thing.doSomething({ stuff: 321, other: "nice" }, 12333); 
                 });

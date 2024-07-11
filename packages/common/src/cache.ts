@@ -103,7 +103,7 @@ export class Cache<T> {
 
         // Compute the value
         let now = new Date().getTime();
-        let entry = this.entries[key] = { 
+        this.entries[key] = { 
             key,
             time: now, 
             expiresAt: now + timeToLive,

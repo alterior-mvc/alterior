@@ -1,7 +1,5 @@
-import { isConstructor } from "@alterior/functions";
 import { inject } from "./inject";
 import { NormalizedProvider } from "./normalized-provider";
-import { ConcreteType } from "./type";
 
 /**
  * An internal resolved representation of a factory function created by resolving {@link

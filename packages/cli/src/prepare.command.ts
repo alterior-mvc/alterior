@@ -1,14 +1,7 @@
-import * as path from 'path';
-import { CommandRunner } from './command-runner';
-import { ServiceGenerator } from './service-generator';
-import { GeneratorCanceled } from './generator-canceled';
-import { GeneratorError } from './generator-error';
-import { LibraryGenerator } from './library-generator';
-import { Generator } from './generator';
-import { Constructor } from '@alterior/runtime';
-import { pathCombine, getWorkingDirectory, readJsonFile, askBoolean } from './utils';
 import { BuildConfig } from './build-config';
+import { CommandRunner } from './command-runner';
 import { PackageConfiguration } from './package-configuration';
+import { getWorkingDirectory, pathCombine, readJsonFile } from './utils';
 
 export class PrepareCommand {
     constructor() {
@@ -37,6 +30,7 @@ export class PrepareCommand {
             return 1;
         }
 
+        // @ts-ignore unused
         let buildConfig = await readJsonFile<BuildConfig>(pathCombine(getWorkingDirectory(), 'alterior.json'));
         let pkgJson = await readJsonFile(pathCombine(getWorkingDirectory(), 'package.json'));
         let currentAccess = pkgJson.publishConfig?.access;

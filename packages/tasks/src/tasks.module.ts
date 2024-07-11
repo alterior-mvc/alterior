@@ -1,9 +1,11 @@
-import { Module, inject } from "@alterior/di";
+import { inject } from "@alterior/di";
+import { Module } from "@alterior/runtime";
 import { Logger, LoggingModule } from "@alterior/logging";
-import { Application, OnInit, RolesService } from "@alterior/runtime";
+import { Application, OnInit, ApplicationRoles } from "@alterior/runtime";
 import { TaskRunner } from "./task-runner";
 import { TaskWorker } from "./task-worker";
 import { TaskModuleOptions, TaskModuleOptionsRef, TaskQueueClient, TaskWorkerRegistry } from "./tasks";
+import { Constructor } from "@alterior/common";
 
 /**
  * Import this into your application module to run tasks enqueued by other 
@@ -20,9 +22,9 @@ import { TaskModuleOptions, TaskModuleOptionsRef, TaskQueueClient, TaskWorkerReg
         LoggingModule
     ]
 })
-export class TasksModule implements OnInit {
+export class TasksModule {
     private app = inject(Application);
-    private rolesService = inject(RolesService);
+    private rolesService = inject(ApplicationRoles);
     private client = inject(TaskQueueClient);
     private workerRegistry = inject(TaskWorkerRegistry);
     private logger = inject(Logger);
@@ -57,11 +59,11 @@ export class TasksModule implements OnInit {
         return this._options ? this._options.options : {} || {};
     }
 
-    get tasks(): Function[] {
+    get tasks(): Constructor<any>[] {
         return [...(this.app.runtime.definitions.map(x => x.metadata?.tasks ?? []))].flat();
     }
 
-    altOnInit() {
+    @OnInit() onInit() {
 
         this.workerRegistry.registerClasses(this.tasks);
 
@@ -78,7 +80,6 @@ export class TasksModule implements OnInit {
 
         this.rolesService.registerRole({
             identifier: 'task-worker',
-            instance: this,
             name: 'Task Worker',
             summary: 'Pulls from the task queue and executes them using task classes registered in the module tree',
             async start() {

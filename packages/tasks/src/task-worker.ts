@@ -1,4 +1,4 @@
-import { ArgumentNullError, InvalidOperationError } from "@alterior/common";
+import { ArgumentNullError, Constructor, InvalidOperationError } from "@alterior/common";
 import { Injector, Provider } from "@alterior/di";
 import { Logger } from "@alterior/logging";
 import { ApplicationOptions } from "@alterior/runtime";
@@ -101,14 +101,12 @@ export class TaskWorker {
 		this._taskHandlers[name] = handler;
 	}
 
-	registerClasses(taskClasses: Function[]) {
+	registerClasses(taskClasses: Constructor<any>[]) {
 
 		let providers: Provider[] = taskClasses as Provider[];
 		let ownInjector = Injector.resolveAndCreate(providers, this.injector);
-		let allRoutes = [];
 
-		let tasks = taskClasses.map(taskClass => {
-
+		taskClasses.forEach(taskClass => {
 			let id = taskClass.name;
 			let annotation = TaskAnnotation.getForClass(taskClass);
 			let instance: Worker = ownInjector.get(taskClass);

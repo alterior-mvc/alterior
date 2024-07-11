@@ -48,15 +48,15 @@ export class WebServer {
 			}
 		}
 
-		this._engine = this._injector.get(WebServerEngine, null) || this.createDefaultWebServerEngine();
+		this._engine = this._injector.get(WebServerEngine, null) || this.createDefaultWebServerEngine(options);
 
 		this.installGlobalMiddleware();
-		this.websockets = new ws.Server({ noServer: true });
+		this._websockets = new ws.Server({ noServer: true });
 		this.requestReporter = options?.requestReporter ?? this.requestReporter;
 		this.requestReporterFilters = options?.requestReporterFilters ?? this.requestReporterFilters;
 	}
 
-	private createDefaultWebServerEngine() {
+	private createDefaultWebServerEngine(options: WebServerOptions) {
 		if (!WebServerEngine.default) {
 			throw new Error(
 				`No WebServerEngine found! Set WebServerEngine.default to an engine (@alterior/express, @alterior/fastify) `
@@ -64,13 +64,21 @@ export class WebServer {
 			);
 		}
 		return Injector.resolveAndCreate([
-			{ provide: WebServerEngine, useClass: WebServerEngine.default }
+			{ provide: WebServerEngine, useClass: options.engine || WebServerEngine.default }
 		], this._injector).get(WebServerEngine);
 	}
 
 	private _injector: Injector;
 	readonly options: WebServerOptions;
-	readonly websockets: ws.Server;
+	private _websockets: ws.Server;
+
+	/**
+	 * Websocket server instance. 
+	 * @type ws.Server
+	 */
+	get websockets(): any {
+		return this._websockets;
+	}
 
 	private _httpServer?: http.Server;
 	private _insecureHttpServer?: http.Server;
@@ -146,16 +154,12 @@ export class WebServer {
 		return this._injector;
 	}
 
-	// public get express() {
-	//     return this.expressApp;
-	// }
-
 	get serviceDescription() {
 		return this._serviceDescription;
 	}
 
 	/**
-	 * Install the registered global middleware onto our Express 
+	 * Install the registered global middleware onto our web server 
 	 * application.
 	 */
 	private installGlobalMiddleware() {
@@ -184,7 +188,8 @@ export class WebServer {
 			);
 		}
 
-		this._insecureHttpServer = await this.engine.listenInsecurely(this.options);
+		if (this.options.insecurePort)
+			this._insecureHttpServer = await this.engine.listenInsecurely(this.options);
 	}
 
 	/**
@@ -472,7 +477,7 @@ export class WebServer {
 
 		return await new Promise<WebSocket>((resolve, reject) => {
 			this
-				.websockets
+				._websockets
 				.handleUpgrade(
 					WebEvent.request,
 					WebEvent.request.socket,
@@ -535,7 +540,7 @@ export class WebServer {
 	}
 
 	/**
-	 * Installs this route into the given Express application. 
+	 * Installs this route into the given web server application. 
 	 * @param app 
 	 */
 	addRoute(definition: RouteDescription, method: string, path: string, handler: (event: WebEvent) => void, middleware: MiddlewareDefinition[] = []) {

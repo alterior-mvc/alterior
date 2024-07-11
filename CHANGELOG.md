@@ -74,6 +74,93 @@ General
   * The type transformations used by annotations has been improved to take advantage of modern Typescript features, 
     allowing for better intellisense.
 
+# v3.9.3
+
+- `@/express`
+    * `ExpressEvent` now properly exposes `current` as an Express-specific `WebEvent`, 
+      `request` as `express.Request` and `response` as `express.Response` as intended.
+      Previously this class returned the same values as `WebEvent` which was not useful.
+
+# v3.9.2
+
+- `@/web-server`
+    * Fixed an issue where `Session.current().foo = 123` would not set the session variable as expected.
+
+# v3.9.1
+- `@/web-server`
+    * The `Session` class is now exported properly.
+
+# v3.9.0
+
+- `@/web-server`
+    * Adds support for "interceptors". Interceptors let you wrap the execution of all controller methods in
+      the web service. They can be defined in the optionss for `@WebService()`, `@Controller` or the `@Route()` family
+      of decorators. They are similar to applying a mutator, but without needing to use decorators, and without needing 
+      to declare the interception on every controller method. Use `WebEvent.current` to access details about the request.
+    * Adds `@Intercept()` decorator as a convenient way to apply a function conforming to the `Interceptor` type directly
+      to a method definition. 
+    * `WebEvent.inject()` is a convenience function for `WebEvent.current.get()`
+    * `webEvent.inject()` is a convenience function for `webEvent.server.injector.get()`
+
+# v3.8.0
+
+- `@/web-server`
+    * Route-specific middleware can now use `WebEvent.current` to acquire the web event being processed. While middleware
+      has always had access to the request/response pair, the current WebEvent also provides access to the controller and 
+      method which is about to be executed, amongst other things. This enables middleware to introspect the method call 
+      that is about to occur, enabling a broad set of use cases that were previously impossible. NOTE: Global and 
+      controller-level middleware cannot access `WebEvent.current` as they occur before any Alterior-specific 
+      processing occurs.
+    * Alterior-style middleware classes are now resolved *per request*, allowing dependency injection providers to 
+      differ per call. This has been used to allow `WebEvent` to be dependency injected as an alternative way of 
+      acquiring it.
+    * The new `preRouteMiddleware` and `postRouteMiddleware` options allow you to specify route-specific middleware at 
+      the global and controller levels, enabling you to use the new introspection capabilities without specifying 
+      middleware on every route. The order of application is: (1) global pre-middleware, (2) controller pre-middleware,
+      (3) route-specific middleware, (4) controller post-middleware, (5) global post-middleware.
+    * It is no longer necessary to mark middleware classes with `@Middleware()`. All classes are now treated as 
+      Alterior-style middleware (dependency injected, implements a `handle()` method). This is not a breaking change 
+      since passing a class not marked with `@Middleware()` would have caused a runtime error prior. As a result of 
+      this `@Middleware()` has been deprecated, and will be removed in 4.0.0.
+    * Correctness change: The type safety of the middleware-related properties of `WebServerOptions`, `@Controller()` and 
+      the `@Route()` family of decorators has been strengthened.
+- `@/common`: Adds `leftPad()`, `rightPad()`, `zeroPad()` and `isConstructor()`
+
+# v3.7.6
+
+- `@/web-server`: [(!!) Potential security issue] Fixes an issue which causes the optional secondary HTTP listener to 
+  be enabled even when not configured. This would cause Alterior web services to listen on a random high TCP port in 
+  addition to the primary port you configure. This may be security impacting for some deployment / firewall 
+  configurations.
+
+# v3.7.5
+
+- `@/web-server`: 
+    - Added the ability to override the default web server engine on specific `@WebService` classes
+    - Fixes an issue where installing Express' Typescript types alongside `@/web-server` may have been needed even 
+      though `@/web-server` does not have a direct dependency on Express
+- `@/common`: `getParameterNames()` will now look for a `__parameterNames` property and use that before trying to 
+  introspect the function, which allows code that transforms/replaces functions to carry parameter name metadata 
+  across more easily.
+- `@/annotations`: 
+    - When running a mutator against a function, preserve parameter names by setting a `__parameterNames`
+      property on the resulting function, containing the parameter names of the original function.
+    - Type safety has been improved around `Mutator.create()` and `Mutator.define()`
+
+# v3.7.4
+- `@/runtime`: Add `parentInjector` bootstrap option to allow for more complex application bootstrapping.
+
+# v3.7.3
+- `@/platform-angular`: Increase the Angular versions allowed by peer dependency
+
+# v3.7.2 
+- `@/di`: Remove unused `zone.js` peer dependency
+
+# v3.7.1
+- `@/web-server`: Remove direct type references to `express`
+- `@/di`: Fix type of `Injector#parent` when using `strictNullChecks`
+- `@/runtime`: Add missing object type constraint on `Reflector#getTypeFromClass`
+
 # v3.7.0
 - `@/runtime`
   * A new lifecycle event `altAfterStart` can be used to run code after all modules' `altOnStart` callbacks have 

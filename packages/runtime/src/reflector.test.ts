@@ -1,5 +1,5 @@
 import { describe } from "razmin";
-import { Reflector, Type } from "./reflector";
+import { Reflector } from "./reflector";
 import { expect } from "chai";
 
 describe('Reflector', it => {

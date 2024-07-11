@@ -1,5 +1,5 @@
 import { Application } from '@alterior/runtime';
-import { Module, ModuleLike } from '@alterior/di';
+import { Module, ModuleLike } from '@alterior/runtime';
 import { Provider as AngularProvider } from '@angular/core';
 
 /**
@@ -32,7 +32,7 @@ export class AngularPlatform {
   static async bootstrap(entryModule: Function): Promise<AngularProvider[]> {
     let app = await Application.bootstrap(entryModule);
     return app.runtime.providers.map(provider => {
-      let token = 'provide' in provider ? provider.provide : provider;
+      let token = ('provide' in provider ? provider.provide : provider) as any;
       return { 
         provide: token, 
         useValue: app.injector.get(token)

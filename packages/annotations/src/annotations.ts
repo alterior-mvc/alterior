@@ -56,8 +56,6 @@ export interface AnnotationDecoratorOptions<AnnoConstructorT extends Constructor
     allowMultiple?: boolean;
 }
 
-export type MutatorOptions = Omit<AnnotationDecoratorOptions<any, any>, 'factory'>;
-
 /**
  * Thrown when a caller attempts to decorate an annotation target when the 
  * annotation does not support that target.
@@ -246,76 +244,6 @@ export function MetadataName(name: string) {
     return (target: Function) => {
         Object.defineProperty(target, '$metadataName', { value: name })
     };
-}
-
-export interface MutatorDefinition {
-    invoke: (site: DecoratorSite) => void;
-    options?: MutatorOptions;
-}
-
-/**
- * Mutators are a way to define "mutation decorators" which in some way change the value 
- * of the elements they are applied to, as opposed to "annotation decorators", which primarily 
- * attach metadata.
- * 
- * Create a mutator with Mutator.create(). 
- */
-export class Mutator {
-    /** 
-     * Low-level method to ceate a new mutation decorator (mutator) based on the given function.
-     * Use `Mutator.define()` instead.
-     * 
-     * @internal
-     */
-    public static create(mutator: (target: DecoratorSite, ...args: any[]) => void, options?: MutatorOptions) {
-        return Annotation.decorator(Object.assign({}, options || {}, {
-            factory: (target: DecoratorSite, ...args: any[]) => {
-                mutator(target, ...args);
-                return undefined;
-            }
-        }));
-    }
-
-    /**
-     * Define a new mutation decorator (mutator).
-     * This should be called and returned from a
-     * function definition. For example:
-     * 
-```
-function Name() {
-    return Mutator.define({
-        invoke(site) {
-            // ...
-        }
-    })
-}
-```
-     * 
-     * The `invoke()` function takes a DecoratorSite object which describes the particular
-     * invocation that is being run, and importantly, access to the property descriptor
-     * for the property being defined. If you wish to completely replace (or wrap) the 
-     * default value of the property or method you are replacing, set the `value` 
-     * property of the property descriptor with `site.propertyDescriptor.value`
-     * 
-     * For example:
-     * ```
-export function RunTwice() {
-  return Mutator.create(
-    site => {
-      let prop = site.propertyDescriptor;
-      let original = prop.value;
-      let replacement = function(...args) {
-        original.apply(this, args);
-        original.apply(this, args);
-      }
-      prop.value = replacement;
-    }
-)
-     * ```
-     */
-    public static define(definition: MutatorDefinition) {
-        return this.create(definition.invoke, definition.options)();
-    }
 }
 
 /**

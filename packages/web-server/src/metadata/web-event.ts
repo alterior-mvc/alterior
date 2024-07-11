@@ -1,8 +1,10 @@
+import { InjectionToken } from '@alterior/di';
+import { AnyConstructor } from '@alterior/runtime';
+import { RouteInstance } from '../route-instance';
 import type { WebServer } from '../web-server';
 
 import * as http from 'http';
 import * as net from 'net';
-import { RouteInstance } from '../route-instance';
 
 export interface ServerSentEvent {
 	event?: string;
@@ -53,6 +55,14 @@ export class WebEvent<
 	route?: RouteInstance;
 
 	requestId?: string;
+
+	inject<T>(token: InjectionToken<T> | AnyConstructor<T>): T {
+		return this.server.injector.get(token);
+	}
+
+	static inject<T>(token: InjectionToken<T> | AnyConstructor<T>): T {
+		return this.current.inject(token);
+	}
 
 	/**
 	 * An arbitrary place to store metadata regarding this request. 

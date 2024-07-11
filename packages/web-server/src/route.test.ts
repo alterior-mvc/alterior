@@ -8,6 +8,8 @@ import { WebService } from './service';
 import { HttpError } from '@alterior/common';
 import { Application } from '@alterior/runtime';
 import { Response } from './response';
+import { IncomingMessage, ServerResponse } from 'http';
+import { InterceptedAction } from './web-server-options';
 
 let nextFreePort = 10010;
 
@@ -17,7 +19,7 @@ function fakeAppVarietyOfMethods() {
 			port: nextFreePort++,
 			silent: true,
 			middleware: [
-				(req, res, next) => {
+				(req: IncomingMessage, res: ServerResponse, next: () => {}) => {
 					res.setHeader('Content-Type', 'application/json');
 					next();
 				}
@@ -289,7 +291,7 @@ suite(describe => {
 			@WebService({
 				server: {
 					middleware: [
-						['/foo', (req, res, next) => {
+						['/foo', (req: IncomingMessage, res: ServerResponse, next: () => {}) => {
 							(req as any).fun = 'funfun';
 							next();
 						}]
@@ -309,7 +311,7 @@ suite(describe => {
 				;
 		});
 
-		it('should be injecting express URL parameters when appropriate', async () => {
+		it('should be injecting route URL parameters when appropriate', async () => {
 
 			let observedBar;
 			let observedBaz;
@@ -1100,6 +1102,85 @@ suite(describe => {
 			expect(observedEvent).to.be.instanceOf(WebEvent);
 			expect(observedEvent!.request).to.not.be.undefined;
 			expect(observedEvent!.response).to.not.be.undefined;
+		});
+
+		it('should support interceptors', async () => {
+			@WebService({
+				server: {
+					interceptors: [ async (action: InterceptedAction, ...args: any[]) => ({ ...await action(...args), intercepted: true }) ]
+				}
+			})
+			class FakeApp { 
+				@Get('/projects/:id')
+				getX(id: number) {
+					return { id, name: 'Foo' };
+				}
+			}
+
+			await teststrap(FakeApp)
+				.get('/projects/123')
+				.expect(200, { id: 123, name: 'Foo', intercepted: true })
+			;
+		});
+
+		it('should nest multiple interceptors', async () => {
+			let observed = '';
+
+			@WebService({
+				server: {
+					interceptors: [ 
+						async (action: InterceptedAction, ...args: any[]) => {
+							observed += '1';
+							return await action(...args)
+						},
+						async (action: InterceptedAction, ...args: any[]) => {
+							observed += '2';
+							return await action(...args)
+						},
+						async (action: InterceptedAction, ...args: any[]) => {
+							observed += '3';
+							return await action(...args)
+						}
+					]
+				}
+			})
+			class FakeApp { 
+				@Get('/projects/:id')
+				getX(id: number) {
+					observed += '4';
+					return { id, name: 'Foo' };
+				}
+			}
+
+			await teststrap(FakeApp)
+				.get('/projects/123')
+				.expect(200, { id: 123, name: 'Foo' })
+			;
+
+			expect(observed).to.equal('1234');
+		});
+
+		it('interceptor can skip call', async () => {
+			@WebService({
+				server: {
+					interceptors: [ 
+						async () => {
+							throw new HttpError(401, { error: 'unauthorized' });
+						}
+					]
+				}
+			})
+			class FakeApp { 
+				@Get('/projects/:id')
+				getX(id: number) {
+					return { id, name: 'Foo' };
+				}
+			}
+
+			await teststrap(FakeApp)
+				.get('/projects/123')
+				.expect(401, { error: 'unauthorized' })
+			;
 		});
 
 		it('should support POST', async () => {

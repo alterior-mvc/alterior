@@ -1,10 +1,10 @@
 import { Injector, Provider, Type } from "@alterior/di";
+import { ALT_ON_INIT, ALT_ON_START, ALT_ON_STOP, fireLifecycleEvent, handleLegacyLifecycleEvent } from '@alterior/runtime';
 import { ALT_ON_LISTEN, ControllerAnnotation, ControllerOptions, MiddlewareDefinition, MountOptions } from "./metadata";
 import { RouteReflector } from "./metadata/route-reflector-private";
 import { prepareMiddleware } from "./middleware";
-import { WebServer } from "./web-server";
 import { RouteInstance } from "./route-instance";
-import { ALT_ON_INIT, ALT_ON_START, ALT_ON_STOP, fireLifecycleEvent, handleLegacyLifecycleEvent } from '@alterior/runtime';
+import { WebServer } from "./web-server";
 
 export interface ControllerContext {
 	pathPrefix?: string;
@@ -88,7 +88,7 @@ export class ControllerInstance {
 			this.instance[mount.propertyKey] = instance.instance;
 		}
 
-		// Register all of our routes with Express
+		// Register all of our routes with the web server
 
 		return routeDefinitions.map(
 			definition => new RouteInstance(
@@ -96,6 +96,9 @@ export class ControllerInstance {
 				this.instance,
 				this.injector,
 				this.middleware,
+				this.options.preRouteMiddleware ?? [], 
+				this.options.postRouteMiddleware ?? [],
+				this.options.interceptors ?? [],
 				this.group,
 				this.type,
 				this.routeTable,
@@ -139,15 +142,18 @@ export class ControllerInstance {
 	}
 
 	private prepareMiddleware(): any[] {
-		// Procure an injector which can handle injecting the middlewares' providers
-		let childInjector = Injector.resolveAndCreate(
-			<Provider[]>this.middleware.filter(x => Reflect.getMetadata('alterior:middleware', x)),
-			this.injector
-		);
+		// Load up the defined middleware for this route
+		let middleware = this.middleware;
+
+		// Ensure indexes are valid.
+
+		let invalidIndex = middleware.findIndex(x => !x);
+		if (invalidIndex >= 0)
+			throw new Error(`Controller '${this.type}' provided null middleware at position ${invalidIndex}`);
 
 		// Prepare the middlewares (if they are DI middlewares, they get injected)
 
-		return this.middleware.map(x => prepareMiddleware(childInjector, x));
+		return middleware.map(x => prepareMiddleware(this.injector, x));
 	}
 
 	private _initialized = false;

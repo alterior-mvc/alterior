@@ -17,3 +17,5 @@ export * from './time';
 export * from './get-param-names';
 export * from './lazy-subject';
 export * from './check-native-async';
+export * from './is-constructor';
+export * from './padding';

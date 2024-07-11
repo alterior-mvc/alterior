@@ -1,9 +1,9 @@
 import { Annotation, Annotations, IAnnotation } from "@alterior/annotations";
 import { getParameterNames } from "@alterior/common";
 
-export interface Constructor<T> {
-    new(...args: any[]): T;
-}
+export type Constructor<T> = new(...args: any[]) => T;
+export type AbstractConstructor<T> = abstract new(...args: any[]) => T;
+export type AnyConstructor<T> = Constructor<T> | AbstractConstructor<T>;
 
 export type Visibility = 'private' | 'public' | 'protected';
 
@@ -71,7 +71,7 @@ export class Property<T>{
     }
 
     annotationOfType<T extends Annotation>(type: Constructor<T> & typeof Annotation): T {
-        return type.filter(this.annotations)[0];
+        return type.filter(this.annotations)[0] as T;
     }
 
     get descriptor(): PropertyDescriptor | undefined {

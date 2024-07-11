@@ -48,6 +48,7 @@ export class BrowserXhr implements XhrFactory {
 /**
  * Tracks a response from the server that does not yet have a body.
  */
+// @ts-ignore unused
 interface PartialResponse {
   headers: HttpHeaders;
   status: number;

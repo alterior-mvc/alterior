@@ -1,8 +1,11 @@
-import { Logger } from "@alterior/logging";
-import { MiddlewareDefinition, WebEvent } from "./metadata";
-import * as tls from 'tls';
-import { RouteInstance } from "./route-instance";
 import { InjectionToken, provide } from "@alterior/di";
+import { Logger } from "@alterior/logging";
+import { Constructor } from "@alterior/runtime";
+import * as tls from 'tls';
+import { MiddlewareDefinition, WebEvent } from "./metadata";
+import { RouteInstance } from "./route-instance";
+import { WebServerEngine } from "./web-server-engine";
+import { MiddlewareProvider } from "./middleware";
 
 type Protocol = 'h2'
 	| 'spdy/3.1'
@@ -36,6 +39,9 @@ export function provideWebServerOptions(options: WebServerOptions = {}) {
 	return provide(WEB_SERVER_OPTIONS).usingValue(options);
 }
 
+export type InterceptedAction = (...args: any[]) => any;
+export type Interceptor = (action: InterceptedAction, ...args: any[]) => any;
+
 /**
  * Specifies options when setting up a `@WebService` class.
  */
@@ -46,6 +52,11 @@ export interface WebServerOptions {
 	 * HTTP, set this field to the secure port and set 
 	 */
 	port? : number;
+
+	/**
+	 * Override the default web server engine
+	 */
+	engine?: Constructor<WebServerEngine>;
 
 	/**
 	 * When using TLS via certificate/privateKey or sniHandler (and thus HTTPS is served), 
@@ -113,6 +124,23 @@ export interface WebServerOptions {
 	 * Connect-style middleware that should be run before the final request handler
 	 */
     middleware? : MiddlewareDefinition[];
+
+	/**
+	 * Connect-style middleware that should be run before route-specific middleware 
+	 * has been run.
+	 */
+    preRouteMiddleware? : (MiddlewareProvider)[];
+
+	/**
+	 * Connect-style middleware that should be run after route-specific middleware 
+	 * has been run.
+	 */
+    postRouteMiddleware? : (MiddlewareProvider)[];
+
+	/**
+	 * Wrap the execution of all controller methods. Earlier interceptors run first.
+	 */
+	interceptors?: Interceptor[];
 
 	/**
 	 * Whether or not to hide exception details from the web response output

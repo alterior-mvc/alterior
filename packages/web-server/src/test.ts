@@ -35,6 +35,8 @@ export class TestWebServerEngine extends WebServerEngine {
 
 	async listen(options : WebServerOptions) {
 		let server : http.Server;
+
+		// @ts-ignore unused TODO
 		let protocols = ['http/1.1', 'http/1.0'];
 
 		if (options.protocols)

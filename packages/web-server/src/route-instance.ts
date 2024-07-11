@@ -1,9 +1,9 @@
 import { Annotations } from "@alterior/annotations";
 import { ArgumentError, ArgumentNullError, getParameterNames } from "@alterior/common";
-import { Injector, Provider } from '@alterior/di';
+import { Injector } from '@alterior/di';
 import { InputAnnotation } from "./input";
-import { RouteDefinition, RouteOptions, WebEvent } from "./metadata";
-import { prepareMiddleware } from "./middleware";
+import { MiddlewareDefinition, RouteDefinition, RouteOptions, WebEvent } from "./metadata";
+import { MiddlewareProvider, prepareMiddleware } from "./middleware";
 import { Response } from './response';
 import { ellipsize } from './utils';
 import { WebServer } from "./web-server";
@@ -14,6 +14,8 @@ import { RouteParamDescription } from "./route-param-description";
 import { RouteMethodMetadata } from "./route-method-metadata";
 import { RouteDescription } from "./route-description";
 import { RouteMethodParameter } from "./route-method-parameter";
+import { Interceptor } from "./web-server-options";
+import { ConnectMiddleware } from "./web-server-engine";
 
 /**
  * Represents a Route instance
@@ -23,7 +25,9 @@ export class RouteInstance {
 		readonly server: WebServer,
 		readonly controllerInstance: any,
 		readonly injector: Injector,
-		readonly parentMiddleware: any[],
+        readonly preMiddleware: any[],
+		readonly postMiddleware: any[],
+		readonly interceptors: Interceptor[],
 		readonly parentGroup: string,
 		readonly controllerType: Function,
 		readonly routeTable: any[],
@@ -31,7 +35,8 @@ export class RouteInstance {
 	) {
 		this.options = this.definition.options ?? {};
 		this.group = this.options.group || this.parentGroup;
-		this.middleware = [...(this.options.middleware ?? [])];
+		this.middleware = this.gatherMiddleware();
+		this.resolvedMiddleware = this.prepareMiddleware(this.middleware);
 
 		this.routeTable.push({
 			controller: this.controllerType,
@@ -90,16 +95,30 @@ export class RouteInstance {
 
 	readonly description: RouteDescription;
 
-	private prepareMiddleware() {
-		// Procure an injector which can handle injecting the middlewares' providers
+	private gatherMiddleware() {
+		// Load up the defined middleware for this route
+		let route = this.definition;
+		let middleware = [
+			...(this.server.options?.preRouteMiddleware ?? []),
+			...this.preMiddleware,
+			...(route.options.middleware ?? []),
+			...this.postMiddleware,
+			...(this.server.options?.postRouteMiddleware ?? [])
+		];
+		
+		// Ensure indexes are valid.
 
-		let childInjector = Injector.resolveAndCreate(
-			<Provider[]>this.middleware.filter(x => Reflect.getMetadata('alterior:middleware', x)),
-			this.injector
-		);
+		let invalidIndex = middleware.findIndex(x => !x);
+		if (invalidIndex >= 0)
+			throw new Error(`Route '${route.path}' provided null middleware at position ${invalidIndex}`);
 
 		// Prepare the middlewares (if they are DI middlewares, they get injected)
-		let resolvedMiddleware = this.middleware.map(x => prepareMiddleware(childInjector, x));
+
+		return middleware;
+	}
+
+	private prepareMiddleware(middleware: MiddlewareDefinition[]) {
+		let resolvedMiddleware = middleware.map(x => prepareMiddleware(this.injector, x)) as ConnectMiddleware[];
 
 		// Automatically handle body parsing 
 
@@ -132,7 +151,8 @@ export class RouteInstance {
 		return resolvedMiddleware;
 	}
 
-	middleware: any[];
+	middleware : MiddlewareProvider[];
+	resolvedMiddleware : ConnectMiddleware[];
 
 	private getMethodReflectedMetadata<T = unknown>(name: string): T {
 		return Reflect.getMetadata(name, this.controllerType.prototype, this.definition.method);
@@ -214,6 +234,20 @@ export class RouteInstance {
 		let route = this.definition;
 		let controllerType = this.controllerType;
 
+		// Middleware
+
+		await event.context(async () => {
+			try {
+				for (let item of this.resolvedMiddleware)
+					await new Promise<void>((resolve, reject) => item(event.request, event.response, (err?: any) => err ? reject(err) : resolve()));
+			} catch (e) {
+				console.error(`Caught exception:`);
+				console.error(e);
+
+				throw e;
+			}
+		});
+
 		// Execute our function by resolving the parameter factories into a set of parameters to provide to the 
 		// function.
 
@@ -249,9 +283,22 @@ export class RouteInstance {
 
 			let result;
 
+			let interceptors = [
+				...this.server.options.interceptors ?? [],
+				...this.interceptors ?? [],
+				...this.definition.options.interceptors ?? [],
+			].reverse();
+
 			try {
 				result = await event.context(async () => {
-					return await instance[route.method](...resolvedParams);
+					let action = (...params: any[]) => instance[route.method](...params);
+					for (let interceptor of interceptors) {
+						let inner = action;
+						action = (...params) => interceptor(inner, ...params);
+					}
+
+					return await action(...resolvedParams);
+
 				});
 			} catch (e) {
 				event.metadata['uncaughtError'] = e;
@@ -320,7 +367,7 @@ export class RouteInstance {
 	}
 
 	/**
-	 * Installs this route into the given Express application. 
+	 * Installs this route into the given web server application. 
 	 * @param app 
 	 */
 	mount(pathPrefix: string) {
@@ -331,7 +378,7 @@ export class RouteInstance {
 			this.definition.httpMethod,
 			`${pathPrefix || ''}${this.definition.path}`,
 			ev => this.execute(this.controllerInstance, ev),
-			this.prepareMiddleware()
+			[]
 		);
 	}
 }

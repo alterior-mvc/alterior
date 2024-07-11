@@ -9,7 +9,6 @@ export class Lock {
     }
 
     private _ready?: Promise<void>;
-    private static _namedLocks: Map<any, Lock>;
 
     static forToken<T extends Lock>(this: { new(): T }, token: any): T {
 

@@ -1,11 +1,10 @@
-import { Annotation, AnnotationDecorator, MetadataName } from "@alterior/annotations";
-import { Constructor, BuiltinLifecycleEvents } from "@alterior/runtime";
-import { IncomingMessage, ServerResponse } from "http";
+import { Annotation, MetadataName } from "@alterior/annotations";
+import { BuiltinLifecycleEvents } from "@alterior/runtime";
+import { MiddlewareProvider } from "../middleware";
+import { Interceptor } from "../web-server-options";
 
 export let CONTROLLER_CLASSES = [];
-
-export type MiddlewareFunction = (req: IncomingMessage, res: ServerResponse, next: () => void) => void;
-export type MiddlewareDefinition = Constructor<any> | MiddlewareFunction | [ string, MiddlewareFunction ];
+export type MiddlewareDefinition = MiddlewareProvider | [ string, MiddlewareProvider ];
 
 export interface ControllerOptions {
 	/**
@@ -22,6 +21,24 @@ export interface ControllerOptions {
 	 * Middleware to be applied to all route methods for this controller.
 	 */
 	middleware? : MiddlewareDefinition[];
+	
+	/**
+	 * Wrap execution of controller methods with these interceptors. Earlier interceptors run first.
+	 */
+	interceptors?: Interceptor[];
+
+	/**
+	 * Connect-style middleware that should be run before route-specific middleware 
+	 * has been run.
+	 */
+    preRouteMiddleware? : (MiddlewareProvider)[];
+
+	/**
+	 * Connect-style middleware that should be run after route-specific middleware 
+	 * has been run.
+	 */
+    postRouteMiddleware? : (MiddlewareProvider)[];
+
 }
 
 @MetadataName('@alterior/web-server:Controller')

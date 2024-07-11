@@ -1,5 +1,3 @@
-import { Type } from './type';
-
 import { InvalidProviderError, MixingMultiProvidersWithRegularProvidersError } from './errors';
 import { inject } from './inject';
 import { Key } from './key';

@@ -48,7 +48,7 @@ function deepCloneWithMemoization<T>(o: T | T[] | null, memo : WeakMap<any, any>
 		return memo.get(o);
 	}
 
-	let output, v, key;
+	let output, v;
 	output = {} as T;
 	
 	memo.set(o, output);

@@ -11,6 +11,7 @@ import { LogFormatter } from './log-formatter';
 import { Logger } from './logger';
 import { LOGGING_OPTIONS, LoggingOptions } from './logging-options';
 
+// @ts-ignore unused
 const SAMPLE_LOG_MESSAGE_1 : LogEvent = { type: 'message', message: 'ABCDEF', data: {}, date: new Date(), severity: 'info', context: null };
 const SAMPLE_LOG_MESSAGE_2 : LogEvent = { type: 'message', message: '123456', data: {}, date: new Date(), severity: 'info', context: null };
 const SAMPLE_LOG_MESSAGE_3 : LogEvent = { type: 'message', message: 'TUVXYZ', data: {}, date: new Date(), severity: 'info', context: null };
@@ -37,6 +38,7 @@ function SAMPLE_LOG_MESSAGE_FATAL(message: string) : LogEvent {
     };
 }
 
+// @ts-ignore unused
 function loggerWithOptions(options: LoggingOptions) {
     return Injector.resolveAndCreate([ 
         Logger, 

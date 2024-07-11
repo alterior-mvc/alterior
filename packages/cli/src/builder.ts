@@ -1,19 +1,9 @@
-import { ANNOTATIONS_KEY, CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY, METHOD_PARAMETER_ANNOTATIONS_KEY, PROPERTY_ANNOTATIONS_KEY } from "@alterior/annotations";
-import { ApplicationError, getParameterNames } from "@alterior/common";
-import { ExposureReflector } from "@alterior/runtime";
+import { ApplicationError } from "@alterior/common";
 import rttiTransformer from 'typescript-rtti/dist/transformer';
 import { CommandRunner } from "./command-runner";
 import {
-    changeWorkingDirectory,
-    fileExists,
-    getWorkingDirectory,
-    isConstructor,
-    makeDirectory, pathCombine,
     pathResolve,
-    readJsonFile,
-    removeAll,
-    unindent,
-    writeTextFile
+    readJsonFile
 } from "./utils";
 
 import * as ts from 'typescript';
@@ -35,6 +25,8 @@ export class BackendBuilder {
     async build() {
         if (this.enableCustomTSC) {
             let tsConfigFile = pathResolve('.', "tsconfig.json");
+            
+            // @ts-ignore unused
             let config = await readJsonFile(tsConfigFile);
 
             let createProgram : ts.CreateProgram<ts.EmitAndSemanticDiagnosticsBuilderProgram>;

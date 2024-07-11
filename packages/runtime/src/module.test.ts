@@ -344,6 +344,7 @@ describe("Modules", () => {
             }
         }
 
+        // @ts-ignore unused
         let application = await Application.bootstrap(TestModule);
 
         expect(observedTime).to.exist;
@@ -375,6 +376,7 @@ describe("Modules", () => {
             }
         }
 
+        // @ts-ignore unused
         let application = await Application.bootstrap(TestModule);
 
         expect(observedTime).to.exist;
@@ -392,6 +394,7 @@ describe("Modules", () => {
             }
         }
 
+        // @ts-ignore unused
         let application = await Application.bootstrap(TestModule);
 
         expect(observedEnv).to.exist;
@@ -412,6 +415,7 @@ describe("Modules", () => {
             }
         }
 
+        // @ts-ignore unused
         let application = await Application.bootstrap(TestModule);
 
         expect(observedEnv).to.exist;

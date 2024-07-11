@@ -4,7 +4,7 @@
 
 import { MetadataName, Annotation } from "@alterior/annotations";
 import { Provider } from '@alterior/di';
-import { BuiltinLifecycleEvents, withBuiltinLifecycleSymbols } from "./lifecycle";
+import { withBuiltinLifecycleSymbols } from "./lifecycle";
 
 export interface ConfiguredModule extends ModuleOptions {
     $module: ModuleLike;

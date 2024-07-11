@@ -6,7 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { ConfiguredModule, Module, inject } from '@alterior/di';
+import { inject } from '@alterior/di';
+import { ConfiguredModule, Module } from '@alterior/runtime';
 import { Observable } from 'rxjs';
 
 import { injectionContext } from '@alterior/di/dist/injection';

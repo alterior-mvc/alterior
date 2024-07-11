@@ -2,16 +2,15 @@ import inquirer from 'inquirer';
 import { BuildConfig, ServiceBuildConfig } from './build-config';
 import { CommandRunner } from './command-runner';
 import { Generator } from './generator';
-import { GeneratorCanceled } from './generator-canceled';
 import { GeneratorError } from './generator-error';
 import { PackageConfiguration } from './package-configuration';
-import { askBoolean, capitalize, changeWorkingDirectory, getWorkingDirectory, makeDirectory, pathCombine, readJsonFile, toUpperCamelCase, unindent, writeFileLines, writeJsonFile, writeTextFile } from './utils';
+import { capitalize, changeWorkingDirectory, getWorkingDirectory, makeDirectory, toUpperCamelCase, unindent, writeJsonFile, writeTextFile } from './utils';
 
 import * as fs from 'fs';
-import * as path from 'path';
+import ora from 'ora';
 import * as os from 'os';
+import * as path from 'path';
 import { SPDX } from './spdx';
-import ora, { Ora } from 'ora';
 
 export interface ServiceGenerationSettings {
     engine: 'express' | 'fastify';
@@ -299,7 +298,6 @@ export class ServiceGenerator extends Generator {
     }
 
     async generate() {
-        let projectName = this.projectName;
         let projectDir = this.projectDir;
 
         if (fs.existsSync(projectDir))

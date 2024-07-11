@@ -25,5 +25,8 @@ describe('Base64', () => {
             expect(Base64.decode('8J+agA==')).to.equal('🚀');
             expect(Base64.decode('8J+agA')).to.equal('🚀');
         })
+        it('roundtrips UTF-8 as expected', () => {
+            expect(Base64.decode(Base64.encode('😀'))).to.equal('😀');
+        })
     })
 })

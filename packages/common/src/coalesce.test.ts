@@ -24,11 +24,9 @@ suite(describe => {
             expect(coalesce(undefined, func, 2)).to.equal(func);
         });
         it('should accept false as a defined value', () => {
-            let func = () => {};
             expect(coalesce(undefined, false, true)).to.equal(false);
         });
         it('should accept true as a defined value', () => {
-            let func = () => {};
             expect(coalesce(undefined, true, false)).to.equal(true);
         });
     })

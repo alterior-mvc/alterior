@@ -1,4 +1,4 @@
-import { Annotation, MetadataName, AnnotationDecorator } from "@alterior/annotations";
+import { Annotation, MetadataName } from "@alterior/annotations";
 import { InjectionToken, Injector, Provider, inject } from "@alterior/di";
 import { injectionContext } from "@alterior/di/dist/injection";
 import BullQueue from "bull";

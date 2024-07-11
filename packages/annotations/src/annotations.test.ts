@@ -77,6 +77,7 @@ suite(describe => {
             }
 
             @MultiLabel(`thing2`)
+            //@ts-ignore unused
             class SubTestSubject extends TestSubject {}
     
             let annotations = Annotations.getClassAnnotations(TestSubject);
@@ -162,6 +163,7 @@ suite(describe => {
                 }
             }
 
+            //@ts-ignore unused
             class SubTestSubject extends TestSubject {
                 @MultiLabel(`thing2`)
                 stuff() {
@@ -229,6 +231,7 @@ suite(describe => {
                 stuff : number = 123;
             }
 
+            //@ts-ignore unused
             class SubTestSubject extends TestSubject {
                 @MultiLabel(`thing2`)
                 stuff : number = 321;
@@ -323,6 +326,7 @@ suite(describe => {
                 }
             }
     
+            // @ts-ignore unused
             class EmptySubject { 
                 helloStrings2(@MultiLabel(`thing2`) param1 : string, param2 : string, @MultiLabel(`thing3`) param3: string) {
                 }
@@ -374,6 +378,7 @@ suite(describe => {
     
         it.skip("should not complain when an ApplyOnce decorator is applied to both superclass and subclass", () => {
             @Label('foo')
+            // @ts-ignore unused
             class Superclass {
 
             }
@@ -762,9 +767,11 @@ suite(describe => {
             });
     
             @decorator(LABEL)
+            //@ts-ignore unused
             class TestSubject { constructor(@decorator(LABEL) stuff : string) { } }
             
             try {
+                //@ts-ignore unused
                 class BrokenSubject { @decorator(LABEL) helloWorld() { } }
                 throw new Error("The decorator allowed usage on 'method' when only 'class' and 'parameter' should be allowed.");
             } catch (e) {

@@ -56,22 +56,26 @@ class CyclicEngine {
 class Engine2 {}
 class TurboEngine2 extends Engine {}
 
+// @ts-ignore unused
 class SportsCar2 extends Car {}
 
 class CarWithInject2 {
   engine = inject(TurboEngine2);
 }
 
+// @ts-ignore unused
 class CyclicEngine2 {
   car = inject(Car);
 }
 
 /////////////////////////////
 
+// @ts-ignore unused
 class NoAnnotations {
   constructor(secretDependency: any) {}
 }
 
+// @ts-ignore unused
 function factoryFn(a: any) {}
 
 const dynamicProviders: Provider[] = [

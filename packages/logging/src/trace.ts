@@ -156,8 +156,6 @@ export function Trace() {
                     logger.debug(`} // [${components.join(', ')}] ${methodSpec}`);
                 };
 
-                let status = undefined;
-
                 try {
                     indentConsole(4, () => {
                         try {

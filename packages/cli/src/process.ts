@@ -1,7 +1,8 @@
-import * as childProcess from 'child_process';
-import { Observable, ReplaySubject, Subject, firstValueFrom } from 'rxjs';
-import * as os from 'os';
+import { Observable, ReplaySubject, firstValueFrom } from 'rxjs';
 import { fileExists, pathCombine } from './utils';
+
+import * as os from 'os';
+import * as childProcess from 'child_process';
 
 export interface ProcessExitedEvent {
     code : number | null;

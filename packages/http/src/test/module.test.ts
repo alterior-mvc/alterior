@@ -9,7 +9,8 @@
 import { describe, it, beforeEach } from 'razmin';
 import { expect } from 'chai';
 
-import { Module, Injector, inject } from '@alterior/di';
+import { Injector, inject } from '@alterior/di';
+import { Module } from '@alterior/runtime';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -50,6 +51,7 @@ class InterceptorB extends TestInterceptor {
 }
 
 class ReentrantInterceptor implements HttpInterceptor {
+  // @ts-ignore unused
   private client = inject(HttpClient);
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -82,6 +84,7 @@ class ReentrantInterceptor implements HttpInterceptor {
         done();
       });
 
+      // @ts-ignore unused
       let thing = injector.get(HttpTestingController);
       injector.get(HttpTestingController).expectOne('/test').flush('ok!');
     });

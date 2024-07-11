@@ -1,4 +1,5 @@
-import { ConfiguredModule, Module, inject } from "@alterior/di";
+import { inject } from "@alterior/di";
+import { ConfiguredModule, Module } from "@alterior/runtime";
 import * as mongodb from 'mongodb';
 
 @Module()

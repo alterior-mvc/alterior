@@ -1,12 +1,10 @@
-import { rimraf } from "rimraf";
 import * as fs from "fs";
+import mkdirp from "mkdirp";
 import * as os from "os";
 import * as path from "path";
 import * as process from "process";
-import mkdirp from "mkdirp";
 import * as readline from 'readline';
-import { resolve } from "path";
-import inquirer from "inquirer";
+import { rimraf } from "rimraf";
 
 export function unindent(str : string) {
     let lastNewline = str.lastIndexOf("\n");
