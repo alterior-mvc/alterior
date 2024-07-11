@@ -4,9 +4,10 @@ import { Injectable } from '@alterior/di';
 
 @Injectable()
 export class Session {
-    static current<T>(this : Constructor<T>): T {
-        return new Proxy(new (<any>this)(), {
-            get: (target, key : string, receiver) => target.get(key)
+    static current<T extends Session>(this : Constructor<T>): T {
+        return new Proxy(new (this as Constructor<T>)(), {
+            get: (target, key : string, receiver) => target.get(key),
+            set: (target, key: string, value: any) => (target.set(key, value), true)
         });
     }
 
