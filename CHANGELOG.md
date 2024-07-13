@@ -1,5 +1,12 @@
 # ⏭ vNext
 
+# v3.9.4
+- `@/web-server`
+    * Fixes a bug where failing to provide a body when using the `Response` class would cause an exception
+      within Express. Failing to provide a body now ends the response without outputting a body.
+    * Corrects the type of `ConnectMiddleware` to require the `next()` function to be passed. 
+      This fixes type errors when using many Connect middlewares.
+
 # v3.9.3
 
 - `@/express`

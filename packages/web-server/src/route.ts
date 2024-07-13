@@ -569,7 +569,11 @@ export class RouteInstance {
 
 						event.response.end();
 					} else if (response.encoding === 'json') {
-						this.server.engine.sendJsonBody(event, response.unencodedBody);
+						if (response.unencodedBody)
+							this.server.engine.sendJsonBody(event, response.unencodedBody);
+						else
+							event.response.end();
+
 					} else {
 						throw new Error(`Unknown encoding type ${response.encoding}`);
 					}
