@@ -78,18 +78,22 @@ export abstract class Injector {
   abstract get(token: any, notFoundValue?: any): any;
 
   /**
-   * @internal
+   * Run the given callback in an injection context for this injector. This allows you to use inject() within 
+   * arbitrary code. This only works synchronously (no async/await).
+   * 
+   * @param callback The callback to run.
    */
-  static _runInInjectionContext(injector: Injector, callback: () => void) {
+  static run<T>(injector: Injector, callback: () => T) {
     let previousContext = CURRENT_INJECTOR;
     CURRENT_INJECTOR = injector;
     try {
-      callback();
+      return callback();
     } finally {
       CURRENT_INJECTOR = previousContext;
     }
   }
 }
+
 
 /**
  * Type of the options argument to `inject`.

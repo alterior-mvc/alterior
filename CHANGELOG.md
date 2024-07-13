@@ -1,5 +1,9 @@
 # ⏭ vNext
 
+# v3.9.5
+- `@/di`
+    * You can now use `Injector.run()` to run a callback within an injection context for the given injector.
+
 # v3.9.4
 - `@/web-server`
     * Fixes a bug where failing to provide a body when using the `Response` class would cause an exception
