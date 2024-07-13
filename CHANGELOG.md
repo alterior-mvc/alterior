@@ -1,6 +1,6 @@
 # ⏭ vNext
 
-# v3.9.5
+# v3.10.0
 - `@/di`
     * You can now use `Injector.run()` to run a callback within an injection context for the given injector.
 
