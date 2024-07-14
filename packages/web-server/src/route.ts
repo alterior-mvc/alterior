@@ -450,6 +450,7 @@ export class RouteInstance {
 		
 		event.controller = instance;
 		event.server = this.server;
+		event.route = this;
 
 		if (!instance[this.definition.method]) {
 			throw new ArgumentError(
