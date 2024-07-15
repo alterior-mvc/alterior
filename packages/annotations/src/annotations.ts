@@ -36,16 +36,34 @@ interface AnnotationConstructor<AnnoT extends Annotation, TS extends any[]> {
     getMetadataName();
 }
 
+export type AnnotationClassDecorator<TS extends any[]> = (...args: TS) => ((target: any) => void);
+export type AnnotationPropertyDecorator<TS extends any[]> = (...args: TS) => ((target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => void);
+export type AnnotationMethodDecorator<TS extends any[]> = (...args: TS) => ((target: any, propertyKey: string | symbol) => void);
+export type AnnotationParameterDecorator<TS extends any[]> = (...args: TS) => ((target: any, propertyKey: string | symbol, index: number) => void);
+// (...args: TS): (target, ...args) => void;
+
+type UnionToIntersection<U> = 
+  (U extends any ? (x: U)=>void : never) extends ((x: infer I)=>void) ? I : never
+  
+type DecoratorTypeUnionForValidTargets<Targets> = 
+      Targets extends 'class' ? ClassDecorator 
+    : Targets extends 'method' ? MethodDecorator
+    : Targets extends 'property' ? PropertyDecorator
+    : Targets extends 'parameter' ? ParameterDecorator
+    : never;
+;
+
+type DecoratorTypeForValidTargets<Targets> = UnionToIntersection<DecoratorTypeUnionForValidTargets<Targets>>;
+
 /**
  * Represents a decorator which accepts an Annotation's options object.
  */
-export interface AnnotationDecorator<TS extends any[]> {
-    (...args : TS) : (target, ...args) => void;
-    (...args : TS) : (target) => void;
-    (...args : TS) : (target, propertyKey : string) => void;
-    (...args : TS) : (target, propertyKey : string, descriptor : PropertyDescriptor) => void;
-    (...args : TS) : (target, propertyKey : string, index : number) => void;
-}
+export type AnnotationDecorator<TS extends any[]> = (...args: TS) => 
+    ClassDecorator &
+    PropertyDecorator &
+    MethodDecorator &
+    ParameterDecorator
+;
 
 export interface DecoratorSite {
     type : 'class' | 'method' | 'property' | 'parameter';
@@ -55,9 +73,11 @@ export interface DecoratorSite {
     index? : number;
 }
 
+export type AnnotationDecoratorTarget = 'class' | 'property' | 'method' | 'parameter';
+
 export interface AnnotationDecoratorOptions<AnnoT, TS extends any[] = []> {
     factory? : (target : DecoratorSite, ...args : TS) => AnnoT | void;
-    validTargets? : ('class' | 'property' | 'method' | 'parameter')[];
+    validTargets? : AnnotationDecoratorTarget[];
     allowMultiple? : boolean;
 }
 
@@ -66,7 +86,7 @@ export interface AnnotationDecoratorOptions<AnnoT, TS extends any[] = []> {
  * annotation does not support that target.
  */
 export class AnnotationTargetError extends NotSupportedError {
-    constructor(annotationClass, invalidType : string, supportedTypes : string[], message? : string) {
+    constructor(annotationClass, invalidType: string, supportedTypes: string[], message?: string) {
         super(message || `You cannot decorate a ${invalidType} with annotation ${annotationClass.name}. Valid targets: ${supportedTypes.join(', ')}`);
 
         this._invalidType = invalidType;
@@ -345,10 +365,16 @@ export class Annotation implements IAnnotation {
      * @param options Allows for specifying options which will modify the behavior of the decorator. 
      *  See the DecoratorOptions documentation for more information.
      */
-    public static decorator<T extends Annotation, TS extends any[]>(
+    public static decorator<
+        T extends Annotation, 
+        TS extends any[], 
+        U extends AnnotationDecoratorTarget
+    >(
         this: AnnotationConstructor<T, TS>, 
-        options? : AnnotationDecoratorOptions<T, TS>
-    ) {
+        options? : Exclude<AnnotationDecoratorOptions<T, TS>, 'validTargets'> & { validTargets: U[] }
+    ): (...args: TS) => DecoratorTypeForValidTargets<U>;
+    public static decorator<T extends Annotation, TS extends any[]>(this: AnnotationConstructor<T, TS>, options?: AnnotationDecoratorOptions<T, TS>): AnnotationDecorator<TS>;
+    public static decorator<T extends Annotation, TS extends any[]>(this: AnnotationConstructor<T, TS>, options?: AnnotationDecoratorOptions<T, TS>): AnnotationDecorator<TS> {
         if ((this as any) === Annotation) {
             if (!options || !options.factory) {
                 throw new Error(`When calling Annotation.decorator() to create a mutator, you must specify a factory (or use Mutator.decorator())`);
