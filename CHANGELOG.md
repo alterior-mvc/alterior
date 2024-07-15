@@ -1,4 +1,6 @@
 # ⏭ vNext
+
+# v3.11.0
 - `@/annotations`
     * Improves the return type of `Annotation.decorator()` so that it is dependent on the provided `valueTargets` (when
       possible). [Issue](https://github.com/alterior-mvc/alterior/issues/102)
