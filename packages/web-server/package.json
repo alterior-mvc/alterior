@@ -1,6 +1,6 @@
 {
   "name": "@alterior/web-server",
-  "version": "3.10.2",
+  "version": "3.11.0",
   "description": "Declarative framework for building REST services",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -41,11 +41,11 @@
     "docs": "typedoc ."
   },
   "dependencies": {
-    "@alterior/annotations": "^3.9.1",
+    "@alterior/annotations": "^3.11.0",
     "@alterior/common": "^3.9.1",
-    "@alterior/di": "^3.10.0",
-    "@alterior/logging": "^3.10.0",
-    "@alterior/runtime": "^3.10.0",
+    "@alterior/di": "^3.11.0",
+    "@alterior/logging": "^3.11.0",
+    "@alterior/runtime": "^3.11.0",
     "@types/node-forge": "^1.3.11",
     "body-parser": "^1.20.1",
     "fast-json-stringify": "^1.21.0",
