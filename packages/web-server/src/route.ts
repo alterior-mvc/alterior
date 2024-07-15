@@ -348,11 +348,11 @@ export class RouteInstance {
 			let bodyMiddleware;
 
 			if (paramType === String) {
-				bodyMiddleware = bodyParser.text();
+				bodyMiddleware = bodyParser.text({ type: () => true });
 			} else if (paramType === Buffer) {
-				bodyMiddleware = bodyParser.raw();
+				bodyMiddleware = bodyParser.raw({ type: () => true });
 			} else {
-				bodyMiddleware = bodyParser.json();
+				bodyMiddleware = bodyParser.json({ type: () => true });
 			}
 
 			if (bodyMiddleware) {

@@ -1,5 +1,14 @@
 # ⏭ vNext
 
+# v3.10.2
+- `@/web-server`
+    * Fixes an issue where a request's body will be unparsed if the `Content-Type` passed does not match the typical 
+      content type associated with the expected body format. For instance, when expecting JSON (the default), the body
+      would only be parsed when the `Content-Type` header was `application/json`. When expecting text  (ie when `@Body()`
+      has type `string`), the body would only be parsed when the `Content-Type` header was `text/plain`. This is unexpected,
+      since Alterior provides no manner to validate the `Content-Type` field without using custom middleware. Now the body
+      is parsed as the expected type regardless of `Content-Type`.
+
 # v3.10.1
 - `@/web-server`
     * Fixes an issue where `route` is not present on `WebEvent`
