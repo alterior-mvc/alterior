@@ -18,18 +18,35 @@ export interface ControllerOptions {
 	basePath? : string;
 
 	/**
-	 * Middleware to be applied to all route methods for this controller.
+	 * Middleware to be applied to the path prefix of this controller.
+	 * 
+	 * CAUTION: If you use prefix-less controllers (which is recommended), using this option may be unintuitive since 
+	 * the middleware is applied *to all requests with the same prefix as the controller* regardless of what route 
+	 * methods might be in the controller.
+	 * 
+	 * @deprecated Use globalMiddleware or preRouteMiddleware to avoid ambiguity.
 	 */
 	middleware? : MiddlewareDefinition[];
 	
+	/**
+	 * Middleware to be applied to the path prefix of this controller. Such middleware will run regardless of whether 
+	 * a specific route within this controller is actually matched.
+	 * 
+	 * CAUTION: If you use prefix-less controllers (which is recommended), using this option may be unintuitive since 
+	 * the middleware is applied *to all requests with the same prefix as the controller* regardless of what route 
+	 * methods might be in the controller.
+	 */
+	globalMiddleware?: MiddlewareDefinition[];
+
 	/**
 	 * Wrap execution of controller methods with these interceptors. Earlier interceptors run first.
 	 */
 	interceptors?: Interceptor[];
 
 	/**
-	 * Connect-style middleware that should be run before route-specific middleware 
-	 * has been run.
+	 * Middleware that should be run before route-specific middleware has been run. Since the middleware is run as 
+	 * part of route handling, it will only be run if a route matches. If you want middleware to run even if no 
+	 * route matches, use `globalMiddleware` instead.
 	 */
     preRouteMiddleware? : (MiddlewareProvider)[];
 

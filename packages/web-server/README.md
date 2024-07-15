@@ -349,11 +349,48 @@ Modules, controllers and services all participate in dependency injection. For m
 
 # Middleware
 
-Alterior supports Connect middleware (as used in Express, Fastify, etc). Middleware can be connected globally or 
-declared as part of a route. 
+Alterior supports Connect-style middleware (as used in Connect, Express, Fastify, etc) as well as middleware classes 
+(which support dependency injection). Middleware can be connected globally or declared as part of a route. 
 
-To add middleware globally you can declare the `middleware` property on your `@WebService` or via 
-`WebServerModule.configure()`.
+## Dependency Injection
+
+Middleware can use dependency injection when they are declared as a middleware class. A middleware class must contain
+a `handle()` function which takes the same arguments as a normal Connect-style middleware function (request, response, next).
+
+```typescript
+import { inject } from '@alterior/di';
+
+class MyMiddleware {
+    private service = inject(MyService);
+
+    handle(request: IncomingMessage, response: ServerResponse, next: (err?: any) => void) {
+        // ...
+        next();
+    }
+}
+```
+
+## Global vs Route Middleware
+
+Alterior handles middleware differently depending on whether it is mounted as global middleware or route middleware.
+
+Global middleware:
+- Is run as part of the underlying web server engine (Express, Fastify, etc)
+- Supports path prefixing
+- Does *not* have access to Alterior's `WebEvent.current` API
+
+Route middleware:
+- Is run by Alterior as part of executing a route
+- Does not support path prefixing 
+- Has full access to Alterior's `WebEvent.current` API
+
+Within global middleware `WebEvent.current` will be `undefined`. Accessing the current `WebEvent` allows a middleware 
+to introspect the route that Alterior is about to run. This can be used to enable custom decorators and metadata 
+scenarios that otherwise would be impossible.
+
+## Global Middleware
+
+To add global middleware across your application you can declare the `middleware` property on your `@WebService`.
 
 ```typescript
 import * as myConnectMiddleware from 'my-connect-middleware';
@@ -364,6 +401,8 @@ export class MyService {
     // ...
 }
 ```
+
+## Path-specific Global Middleware
 
 You can also connect middleware globally, but limit it to specific paths:
 
@@ -380,7 +419,9 @@ export class MyService {
 }
 ```
 
-To add route-specific middleware, use the `middleware` property of the options object:
+## Route Middleware 
+
+To add middleware to a specific route, use the `middleware` property of the options object:
 
 ```typescript
 @Get('/foo', { middleware: [fileUpload] })
@@ -388,6 +429,25 @@ public getFoo() {
     // ...
 }
 ```
+
+## Apply middleware to all routes
+
+You can apply route-specific middleware just before all routes of a `@Controller()` or `@WebService()` using 
+`preRouteMiddleware`. Similarly you can add middleware after all route-specific middleware using 
+`postRouteMiddleware`.
+
+```typescript
+import fileUpload = require('express-fileupload');
+
+@Controller('/files', {
+    preRouteMiddleware: [ myAuthMiddleware ]
+})
+export class MyController {
+    // ...
+}
+```
+
+## Route Middleware is inherited through `@Mount()`
 
 Middleware is inherited from parent controllers when using `@Mount()`, 
 you can use this to avoid repeating yourself when building more complex
@@ -408,7 +468,7 @@ services:
     }
 
     @Controller('', { 
-        middleware: [ 
+        preRouteMiddleware: [ 
             corsExampleMiddleware({ allowOrigin: '*' }) 
         ]
     })
@@ -416,6 +476,26 @@ services:
         @Mount('/feature')
         feature : FeatureController;
     }
+```
+
+# Global Middleware within `@Controller()`
+
+You can also connect global middleware at the `@Controller()` level which is automatically limited to the path prefix 
+of the controller. **Caution**: If you have multiple controllers with the same path prefix (especially common when 
+using prefix-less controllers, which is a recommended practice), **you may inadvertently apply middleware to more 
+routes than you are expecting.**. You should almost always use `preRouteMiddleware` instead (see above).
+
+```typescript
+import fileUpload = require('express-fileupload');
+
+@Controller('/files', {
+    globalMiddleware: [ // 
+        fileUpload
+    ]
+})
+export class MyController {
+    // ...
+}
 ```
 
 # Uncaught Exceptions

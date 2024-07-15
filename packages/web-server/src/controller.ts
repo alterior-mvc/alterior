@@ -63,6 +63,8 @@ export class ControllerInstance {
 		let middleware : MiddlewareDefinition[] = [];
 		if (this.options.middleware)
 			middleware = middleware.concat(this.options.middleware);
+		if (this.options.globalMiddleware)
+			middleware = middleware.concat(this.options.globalMiddleware);
 
 		return middleware;
 	}

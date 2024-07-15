@@ -1,4 +1,8 @@
 # ⏭ vNext
+- `@/web-server`
+   * Adds `globalMiddleware` option to `@Controller()`. This has the same semantics as `middleware` in previous releases,
+     but with clarified naming.
+   * The `middleware` option of `@Controller()` is now deprecated in favor of `globalMiddleware`.
 
 # v3.11.0
 - `@/annotations`
