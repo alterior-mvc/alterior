@@ -24,10 +24,6 @@ export class WebServiceCompiler extends ServiceCompiler {
                     mutators.push(`queryParams['${input.name}'] = ${param.name} ?? ${JSON.stringify(param.default)};`);
                 } else if (input.type === 'queryParams') {
                     mutators.push(`queryParams = { ...queryParams, ...(${param.name} ?? {}) };`);
-                } else if (input.type === 'session') {
-                    throw new Error(`Transparent service cannot have a @Session() parameter`);
-                } else if (input.type === 'response') {
-                    throw new Error(`Transparent service cannot have a @Response() parameter`);
                 } else if (input.type === 'path') {
                     url = url.replace(new RegExp(`:${input.name}\\b`, 'g'), `\${param.name}`);
                     //mutators.push(`url = url.replace(/:${param.name}\\b/g, encodeURIComponent(${param.name}));`);

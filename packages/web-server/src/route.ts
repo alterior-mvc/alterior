@@ -1,6 +1,6 @@
 import * as bodyParser from 'body-parser';
 import { IAnnotation } from "@alterior/annotations";
-import { InputAnnotation } from "./input";
+import { BodyOptions, InputAnnotation } from "./input";
 import { WebEvent, RouteDefinition, RouteOptions } from "./metadata";
 import { Injector } from '@alterior/di';
 import { MiddlewareProvider, prepareMiddleware } from "./middleware";
@@ -344,16 +344,26 @@ export class RouteInstance {
 		let bodyIndex = paramAnnotations.findIndex(annots => annots.some(x => x === bodyAnnotation));
 		if (bodyAnnotation) {
 			// need to add bodyParser
-			let paramType = paramTypes[bodyIndex];
-			let bodyMiddleware;
+			const options = (bodyAnnotation ?? {}) as BodyOptions;
+			const paramType = paramTypes[bodyIndex];
+			let format = options.format;
 
-			if (paramType === String) {
-				bodyMiddleware = bodyParser.text({ type: () => true });
-			} else if (paramType === Buffer) {
-				bodyMiddleware = bodyParser.raw({ type: () => true });
-			} else {
-				bodyMiddleware = bodyParser.json({ type: () => true });
+			if (!format) {
+				if (paramType === String)
+					format = 'text';
+				else if (paramType === Buffer)
+					format = 'raw';
+				else
+					format = 'json';
 			}
+
+			let bodyMiddleware: any;
+			if (format === 'text')
+				bodyMiddleware = bodyParser.text({ type: () => true });
+			else if (format === 'raw')
+				bodyMiddleware = bodyParser.raw({ type: () => true });
+			else if (format === 'json')
+				bodyMiddleware = bodyParser.json({ type: () => true });
 
 			if (bodyMiddleware) {
 				this.resolvedMiddleware.push(bodyMiddleware);

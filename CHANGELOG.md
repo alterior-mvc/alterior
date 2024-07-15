@@ -2,6 +2,9 @@
 - `@/annotations`
     * Improves the return type of `Annotation.decorator()` so that it is dependent on the provided `valueTargets` (when
       possible). [Issue](https://github.com/alterior-mvc/alterior/issues/102)
+- `@/web-server`
+    * Adds ability to override the body parser in use via the `@Body()` decorator. This is useful for cases like trying 
+      to accept JSON strings (since `string` normally causes a `text` body parser to be used).
 
 # v3.10.2
 - `@/web-server`
