@@ -52,7 +52,9 @@ export const Color = ColorAnnotation.decorator({
 });
 ```
 
-Valid targets are `class`, `method`, `property`, `constructorParameter` and `parameter`. If a developer tries to decorate an invalid target with your decorator, an `AnnotationTargetError` is thrown.
+Valid targets are `class`, `method`, `property`, and `parameter`. Applying a decorator to an invalid target is typically
+detected at compile-time assuming Typescript can infer the values passed to `validTargets`, and at runtime throws 
+`AnnotationTargetError` at runtime.
 
 ## Limit decorator to a single use per target
 
