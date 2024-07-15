@@ -63,7 +63,7 @@
     "zone.js": "^0.14.3"
   },
   "devDependencies": {
-    "@types/body-parser": "^1.19.0",
+    "@types/body-parser": "^1.19.5",
     "@types/spdy": "^3.4.9",
     "@types/supertest": "^2.0.9",
     "@types/uuid": "^8.3.3",
