@@ -1,6 +1,6 @@
 {
   "name": "@alterior/web-server",
-  "version": "3.10.1",
+  "version": "3.10.2",
   "description": "Declarative framework for building REST services",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
