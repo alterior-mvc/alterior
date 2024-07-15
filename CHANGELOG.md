@@ -1,8 +1,13 @@
 # ⏭ vNext
+
+# v3.11.1
 - `@/web-server`
    * Adds `globalMiddleware` option to `@Controller()`. This has the same semantics as `middleware` in previous releases,
      but with clarified naming.
    * The `middleware` option of `@Controller()` is now deprecated in favor of `globalMiddleware`.
+   * Fixes a problem where JSON strings cannot be used with the new `@Body({ type: 'json' })` feature because of 
+     `body-parser`'s "strict mode". Disabled "strict mode" when using the JSON mode of the `body-parser` middleware 
+     internally.
 
 # v3.11.0
 - `@/annotations`

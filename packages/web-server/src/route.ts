@@ -363,7 +363,7 @@ export class RouteInstance {
 			else if (format === 'raw')
 				bodyMiddleware = bodyParser.raw({ type: () => true });
 			else if (format === 'json')
-				bodyMiddleware = bodyParser.json({ type: () => true });
+				bodyMiddleware = bodyParser.json({ type: () => true, strict: false });
 
 			if (bodyMiddleware) {
 				this.resolvedMiddleware.push(bodyMiddleware);
