@@ -463,14 +463,20 @@ export class RouteInstance {
 		// Middleware
 
 		await event.context(async () => {
-			try {
-				for (let item of this.resolvedMiddleware)
+			for (let item of this.resolvedMiddleware) {
+				try {
 					await new Promise<void>((resolve, reject) => item(event.request, event.response, (err?: any) => err ? reject(err) : resolve()));
-			} catch (e) {
-				console.error(`Caught exception:`);
-				console.error(e);
-
-				throw e;
+				} catch (e) {
+					event.metadata['uncaughtError'] = e;
+					this.server.handleError(
+						e,
+						event, 
+						this, 
+						`Middleware ${item.name || 'anonymous'}()`
+					);
+					this.server.reportRequest('finished', event, reportSource);
+					return;
+				}
 			}
 		});
 
@@ -590,7 +596,26 @@ export class RouteInstance {
 			this.description,
 			this.definition.httpMethod, 
 			`${pathPrefix || ''}${this.definition.path}`,
-			ev => this.execute(this.controllerInstance, ev), 
+			async ev => {
+				// SECURITY-SENSITIVE: Prevent denial-of-service by exploiting a fault within Alterior's request handling.
+				// Return a 500 error to the client and log.
+
+				try {
+					return await this.execute(this.controllerInstance, ev);
+				} catch (e) {
+					this.server.logger.fatal(`Alterior failed to process request ${ev.request.method} ${ev.request.url}: ${e.stack || e.message || e}`);
+					this.server.logger.fatal(`The above error was caught using Alterior's last-chance error handler. This is always a bug. Please report this issue.`);
+					
+					ev.metadata['uncaughtError'] = e;
+					this.server.handleError(
+						e,
+						ev, 
+						this,
+						`Last-chance error handler (Alterior bug)`
+					);
+					this.server.reportRequest('finished', ev, `Last-chance error handler (Alterior bug)`);
+				}
+			},
 			[]
 		);
 	}
