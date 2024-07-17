@@ -472,6 +472,7 @@ export class RouteInstance {
 
 		let route = this.definition;
 		let controllerType = this.controllerType;
+		let reportSource = `${controllerType.name}.${route.method}()`;
 
 		// Middleware
 
@@ -497,7 +498,6 @@ export class RouteInstance {
 		// function.
 
 		let resolvedParams: any[];
-		let reportSource = `${controllerType.name}.${route.method}()`;
 
 		try {
 			resolvedParams = await Promise.all(this.parameters.map(x => x.resolve(event)));
@@ -524,6 +524,8 @@ export class RouteInstance {
 		reportSource = `${controllerType.name}.${route.method}(${displayableParams.join(', ')})`;
 
 		this.server.reportRequest('starting', event, reportSource);
+
+		
 		try { // To finally report request completion.
 
 			let result;
