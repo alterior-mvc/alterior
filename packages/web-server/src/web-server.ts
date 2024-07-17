@@ -267,7 +267,7 @@ export class WebServer {
 		this.requestReporter = reporter;
 	}
 
-	reportRequest(reportingEvent: 'starting' | 'finished', event: WebEvent, source: string) {
+	reportRequest(reportingEvent: 'middleware' | 'starting' | 'finished', event: WebEvent, source: string) {
 		if (this.options.silent)
 			return;
 
@@ -336,7 +336,7 @@ export class WebServer {
 		);
 	};
 
-	public static DEFAULT_REQUEST_REPORTER: RequestReporter = (reportingEvent: 'starting' | 'finished', event: WebEvent, source: string, logger: Logger) => {
+	public static DEFAULT_REQUEST_REPORTER: RequestReporter = (reportingEvent: 'middleware' | 'starting' | 'finished', event: WebEvent, source: string, logger: Logger) => {
 		let metadata = event.metadata[REPORTING_STATE] ??= { startedAt: Date.now(), state: 'running' };
 
 		let logRequest = () => {

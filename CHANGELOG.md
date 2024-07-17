@@ -5,6 +5,8 @@
    * [(!!) Potential security issue] Fixed a crash when the server receives invalid JSON during body parsing or other 
      errors raised by Connect middleware. **Please update to this patch or higher**. Issue existed between v3.8.0 and v3.11.1.
      Fix will be backported to v3.8 and v3.9.
+   * Add `middleware` request reporting event (currently unused by the default request reporter)
+   
 # v3.11.1
 - `@/web-server`
    * Adds `globalMiddleware` option to `@Controller()`. This has the same semantics as `middleware` in previous releases,

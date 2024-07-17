@@ -474,6 +474,8 @@ export class RouteInstance {
 		let controllerType = this.controllerType;
 		let reportSource = `${controllerType.name}.${route.method}()`;
 
+		this.server.reportRequest('middleware', event, reportSource);
+
 		// Middleware
 
 		await event.context(async () => {

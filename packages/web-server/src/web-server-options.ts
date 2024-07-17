@@ -13,7 +13,7 @@ type Protocol = 'h2'
 	| 'http/1.1'
 	| 'http/1.0';
 
-export type RequestReporter = (reportingEvent: 'starting' | 'finished', event: WebEvent, source: string, logger: Logger) => void;
+export type RequestReporter = (reportingEvent: 'middleware' | 'starting' | 'finished', event: WebEvent, source: string, logger: Logger) => void;
 export type RequestReporterFilter = (event: WebEvent, source: string) => boolean;
 export type ParameterDisplayFormatter = (event: WebEvent, value: any, forKey: string) => string;
 
