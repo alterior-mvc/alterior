@@ -135,6 +135,22 @@ suite(describe => {
 				.expect(200, null)
 			;
 		});
+	
+		it('should return 500 (not crash) with invalid json', async () => {
+			@WebService()
+			class FakeApp {
+				@Post('/foo')
+				getX(@Body() foo: { bar: number }) {
+					return foo.bar;
+				}
+			}
+
+			await teststrap(FakeApp)
+				.post('/foo')
+				.send("invalid json")
+				.expect(500)
+			;
+		});
 
 		it('should allow a method to return an explicit body value', async () => {
 			@WebService()
