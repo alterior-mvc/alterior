@@ -147,6 +147,7 @@ suite(describe => {
 
 			await teststrap(FakeApp)
 				.post('/foo')
+				.set('Content-Type', 'application/json')
 				.send("invalid json")
 				.expect(500)
 			;
