@@ -45,7 +45,7 @@ describe("WebServiceDecorator", () => {
         expect(moduleAnnotation).to.not.eq(null);
 
         expect(appOptionsAnnotation?.options?.version).to.eq('1.2.3');
-        expect(moduleAnnotation?.providers.length).to.eq(1);
+        expect(moduleAnnotation?.providers.length).to.eq(3); // 2 are added internally
 
         let provider = <ValueProvider<number>>moduleAnnotation?.providers?.[0];
         expect(provider.provide).to.eq(FOO);

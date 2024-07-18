@@ -7,7 +7,7 @@ import { Controller, Mount } from './metadata';
 import { WebService } from './service';
 
 suite(describe => {
-    describe.only('@Controller', it => {
+    describe('@Controller', it => {
         it('throws error when legacy lifecycle events are encountered', async () => {
             @Controller() class MyController { altOnInit() {} }
             @WebService() class FakeModule { @Mount() controller!: MyController; }
@@ -15,7 +15,7 @@ suite(describe => {
 
             expect(result).to.be.instanceOf(Error);
             expect(result.message).to.equal(
-                "Legacy lifecycle events are not supported. Please migrate to Alterior 4 compatible lifecycle events."
+                "Legacy lifecycle event MyController#altOnInit() is no longer supported. Apply the @OnInit() decorator instead (you may also rename the method to whatever you want)."
             );
         });
 
@@ -38,7 +38,7 @@ suite(describe => {
             let observed = 0;
             @Controller() class MyController { [Controller.onInit]() { observed += 1; } }
             @WebService({ autostart: false }) class FakeModule { @Mount() controller!: MyController; }
-            await Application.bootstrap(FakeModule);
+            await Application.bootstrap(FakeModule, { autostart: false });
             expect(observed).to.equal(1);
         });
 
@@ -91,7 +91,9 @@ suite(describe => {
         it('executes onListen', async () => {
             let observed = 0;
             let captured = 0;
-            @Controller() class MyController { [Controller.onListen]() { observed += 1; } }
+            @Controller() class MyController { [Controller.onListen]() { 
+                observed += 1; 
+            } }
             @WebService() class FakeModule { @Mount() controller!: MyController; }
             let app = await Application.bootstrap(FakeModule);
             captured = observed;

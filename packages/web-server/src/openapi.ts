@@ -1,3 +1,4 @@
+import { inject } from "@alterior/di";
 import { Controller, Get, WebEvent } from "./metadata";
 import { ServiceDescriptionRef } from "./service-description-ref";
 
@@ -94,10 +95,7 @@ export interface OpenApiDefinitionProperty {
 
 @Controller('', { group: 'openapi' })
 export class OpenApiController {
-    constructor(
-        private serviceDescriptionRef : ServiceDescriptionRef
-    ) {
-    }
+    private serviceDescriptionRef = inject(ServiceDescriptionRef);
 
     @Get('')
     home(ev : WebEvent) : OpenApiService {

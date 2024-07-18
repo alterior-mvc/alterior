@@ -1,5 +1,5 @@
 import { Injector, Provider, Type } from "@alterior/di";
-import { ALT_ON_INIT, ALT_ON_START, ALT_ON_STOP, fireLifecycleEvent, handleLegacyLifecycleEvent } from '@alterior/runtime';
+import { ALT_AFTER_INIT, ALT_ON_INIT, ALT_ON_START, ALT_ON_STOP, fireLifecycleEvent, handleLegacyLifecycleEvent } from '@alterior/runtime';
 import { ALT_ON_LISTEN, ControllerAnnotation, ControllerOptions, MiddlewareDefinition, MountOptions } from "./metadata";
 import { RouteReflector } from "./metadata/route-reflector-private";
 import { prepareMiddleware } from "./middleware";
@@ -176,6 +176,8 @@ export class ControllerInstance {
 
 		for (let controller of this.controllers)
 			await controller.initialize();
+
+		await this.fireLifecycleEvent(ALT_AFTER_INIT, true);
 	}
 
 	async start() {
@@ -207,10 +209,15 @@ export class ControllerInstance {
 	 * 
 	 * @param eventName The event to fire
 	 */
-	async fireLifecycleEvent(eventName: symbol) {
+	async fireLifecycleEvent(eventName: symbol, propagate = false) {
 		if (this.instance) {
 			await fireLifecycleEvent(this.instance, eventName);
 			handleLegacyLifecycleEvent(this.server.logger, this.instance, eventName);
+		}
+
+		if (propagate) {
+			for (let controller of this.controllers)
+				controller.fireLifecycleEvent(eventName);
 		}
 	}
 

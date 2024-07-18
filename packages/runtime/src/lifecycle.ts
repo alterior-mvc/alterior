@@ -136,12 +136,11 @@ export function handleLegacyLifecycleEvent(logger: RuntimeLogger, target: any, e
     if (hasAnnotation || !legacyName || !target[legacyName])
 		return;
 
-    logger.fatal(
-        `Error: Legacy lifecycle event ${target.constructor?.name ?? 'Object'}#${legacyName}() `
-        + `is no longer supported. Apply the @${capitalized}() decorator instead (you may also rename `
-        + `the method to whatever you want).`
-    );
+	const message = `Error: Legacy lifecycle event ${target.constructor?.name ?? 'Object'}#${legacyName}() `
+	+ `is no longer supported. Apply the @${capitalized}() decorator instead (you may also rename `
+	+ `the method to whatever you want).`;
 
-    throw new Error(`Legacy lifecycle events are not supported. Please migrate to Alterior 4 compatible lifecycle events.`);
+    logger.fatal(message);
+    throw new Error(message);
     //await modInstance.instance[legacyName]();
 }

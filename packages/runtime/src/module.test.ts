@@ -209,7 +209,7 @@ describe("Modules", () => {
 
         expect(result).to.be.instanceOf(Error);
         expect(result.message).to.equal(
-            "Legacy lifecycle events are not supported. Please migrate to Alterior 4 compatible lifecycle events."
+            "Legacy lifecycle event MyController#altOnInit() is no longer supported. Apply the @OnInit() decorator instead (you may also rename the method to whatever you want)."
         );
     });
 

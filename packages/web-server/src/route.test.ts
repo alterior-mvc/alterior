@@ -858,7 +858,7 @@ suite(describe => {
 			@WebService()
 			class FakeApp {
 				@Mount() test!: TestController;
-				altOnInit() { wasPresent = this.test.present; }
+				[WebService.onInit]() { wasPresent = this.test.present; }
 			}
 
 			await teststrap(FakeApp).get('/');
@@ -876,7 +876,7 @@ suite(describe => {
 				private injectedController = inject(TestController);
 				
 				@Mount() test!: TestController;
-				altOnInit() { matched = this.test === this.injectedController; }
+				[WebService.onInit]() { matched = this.test === this.injectedController; }
 			}
 
 			await teststrap(FakeApp).get('/');
@@ -895,7 +895,7 @@ suite(describe => {
 				
 				@Mount('/test1') test2!: TestController;
 				@Mount('/test2') test1!: TestController;
-				altOnInit() { matched = this.test1 === this.injectedController && this.test2 === this.injectedController; }
+				[WebService.onInit]() { matched = this.test1 === this.injectedController && this.test2 === this.injectedController; }
 			}
 
 			await teststrap(FakeApp).get('/test1').expect(200, '123');

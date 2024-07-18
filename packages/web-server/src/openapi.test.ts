@@ -23,9 +23,9 @@ suite(describe => {
             expect(appOptionsAnnotation?.options?.version).to.eq('1.2.3');
 
             let response = await teststrap(TestApp)
-                .get('/openapi')
-                .expect(200);
+                .get('/openapi');
 
+            expect(response.status).to.equal(200);
             expect(response.body).to.contain({ openapi: '3.0.0' });
             expect(response.body.info).to.contain({
                 title: 'test-app-fubar',

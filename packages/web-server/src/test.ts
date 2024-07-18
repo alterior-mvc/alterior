@@ -2,6 +2,8 @@ import "zone.js";
 import "reflect-metadata";
 import "source-map-support/register";
 
+Error.stackTraceLimit = 1000;
+
 import { suite } from 'razmin';
 import { WebServerEngine } from "./web-server-engine";
 import { MiddlewareDefinition, WebEvent, WebRequest } from "./metadata";

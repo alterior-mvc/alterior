@@ -36,7 +36,6 @@ export class RouteInstance {
 		this.options = this.definition.options ?? {};
 		this.group = this.options.group || this.parentGroup;
 		this.middleware = this.gatherMiddleware();
-		this.resolvedMiddleware = this.prepareMiddleware(this.middleware);
 
 		this.routeTable.push({
 			controller: this.controllerType,
@@ -57,6 +56,7 @@ export class RouteInstance {
 			paramAnnotations: Annotations.getParameterAnnotations(this.controllerType, this.definition.method, false)
 		}
 
+		this.resolvedMiddleware = this.prepareMiddleware(this.middleware);
 		this.prepareParameters();
 
 		// Validate Middleware

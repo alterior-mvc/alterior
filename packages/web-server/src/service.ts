@@ -1,7 +1,7 @@
 import { Annotation, MetadataName } from "@alterior/annotations";
 import { ConcreteType, InjectionToken, inject, injectMultiple, provide } from "@alterior/di";
 import { Logger, LoggingModule } from '@alterior/logging';
-import { Application, ApplicationOptions, ApplicationRoles, BuiltinLifecycleEvents, Module, ModuleOptions } from "@alterior/runtime";
+import { ALT_AFTER_START, ALT_AFTER_STOP, AppOptions, Application, ApplicationOptions, ApplicationRoles, BuiltinLifecycleEvents, Module, ModuleOptions } from "@alterior/runtime";
 import { ControllerInstance } from './controller';
 import { Controller } from "./metadata";
 import { WebServer } from './web-server';
@@ -101,12 +101,14 @@ class WebServerModule {
                 await webserver.start();
                 for (let serviceInstance of serviceInstances) {
                     await serviceInstance.start();
+                    await serviceInstance.fireLifecycleEvent(ALT_AFTER_START, true);
                     await serviceInstance.listen(webserver);
                 }
             },
             stop: async () => {
                 for (let serviceInstance of serviceInstances) {
                     await webserver.stop();
+                    await serviceInstance.fireLifecycleEvent(ALT_AFTER_STOP, true);
                     await serviceInstance.stop();
                 }
             }
@@ -147,10 +149,11 @@ export const WebService = Object.assign(
 
             options.providers ??= [];
             if (options.server)
-                options.providers.push(provideWebServerOptions(options));
+                options.providers.push(provideWebServerOptions(options.server));
 
             // Apply module metadata
 
+            AppOptions(options)(target);
             Module(<Required<ModuleOptions>>{
                 imports: [ 
                     ...(options?.imports ?? []),
