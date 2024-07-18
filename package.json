@@ -18,11 +18,11 @@
   "scripts": {
     "test": "lerna run test",
     "publish:all": "lerna link && npm test && lerna publish",
-    "clean:npm:lock": "rimraf --glob packages/*/package-lock.json",
+    "clean:npm:lock": "rimraf --glob package-lock.json packages/*/package-lock.json",
     "clean:npm:modules": "rimraf --glob packages/*/node_modules node_modules",
     "clean:npm": "npm run clean:npm:lock && npm run clean:npm:modules",
     "clean:lerna": "rimraf --glob **/*.tgz",
-    "clean:dist": "rimraf --glob packages/*/dist pacakges/*/dist.esm",
+    "clean:dist": "rimraf --glob packages/*/dist packages/*/dist.esm",
     "clean": "npm run clean:dist && lerna run clean",
     "build": "lerna run build",
     "docs": "lerna run --parallel docs"
