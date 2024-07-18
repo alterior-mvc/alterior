@@ -2,13 +2,17 @@
 
 [![Version](https://img.shields.io/npm/v/@alterior/annotations.svg)](https://www.npmjs.com/package/@alterior/annotations)
 
-Provides a standardized way to define metadata on programmatic elements of a Typescript application by using classes and decorators. The data being attached is called an "annotation" and is represented as an instance of an Annotation class, and the functions which attach the metadata are called "decorators".
+Provides a standardized way to define metadata on programmatic elements of a Typescript application by using classes 
+and decorators. The data being attached is called an "annotation" and is represented as an instance of an Annotation 
+class, and the functions which attach the metadata are called "decorators".
 
-Annotations are stored directly on the object using `Object.defineProperty` to avoid annotations applied to superclasses from appearing on their subclasses.
+Annotations are stored directly on the object using `Object.defineProperty` to avoid annotations applied to superclasses 
+from appearing on their subclasses.
 
 ## Creating annotations
 
-First, create a subclass of Annotation. You will need to assign the annotation a "metadata name", which should be of the form `package-name:decorator-name` as shown below. Omitting `@MetadataName()` is an error.
+First, create a subclass of Annotation. You will need to assign the annotation a "metadata name", which should be of 
+the form `package-name:decorator-name` as shown below. Omitting `@MetadataName()` is an error.
 
 ```typescript
 @MetadataName('@myorg/mypackage:Color')
@@ -27,7 +31,8 @@ export const Color = ColorAnnotation.decorator();
 
 ## Retrieving annotations
 
-You can extract the annotations for a target by using the appropriate static method on your Annotation subclass. For instance, to get all `ColorAnnotations` on class `Cat`, use:
+You can extract the annotations for a target by using the appropriate static method on your Annotation subclass. For 
+instance, to get all `ColorAnnotations` on class `Cat`, use:
 
 ```typescript
 let annotations : ColorAnnotation[] = ColorAnnotation.getAllForClass(Cat);
@@ -52,11 +57,16 @@ export const Color = ColorAnnotation.decorator({
 });
 ```
 
-Valid targets are `class`, `method`, `property`, `constructorParameter` and `parameter`. If a developer tries to decorate an invalid target with your decorator, an `AnnotationTargetError` is thrown.
+Valid targets are `class`, `method`, `property`, and `parameter`. Applying a decorator to an invalid target is typically
+detected at compile-time assuming Typescript can infer the values passed to `validTargets`, and at runtime throws 
+`AnnotationTargetError`.
 
 ## Limit decorator to a single use per target
 
-Sometimes it is desirable to prevent users from applying your decorator to a target more than once. Typically doing this is not an error, and Alterior can return all the annotation instances created by multiple decorators on a given target. However, Alterior can generate an error if a decorator for an annotation is used when an annotation of that type is already attached to the target, using the `allowMultiple: false` option:
+Sometimes it is desirable to prevent users from applying your decorator to a target more than once. Typically doing this 
+is not an error, and Alterior can return all the annotation instances created by multiple decorators on a given target. 
+However, Alterior can generate an error if a decorator for an annotation is used when an annotation of that type is 
+already attached to the target, using the `allowMultiple: false` option:
 
 ```typescript 
 export const Color = ColorAnnotation.decorator({
@@ -64,11 +74,13 @@ export const Color = ColorAnnotation.decorator({
 });
 ```
 
-By default `allowMultiple` is true and the library allows the annotation decorator to be used as many times as the user desires.
+By default `allowMultiple` is true and the library allows the annotation decorator to be used as many times as the user 
+desires.
 
 ## Decorator Factories
 
-Sometimes you may want to add additional behavior to be run when the decorator is being applied. To do that, you can provide a `factory` option to your decorator:
+Sometimes you may want to add additional behavior to be run when the decorator is being applied. To do that, you can 
+provide a `factory` option to your decorator:
 
 ```typescript 
 export const Color = ColorAnnotation.decorator({
@@ -82,7 +94,9 @@ export const Color = ColorAnnotation.decorator({
 
 ## Multiple decorators for a single Annotation class
 
-Sometimes you have multiple decorators that are storing the same type of metadata. For instance, perhaps many of your users use 'red' and 'blue' with your `@Color()` decorator, so you decide to make it so your users can use `@Red()` and `@Blue()` instead. One way you might accomplish this is:
+Sometimes you have multiple decorators that are storing the same type of metadata. For instance, perhaps many of your 
+users use 'red' and 'blue' with your `@Color()` decorator, so you decide to make it so your users can use `@Red()` and 
+`@Blue()` instead. One way you might accomplish this is:
 
 ```typescript 
     export const Color = ColorAnnotation.decorator();

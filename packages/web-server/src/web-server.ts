@@ -261,7 +261,7 @@ export class WebServer {
 		this.requestReporter = reporter;
 	}
 
-	reportRequest(reportingEvent: 'starting' | 'finished', event: WebEvent, source: string) {
+	reportRequest(reportingEvent: 'middleware' | 'starting' | 'finished', event: WebEvent, source: string) {
 		if (this.options.silent)
 			return;
 
@@ -340,7 +340,7 @@ export class WebServer {
 	 * @param logger 
 	 */
 	public static DEFAULT_REQUEST_REPORTER: RequestReporter = (
-		reportingEvent: 'starting' | 'finished', 
+		reportingEvent: 'middleware' | 'starting' | 'finished', 
 		event: WebEvent, 
 		source: string, 
 		logger: Logger

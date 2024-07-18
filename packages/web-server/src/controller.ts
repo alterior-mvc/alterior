@@ -29,14 +29,12 @@ export class ControllerInstance {
 
 		// Ensure indexes are valid.
 
-		this.middleware = [...(this.options?.middleware ?? [])];
 		let invalidIndex = this.middleware.findIndex(x => !x);
 		if (invalidIndex >= 0)
 			throw new Error(`Controller '${this.type}' provided null/undefined middleware at position ${invalidIndex}`);
 
 	}
 
-	readonly middleware: MiddlewareDefinition[];
 	readonly pathPrefix: string;
 
 	readonly instance: any;
@@ -95,7 +93,6 @@ export class ControllerInstance {
 				this.server,
 				this.instance,
 				this.injector,
-				this.middleware,
 				this.options.preRouteMiddleware ?? [], 
 				this.options.postRouteMiddleware ?? [],
 				this.options.interceptors ?? [],
@@ -105,6 +102,16 @@ export class ControllerInstance {
 				definition
 			)
 		);
+	}
+
+	get middleware() {
+		let middleware : MiddlewareDefinition[] = [];
+		if (this.options.middleware)
+			middleware = middleware.concat(this.options.middleware);
+		if (this.options.globalMiddleware)
+			middleware = middleware.concat(this.options.globalMiddleware);
+
+		return middleware;
 	}
 
 	combinePaths(...paths: (string | undefined)[]) {

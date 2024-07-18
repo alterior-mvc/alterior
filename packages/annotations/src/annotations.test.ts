@@ -656,7 +656,7 @@ suite(describe => {
             expect(typeof decorator).to.equal('function');
             
             let annotationDecorator = decorator(LABEL);
-            let obj = {} as any;
+            let obj: any = function() {};
     
             annotationDecorator(obj);
     
@@ -765,13 +765,13 @@ suite(describe => {
             let decorator = LabelAnnotation.decorator({
                 validTargets: ['class', 'parameter']
             });
-    
+
             @decorator(LABEL)
             //@ts-ignore unused
             class TestSubject { constructor(@decorator(LABEL) stuff : string) { } }
             
             try {
-                //@ts-ignore unused
+                // @ts-ignore Since Alterior 3.11 this is caught at compile time.
                 class BrokenSubject { @decorator(LABEL) helloWorld() { } }
                 throw new Error("The decorator allowed usage on 'method' when only 'class' and 'parameter' should be allowed.");
             } catch (e) {

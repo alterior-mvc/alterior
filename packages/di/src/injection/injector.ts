@@ -405,6 +405,31 @@ export class Injector {
     }
 
     /**
+     * Run the given callback in an injection context for the given injector. This allows you to use inject() within 
+     * arbitrary code. This only works synchronously (no async/await).
+     * 
+     * @param injector The injector to use
+     * @param callback The callback to run.
+     */
+    static run<T>(injector: Injector, callback: () => T): T;
+    
+    /**
+     * Run the given callback in an injection context for the given injector. This allows you to use inject() within 
+     * arbitrary code. This only works synchronously (no async/await).
+     * 
+     * @param injector The injector to use
+     * @param token An arbitrary object which is stored within the injection context (can be accessed using getInjectionContext())
+     * @param callback The callback to run.
+     */
+    static run<T>(injector: Injector, token: object, callback: () => T): T;
+    static run<T>(...args: any[]): any {
+      if (args.length === 2)
+        return runInInjectionContext(args[0], args[1], args[2]);
+      else
+        return runInInjectionContext(args[0], {}, args[1]);
+    }
+
+    /**
      * Construct an instance of the given type by creating a temporary injector with the given providers. 
      * 
      * @param type 

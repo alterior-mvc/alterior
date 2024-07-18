@@ -1,7 +1,7 @@
 import { Annotations } from "@alterior/annotations";
 import { ArgumentError, ArgumentNullError, getParameterNames } from "@alterior/common";
 import { Injector } from '@alterior/di';
-import { InputAnnotation } from "./input";
+import { BodyOptions, InputAnnotation } from "./input";
 import { MiddlewareDefinition, RouteDefinition, RouteOptions, WebEvent } from "./metadata";
 import { MiddlewareProvider, prepareMiddleware } from "./middleware";
 import { Response } from './response';
@@ -132,16 +132,25 @@ export class RouteInstance {
 		let bodyIndex = paramAnnotations.findIndex(annots => annots.some(x => x === bodyAnnotation));
 		if (bodyAnnotation) {
 			// need to add bodyParser
-			let paramType = paramTypes[bodyIndex];
-			let bodyMiddleware;
-
-			if (paramType === String) {
-				bodyMiddleware = bodyParser.text();
-			} else if (paramType === Buffer) {
-				bodyMiddleware = bodyParser.raw();
-			} else {
-				bodyMiddleware = bodyParser.json();
+			const options = (bodyAnnotation ?? {}) as BodyOptions;
+			const paramType = paramTypes[bodyIndex];
+			let format = options.format;
+			if (!format) {
+				if (paramType === String)
+					format = 'text';
+				else if (paramType === Buffer)
+					format = 'raw';
+				else
+					format = 'json';
 			}
+
+			let bodyMiddleware: any;
+			if (format === 'text')
+				bodyMiddleware = bodyParser.text({ type: () => true });
+			else if (format === 'raw')
+				bodyMiddleware = bodyParser.raw({ type: () => true });
+			else if (format === 'json')
+				bodyMiddleware = bodyParser.json({ type: () => true, strict: false });
 
 			if (bodyMiddleware) {
 				resolvedMiddleware.push(bodyMiddleware);
@@ -222,6 +231,7 @@ export class RouteInstance {
 
 		event.controller = instance;
 		event.server = this.server;
+		event.route = this;
 
 		if (!instance[this.definition.method]) {
 			throw new ArgumentError(
@@ -233,26 +243,34 @@ export class RouteInstance {
 
 		let route = this.definition;
 		let controllerType = this.controllerType;
+		let reportSource = `${controllerType.name}.${route.method}()`;
+
+		this.server.reportRequest('middleware', event, reportSource);
 
 		// Middleware
 
 		await event.context(async () => {
-			try {
-				for (let item of this.resolvedMiddleware)
+			for (let item of this.resolvedMiddleware) {
+				try {
 					await new Promise<void>((resolve, reject) => item(event.request, event.response, (err?: any) => err ? reject(err) : resolve()));
-			} catch (e) {
-				console.error(`Caught exception:`);
-				console.error(e);
-
-				throw e;
+				} catch (e) {
+					event.metadata['uncaughtError'] = e;
+					this.server.handleError(
+						e,
+						event, 
+						this, 
+						`Middleware ${item.name || 'anonymous'}()`
+					);
+					this.server.reportRequest('finished', event, reportSource);
+					return;
+				}
 			}
-		});
+		});	
 
 		// Execute our function by resolving the parameter factories into a set of parameters to provide to the 
 		// function.
 
 		let resolvedParams: any[];
-		let reportSource = `${controllerType.name}.${route.method}()`;
 
 		try {
 			resolvedParams = await Promise.all(this.parameters.map(x => x.resolve(event)));
@@ -279,6 +297,8 @@ export class RouteInstance {
 		reportSource = `${controllerType.name}.${route.method}(${displayableParams.join(', ')})`;
 
 		this.server.reportRequest('starting', event, reportSource);
+
+		
 		try { // To finally report request completion.
 
 			let result;
@@ -341,7 +361,10 @@ export class RouteInstance {
 
 						event.response.end();
 					} else if (response.encoding === 'json') {
-						this.server.engine.sendJsonBody(event, response.unencodedBody);
+						if (response.unencodedBody)
+							this.server.engine.sendJsonBody(event, response.unencodedBody);
+						else
+							event.response.end();
 					} else {
 						throw new Error(`Unknown encoding type ${response.encoding}`);
 					}
@@ -377,7 +400,26 @@ export class RouteInstance {
 			this.description,
 			this.definition.httpMethod,
 			`${pathPrefix || ''}${this.definition.path}`,
-			ev => this.execute(this.controllerInstance, ev),
+			async ev => {
+				// SECURITY-SENSITIVE: Prevent denial-of-service by exploiting a fault within Alterior's request handling.
+				// Return a 500 error to the client and log.
+
+				try {
+					return await this.execute(this.controllerInstance, ev);
+				} catch (e) {
+					this.server.logger.fatal(`Alterior failed to process request ${ev.request.method} ${ev.request.url}: ${e.stack || e.message || e}`);
+					this.server.logger.fatal(`The above error was caught using Alterior's last-chance error handler. This is always a bug. Please report this issue.`);
+					
+					ev.metadata['uncaughtError'] = e;
+					this.server.handleError(
+						e,
+						ev, 
+						this,
+						`Last-chance error handler (Alterior bug)`
+					);
+					this.server.reportRequest('finished', ev, `Last-chance error handler (Alterior bug)`);
+				}
+			},
 			[]
 		);
 	}

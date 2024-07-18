@@ -29,18 +29,38 @@ export const METHOD_PARAMETER_ANNOTATIONS_KEY = '__parameter__metadata__';
  * Represents an Annotation subclass from the perspective of using it to 
  * construct itself by passing an options object.
  */
-type AnnotationConstructor<AnnoT extends Annotation> = Constructor<AnnoT> & typeof Annotation;
+type AnnotationConstructor<AnnoT extends Annotation, TS extends any[]> = {
+    new (...args : TS) : AnnoT;
+} & typeof Annotation;
+
+export type AnnotationClassDecorator<TS extends any[]> = (...args: TS) => ((target: any) => void);
+export type AnnotationPropertyDecorator<TS extends any[]> = (...args: TS) => ((target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => void);
+export type AnnotationMethodDecorator<TS extends any[]> = (...args: TS) => ((target: any, propertyKey: string | symbol) => void);
+export type AnnotationParameterDecorator<TS extends any[]> = (...args: TS) => ((target: any, propertyKey: string | symbol, index: number) => void);
+// (...args: TS): (target, ...args) => void;
+
+type UnionToIntersection<U> = 
+  (U extends any ? (x: U)=>void : never) extends ((x: infer I)=>void) ? I : never
+  
+type DecoratorTypeUnionForValidTargets<Targets> = 
+      Targets extends 'class' ? ClassDecorator 
+    : Targets extends 'method' ? MethodDecorator
+    : Targets extends 'property' ? PropertyDecorator
+    : Targets extends 'parameter' ? ParameterDecorator
+    : never;
+;
+
+type DecoratorTypeForValidTargets<Targets> = UnionToIntersection<DecoratorTypeUnionForValidTargets<Targets>>;
 
 /**
  * Represents a decorator which accepts an Annotation's options object.
  */
-export interface AnnotationDecorator<ConstructorT extends Constructor<T>, T> {
-    (...args: ConstructorParameters<ConstructorT>): (target: any, ...args: any[]) => void;
-    (...args: ConstructorParameters<ConstructorT>): (target: any) => void;
-    (...args: ConstructorParameters<ConstructorT>): (target: any, propertyKey: string) => void;
-    (...args: ConstructorParameters<ConstructorT>): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
-    (...args: ConstructorParameters<ConstructorT>): (target: any, propertyKey: string, index: number) => void;
-}
+export type AnnotationDecorator<TS extends any[]> = (...args: TS) => 
+    ClassDecorator &
+    PropertyDecorator &
+    MethodDecorator &
+    ParameterDecorator
+;
 
 export interface DecoratorSite {
     type: 'class' | 'method' | 'property' | 'parameter';
@@ -50,10 +70,12 @@ export interface DecoratorSite {
     index?: number;
 }
 
-export interface AnnotationDecoratorOptions<AnnoConstructorT extends Constructor<AnnoT>, AnnoT> {
-    factory?: (target: DecoratorSite, ...args: ConstructorParameters<AnnoConstructorT>) => AnnoT | undefined;
-    validTargets?: ('class' | 'property' | 'method' | 'parameter')[];
-    allowMultiple?: boolean;
+export type AnnotationDecoratorTarget = 'class' | 'property' | 'method' | 'parameter';
+
+export interface AnnotationDecoratorOptions<AnnoT, TS extends any[] = []> {
+    factory? : (target : DecoratorSite, ...args : TS) => AnnoT | void;
+    validTargets? : AnnotationDecoratorTarget[];
+    allowMultiple? : boolean;
 }
 
 /**
@@ -93,15 +115,15 @@ export class AnnotationTargetError extends NotSupportedError {
  * @param ctor 
  * @param options 
  */
-function makeDecorator<AnnoConstructorT extends AnnotationConstructor<AnnoT>, AnnoT extends Annotation>(
-    ctor: AnnoConstructorT, 
-    options?: AnnotationDecoratorOptions<AnnoConstructorT, AnnoT>
-): AnnotationDecorator<AnnoConstructorT, AnnoT>
+function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
+    ctor: AnnotationConstructor<AnnoT, TS>, 
+    options?: AnnotationDecoratorOptions<AnnoT, TS>
+): AnnotationDecorator<TS>
 {
     if (!ctor)
         throw new Error(`Cannot create decorator: Passed class reference was undefined/null: This can happen due to circular dependencies.`);
 
-    let factory: (target: DecoratorSite, ...args: ConstructorParameters<AnnoConstructorT>) => AnnoT | undefined = (target, ...args) => <AnnoT> new ctor(...args);
+    let factory: (target: DecoratorSite, ...args: TS) => AnnoT | void = (target, ...args) => <AnnoT> new ctor(...args);
     let validTargets: string[] = ['class', 'method', 'property', 'parameter'];
     let allowMultiple = false;
 
@@ -114,8 +136,8 @@ function makeDecorator<AnnoConstructorT extends AnnotationConstructor<AnnoT>, An
             allowMultiple = options.allowMultiple;
     }
 
-    return (...decoratorArgs: ConstructorParameters<AnnoConstructorT>) => {
-        return (target, ...args: any[]) => {
+    return (...decoratorArgs: TS) => {
+        return (target: any, ...args: any[]) => {
 
             // Note that checking the length is not enough, because for properties
             // two arguments are passed, but the property descriptor is `undefined`.
@@ -133,7 +155,7 @@ function makeDecorator<AnnoConstructorT extends AnnotationConstructor<AnnoT>, An
                     if (!allowMultiple) {
                         let existingParamDecs = Annotations.getParameterAnnotations(target, methodName, true);
                         let existingParamAnnots = existingParamDecs[index] || [];
-                        if (existingParamAnnots.find(x => x.$metadataName === ctor.$metadataName)) 
+                        if (existingParamAnnots.find(x => x.$metadataName === ctor.getMetadataName())) 
                             throw new Error(`Annotation ${ctor.name} can only be applied to an element once.`);
                     }
 
@@ -171,7 +193,7 @@ function makeDecorator<AnnoConstructorT extends AnnotationConstructor<AnnoT>, An
                        
                     if (!allowMultiple) {
                         let existingAnnots = Annotations.getMethodAnnotations(target, methodName, true);
-                        if (existingAnnots.find(x => x.$metadataName === ctor['$metadataName'])) 
+                        if (existingAnnots.find(x => x.$metadataName === ctor.getMetadataName())) 
                             throw new Error(`Annotation ${ctor.name} can only be applied to an element once.`);
                     }
 
@@ -196,7 +218,7 @@ function makeDecorator<AnnoConstructorT extends AnnotationConstructor<AnnoT>, An
 
                 if (!allowMultiple) {
                     let existingAnnots = Annotations.getPropertyAnnotations(target, propertyKey, true);
-                    if (existingAnnots.find(x => x.$metadataName === ctor['$metadataName'])) 
+                    if (existingAnnots.find(x => x.$metadataName === ctor.getMetadataName())) 
                         throw new Error(`Annotation ${ctor.name} can only be applied to an element once.`);
                 }
 
@@ -219,7 +241,7 @@ function makeDecorator<AnnoConstructorT extends AnnotationConstructor<AnnoT>, An
                     
                 if (!allowMultiple) {
                     let existingAnnots = Annotations.getClassAnnotations(target);
-                    if (existingAnnots.find(x => x.$metadataName === ctor['$metadataName'])) 
+                    if (existingAnnots.find(x => x.$metadataName === ctor.getMetadataName())) 
                         throw new Error(`Annotation ${ctor.name} can only be applied to an element once.`);
                 }
 
@@ -332,16 +354,22 @@ export class Annotation implements IAnnotation {
      * @param options Allows for specifying options which will modify the behavior of the decorator. 
      *  See the DecoratorOptions documentation for more information.
      */
-    public static decorator<ConstructorT extends AnnotationConstructor<T> & typeof Annotation, T extends Annotation>(
-        this: ConstructorT, 
-        options?: AnnotationDecoratorOptions<ConstructorT, T>
-    ): AnnotationDecorator<ConstructorT, T> {
-        if (this === Annotation) {
+    public static decorator<
+        T extends Annotation, 
+        TS extends any[], 
+        U extends AnnotationDecoratorTarget
+    >(
+        this: AnnotationConstructor<T, TS>, 
+        options? : Exclude<AnnotationDecoratorOptions<T, TS>, 'validTargets'> & { validTargets: U[] }
+    ): (...args: TS) => DecoratorTypeForValidTargets<U>;
+    public static decorator<T extends Annotation, TS extends any[]>(this: AnnotationConstructor<T, TS>, options?: AnnotationDecoratorOptions<T, TS>): AnnotationDecorator<TS>;
+    public static decorator<T extends Annotation, TS extends any[]>(this: AnnotationConstructor<T, TS>, options?: AnnotationDecoratorOptions<T, TS>): AnnotationDecorator<TS> {
+        if ((this as any) === Annotation) {
             if (!options || !options.factory) {
                 throw new Error(`When calling Annotation.decorator() to create a mutator, you must specify a factory (or use Mutator.decorator())`);
             }
         }
-        return makeDecorator<ConstructorT, T>(this, options);
+        return makeDecorator(this, options);
     }
 
     /**
@@ -404,8 +432,8 @@ export class Annotation implements IAnnotation {
      * @param this 
      * @param annotations 
      */
-    public static filter<ConstructorT extends AnnotationConstructor<T>, T extends Annotation>(
-        this: ConstructorT,
+    public static filter<T extends Annotation, TS extends any[]>(
+        this: AnnotationConstructor<T, TS>,
         annotations: IAnnotation[]
     ): T[] {
         return annotations.filter(
@@ -437,8 +465,8 @@ export class Annotation implements IAnnotation {
      * @param this 
      * @param type 
      */
-    public static getForClass<T extends Annotation>(
-        this: Constructor<T> & typeof Annotation, 
+    public static getForClass<T extends Annotation, TS extends any[]>(
+        this: AnnotationConstructor<T, any[]> & typeof Annotation, 
         type: any
     ): T | undefined {
         return this.getAllForClass<T>(type)[0];
@@ -473,7 +501,7 @@ export class Annotation implements IAnnotation {
      * @param methodName The name of the method to check
      */
     public static getForMethod<T extends Annotation>(
-        this: Constructor<T> & typeof Annotation, 
+        this: AnnotationConstructor<T, any[]>, 
         type: any,
         methodName: string
     ): T | undefined {

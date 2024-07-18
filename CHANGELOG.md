@@ -74,6 +74,57 @@ General
   * The type transformations used by annotations has been improved to take advantage of modern Typescript features, 
     allowing for better intellisense.
 
+# v3.11.2
+- `@/web-server`
+   * [(!!) Potential security issue / denial of service] Fixed a crash when the server receives invalid JSON during body parsing or other 
+     errors raised by Connect middleware. **Please update to this patch or higher**. Issue existed between v3.8.0 and v3.11.1.
+     Fix has been backported to affected series with the following patch releases:
+     * Backported as v3.10.3
+     * Backported as v3.9.5
+     * Backported as v3.8.1
+   * Add `middleware` request reporting event (currently unused by the default request reporter)
+   
+# v3.11.1
+- `@/web-server`
+   * Adds `globalMiddleware` option to `@Controller()`. This has the same semantics as `middleware` in previous releases,
+     but with clarified naming.
+   * The `middleware` option of `@Controller()` is now deprecated in favor of `globalMiddleware`.
+   * Fixes a problem where JSON strings cannot be used with the new `@Body({ type: 'json' })` feature because of 
+     `body-parser`'s "strict mode". Disabled "strict mode" when using the JSON mode of the `body-parser` middleware 
+     internally.
+
+# v3.11.0
+- `@/annotations`
+    * Improves the return type of `Annotation.decorator()` so that it is dependent on the provided `valueTargets` (when
+      possible). [Issue](https://github.com/alterior-mvc/alterior/issues/102)
+- `@/web-server`
+    * Adds ability to override the body parser in use via the `@Body()` decorator. This is useful for cases like trying 
+      to accept JSON strings (since `string` normally causes a `text` body parser to be used).
+
+# v3.10.2
+- `@/web-server`
+    * Fixes an issue where a request's body will be unparsed if the `Content-Type` passed does not match the typical 
+      content type associated with the expected body format. For instance, when expecting JSON (the default), the body
+      would only be parsed when the `Content-Type` header was `application/json`. When expecting text  (ie when `@Body()`
+      has type `string`), the body would only be parsed when the `Content-Type` header was `text/plain`. This is unexpected,
+      since Alterior provides no manner to validate the `Content-Type` field without using custom middleware. Now the body
+      is parsed as the expected type regardless of `Content-Type`.
+
+# v3.10.1
+- `@/web-server`
+    * Fixes an issue where `route` is not present on `WebEvent`
+
+# v3.10.0
+- `@/di`
+    * You can now use `Injector.run()` to run a callback within an injection context for the given injector.
+
+# v3.9.4
+- `@/web-server`
+    * Fixes a bug where failing to provide a body when using the `Response` class would cause an exception
+      within Express. Failing to provide a body now ends the response without outputting a body.
+    * Corrects the type of `ConnectMiddleware` to require the `next()` function to be passed. 
+      This fixes type errors when using many Connect middlewares.
+
 # v3.9.3
 
 - `@/express`

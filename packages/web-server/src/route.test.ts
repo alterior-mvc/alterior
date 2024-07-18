@@ -136,6 +136,22 @@ suite(describe => {
 				.expect(200, null)
 				;
 		});
+	
+		it('should return 500 (not crash) with invalid json', async () => {
+			@WebService()
+			class FakeApp {
+				@Post('/foo')
+				getX(@Body() foo: { bar: number }) {
+					return foo.bar;
+				}
+			}
+
+			await teststrap(FakeApp)
+				.post('/foo')
+				.send("invalid json")
+				.expect(500)
+			;
+		});
 
 		it('should allow a method to return an explicit body value', async () => {
 			@WebService()
@@ -812,7 +828,7 @@ suite(describe => {
 				next();
 			}
 
-			@Controller('/abc', { middleware: [counterMiddleware] })
+			@Controller('/abc', { globalMiddleware: [counterMiddleware] })
 			class TestController {
 				@Get('wat')
 				wat() { }
@@ -899,7 +915,7 @@ suite(describe => {
 				next();
 			}
 
-			@Controller('/abc', { middleware: [counterMiddleware] })
+			@Controller('/abc', { globalMiddleware: [counterMiddleware] })
 			class TestController {
 				@Get('wat')
 				wat() {
@@ -931,7 +947,7 @@ suite(describe => {
 				++counter;
 				next();
 			}
-			@Controller('', { middleware: [counterMiddleware] })
+			@Controller('', { globalMiddleware: [counterMiddleware] })
 			class FeatureController {
 				@Get('wat')
 				get() {
@@ -996,7 +1012,7 @@ suite(describe => {
 				next();
 			}
 
-			@Controller('/abc', { middleware: [counterMiddleware] })
+			@Controller('/abc', { globalMiddleware: [counterMiddleware] })
 			class TestController {
 				@Get('/wat')
 				wat() { }
@@ -1031,8 +1047,8 @@ suite(describe => {
 			interface MyRequestType {
 				zoom: number;
 			}
-
-			@Controller('', { middleware: [counterMiddleware] })
+			
+			@Controller('', { globalMiddleware: [ counterMiddleware ]})
 			class ApiController {
 				@Post('/info', { middleware: [bodyParser.json()] })
 				getX(@Body() body: MyRequestType) {

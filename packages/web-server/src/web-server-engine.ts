@@ -12,12 +12,12 @@ import * as net from "net";
 import * as tls from "tls";
 
 export type ConnectMiddleware = (req: http.IncomingMessage, res: http.ServerResponse, next: (err?: any) => void) => void;
-export type ConnectApp = (req: http.IncomingMessage, res: http.ServerResponse, next?: () => void) => void;
+export type ConnectApplication = (req: http.IncomingMessage, res: http.ServerResponse, next?: (err?: any) => void) => void;
 
 export abstract class WebServerEngine {
 	protected logger = inject(Logger, { optional: true });
 
-	readonly abstract app: ConnectApp;
+	readonly abstract app: ConnectApplication;
 	readonly providers: Provider[] = [];
 	
 	abstract addConnectMiddleware(path: string, middleware: ConnectMiddleware): void;

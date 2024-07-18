@@ -1,9 +1,12 @@
 import { Annotation, MetadataName } from "@alterior/annotations";
 
+type InputType = 'queryParam' | 'queryParams' | 'path' | 'body';
+
 export interface InputOptions {
-	type: string;
+	type: InputType;
 	name?: string;
 	default?: any;
+	format?: any;
 }
 
 /**
@@ -16,9 +19,10 @@ export class InputAnnotation extends Annotation {
 		super(options);
 	}
 
-	type!: string;
+	type!: InputType;
 	name?: string;
 	default?: any;
+	format?: any;
 }
 
 export interface QueryParamOptions {
@@ -72,15 +76,26 @@ export function PathParam(name?: string) {
 	});
 }
 
+export interface BodyOptions {
+	/**
+	 * Override the default format selection based on type.
+	 * This can be useful if the default selection doesn't match your use case.
+	 * For instance, using the type `string` causes plain text body parsing. If you want to receive JSON strings
+	 * instead, you can use `format: 'json'`.
+	 */
+	format?: 'json' | 'text' | 'raw';
+}
+
 /**
  * Apply to a parameter to indicate that it represents the body of the request. 
  */
-export function Body() {
+export function Body(options?: BodyOptions) {
 	return InputAnnotation.decorator({
 		validTargets: ['parameter'],
 		allowMultiple: false
 	})({
 		type: 'body',
-		name: ''
+		name: '',
+		...(options ?? {})
 	});
 }

@@ -18,7 +18,7 @@ type Protocol = 'h2'
  * Defines the shape of a request reporting function. A function of this shape can be provided via the `requestReporter`
  * option when setting up a `@WebService`.
  */
-export type RequestReporter = (reportingEvent: 'starting' | 'finished', event: WebEvent, source: string, logger: Logger) => void;
+export type RequestReporter = (reportingEvent: 'middleware' | 'starting' | 'finished', event: WebEvent, source: string, logger: Logger) => void;
 
 /**
  * Defines the shape of a request reporting filter function. This can be used to reduce the noise when a large amount of 
