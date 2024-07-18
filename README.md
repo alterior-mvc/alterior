@@ -142,19 +142,14 @@ import 'reflect-metadata';
 import { Module, OnInit, AppOptions, Application } from '@alterior/runtime';
 import { Injectable } from '@alterior/di';
 
-@Injectable()
 export class WorldService {
   theWorld() {
     return 'world';
   }
 }
 
-@Injectable()
 export class HelloService {
-  constructor(
-    private world : WorldService
-  ) {
-  }
+  private world = inject(WorldService);
 
   sayHello() {
     return `hello, ${this.world.theWorld()}`;
@@ -163,10 +158,7 @@ export class HelloService {
 
 @Module()
 export class AppModule implements OnInit {
-    constructor(
-      private hello : HelloService
-    ) {
-    }
+    private hello = inject(HelloService);
 
     public altOnInit() {
         console.log(this.hello.sayHello());

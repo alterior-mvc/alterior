@@ -1,9 +1,6 @@
-import { Injectable } from './decorators';
-
 /**
  * Access the environment variables of the current process.
  */
-@Injectable()
 export class Environment {
     constructor() {
         this.env = typeof process !== 'undefined' ? process.env : {};

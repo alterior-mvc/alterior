@@ -1,11 +1,9 @@
-import { Injectable } from '@alterior/di';
 import { WebEvent } from "@alterior/web-server";
 import { WebServerEngine } from "@alterior/web-server";
 
 import express from "express";
 import * as http from 'http';
 
-@Injectable()
 export class ExpressEngine extends WebServerEngine {
 	readonly app: express.Application = express();
 	readonly providers = [];

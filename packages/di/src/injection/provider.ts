@@ -6,9 +6,7 @@ import { ConcreteType, Type } from './type';
  * as token.
  * 
  * ```
- * @Injectable()
  * class MyService {}
- *
  * const provider: TypeProvider = MyService;
  * ```
  *
@@ -50,9 +48,7 @@ export interface ValueProvider<T> extends ProviderBase<T> {
  * Configures the {@link Injector} to return an instance of `useClass` for a token.
  * 
  * ```
- * @Injectable()
  * class MyService {}
- *
  * const provider: ClassProvider = {provide: 'someToken', useClass: MyService};
  * ```
  */

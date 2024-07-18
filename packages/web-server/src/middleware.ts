@@ -16,14 +16,6 @@ export interface AlteriorMiddleware {
 
 export type MiddlewareProvider = Constructor<AlteriorMiddleware> | ConnectMiddleware;
 
-/**
- * Mark a class as a Middleware provider. 
- * 
- * @deprecated No longer necessary, will be removed in 4.0.0. You should remove this decorator but note that you 
- * 		may need to add `@Injectable()` if you are using constructor parameter injection
- */
-export const Middleware = MiddlewareAnnotation.decorator();
-
 export function prepareMiddleware(injector: Injector, middlewareDefn: MiddlewareDefinition): Exclude<MiddlewareDefinition, Constructor<any>> {
 	if (!middlewareDefn)
 		throw new Error("Invalid middleware definition passed to prepareMiddleware()");

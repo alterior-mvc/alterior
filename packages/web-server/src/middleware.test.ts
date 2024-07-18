@@ -1,5 +1,5 @@
 import { suite } from 'razmin';
-import { prepareMiddleware, Middleware } from './middleware';
+import { prepareMiddleware } from './middleware';
 import { InjectionToken, Injector, inject } from '@alterior/di';
 import { expect } from 'chai';
 import { MiddlewareDefinition, WebRequest } from './metadata';
@@ -11,7 +11,6 @@ suite(describe => {
 		it('should detect and prepare DI middleware', async () => {
             let observedReq, observedRes, observedNext;
 
-            @Middleware()
             class SampleMiddleware {
                 handle(req: WebRequest, res: ServerResponse, next: () => void) {
                     observedReq = req;

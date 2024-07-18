@@ -53,16 +53,8 @@ You may wish to specifically mark logs which came from a particular class (or an
 import { Logger } from '@alterior/logging';
 // ...
 
-@Injectable()
 export class MyService {
-    constructor(
-        logger : Logger
-    ) {
-        this.logger = logger.withSource(this)
-    }
-
-    private logger : Logger;
-
+    private logger = inject(Logger).withSource(this);
     doSomething() {
         this.logger.info('Hello, world!');
     }

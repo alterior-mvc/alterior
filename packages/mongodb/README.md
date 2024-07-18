@@ -48,7 +48,6 @@ more complicated.
 import { Injectable } from '@alterior/di';
 import * as mongodb from 'mongodb';
 
-@Injectable() 
 class MyInjectableService {
     private mongoClient = inject(mongodb.MongoClient);
     private db = inject(mongodb.Db);

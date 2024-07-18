@@ -24,13 +24,11 @@ const UNDEFINED = new Object();
  * The following example creates an `Injector` configured to create `Engine` and `Car`.
  *
  * ```typescript
- * @Injectable()
  * class Engine {
  * }
  *
- * @Injectable()
  * class Car {
- *   constructor(public engine:Engine) {}
+ *   public engine = inject(Engine);
  * }
  *
  * var injector = Injector.resolveAndCreate([Car, Engine]);
@@ -144,13 +142,11 @@ export class Injector {
      * The created object does not get cached by the injector.
      *
      * ```typescript
-     * @Injectable()
      * class Engine {
      * }
      *
-     * @Injectable()
      * class Car {
-     *   constructor(public engine:Engine) {}
+     *   public engine = inject(Engine);
      * }
      *
      * var injector = Injector.resolveAndCreate([Engine]);
@@ -170,13 +166,11 @@ export class Injector {
      * The created object does not get cached by the injector.
      *
      * ```typescript
-     * @Injectable()
      * class Engine {
      * }
      *
-     * @Injectable()
      * class Car {
-     *   constructor(public engine:Engine) {}
+     *   public engine = inject(Engine);
      * }
      *
      * var injector = Injector.resolveAndCreate([Engine]);
@@ -320,13 +314,11 @@ export class Injector {
      * providers into an array of {@link ResolvedProvider}s.
      *
      * ```typescript
-     * @Injectable()
      * class Engine {
      * }
      *
-     * @Injectable()
      * class Car {
-     *   constructor(public engine:Engine) {}
+     *   public engine = inject(Engine);
      * }
      *
      * var providers = Injector.resolve([Car, [[Engine]]]);
@@ -355,13 +347,11 @@ export class Injector {
      * or a recursive array of more providers.
      *
      * ```typescript
-     * @Injectable()
      * class Engine {
      * }
      *
-     * @Injectable()
      * class Car {
-     *   constructor(public engine:Engine) {}
+     *   public engine = inject(Engine);
      * }
      *
      * var injector = Injector.resolveAndCreate([Car, Engine]);
@@ -385,13 +375,11 @@ export class Injector {
      * This API is the recommended way to construct injectors in performance-sensitive parts.
      *
      * ```typescript
-     * @Injectable()
      * class Engine {
      * }
      *
-     * @Injectable()
      * class Car {
-     *   constructor(public engine:Engine) {}
+     *   public engine = inject(Engine);
      * }
      *
      * var providers = Injector.resolve([Car, Engine]);
