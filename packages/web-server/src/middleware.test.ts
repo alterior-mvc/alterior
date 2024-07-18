@@ -55,7 +55,7 @@ suite(describe => {
                 { provide: SAMPLE_INJECTABLE_TOKEN, useValue: sampleInjectableValue }
             ]);
 
-            let connectMiddleware = prepareMiddleware(injector, SampleMiddleware);
+            let connectMiddleware = <Function>prepareMiddleware(injector, SampleMiddleware);
             connectMiddleware();
             
             expect(observedSampleInjectable).to.be.equal(sampleInjectableValue)

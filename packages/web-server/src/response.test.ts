@@ -1,11 +1,9 @@
-import { Controller, Get } from './metadata';
-import { Response } from './response';
 import { HttpError } from '@alterior/common';
-import { Application } from '@alterior/runtime';
 import { expect } from 'chai';
 import { suite } from 'razmin';
+import { Get } from './metadata';
+import { Response } from './response';
 
-import supertest from 'supertest';
 import { WebService } from './service';
 import { teststrap } from './teststrap';
 
@@ -22,19 +20,16 @@ suite(describe => {
 		});
 
 		it('string body should be JSON encoded', () => {
-			let body = {name: 'Foo'};
 			let response = new Response(200, [], "hello");
 			expect(response.body).to.equal(`"hello"`);
 		});
 
 		it('.encodeAs(\'raw\') should cause body to be pass-through encoded', () => {
-			let body = {name: 'Foo'};
 			let response = new Response(200, [], "hello").encodeAs('raw');
 			expect(response.body).to.equal("hello");
 		});
 
 		it('.throw() should throw an equivalent HttpError', () => {
-			let body = {name: 'Foo'};
 			try {
 				new Response(123, [['X-Test', 'pass']], "hello").throw();
 			} catch (e) {

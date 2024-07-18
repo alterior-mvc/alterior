@@ -21,6 +21,8 @@ export class PublicAnnotation extends Annotation {
 export const Public = PublicAnnotation.decorator({
 	factory(site, options) {
         const { target, propertyKey } = site;
+		if (typeof propertyKey !== 'string')
+			throw new Error(`Symbol methods cannot be marked as @Public()`);
 
 		conduit.Method()(site.target, site.propertyKey);
         

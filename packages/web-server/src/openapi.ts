@@ -110,7 +110,7 @@ export class OpenApiController {
         };
         let paths : OpenApiMap<OpenApiMap<OpenApiOperation>> = {};
         let components : OpenApiComponents = {} as any;
-        let securityDefinitions : OpenApiMap<OpenApiSecurityDefinition> = {};
+        //let securityDefinitions : OpenApiMap<OpenApiSecurityDefinition> = {};
         let tags : (OpenApiTag | string)[] = [];
 
         for (let route of desc.routes) {

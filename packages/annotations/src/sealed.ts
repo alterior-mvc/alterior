@@ -7,8 +7,8 @@ import { Mutator } from './mutator';
 /**
  * Seal a class and its instances.
  */
-export const Sealed = Mutator.create(
-    site => [site.target, site.target.prototype].forEach(x => Object.seal(x)), 
+export const Sealed = () => Mutator.create(
+    value => [value, value.prototype].forEach(x => Object.seal(x)), 
     { validTargets: ['class'] }
 );
 
@@ -16,6 +16,6 @@ export const Sealed = Mutator.create(
  * Freeze a class and its instances.
  */
 export const Frozen = Mutator.create(
-    site => [site.target, site.target.prototype].forEach(x => Object.freeze(x)), 
+    value => [value, value.prototype].forEach(x => Object.freeze(x)),
     { validTargets: ['class'] }
 );

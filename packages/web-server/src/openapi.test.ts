@@ -1,10 +1,10 @@
-import { suite } from "razmin";
-import { teststrap } from "./teststrap";
-import { WebService } from "./service";
-import { Mount, Get } from "./metadata";
-import { OpenApiController } from "./openapi";
-import { expect } from "chai";
 import { AppOptionsAnnotation } from "@alterior/runtime";
+import { expect } from "chai";
+import { suite } from "razmin";
+import { Mount } from "./metadata";
+import { OpenApiController } from "./openapi";
+import { WebService } from "./service";
+import { teststrap } from "./teststrap";
 
 suite(describe => {
     describe('OpenApiController', it => {

@@ -181,6 +181,8 @@ export class ControllerInstance {
 	async start() {
 		if (!this.isModule)
 			await this.fireLifecycleEvent(ALT_ON_START);
+
+		this.controllers.forEach(c => c.start());
 	}
 
 	/**
@@ -189,11 +191,14 @@ export class ControllerInstance {
 	 */
 	async listen(server: WebServer) {
 		await this.fireLifecycleEvent(ALT_ON_LISTEN);
+		this.controllers.forEach(c => c.listen(server));
 	}
 
 	async stop() {
 		if (!this.isModule)
 			await this.fireLifecycleEvent(ALT_ON_STOP);
+
+		this.controllers.forEach(c => c.stop());
 	}
 
 	/**

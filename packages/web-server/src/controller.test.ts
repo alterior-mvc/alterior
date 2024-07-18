@@ -1,10 +1,10 @@
-import { Application, RUNTIME_LOGGER, Runtime, RuntimeLogger } from '@alterior/runtime';
 import { provide } from '@alterior/di';
+import { LOGGING_OPTIONS, LogEvent } from '@alterior/logging';
+import { Application } from '@alterior/runtime';
 import { expect } from 'chai';
 import { suite } from 'razmin';
 import { Controller, Mount } from './metadata';
 import { WebService } from './service';
-import { LOGGING_OPTIONS, LogEvent } from '@alterior/logging';
 
 suite(describe => {
     describe.only('@Controller', it => {
@@ -42,7 +42,7 @@ suite(describe => {
             expect(observed).to.equal(1);
         });
 
-        it.only('executes onStart', async () => {
+        it('executes onStart', async () => {
             let observed = 0;
             let captured = 0;
             @Controller() class MyController { [Controller.onStart]() { observed += 1; } }
@@ -54,7 +54,7 @@ suite(describe => {
             expect(observed).to.equal(1);
         });
 
-        it.only('executes onStop', async () => {
+        it('executes onStop', async () => {
             let observed = 0;
             let captured = 0;
             @Controller() class MyController { [Controller.onStop]() { observed += 1; } }

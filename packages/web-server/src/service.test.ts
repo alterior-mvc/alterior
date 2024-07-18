@@ -5,6 +5,7 @@ import { describe, it } from "razmin";
 import { Get } from "./metadata";
 import { WebService, WebServiceAnnotation } from "./service";
 import { teststrap } from "./teststrap";
+import { provideWebServerOptions } from "./web-server-options";
 
 describe("WebServiceDecorator", () => {
 	it('should work for a simple use case', async () => {
@@ -101,7 +102,9 @@ describe("WebServiceDecorator", () => {
         let started = 0;
 
         @WebService({
-            server: { port: 32552 }
+            providers: [
+                provideWebServerOptions({ port: 32552 })
+            ]
         })
         class FakeModule {
             [WebService.onInit]() {
@@ -128,7 +131,9 @@ describe("WebServiceDecorator", () => {
         let initialized = 0;
 
         @WebService({
-            server: { port: 32553 }
+            providers: [
+                provideWebServerOptions({ port: 32553 })
+            ]
         })
         class FakeModule {
             [WebService.onInit]() {

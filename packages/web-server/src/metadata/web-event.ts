@@ -57,6 +57,9 @@ export class WebEvent<
 	requestId?: string;
 
 	inject<T>(token: InjectionToken<T> | AnyConstructor<T>): T {
+		if (!this.server)
+			throw new Error(`Cannot inject(): WebEvent must be bound to a server`);
+		
 		return this.server.injector.get(token);
 	}
 

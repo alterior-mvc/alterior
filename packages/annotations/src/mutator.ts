@@ -1,95 +1,89 @@
-import { getParameterNames } from '@alterior/common';
-import { DecoratorSite, AnnotationDecoratorOptions, Annotation } from './annotations';
+import { Constructor, getParameterNames } from '@alterior/common';
+import { AnnotationDecoratorTarget, DecoratorSite, DecoratorTypeForValidTargets } from './annotations';
 
-export type MutatorOptions = Omit<AnnotationDecoratorOptions<any, any>, 'factory'>;
-
-export interface MutatorDefinition {
-    invoke: (site: DecoratorSite) => void;
-    options?: MutatorOptions;
+export type MutatorOptions = {
+    validTargets? : Exclude<AnnotationDecoratorTarget, 'parameter' | 'property'>[];
 }
+
+type ValueTypeForValidTargets<Targets, P = unknown> = 
+      Targets extends 'class' ? Constructor<any> 
+    : Targets extends 'method' ? Function
+    : never;
+;
 
 /**
  * Mutators are a way to define "mutation decorators" which in some way change the value
- * of the elements they are applied to, as opposed to "annotation decorators", which primarily
- * attach metadata.
+ * of the elements they are applied to, as opposed to "annotation decorators", which attach metadata.
  *
  * Create a mutator with Mutator.create().
  */
 export class Mutator {
     /**
-     * Low-level method to ceate a new mutation decorator (mutator) based on the given function.
-     * Use `Mutator.define()` instead.
+     * Create a new mutation decorator (mutator).
      * 
-     * @internal
-     */
-    public static create<Args extends any[]>(
-        mutator: (target: DecoratorSite & { propertyDescriptor: PropertyDescriptor }, ...args: Args) => void, 
-        options?: MutatorOptions
-    ) {
-        return Annotation.decorator(
-            {
-                ...(options ?? {}),
-                factory: (target: DecoratorSite, ...args: any[]) => {
-                    let paramNames: string[] | undefined;
-                    let orig = target.propertyDescriptor!.value;
-    
-                    if (typeof orig === 'function') {
-                        paramNames = getParameterNames(target.propertyDescriptor!.value);
-                    }
-    
-                    mutator(target as DecoratorSite & { propertyDescriptor: PropertyDescriptor }, ...(args as Args));
-    
-                    let replacement = target.propertyDescriptor!.value;
-                    if (orig !== replacement && paramNames !== undefined && !Object.hasOwn(replacement, '__parameterNames')) {
-                        Object.defineProperty(replacement, '__parameterNames', {
-                            value: paramNames
-                        });
-                    }
-
-                    return undefined;
-                }
-            }
-        );
-    }
-
-    /**
-     * Define a new mutation decorator (mutator).
-     * This should be called and returned from a
-     * function definition. For example:
-     *
-```
-function Name() {
-    return Mutator.define({
-        invoke(site) {
-            // ...
-        }
-    })
-}
-```
-     *
-     * The `invoke()` function takes a DecoratorSite object which describes the particular
+     * The passed function takes a DecoratorSite object which describes the particular
      * invocation that is being run, and importantly, access to the property descriptor
      * for the property being defined. If you wish to completely replace (or wrap) the
      * default value of the property or method you are replacing, set the `value`
      * property of the property descriptor with `site.propertyDescriptor.value`
-     *
+     * 
      * For example:
      * ```
-export function RunTwice() {
-  return Mutator.create(
-    site => {
-      let prop = site.propertyDescriptor;
-      let original = prop.value;
-      let replacement = function(...args) {
-        original.apply(this, args);
-        original.apply(this, args);
-      }
-      prop.value = replacement;
-    }
-)
+     * export const RunTwice = Mutator.define(site => {
+     *     let prop = site.propertyDescriptor;
+     *     let original = prop.value;
+     *     let replacement = function(...args) {
+     *       original.apply(this, args);
+     *       original.apply(this, args);
+     *     }
+     *     prop.value = replacement;
+     * });
      * ```
      */
-    public static define(definition: MutatorDefinition) {
-        return this.create(definition.invoke, definition.options)();
+    public static create<U extends Exclude<AnnotationDecoratorTarget, 'parameter'>, P>(
+        mutator: (value: ValueTypeForValidTargets<U, P>, target: DecoratorSite) => void, 
+        options?: { validTargets: U[] }
+    ): DecoratorTypeForValidTargets<U> {
+        const validTargets = options?.validTargets ?? ['class', 'method', 'property'];
+
+        return <DecoratorTypeForValidTargets<U>> function (target: any, propertyKey?: string | symbol, propertyDescriptor?: PropertyDescriptor): any {
+            let value: any;
+            let type: "class" | "method";
+            let paramNames: string[] | undefined;
+
+            if (propertyDescriptor) {
+                value = propertyDescriptor.value;
+                type = "method";
+                if (typeof value === 'function') {
+                    paramNames = getParameterNames(value);
+                }
+            } else {
+                value = target;
+                type = "class";
+            }
+
+            if (!validTargets.includes(type))
+                throw new Error(`You cannot decorate a ${type} with this mutator`);
+
+            let newValue: any = mutator(value, {
+                target,
+                propertyKey,
+                propertyDescriptor,
+                type
+            });
+
+            if (value !== newValue && paramNames !== undefined && !Object.hasOwn(newValue, '__parameterNames')) {
+                Object.defineProperty(newValue, '__parameterNames', {
+                    value: paramNames,
+                    enumerable: false
+                });
+            }
+
+            if (propertyDescriptor) {
+                propertyDescriptor.value = newValue;
+            } else {
+                return propertyDescriptor;
+            }
+        };
     }
 }

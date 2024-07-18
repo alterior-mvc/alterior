@@ -270,11 +270,9 @@ export class Runtime {
      * which are currently running. For more information about Roles, see the documentation for RolesService.
      */
     async stop() {
-        console.log(`RUNTIME STOPPING`);
         await this.fireEvent(BuiltinLifecycleEvents.onStop);
         await this.injector.get(ApplicationRoles).stopAll();
         await this.fireEvent(BuiltinLifecycleEvents.afterStop);
-        console.log(`RUNTIME STOPPED`);
     }
 
     /**
@@ -286,11 +284,9 @@ export class Runtime {
      * For more information about Roles, see the documentation for RolesService.
      */
     async start() {
-        console.log(`RUNTIME STARTING`);
         await this.fireEvent(BuiltinLifecycleEvents.onStart);
         await this.injector.get(ApplicationRoles).startAll();
         await this.fireEvent(BuiltinLifecycleEvents.afterStart);
-        console.log(`RUNTIME STARTED`);
     }
 
     /**

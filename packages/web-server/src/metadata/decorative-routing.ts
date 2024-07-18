@@ -1,4 +1,4 @@
-import { Annotation } from '@alterior/annotations';
+import { Annotation, MetadataName } from '@alterior/annotations';
 import { disallowNativeAsync } from '@alterior/common';
 import { MountDefinition } from './mount-definition';
 import { MountOptions } from './mount-options';
@@ -13,6 +13,7 @@ export function Delete(path?: string, options?: RouteOptions) { return Route('DE
 export function Options(path?: string, options?: RouteOptions) { return Route('OPTIONS', path, options); }
 export function Patch(path?: string, options?: RouteOptions) { return Route('PATCH', path, options); }
 
+@MetadataName('alterior:route')
 export class RouteAnnotation extends Annotation {
 	constructor(
 		readonly method: string, 
@@ -24,11 +25,12 @@ export class RouteAnnotation extends Annotation {
 }
 
 export const Route = RouteAnnotation.decorator({
+	validTargets: ['method'],
 	factory: (site, method, path, options) => {
-		const { target, propertyKey } = site.target;
-		disallowNativeAsync((target as any)[propertyKey]);
+		const { target, propertyKey } = site;
+		disallowNativeAsync((target as any)[propertyKey!]);
 
-		Public(options)(target, propertyKey);
+		Public(options)(target, propertyKey!);
 
 		if (!target.hasOwnProperty('alterior:routes')) {
 			Object.defineProperty(target, 'alterior:routes', {

@@ -54,8 +54,8 @@
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "tslib": "^2.3.1",
-    "typedoc": "^0.25.7",
-    "typescript": "^5.3.3",
+    "typedoc": "^0.26.4",
+    "typescript": "^5.5.3",
     "zone.js": "^0.14.3"
   }
 }

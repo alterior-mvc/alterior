@@ -1,20 +1,21 @@
 import { Annotation, MetadataName } from "@alterior/annotations";
-import { InjectionToken, inject, injectMultiple, provide } from "@alterior/di";
+import { ConcreteType, InjectionToken, inject, injectMultiple, provide } from "@alterior/di";
 import { Logger, LoggingModule } from '@alterior/logging';
-import { Application, BuiltinLifecycleEvents, Constructor, Module, ModuleOptions, RolesService } from "@alterior/runtime";
+import { Application, ApplicationOptions, ApplicationRoles, BuiltinLifecycleEvents, Module, ModuleOptions } from "@alterior/runtime";
 import { ControllerInstance } from './controller';
-import { CONST_HTTP_VERB_MAP, Controller, HTTP_VERBS, HTTP_VERB_MAP, Route, RouteOptions } from "./metadata";
+import { Controller } from "./metadata";
 import { WebServer } from './web-server';
-import { WEB_SERVER_OPTIONS } from "./web-server-options";
+import { WEB_SERVER_OPTIONS, WebServerOptions, provideWebServerOptions } from "./web-server-options";
 
 import * as conduit from '@astronautlabs/conduit';
-import { InputAnnotation } from "./input";
+
+const WEB_SERVICE = new InjectionToken<ConcreteType<any>>('WEB_SERVICE');
 
 /**
  * Options for the web service. Available options are a superset 
  * of the options available for @Module() as well as WebServerModule.configure(...).
  */
-export interface WebServiceOptions extends ModuleOptions {
+export interface WebServiceOptions extends ApplicationOptions, ModuleOptions {
 	/**
 	 * Identity to use when exposing this service via Conduit. When not specified, the name of the class is used.
 	 */
@@ -35,6 +36,8 @@ export interface WebServiceOptions extends ModuleOptions {
      * Whether this service is introspectable via Conduit. Defaults to true.
      */
     introspectable?: boolean;
+
+    server?: WebServerOptions;
 }
 
 @Module({
@@ -42,9 +45,9 @@ export interface WebServiceOptions extends ModuleOptions {
 })
 class WebServerModule {
     private app = inject(Application);
-    private rolesService = inject(RolesService);
+    private rolesService = inject(ApplicationRoles);
     private logger = inject(Logger);
-    private webServerOptions = inject(WEB_SERVER_OPTIONS);
+    private webServerOptions = inject(WEB_SERVER_OPTIONS, { optional: true }) ?? {};
     private webServiceClasses = injectMultiple(WEB_SERVICE);
 
     async [Module.onInit]() {
@@ -92,7 +95,6 @@ class WebServerModule {
 
         this.rolesService.registerRole({
             identifier: 'web-server',
-            instance: this,
             name: 'Web Server',
             summary: 'Starts a web server backed by the controllers configured in the module tree',
             start: async () => {
@@ -113,14 +115,25 @@ class WebServerModule {
 }
 
 /**
+ * Backing annotation for the @WebService() decorator which is a simple API
+ * for constructing a web service using Alterior.
+ */
+@MetadataName('@alterior/web-server:WebService')
+export class WebServiceAnnotation extends Annotation {
+    constructor(options?: WebServiceOptions) {
+        super();
+    }
+}
+
+/**
  * Used to decorate a class which represents a REST service.
  * Such a class is both an Alterior module and an Alterior controller, meaning it 
  * can both act as the entry module of an Alterior application as well as define
- * REST routes using the @alterior/web-server @Get()/@Post()/etc decorators.
+ * REST routes using the `@Get()`/`@Post()`/etc decorators.
  */
 export const WebService = Object.assign(
-    <T> (serviceClientConstructor: WebServiceClientConstructor<T>, options: WebServiceOptions = {}) => {
-        return (target: Constructor<T>) => {
+    <T> (options: WebServiceOptions = {}) => {
+        return (target: ConcreteType<T>) => {
 
             // Apply Conduit metadata
 
@@ -132,6 +145,10 @@ export const WebService = Object.assign(
     
             Controller('', { group: 'service' })(target);
 
+            options.providers ??= [];
+            if (options.server)
+                options.providers.push(provideWebServerOptions(options));
+
             // Apply module metadata
 
             Module(<Required<ModuleOptions>>{
@@ -142,50 +159,18 @@ export const WebService = Object.assign(
                 prepare: options.prepare,
                 providers: [
                     ...(options.providers ?? []),
-                    provide(WEB_SERVICE, { multi: true }).usingClass(target)
+                    provide(WEB_SERVICE, { multi: true }).usingValue(target)
                 ],
                 tasks: options.tasks
             })(target);
 
             // Apply WebServiceAnnotation
 
-            new WebServiceAnnotation(serviceClientConstructor, options).applyToClass(target);
+            new WebServiceAnnotation(options).applyToClass(target);
         };
     },
     BuiltinLifecycleEvents,
-    {
-        define: <T>(definer: (t: ReturnType<typeof WebServiceBuilder>) => T): WebServiceClientConstructor<T> => {
-            let serviceInterface = definer(WebServiceBuilder());
 
-            const constructor: WebServiceClientConstructor<T> = Object.assign(
-                <any><() => WebServiceInterface<T>>(() => {
-                    // TODO
-                }),
-                {
-                    ['interface']: serviceInterface,
-                    http(definer: (r: HttpDecorators<T>) => void) {
-                        definer(
-                            new Proxy<HttpDecorators<T>>({} as any, {
-                                get: (_, p) => {
-                                    if (typeof p === 'string' && Object.keys(HTTP_VERB_MAP).includes(p)) {
-                                        return (path?: string, options?: RouteOptions): MethodDecorator => {
-                                            return Route(HTTP_VERB_MAP[p], path, options);
-                                        };
-                                    }
-                                }
-                            })
-                        );
-
-                        return this;
-                    }
-                }
-            );
-
-            constructor.http
-
-            return constructor;
-        },
-    }
 );
 
 export class RestClientError extends Error {
@@ -193,42 +178,3 @@ export class RestClientError extends Error {
         super(message);
     }
 }
-
-///////////////////////////////////////////////////////////////////
-
-// PROBLEM: All of this loses the decorator metadata. We could force 
-// the implementation method to have a decorator on it (would double for 
-// ensuring the developer doesn't forget that the method is published),
-// but the generated client would then not have this information at runtime.
-// The client needs this information in order to create an HTTP request
-
-const FooInterface = WebService
-    .define(t => ({
-        info: t.method<[thing: string], { description: string }>(
-            t.documentation({
-                summary: 'Provides information about the given thing'
-            })
-        )
-    }))
-    .http(r => [
-        r.get('/:thing').bind((r, i) => i.info(r.path('thing')))
-    ])
-;
-
-type FooInterface = typeof FooInterface.interface;
-
-@WebService(FooInterface)
-export class FooConcrete {
-    async info(thing: string) {
-        return { description: `That thing is named ${thing}` };
-    }
-}
-
-let x = new FooInterface('blah');
-let y: FooInterface;
-
-y = x;
-
-
-x.info(123);
-

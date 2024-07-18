@@ -18,4 +18,4 @@ export { ResolvedProvider } from './resolved-provider';
 
 export { Key } from './key';
 export { InjectionToken } from './injection-token';
-export { Type, isType } from './type';
+export { Type, ConcreteType, AbstractType, isType } from './type';

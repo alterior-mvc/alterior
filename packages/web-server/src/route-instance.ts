@@ -179,18 +179,7 @@ export class RouteInstance {
 		let route = this.definition;
 		let sourceName = `${controller.name || controller}.${route.method}()`;
 		let { paramTypes, paramNames, paramAnnotations } = this.methodMetadata;
-
-		let paramFactories = [];
-		//let pathParameterMap : any = {};
-
-		if (!paramTypes) {
-			paramFactories = [
-				(ev: WebEvent) => ev.request,
-				(ev: WebEvent) => ev.response
-			];
-			return;
-		}
-
+		
 		for (let i = 0, max = paramNames.length; i < max; ++i) {
 			this._parameters.push(new RouteMethodParameter(
 				this,

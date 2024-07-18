@@ -1,6 +1,6 @@
 import { Annotation, MetadataName } from '@alterior/annotations';
 import { isClass } from '@alterior/common';
-import { Injector, ReflectiveInjector } from '@alterior/di';
+import { Injector } from '@alterior/di';
 import { Constructor } from '@alterior/runtime';
 import { MiddlewareDefinition, WebEvent } from './metadata';
 import { ConnectMiddleware } from './web-server-engine';
@@ -42,12 +42,14 @@ export function prepareMiddleware(injector: Injector, middlewareDefn: Middleware
 	if (!isClass(middleware))
 		return rewrapMiddleware(path, middleware as ConnectMiddleware);
 
+	let middlewareClass = <Constructor<AlteriorMiddleware>>middleware;
+
 	return rewrapMiddleware(path, (req, res, next) => {
-		let ownInjector = ReflectiveInjector.resolveAndCreate([ 
+		let ownInjector = Injector.resolveAndCreate([ 
 			middleware as Constructor<any>,
 			{ provide: WebEvent, useValue: WebEvent.current } 
 		], injector);
-		let instance = ownInjector.get(middleware);
+		let instance = ownInjector.get(middlewareClass);
 		instance.handle(req, res, next)
 	});
 }

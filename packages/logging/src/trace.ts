@@ -68,125 +68,116 @@ export function setTracingEnabled(enabled : boolean) {
  * 
  */
 export function Trace() {
-    return Mutator.define({
-        options: { 
-            validTargets: ['method'] 
-        },
+    return Mutator.create((originalMethod, site) => {
+        // - When used outside of Alterior, we will *always trace*.
+        // - When used inside an Alterior app, we will not trace by default.
+        // - If optionsRef.options.tracing is set to true, we trace.
 
-        invoke(site) {
+        let options = ExecutionContext.current?.application?.inject(LOGGING_OPTIONS, null);
+        let enabled = options ? coalesce(options.tracing, false) : true;
+        let logger = Logger.current;
 
-            // - When used outside of Alterior, we will *always trace*.
-            // - When used inside an Alterior app, we will not trace by default.
-            // - If optionsRef.options.tracing is set to true, we trace.
+        if (!ENABLED || !enabled)
+            return;
+        
+        return function (this: any, ...args: any[]) {
+            let type : Function;
+            let isStatic : boolean = false;
 
-            let options = ExecutionContext.current?.application?.inject(LOGGING_OPTIONS, null);
-            let enabled = options ? coalesce(options.tracing, false) : true;
-            let logger = Logger.current;
-
-            if (!enabled)
-                return;
-
-            if (!ENABLED)
-                return;
+            if (typeof site.target === 'function') {
+                type = site.target;
+                isStatic = true;
+            } else {
+                type = site.target.constructor;
+                isStatic = false;
+            }
             
-            let originalMethod : Function = site.propertyDescriptor!.value;
-            site.propertyDescriptor!.value = function (...args: any[]) {
-                let type : Function;
-                let isStatic : boolean = false;
+            let typeName : string;
+            let sep : string = '.';
 
-                if (typeof site.target === 'function') {
-                    type = site.target;
-                    isStatic = true;
-                } else {
-                    type = site.target.constructor;
-                    isStatic = false;
+            if (isStatic)
+                sep = '#';
+
+            typeName = type.name;
+
+            let startedAt = Date.now();
+
+            let argStrings = [];
+
+            for (let arg of args) {
+                if (arg === null)
+                    argStrings.push('null');
+                else if (arg === undefined)
+                    argStrings.push('undefined');
+                else if (arg === true)
+                    argStrings.push('true');
+                else if (arg === false)
+                    argStrings.push('false');
+                else if (typeof arg === 'string') 
+                    argStrings.push(JSON.stringify(arg));
+                else if (typeof arg === 'function')
+                    argStrings.push(arg.name);
+                else if (typeof arg === 'object')
+                    argStrings.push(JSON.stringify(arg))
+                else 
+                    argStrings.push(''+arg);
+            }
+
+            let methodSpec = `${ConsoleColors.cyan(`${typeName}${sep}${String(site.propertyKey)}`)}(${argStrings.join(', ')})`;
+            logger.debug(`${methodSpec} {`);
+            let value: any;
+
+            let finish = (message?: string) => {
+                let time = Date.now() - startedAt;
+                let components = [message ?? ConsoleColors.green(`Done`)];
+                let timingColor = (m: string) => m;
+                let showTiming = time > 3;
+
+                if (time > 20) {
+                    timingColor = ConsoleColors.red;
+                } else if (time > 5) {
+                    timingColor = ConsoleColors.yellow;
                 }
                 
-                let typeName : string;
-                let sep : string = '.';
-
-                if (isStatic)
-                    sep = '#';
-
-                typeName = type.name;
-
-                let startedAt = Date.now();
-
-                let argStrings = [];
-
-                for (let arg of args) {
-                    if (arg === null)
-                        argStrings.push('null');
-                    else if (arg === undefined)
-                        argStrings.push('undefined');
-                    else if (arg === true)
-                        argStrings.push('true');
-                    else if (arg === false)
-                        argStrings.push('false');
-                    else if (typeof arg === 'string') 
-                        argStrings.push(JSON.stringify(arg));
-                    else if (typeof arg === 'function')
-                        argStrings.push(arg.name);
-                    else if (typeof arg === 'object')
-                        argStrings.push(JSON.stringify(arg))
-                    else 
-                        argStrings.push(''+arg);
+                if (showTiming) {
+                    components.push(timingColor(`${time}ms`));
                 }
 
-                let methodSpec = `${ConsoleColors.cyan(`${typeName}${sep}${site.propertyKey}`)}(${argStrings.join(', ')})`;
-                logger.debug(`${methodSpec} {`);
-                let value: any;
-
-                let finish = (message?: string) => {
-                    let time = Date.now() - startedAt;
-                    let components = [message ?? ConsoleColors.green(`Done`)];
-                    let timingColor = (m: string) => m;
-                    let showTiming = time > 3;
-
-                    if (time > 20) {
-                        timingColor = ConsoleColors.red;
-                    } else if (time > 5) {
-                        timingColor = ConsoleColors.yellow;
-                    }
-                    
-                    if (showTiming) {
-                        components.push(timingColor(`${time}ms`));
-                    }
-
-                    logger.debug(`} // [${components.join(', ')}] ${methodSpec}`);
-                };
-
-                try {
-                    indentConsole(4, () => {
-                        try {
-                            value = originalMethod.apply(this, args); 
-                        } catch (e) {
-                            console.error(`${ConsoleColors.red(`(!!)`)} Exception:`);
-                            indentConsole(6, () => console.error(e));
-                            
-                            throw e;
-                        }
-                    });
-                } catch (e) {
-                    finish(ConsoleColors.red(`Exception`));
-                    throw e;
-                }
-                
-                if (value?.then) {
-                    let promise : Promise<any> = value;
-                    value = promise.then(() => {
-                        finish(ConsoleColors.green(`Resolved`));
-                    }).catch(e => {
-                        finish(ConsoleColors.red(`Rejected (${e})`));
-                        throw e;
-                    });
-                } else {
-                    finish();
-                }
-
-                return value;
+                logger.debug(`} // [${components.join(', ')}] ${methodSpec}`);
             };
-        }
+
+            try {
+                indentConsole(4, () => {
+                    try {
+                        value = originalMethod.apply(this, args); 
+                    } catch (e) {
+                        console.error(`${ConsoleColors.red(`(!!)`)} Exception:`);
+                        indentConsole(6, () => console.error(e));
+                        
+                        throw e;
+                    }
+                });
+            } catch (e) {
+                finish(ConsoleColors.red(`Exception`));
+                throw e;
+            }
+            
+            if (value?.then) {
+                let promise : Promise<any> = value;
+                value = promise.then(() => {
+                    finish(ConsoleColors.green(`Resolved`));
+                }).catch(e => {
+                    finish(ConsoleColors.red(`Rejected (${e})`));
+                    throw e;
+                });
+            } else {
+                finish();
+            }
+
+            return value;
+        };
+    }, { 
+        validTargets: ['method'] 
     });
 }
 
@@ -194,41 +185,37 @@ export function Trace() {
  * If an exception occurs within the target method, report that exception to the console and rethrow.
  */
 export function ReportExceptionsToConsole() {
-    return Mutator.define({
-        options: { 
-            validTargets: ['method'] 
-        },
+    return Mutator.create((value, site) => {
+        let originalMethod : Function = site.propertyDescriptor!.value;
+        site.propertyDescriptor!.value = function (...args: any[]) {
+            let type : Function;
+            let isStatic : boolean = false;
 
-        invoke(site) {
-            let originalMethod : Function = site.propertyDescriptor!.value;
-            site.propertyDescriptor!.value = function (...args: any[]) {
-                let type : Function;
-                let isStatic : boolean = false;
+            if (typeof site.target === 'function') {
+                type = site.target;
+                isStatic = true;
+            } else {
+                type = site.target.constructor;
+                isStatic = false;
+            }
+            
+            let typeName : string;
+            let sep : string = '.';
 
-                if (typeof site.target === 'function') {
-                    type = site.target;
-                    isStatic = true;
-                } else {
-                    type = site.target.constructor;
-                    isStatic = false;
-                }
-                
-                let typeName : string;
-                let sep : string = '.';
+            if (isStatic)
+                sep = '#';
 
-                if (isStatic)
-                    sep = '#';
+            typeName = type.name;
 
-                typeName = type.name;
-
-                try {
-                    return originalMethod.apply(this, args);
-                } catch (e) {
-                    console.error(`Error occurred during ${typeName}${sep}${site.propertyKey}():`);
-                    console.error(e);
-                    throw e;
-                }
-            };
+            try {
+                return originalMethod.apply(this, args);
+            } catch (e) {
+                console.error(`Error occurred during ${typeName}${sep}${String(site.propertyKey)}():`);
+                console.error(e);
+                throw e;
+            }
         }
+    }, { 
+        validTargets: ['method'] 
     });
 }

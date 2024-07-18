@@ -11,6 +11,8 @@ export {
     ProviderBuilder,
     ProviderToken,
     Type,
+    ConcreteType,
+    AbstractType,
     inject,
     injectMultiple,
     injectionContext,

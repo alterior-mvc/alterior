@@ -77,7 +77,7 @@ suite()
     .withTimeout(10 * 1000)
 	.withOptions({
 		execution: {
-			verbose: true
+			verbose: false
 		}
 	})
     .include(['**/*.test.js'])

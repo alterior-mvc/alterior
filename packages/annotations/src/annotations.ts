@@ -50,7 +50,7 @@ type DecoratorTypeUnionForValidTargets<Targets> =
     : never;
 ;
 
-type DecoratorTypeForValidTargets<Targets> = UnionToIntersection<DecoratorTypeUnionForValidTargets<Targets>>;
+export type DecoratorTypeForValidTargets<Targets> = UnionToIntersection<DecoratorTypeUnionForValidTargets<Targets>>;
 
 /**
  * Represents a decorator which accepts an Annotation's options object.
@@ -65,9 +65,9 @@ export type AnnotationDecorator<TS extends any[]> = (...args: TS) =>
 export interface DecoratorSite {
     type: 'class' | 'method' | 'property' | 'parameter';
     target: any;
-    propertyKey?: string;
-    propertyDescriptor?: PropertyDescriptor;
-    index?: number;
+    propertyKey?: string | symbol;
+    propertyDescriptor?: PropertyDescriptor | undefined;
+    index?: number | undefined;
 }
 
 export type AnnotationDecoratorTarget = 'class' | 'property' | 'method' | 'parameter';
@@ -322,7 +322,7 @@ export class Annotation implements IAnnotation {
         this.$metadataName = (this.constructor as typeof Annotation)['$metadataName'];
         if (!this.$metadataName || !this.$metadataName.includes(':')) {
             throw new Error(
-                `You must specify a metadata name for this annotation in the form of ` 
+                `Annotation class ${this.constructor.name} is missing @MetadataName() or value is not in the form of ` 
                 + ` 'mynamespace:myproperty'. You specified: '${this.$metadataName || '<none>'}'`
             );
         }

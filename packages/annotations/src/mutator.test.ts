@@ -7,15 +7,12 @@ import { Mutator } from './mutator';
 
 suite(describe => {
     describe('Mutator.create', it => {
-        const RunTwice = Mutator.create((site) => {
-            let prop = site.propertyDescriptor;
-            let original = prop.value;
-            let replacement = function (this: any, ...args: any[]) {
-                original.apply(this, args);
-                original.apply(this, args);
+        const RunTwice = () => Mutator.create(value => {
+            return function (this: any, ...args: any[]) {
+                value.apply(this, args);
+                value.apply(this, args);
             }
-            prop.value = replacement;
-        });
+        }, { validTargets: ['method'] });
         
         it("should mutate the method", () => {
             class Subject {
@@ -76,11 +73,11 @@ suite(describe => {
             expect(getParameterNames(instance.test)).to.eql(['foobaz', 'blah']);
         });
         it("should not replace existing parameter name metadata", () => {
-            const AddParams = Mutator.create(site => {
-                let params = getParameterNames(site.propertyDescriptor.value);
-                site.propertyDescriptor.value = function() { }
-                Object.defineProperty(site.propertyDescriptor.value, '__parameterNames', { value: params });
-            });
+            const AddParams = () => Mutator.create((value, site) => {
+                value = function() { }
+                Object.defineProperty(value, '__parameterNames', { value: ['synthetic', 'values'] });
+                return value;
+            }, { validTargets: ['method'] });
             
             class Subject {
                 @AddParams()
@@ -89,7 +86,7 @@ suite(describe => {
             }
 
             let instance = new Subject();
-            expect(getParameterNames(instance.test)).to.eql(['foobaz', 'blah']);
+            expect(getParameterNames(instance.test)).to.eql(['synthetic', 'values']);
         });
     });
 });

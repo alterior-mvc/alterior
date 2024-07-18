@@ -10,6 +10,7 @@ import { Application } from '@alterior/runtime';
 import { Response } from './response';
 import { IncomingMessage, ServerResponse } from 'http';
 import { InterceptedAction } from './web-server-options';
+import { inject } from '@alterior/di';
 
 let nextFreePort = 10010;
 
@@ -19,7 +20,7 @@ function fakeAppVarietyOfMethods() {
 			port: nextFreePort++,
 			silent: true,
 			middleware: [
-				(req: IncomingMessage, res: ServerResponse, next: () => {}) => {
+				(req: IncomingMessage, res: ServerResponse, next: () => void) => {
 					res.setHeader('Content-Type', 'application/json');
 					next();
 				}
@@ -307,7 +308,7 @@ suite(describe => {
 			@WebService({
 				server: {
 					middleware: [
-						['/foo', (req: IncomingMessage, res: ServerResponse, next: () => {}) => {
+						['/foo', (req: IncomingMessage, res: ServerResponse, next: () => void) => {
 							(req as any).fun = 'funfun';
 							next();
 						}]
@@ -352,14 +353,10 @@ suite(describe => {
 		});
 
 		it('should not allow path parameter binding without a type', async () => {
-
-			let observedBar;
-
 			@WebService()
 			class FakeApp {
 				@Get('/foo/:bar')
 				getX(bar: any) {
-					observedBar = bar;
 					return Promise.resolve({ ok: true });
 				}
 			}
@@ -876,7 +873,8 @@ suite(describe => {
 
 			@WebService({ providers: [TestController] })
 			class FakeApp {
-				constructor(private injectedController: TestController) { }
+				private injectedController = inject(TestController);
+				
 				@Mount() test!: TestController;
 				altOnInit() { matched = this.test === this.injectedController; }
 			}
@@ -893,7 +891,8 @@ suite(describe => {
 
 			@WebService({ providers: [TestController] })
 			class FakeApp {
-				constructor(private injectedController: TestController) { }
+				private injectedController = inject(TestController);
+				
 				@Mount('/test1') test2!: TestController;
 				@Mount('/test2') test1!: TestController;
 				altOnInit() { matched = this.test1 === this.injectedController && this.test2 === this.injectedController; }
@@ -905,10 +904,6 @@ suite(describe => {
 		});
 
 		it('all paths under a controller should execute middleware', async () => {
-			interface MyRequestType {
-				zoom: number;
-			}
-
 			let counter = 0;
 			let counterMiddleware: MiddlewareDefinition = (req, res, next) => {
 				++counter;
@@ -938,10 +933,7 @@ suite(describe => {
 		});
 
 		it('paths outside of a controller should not execute middleware from that controller', async () => {
-			interface MyRequestType {
-				zoom: number;
-			}
-
+			
 			let counter = 0;
 			let counterMiddleware: MiddlewareDefinition = (req, res, next) => {
 				++counter;

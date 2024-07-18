@@ -1,7 +1,5 @@
+import { ArgumentError, InvalidOperationError, timeout } from "@alterior/common";
 import { inject } from "@alterior/di";
-import { timeout, InvalidOperationError, ArgumentError } from "@alterior/common";
-import { RUNTIME_LOGGER } from "./runtime-logger";
-import { Runtime } from "./runtime";
 import { APP_OPTIONS } from "./app-options";
 
 const SUPPORTED_ROLE_MODES = ['default', 'default-except', 'all-except', 'only'];
@@ -60,7 +58,7 @@ export interface RoleEvents {
  */
 export class ApplicationRoles {
     private appOptions = inject(APP_OPTIONS);
-    private logger = inject(RUNTIME_LOGGER, { optional: true }) ?? Runtime.defaultLogger;
+    //private logger = inject(RUNTIME_LOGGER, { optional: true }) ?? Runtime.defaultLogger;
 
     silent = this.appOptions.silent ?? false;
 
@@ -156,7 +154,7 @@ export class ApplicationRoles {
         const role = this.getByIdInternal(identifier);
         await role.start();
         this._activeRoles.push(role);
-        this.logger.info(`Role ${role.identifier} started`);
+        //this.logger.debug(`Role ${role.identifier} started`);
     }
 
     async stop(identifier: string) {
@@ -166,7 +164,7 @@ export class ApplicationRoles {
         const role = this.getByIdInternal(identifier);
         await role.stop();
         this._activeRoles = this._activeRoles.filter(x => x !== role);
-        this.logger.info(`Role ${role.identifier} stopped`);
+        //this.logger.debug(`Role ${role.identifier} stopped`);
     }
 
     async startAll() {
