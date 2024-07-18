@@ -4,10 +4,10 @@ import * as ws from 'ws';
 
 import { Injector, Provider, Type } from "@alterior/di";
 import { prepareMiddleware } from "./middleware";
-import { MiddlewareDefinition, MiddlewareFunction, WebEvent, WebRequest } from "./metadata";
+import { MiddlewareDefinition, WebEvent, WebRequest } from "./metadata";
 import { ApplicationOptions, Application, AppOptionsAnnotation, AppOptions, Module } from '@alterior/runtime';
 import { LogSeverity, Logger } from '@alterior/logging';
-import { ConnectApp, WebServerEngine } from './web-server-engine';
+import { ConnectApplication, ConnectMiddleware, WebServerEngine } from './web-server-engine';
 import { ParameterDisplayFormatter, RequestReporter, RequestReporterFilter, WebServerOptions } from './web-server-options';
 import { ServiceDescription } from './service-description';
 import { ServiceDescriptionRef } from './service-description-ref';
@@ -122,7 +122,7 @@ export class WebServer {
 			})
 		);
 
-		let connectApp: ConnectApp;
+		let connectApp: ConnectApplication;
 
 		return async (req: WebRequest, res: http.ServerResponse) => {
 			connectApp ??= WebServer.for((await appReady).injector.get(<Type<any>>entryModule))
@@ -166,9 +166,9 @@ export class WebServer {
 		let middlewares = this.options.middleware || [];
 		for (let middleware of middlewares) {
 			if (middleware instanceof Array)
-				this.engine.addConnectMiddleware(middleware[0], <MiddlewareFunction>prepareMiddleware(this.injector, middleware[1]));
+				this.engine.addConnectMiddleware(middleware[0], <ConnectMiddleware>prepareMiddleware(this.injector, middleware[1]));
 			else
-				this.engine.addConnectMiddleware('/', <MiddlewareFunction>prepareMiddleware(this.injector, middleware));
+				this.engine.addConnectMiddleware('/', <ConnectMiddleware>prepareMiddleware(this.injector, middleware));
 		}
 	}
 

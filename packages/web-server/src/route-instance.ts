@@ -178,7 +178,7 @@ export class RouteInstance {
 		let controller = this.controllerType;
 		let route = this.definition;
 		let sourceName = `${controller.name || controller}.${route.method}()`;
-		let { returnType, paramTypes, paramNames, paramAnnotations } = this.methodMetadata;
+		let { paramTypes, paramNames, paramAnnotations } = this.methodMetadata;
 
 		let paramFactories = [];
 		//let pathParameterMap : any = {};
@@ -406,7 +406,7 @@ export class RouteInstance {
 
 				try {
 					return await this.execute(this.controllerInstance, ev);
-				} catch (e) {
+				} catch (e: any) {
 					this.server.logger.fatal(`Alterior failed to process request ${ev.request.method} ${ev.request.url}: ${e.stack || e.message || e}`);
 					this.server.logger.fatal(`The above error was caught using Alterior's last-chance error handler. This is always a bug. Please report this issue.`);
 					
