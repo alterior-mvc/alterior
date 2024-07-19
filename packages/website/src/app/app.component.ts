@@ -2,6 +2,7 @@ import { isPlatformServer } from '@angular/common';
 import { Component, PLATFORM_ID, inject } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { filter } from 'rxjs';
+import { UIService } from './ui.service';
 
 declare var Prism;
 
@@ -13,11 +14,13 @@ declare var Prism;
 export class AppComponent {
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
+  private uiService = inject(UIService);
 
   ngOnInit() {
-    if (!isPlatformServer(this.platformId))
-      this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => {
-        setTimeout(() => Prism.highlightAll());
-      });
+    // if (!isPlatformServer(this.platformId)) {
+    //   this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => {
+    //     this.uiService.pageFinishedLoading();
+    //   });
+    // }
   }
 }

@@ -1,5 +1,5 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "$schema": "../../node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -19,7 +19,7 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "alt",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
@@ -34,7 +34,12 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "README.md",
+                "input": "../..",
+                "output": "assets"
+              }
             ],
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",

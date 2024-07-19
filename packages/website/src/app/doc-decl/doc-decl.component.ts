@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ReflectionKind, TSAccessor, TSArrayType, TSClass, TSConstructor, TSDocCallSignature, TSDocElement, TSDocMethod, TSDocParam, TSDocProject, TSDocProperty, TSDocTextElement, TSDocType, TSDocTypeAlias, TSDocTypeRef, TSInterface, TSLiteralType, TSReflectionType, TSUnionType, TSVariable, is } from '../tsdoc';
+import { ReflectionKind, TSAccessor, TSArrayType, TSClass, TSConstructor, TSDocCallSignature, TSDocElement, TSDocMethod, TSDocParam, TSDocProject, TSDocProperty, TSDocTextElement, TSDocType, TSDocTypeAlias, TSDocTypeRef, TSFunction, TSInterface, TSLiteralType, TSReflectionType, TSUnionType, TSVariable, is } from '../tsdoc';
 import { SyntaxElement } from '../doc-syntax/doc-syntax.component';
 
 @Component({
@@ -25,9 +25,16 @@ export class DocDeclComponent {
         }
         if (is<TSDocProject>(decl, () => decl.kind === ReflectionKind.Project)) {
             this.comment = this.getMarkdown(decl.readme);
-        } else {
+        } else if (decl.comment) {
             this.comment = this.getMarkdown(decl.comment?.summary);
         }
+    }
+
+    readonly branch = '4.x';
+
+    getUrl() {
+        return this.decl.sources[0].url;
+        //return `https://github.com/alterior-mvc/alterior/blob/${this.branch}/${this.decl.sources[0].fileName}#L${this.decl.sources[0].line}`;
     }
 
     getMarkdown(elem: TSDocTextElement[]) {
@@ -45,6 +52,9 @@ export class DocDeclComponent {
             this.addKeyword('static');
         if (this.decl.flags.isReadonly)
             this.addKeyword('readonly');
+
+        console.log(`Decl:`);
+        console.dir(decl);
 
         if (is<TSAccessor>(decl, () => decl.kind === ReflectionKind.Accessor)) {
             // this and also TODO TypeLiteral
@@ -178,6 +188,21 @@ export class DocDeclComponent {
         return syntax;
     }
 
+    private formatFunctionSignature(sig: TSDocCallSignature, name: string) {
+        let syntax: SyntaxElement[] = [];
+
+        syntax.push({ text: name });
+        syntax.push({ text: '(' });
+        
+        syntax.push(...this.emitParams(sig.parameters));
+        
+        syntax.push({ text: '): ' });
+        syntax.push(...this.formatType(sig.type));
+        syntax.push({ text: ';' });
+
+        return syntax;
+    }
+
     private formatMethodSignature(sig: TSDocCallSignature, name: string) {
         let syntax: SyntaxElement[] = [];
 
@@ -195,6 +220,12 @@ export class DocDeclComponent {
 
     private formatType(type: TSDocType) {
         let syntax: SyntaxElement[] = [];
+
+        if (!type) {
+            console.warn(`No doc type presented!`);
+            syntax.push({ text: 'unknown' });
+            return syntax;
+        }
 
         if (is<TSReflectionType>(type, () => type.type === 'reflection')) {
             syntax.push(...this.emitDecl(type.declaration));
@@ -242,6 +273,18 @@ export class DocDeclComponent {
                 if (filename.startsWith('lib.es') || filename.startsWith('lib.dom')) {
                     return `https://developer.mozilla.org/en-US/docs/Web/API/${type.name}`;
                 }
+
+                if (filename === `lib.decorators.legacy.d.ts`) {
+                    if (type.name === 'ParameterDecorator')
+                        return `https://www.typescriptlang.org/docs/handbook/decorators.html#parameter-decorators`;
+                    else if (type.name === 'MethodDecorator')
+                        return `https://www.typescriptlang.org/docs/handbook/decorators.html#method-decorators`;
+                    else if (type.name === 'ClassDecorator')
+                        return `https://www.typescriptlang.org/docs/handbook/decorators.html#class-decorators`;
+                    return `https://www.typescriptlang.org/docs/handbook/decorators.html`;
+                }
+
+                return `https://www.typescriptlang.org/docs/handbook`;
             }
 
             return `/packages/${type.package.replace(/.*\//, '')}/${type.name}`;

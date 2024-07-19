@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ReflectionKind, TSDocElement, TSDocProject, TSDocTextElement, is } from '../tsdoc';
+import { ReflectionKind, TSDocCallSignature, TSDocElement, TSDocProject, TSDocProperty, TSDocTextElement, TSFunction, is } from '../tsdoc';
 
 @Component({
   selector: 'alt-doc-element',
@@ -22,6 +22,14 @@ export class DocElementComponent {
     if (is<TSDocProject>(element, () => element.kind === ReflectionKind.Project)) {
       this.readme = this.getMarkdown(element.readme); 
     }
+  }
+
+  get signatures() {
+    if (is<TSFunction>(this.element, () => this.element.kind === ReflectionKind.Function)) {
+      return this.element.signatures;
+    }
+
+    return undefined;
   }
 
   getMarkdown(elem: TSDocTextElement[]) {

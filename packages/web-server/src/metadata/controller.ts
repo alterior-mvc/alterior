@@ -76,6 +76,7 @@ export const ALT_ON_LISTEN: unique symbol = Symbol.for('@alterior/web-server:onL
  * @param basePath The route path prefix that all routes within this 
  * 	controller will fall within.
  * @param options 
+ * @group Decorators
  */
 export const Controller = Object.assign(ControllerAnnotation.decorator(), {
 	...BuiltinLifecycleEvents,

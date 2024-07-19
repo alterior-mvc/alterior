@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-getting-started',
+  selector: 'alt-getting-started',
   templateUrl: './getting-started.component.html',
   styleUrl: './getting-started.component.scss'
 })

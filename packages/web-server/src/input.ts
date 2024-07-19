@@ -20,6 +20,9 @@ export class InputAnnotation extends Annotation {
 	}
 
 	type!: InputType;
+	/**
+	 * The name of the input to bind to this parameter.
+	 */
 	name?: string;
 	default?: any;
 	format?: any;
@@ -36,6 +39,7 @@ export interface QueryParamOptions {
 /**
  * Apply to a parameter to indicate that it represents a query parameter (ie foo in /bar?foo=1)
  * @param name 
+ * @group Decorators
  */
 export function QueryParam(name?: string, options?: QueryParamOptions) {
 	return InputAnnotation.decorator({
@@ -51,6 +55,7 @@ export function QueryParam(name?: string, options?: QueryParamOptions) {
 /**
  * Apply to a parameter to indicate that it represents a query parameter (ie foo in /bar?foo=1)
  * @param name 
+ * @group Decorators
  */
 export function QueryParams() {
 	return InputAnnotation.decorator({
@@ -65,6 +70,7 @@ export function QueryParams() {
 /**
  * Apply to a parameter to indicate that it represents a path parameter (ie 'thing' in /hello/:thing)
  * @param name 
+ * @group Decorators
  */
 export function PathParam(name?: string) {
 	return InputAnnotation.decorator({
@@ -88,6 +94,7 @@ export interface BodyOptions {
 
 /**
  * Apply to a parameter to indicate that it represents the body of the request. 
+ * @group Decorators
  */
 export function Body(options?: BodyOptions) {
 	return InputAnnotation.decorator({

@@ -1,6 +1,16 @@
-@if (syntax.length > 0) {
-    <alt-doc-syntax class="syntax-block" [syntax]="syntax"></alt-doc-syntax>
-} 
+
+<div class="syntax-line">
+    @if (syntax.length > 0) {
+        <alt-doc-syntax class="syntax-block" [syntax]="syntax"></alt-doc-syntax>
+    } 
+
+    @if (decl?.sources?.[0]) {
+        <a mat-button [href]="getUrl()" target="_blank" matTooltip="{{ decl.sources[0].fileName }}:{{ decl.sources[0].line }}">
+            <mat-icon>code</mat-icon>
+            Source
+        </a>
+    }
+</div>
 
 <div [innerHTML]="comment | markdownToHtml | trustHtml"></div>
 

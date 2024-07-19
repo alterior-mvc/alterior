@@ -12,7 +12,7 @@ export class ExpressEvent {
 
     get request() { return this.webEvent.request as express.Request; }
     get response() { return this.webEvent.response as express.Response; }
-    get app() { return this.webEvent.server.engine.app as express.Application; };
+    get app() { return this.webEvent.server!.engine.app as express.Application; };
 
     static for(event: WebEvent) { return new ExpressEvent(event); }
     static get current() { return new ExpressEvent(WebEvent.current); }

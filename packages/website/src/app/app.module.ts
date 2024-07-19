@@ -4,7 +4,7 @@ import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MaterialModule } from './material.module';
 import { HomeComponent } from './home/home.component';
-import { RouterModule } from '@angular/router';
+import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy, RouterModule } from '@angular/router';
 import { PackagesService } from './package-service';
 import { PackageHomeComponent } from './package-home/package-home.component';
 import { DocsViewerComponent } from './docs-viewer/docs-viewer.component';
@@ -17,6 +17,9 @@ import { DocElementComponent } from './doc-element/doc-element.component';
 import { ShellComponent } from './shell/shell.component';
 import { GettingStartedComponent } from './getting-started/getting-started.component';
 import { TryItComponent } from './try-it/try-it.component';
+import { AnchorLink } from './anchor-link.directive';
+import { UniversalLinkDirective } from './universal-link.directive';
+import { UIService } from './ui.service';
 
 @NgModule({
   declarations: [
@@ -31,6 +34,8 @@ import { TryItComponent } from './try-it/try-it.component';
     DocSyntaxComponent,
     DocElementComponent,
     ShellComponent,
+    AnchorLink,
+    UniversalLinkDirective,
     GettingStartedComponent,
     TryItComponent
   ],
@@ -52,14 +57,17 @@ import { TryItComponent } from './try-it/try-it.component';
       }
       
     ], {
-      bindToComponentInputs: true
+      bindToComponentInputs: true,
+      anchorScrolling: 'enabled',
+      scrollPositionRestoration: 'enabled'
     }),
     MaterialModule
   ],
   providers: [
     provideClientHydration(),
     provideAnimationsAsync(),
-    PackagesService
+    PackagesService,
+    UIService,
   ],
   bootstrap: [AppComponent]
 })

@@ -19,6 +19,7 @@ import { ConnectMiddleware } from "./web-server-engine";
 
 /**
  * Represents a Route instance
+ * @ignore
  */
 export class RouteInstance {
 	constructor(

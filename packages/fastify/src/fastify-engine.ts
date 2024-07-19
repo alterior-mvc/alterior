@@ -1,9 +1,9 @@
-import { ConnectApp, MiddlewareDefinition, WebEvent, WebRequest, WebServerEngine } from '@alterior/web-server';
+import { ConnectApplication, MiddlewareDefinition, WebEvent, WebRequest, WebServerEngine } from '@alterior/web-server';
 
 import fastify, { FastifyReply } from "fastify";
 import * as http from 'http';
 
-export type FastifyConnectMiddleware = ConnectApp & fastify.FastifyInstance<http.Server, WebRequest, http.ServerResponse>;
+export type FastifyConnectMiddleware = ConnectApplication & fastify.FastifyInstance<http.Server, WebRequest, http.ServerResponse>;
 
 export class FastifyEngine extends WebServerEngine {
 	readonly app = <FastifyConnectMiddleware>fastify();

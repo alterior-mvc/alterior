@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-try-it',
+  selector: 'alt-try-it',
   templateUrl: './try-it.component.html',
   styleUrl: './try-it.component.scss'
 })

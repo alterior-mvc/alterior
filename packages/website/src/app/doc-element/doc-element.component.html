@@ -1,5 +1,15 @@
-<alt-doc-decl *ngIf="element.variant === 'declaration' && showDeclaration" [decl]="element"></alt-doc-decl>
 
+@if (showDeclaration) {
+    @if (signatures) {
+        @for (signature of signatures; track signature.id) {
+            <alt-doc-decl [decl]="signature"></alt-doc-decl>
+        }
+    } @else {
+        @if (element.variant === 'declaration' && showDeclaration) {
+            <alt-doc-decl [decl]="element"></alt-doc-decl>
+        }
+    }
+}
 <div class="readme" [innerHTML]="readme | markdownToHtml | trustHtml"></div>
 
 <hr/>

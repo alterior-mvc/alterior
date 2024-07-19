@@ -55,6 +55,12 @@ export interface TSConstructor extends TSDocDeclaration {
     signatures: TSDocCallSignature[];
 }
 
+export interface TSFunction extends TSDocDeclaration {
+  kind: ReflectionKind.Function;
+  signatures: TSDocCallSignature[];
+}
+
+
 export interface TSVariable extends TSDocDeclaration {
     kind: ReflectionKind.Variable;
     type: TSDocType;

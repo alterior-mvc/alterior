@@ -6,12 +6,16 @@ import { prepareMiddleware } from "./middleware";
 import { RouteInstance } from "./route-instance";
 import { WebServer } from "./web-server";
 
+/**
+ * @ignore
+ */
 export interface ControllerContext {
 	pathPrefix?: string;
 }
 
 /**
  * Represents an instance of a controller, which can be used to handle requests.
+ * @ignore
  */
 export class ControllerInstance {
 	constructor(

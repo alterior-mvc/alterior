@@ -12,6 +12,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions, MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatMenuModule } from "@angular/material/menu";
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 const IMPORTS = [
@@ -26,6 +27,7 @@ const IMPORTS = [
     MatExpansionModule,
     MatSelectModule,
     MatFormFieldModule,
+    MatTooltipModule,
     MatInputModule,
     MatMenuModule,
     MatSnackBarModule

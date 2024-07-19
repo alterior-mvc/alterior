@@ -3,6 +3,7 @@ import { Interceptor } from "./web-server-options";
 
 /**
  * Use a WebService interceptor on a specific route method.
+ * @group Decorators
  */
 export function Intercept(interceptor: Interceptor) {
     return Mutator.create((value, target) => {

@@ -20,15 +20,21 @@
     <div class="foreground">
         <img src="/assets/logo-light.svg">
 
-        <h1>Much more than a REST framework</h1>
+        <h1>
+            The complete 
+            <div class="product-reference">
+                <svg data-src="/assets/typescript.svg" data-cache="disabled"></svg> Typescript 
+            </div>
+        application framework.
+    </h1>
 
         <div class="c2a">
-            <a mat-raised-button color="primary" routerLink="/try">
+            <a mat-raised-button color="primary" anchorLink="try">
                 <mat-icon>science</mat-icon>
                 Try It
             </a>
 
-            <a mat-raised-button color="primary" routerLink="/getting-started">
+            <a mat-raised-button color="primary" anchorLink="start">
                 <mat-icon>rocket_launch</mat-icon>
                 Get Started
             </a>
@@ -41,25 +47,91 @@
     </div>
     <div class="right-nav">
         <a target="_blank" href="https://github.com/alterior-mvc/alterior" mat-icon-button>
-            <svg class="github" data-src="/assets/github-square.svg"
+            <svg class="github" data-src="/assets/github-square.svg" data-cache="disabled"
                 viewBox="0 0 98 96"
                 ></svg>
         </a>
-        <a target="_blank" href="https://github.com/alterior-mvc/alterior" mat-button>
+        <a target="_blank" href="https://www.npmjs.com/org/alterior" mat-button>
             <svg class="npm" data-src="/assets/npm.svg" data-cache="disabled"
             ></svg>
   
         </a>
    </div>
 </div>
-<div class="packages">
-    @for (pkg of packages; track pkg.name) {
-        <a routerLink="/packages/{{ pkg.name }}" class="package">
-            <mat-icon *ngIf="pkg.icon">{{ pkg.icon }}</mat-icon>
-            <svg *ngIf="pkg.image" [attr.data-src]="pkg.image"></svg>
-            <div class="label">
-                &#64;/{{ pkg.name }}
-            </div>
-        </a>
-    }
+
+<div class="features">
+    <div class="feature">
+        <mat-icon>select_all</mat-icon>
+        <div class="label">One Framework</div>
+        <div class="summary">
+            Alterior is ready for microservices, APIs, backends, processing services,
+            and more.
+        </div>
+    </div>
+    <div class="feature">
+        <mat-icon>battery_full</mat-icon>
+        <div class="label">Batteries Included</div>
+        <div class="summary">
+            Alterior provides a comprehensive BCL so you can stop depending on micro-packages.
+        </div>
+    </div>
+    <div class="feature">
+        <mat-icon>fit_screen</mat-icon>
+        <div class="label">Ready for Scale</div>
+        <div class="summary">
+            Alterior will be there as your solution grows in demand and code complexity.
+        </div>
+    </div>
 </div>
+
+<div class="prose" id="try">
+    <h1>Try Alterior</h1>
+
+    <alt-try-it />
+    
+    <div class="c2a">
+        <a mat-raised-button color="primary" anchorLink="start">
+            <mat-icon>rocket_launch</mat-icon>
+            Get Started
+        </a>
+    </div>
+</div>
+
+<div class="prose" id="start">
+    <h1>Getting Started</h1>
+
+    <alt-getting-started />
+</div>
+
+<div class="prose">
+    <h1>Mechanics</h1>
+    <div [innerHTML]="readmeSection('mechanics') | markdownToHtml | trustHtml"></div>
+</div>
+
+<div class="prose">
+    <h1>Dependency Injection</h1>
+    <div [innerHTML]="readmeSection('dependency-injection') | markdownToHtml | trustHtml"></div>
+</div>
+
+<div class="prose" id="packages">
+    <h1>Learn More</h1>
+    <p>Alterior is a modular framework comprised of many packages. For more information, choose a package below.</p>
+    <div class="packages">
+        @for (pkg of packages; track pkg.name) {
+            <a routerLink="/packages/{{ pkg.name }}" class="package">
+                <mat-icon *ngIf="pkg.icon">{{ pkg.icon }}</mat-icon>
+                <svg *ngIf="pkg.image" [attr.data-src]="pkg.image" data-cache="disabled"></svg>
+                <div class="label">
+                    <div class="name">
+                        &#64;/{{ pkg.name }}
+                    </div>
+                    <div class="description">
+                        {{ pkg.description }}
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+</div>
+
+<!-- <pre>{{ readme | json }}</pre> -->

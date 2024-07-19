@@ -1,5 +1,8 @@
 import * as forge from 'node-forge';
 
+/**
+ * Options for the CertificateGenerator class.
+ */
 export interface GeneratorOptions {
     days?: number;
     extensions?: any[]; // todo
@@ -25,6 +28,9 @@ export interface GeneratedCertificate {
 
 export type CertAttributes = { name?: string, shortName?: string, value: string }[];
 
+/**
+ * Generates certificates for use with Transport Layer Security (TLS).
+ */
 export class CertificateGenerator {
     private toPositiveHex(hexString: string) {
         // a hexString is considered negative if it's most significant bit is 1
@@ -50,6 +56,12 @@ export class CertificateGenerator {
         }
     }
 
+    /**
+     * Generate a self-signed certificate with the given attributes.
+     * @param attrs 
+     * @param options 
+     * @returns 
+     */
     async generate(attrs: CertAttributes, options: GeneratorOptions = {}): Promise<GeneratedCertificate> {
         options = options || {};
 

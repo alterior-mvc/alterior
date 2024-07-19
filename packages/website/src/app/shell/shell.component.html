@@ -2,7 +2,7 @@
     <a mat-menu-item routerLink="/">Home</a>
     
     @for (item of menu; track item.url) {
-      @if (item.url.startsWith('https:')) {
+      @if (item.url.startsWith('https:') || item.url.includes('#')) {
         <a mat-menu-item target="_blank" href="{{item.url}}">{{item.label}}</a>
       } @else {
         <a mat-menu-item routerLink="{{item.url}}">{{item.label}}</a>
