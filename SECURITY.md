@@ -6,7 +6,7 @@ The following release series are receiving security updates:
 
 | Version      | Supported          | Notes                    |
 | ------------ | ------------------ | ------------------------ |
-| 3.0.x        | :white_check_mark: | Status: RC |
+| 3.0.x        | :white_check_mark: | |
 | 3.0.x-beta   | :x:                |                          |
 | 2.0.x        | :x:                |                          |
 | < 2.0        | :x:                |                          |
