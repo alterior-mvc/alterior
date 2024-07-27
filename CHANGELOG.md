@@ -1,5 +1,11 @@
 # ⏭ vNext
 
+# v3.12.0
+- `@/web-server`
+   * It is now possible to subclass `HttpError` and have Alterior handle it as expected. This was not possible prior due to 
+     issues long since solved with how extended Error works (when Alterior targeted ES5, this was not possible in Typescript 2.1 or 
+     later). Since this is no longer an issue, this restriction has been lifted.
+
 # v3.11.2
 - `@/web-server`
    * [(!!) Potential security issue / denial of service] Fixed a crash when the server receives invalid JSON during body parsing or other 

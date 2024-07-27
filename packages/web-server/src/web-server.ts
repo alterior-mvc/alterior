@@ -549,7 +549,7 @@ export class WebServer {
 	}
 
 	handleError(error: any, event: WebEvent, route: RouteInstance, source: string) {
-		if (error.constructor === HttpError) {
+		if (error.constructor instanceof HttpError) {
 			let httpError = <HttpError>error;
 			event.response.statusCode = httpError.statusCode;
 			
