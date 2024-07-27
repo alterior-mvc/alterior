@@ -7,6 +7,8 @@
 General
 - **Breaking**: Alterior 4.0 supports Node.js 18 and newer. If you require older Node.js versions, please continue
   to use Alterior 3.
+- **Breaking**: Alterior 3.x supports being downleveled to ES5. This is no longer possible: You must target at least 
+  ES6 in order to use Alterior. See the update on `HttpError` below for more information.
 
 `@/runtime`
 - **Breaking**: `Application.bootstrap()` now returns `Promise<Application>` instead of `Application`
@@ -25,6 +27,7 @@ General
     is bootstrapped. This can be used to connect to databases, for instance.
 
 `@/web-server`
+- It is now possible to subclass `HttpError`, but this means you can no longer downlevel to ES5 (you must use ES6 or later)
 - **Breaking**: Renamed WebConduit to ReactiveSocket, and `WebServer#startConduit()` to 
   `WebServer#startReactiveSocket()`
 - **Breaking**: The experimental `WebServiceCompiler` class is no longer available, and `@WebService` no longer 
