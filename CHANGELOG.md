@@ -1,5 +1,4 @@
 # ⏭ vNext
-# v3.13.0
 - `@/web-server`
     * Added the WebEventZone to the default request logging context to allow custom console logger implementations to access the current 
       WebEvent instance.
