@@ -11,3 +11,4 @@ lerna-debug.log
 *.tsbuildinfo
 .angular
 packages/website/src/assets/docs
+.idea/
