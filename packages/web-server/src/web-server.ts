@@ -274,7 +274,7 @@ export class WebServer {
 		if (!this.requestReporterFilters.every(x => x(event, source)))
 			return;
 
-		this.requestReporter(reportingEvent, event, source, this.logger);
+		event.context(() => this.requestReporter(reportingEvent, event, source, this.logger));
 	}
 
 	get sensitiveParameters() {
