@@ -1,12 +1,9 @@
 # ⏭ vNext
 
-# v3.13.0
-- `@/web-server`
-    * It is now possible to access `WebEvent.current` within custom log formatters and request reporters.
-
 # v3.12.0
 - `@/web-server`
-   * It is now possible to subclass `HttpError` and have Alterior handle it as expected. This was not possible prior due to 
+    * It is now possible to access `WebEvent.current` within custom log formatters and request reporters.
+    * It is now possible to subclass `HttpError` and have Alterior handle it as expected. This was not possible prior due to 
      issues long since solved with how extended Error works (when Alterior targeted ES5, this was not possible in Typescript 2.1 or 
      later). Since this is no longer an issue, this restriction has been lifted.
 
