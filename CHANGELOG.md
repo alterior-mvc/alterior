@@ -1,5 +1,10 @@
 # ⏭ vNext
 
+# v3.13.0
+- `@/command-line`
+    * `CommandLineProcesser.process()` now obeys promises returned from `run()` methods, so that lifecycle can be 
+    observed and code can reliably run after they all have completed.
+    
 # v3.12.0
 - `@/web-server`
     * It is now possible to access `WebEvent.current` within custom log formatters and request reporters.

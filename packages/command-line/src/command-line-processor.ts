@@ -239,7 +239,7 @@ export class CommandLineProcessor {
      * Process the given command line arguments and run any attached runners (see run()).
      * @param args 
      */
-    process(args? : string[]) {
+    async process(args? : string[]) {
         if (!args)
             args = process.argv.slice(2);
         
@@ -308,10 +308,8 @@ export class CommandLineProcessor {
         }
 
         for (let runner of this._runners) {
-            runner(this.arguments);
+            await runner(this.arguments);
         }
-
-        return this;
     }
 }
 
