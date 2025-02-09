@@ -140,6 +140,10 @@ export abstract class WebServerEngine {
 	sendJsonBody(routeEvent: WebEvent, body: any) {
 		routeEvent.response.setHeader('Content-Type', 'application/json; charset=utf-8');
 		routeEvent.response.write(JSON.stringify(body))
+		// TODO: This is the more appropriate route, and would result in a 204 No Content,
+		// but it is a behavior change.
+		// if (body !== undefined)
+		// 	routeEvent.response.write(JSON.stringify(body));
 		routeEvent.response.end();
 	}
 
