@@ -307,7 +307,7 @@ export class CommandLineProcessor {
      * @param args The arguments
      * @returns The set of runner tasks that should be run, in order, waiting for each to resolve before continuing.
      */
-    private prepare(args? : string[]) {
+    private prepare(args? : string[]): (() => Promise<void> | void)[] {
         if (!args)
             args = process.argv.slice(2);
         
@@ -374,7 +374,7 @@ export class CommandLineProcessor {
             }
         }
 
-        return this._runners.map(async runner => await runner(this.arguments));
+        return this._runners.map(runner => async () => await runner(this.arguments));
     }
 }
 
