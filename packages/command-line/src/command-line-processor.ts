@@ -109,17 +109,31 @@ export class CommandLineProcessor {
 
     private _arguments : string[] = [];
     private _options : CommandLineOption[] = [];
-    private _processed = false;
+
+    /**
+     * Used to determine if a command line has been loaded into this processor. 
+     * If not, some properties may cause the global command line to be processed.
+     * 
+     * This flag does not prevent new command lines from being loaded into the processor.
+     */
+    private _prepared = false;
     private _commands : Command[] = [];
 
+    /**
+     * Ensures the options and arguments reflect the global command line if 
+     * a set of arguments have not yet been loaded.
+     */
     private prepareOnDemand() {
-        if (!this._processed)
-            this.process(process.argv.slice(2));
+        if (!this._prepared)
+            this.prepare(process.argv.slice(2));
     }
 
     /**
      * Get the options that are defined for this command line processor,
      * including those defined by the parent command line processor, if any.
+     * 
+     * If setArguments() or process() has not yet been called, the global 
+     * command line (process.argv) will be processed before returning result.
      */
     get definedOptions(): CommandLineOption[] {
         this.prepareOnDemand();
@@ -135,6 +149,9 @@ export class CommandLineProcessor {
 
     /**
      * Get the arguments that are present given the processed command line.
+     * 
+     * If setArguments() or process() has not yet been called, the global 
+     * command line (process.argv) will be processed before returning result.
      */
     get arguments() {
         this.prepareOnDemand();
@@ -152,6 +169,17 @@ export class CommandLineProcessor {
      * @param option The option to define
      */
     option(option : CommandLineOption) : CommandLine
+
+    /**
+     * Retrieve an option.
+     * 
+     * If setArguments() or process() has not yet been called, the global 
+     * command line (process.argv) will be processed before returning the result,
+     * so that the `value` and `present` properties will be filled.
+     * 
+     * @param args 
+     * @returns 
+     */
     option(...args : any[]) : any {
         if (args.length === 1 && typeof args[0] === 'string') {
             this.prepareOnDemand();
@@ -183,7 +211,12 @@ export class CommandLineProcessor {
     }
 
     /**
-     * Get the first value of an option
+     * Get the first value of an option.
+     * 
+     * If setArguments() or process() has not yet been called, the global 
+     * command line (process.argv) will be processed before returning the result,
+     * so that the `value` and `present` properties of the option will be filled.
+     * 
      * @param id 
      */
     one(id : string) : string {
@@ -193,6 +226,11 @@ export class CommandLineProcessor {
 
     /**
      * Get all values defined by multiple usages of a single option
+     * 
+     * If setArguments() or process() has not yet been called, the global 
+     * command line (process.argv) will be processed before returning the result,
+     * so that the `value` and `present` properties of the option will be filled.
+     * 
      * @param id 
      */
     multiple(id : string) : string[] {
@@ -202,6 +240,11 @@ export class CommandLineProcessor {
 
     /**
      * Get a boolean value for a specific option (ie a "flag")
+     * 
+     * If setArguments() or process() has not yet been called, the global 
+     * command line (process.argv) will be processed before returning the result,
+     * so that the `value` and `present` properties of the option will be filled.
+     * 
      * @param id 
      */
     flag(id : string) : boolean {
@@ -226,7 +269,8 @@ export class CommandLineProcessor {
     /**
      * Define a function that should be run when this instance processes a command line.
      * The function will be passed the set of (non-option) arguments parsed from the overall args.
-     * Multiple functions can be defined to run per instance.
+     * Multiple functions can be defined to run per instance. Each one will run in order, waiting for the 
+     * previous function to complete before continuing. 
      * 
      * @param handler The function to call.
      */
@@ -236,14 +280,38 @@ export class CommandLineProcessor {
     }
 
     /**
-     * Process the given command line arguments and run any attached runners (see run()).
+     * Set the arguments for this CommandLineProcessor so that the command line can be introspected without 
+     * running it. 
      * @param args 
      */
-    async process(args? : string[]) {
+    async setArguments(args: string[]) {
+        this.prepare(args);
+    }
+
+    /**
+     * Process the given command line arguments and run any appropriate run() tasks in order.
+     * Returns a promise that resolves when all run() tasks have completed.
+     * @param args 
+     */
+    async process(args? : string[]): Promise<void> {
+        for (let task of this.prepare(args))
+            await task();
+    }
+
+    /**
+     * Process the given command line arguments and collect run() tasks.
+     * 
+     * Side effects:
+     * - The `value` and `present` fields of Options will be updated to reflect the given command line.
+     * 
+     * @param args The arguments
+     * @returns The set of runner tasks that should be run, in order, waiting for each to resolve before continuing.
+     */
+    private prepare(args? : string[]) {
         if (!args)
             args = process.argv.slice(2);
         
-        this._processed = true;
+        this._prepared = true;
         this._arguments = [];
         this._options.forEach(x => {
             x.values = [];
@@ -295,8 +363,7 @@ export class CommandLineProcessor {
                     let command = this._commands.find(x => x.id === arg);
 
                     if (command) {
-                        command.process(args.slice(i + 1));
-                        return;
+                        return command.prepare(args.slice(i + 1));
                     } else {
                         term.writeLine(`No such command: ${arg}`);
                         this.exit(1);
@@ -307,9 +374,7 @@ export class CommandLineProcessor {
             }
         }
 
-        for (let runner of this._runners) {
-            await runner(this.arguments);
-        }
+        return this._runners.map(async runner => await runner(this.arguments));
     }
 }
 
