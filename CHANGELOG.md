@@ -1,4 +1,7 @@
 # ⏭ vNext
+- `@/logging`
+    * You can now assign the `listeners` array on a `Logger` to customize where logs from that particular instance are 
+      sent. There is also `withListeners()` to clone and set `listeners` in one operation.
 - `@/di`
     * Passing an array of providers as a provider is now properly typed.
 

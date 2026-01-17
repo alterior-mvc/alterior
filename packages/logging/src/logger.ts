@@ -285,7 +285,16 @@ export class ZonedLogger {
     static warning(message: string, options?: LogOptions) { this.current.log(message, options); }
     static error(message: string, options?: LogOptions) { this.current.log(message, options); }
 
+    private customListeners: LogListener[] | undefined;
+
+    /**
+     * Get the listeners for this logger. Usually this is the global listeners, but if the property
+     * was previously assigned it will return those listeners.
+     */
     get listeners() {
+        if (this.customListeners !== undefined)
+            return this.customListeners;
+
         if (this.optionsRef?.options?.listeners) {
             return this.optionsRef.options.listeners;
         }
@@ -294,6 +303,14 @@ export class ZonedLogger {
             return [];
         
         return DEFAULT_LISTENERS;
+    }
+
+    /**
+     * Set the log listeners for this specific logger. Set listeners to undefined to use the 
+     * global listener configuration.
+     */
+    set listeners(value) {
+        this.customListeners = value;
     }
 
     /**
@@ -400,6 +417,16 @@ export class Logger extends ZonedLogger {
     clone() {
         let logger = new Logger(this.optionsRef);
         Object.keys(this).filter(x => typeof this[x] !== 'function').forEach(key => logger[key] = this[key]);
+        return logger;
+    }
+
+    /** 
+     * Create a new logger based on this one with the given listeners. You can also assign the `listeners` array 
+     * on the instance directly after using clone() or withSource().
+     **/
+    withListeners(listeners: LogListener[]) {
+        let logger = this.clone();
+        logger.listeners = listeners;
         return logger;
     }
 
