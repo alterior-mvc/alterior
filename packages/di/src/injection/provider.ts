@@ -216,7 +216,7 @@ export interface FactoryProvider {
  *
  * @stable
  */
-export type Provider = TypeProvider | ValueProvider | ClassProvider | ExistingProvider | FactoryProvider | any[];
+export type Provider = TypeProvider | ValueProvider | ClassProvider | ExistingProvider | FactoryProvider | Provider[];
 
 export function isTypeProvider(provider: Provider): provider is TypeProvider {
   return typeof provider === 'function';

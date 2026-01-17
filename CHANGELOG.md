@@ -1,4 +1,6 @@
 # ⏭ vNext
+- `@/di`
+    * Passing an array of providers as a provider is now properly typed.
 
 # v3.13.0
 - `@/command-line`
