@@ -434,7 +434,7 @@ export class Logger extends ZonedLogger {
         let logger = this.clone();
 
         if (typeof sourceLabel === 'string') {
-            logger._sourceLabel = sourceLabel;    
+            logger._sourceLabel = sourceLabel;
         } else if (typeof sourceLabel === 'object') {
             logger._sourceLabel = sourceLabel.constructor.name;
         } else {
