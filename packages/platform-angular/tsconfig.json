@@ -7,9 +7,7 @@
     },
     "include": [ "./src/**/*.ts" ],
     "typedocOptions": {
-		"mode": "file",
 		"out": "../../docs/platform-angular",
-		"target": "ES5",
 		"excludeExternals": true,
 		"excludePrivate": true,
 		"externalPattern": "**/node_modules/**",

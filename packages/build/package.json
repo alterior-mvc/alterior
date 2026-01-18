@@ -15,13 +15,15 @@
   },
   "dependencies": {
     "@alterior/command-line": "^3.13.3",
-    "@alterior/common": "^3.13.3",
     "@alterior/functions": "^3.11.1",
     "@alterior/terminal": "^3.13.3",
     "mkdirp": "^3.0.1",
     "rxjs": "^6.6.7",
     "semver": "^7.7.2",
     "simple-git": "^3.30.0"
+  },
+  "bin": {
+    "alt-build": "./dist/main.js"
   },
   "private": true,
   "license": "MIT",
@@ -37,7 +39,7 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublishOnly": "npm test",
     "test": "npm run build && node dist/test.js",
-    "docs": "typedoc ."
+    "docs": "typedoc src/index.ts"
   },
   "devDependencies": {
     "@types/mkdirp": "^0.5.2",

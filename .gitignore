@@ -12,3 +12,4 @@ lerna-debug.log
 .angular
 packages/website/src/assets/docs
 .idea/
+docs/

@@ -16,16 +16,15 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "lerna run test",
-    "publish": "npm login && npm test && lerna publish",
+    "test": "alt-build test",
+    "publish": " publish",
+    "bootstrap": "ts-node scripts/bootstrap",
     "clean:npm:lock": "rimraf packages/*/package-lock.json",
     "clean:npm:modules": "rimraf packages/*/node_modules",
     "clean:npm": "npm run clean:npm:lock && npm run clean:npm:modules",
-    "clean:lerna": "rimraf **/*.tgz",
-    "clean:dist": "rimraf packages/*/dist pacakges/*/dist.esm",
-    "clean": "npm run clean:dist && lerna run clean",
-    "build": "lerna run build",
-    "docs": "lerna run --parallel docs"
+    "clean": "rimraf packages/*/dist packages/*/dist.esm",
+    "build": "alt-build",
+    "docs": "alt-build run docs --parallel"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
@@ -48,6 +47,7 @@
     "source-map-support": "^0.4.6",
     "supertest": "^3.1.0",
     "swagger-editor-dist": "^3.9.0",
+    "ts-node": "^10.9.2",
     "tslib": "^2.3.1",
     "typedoc": "^0.23.24",
     "typescript": "^4.9.4",

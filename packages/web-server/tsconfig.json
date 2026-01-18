@@ -6,9 +6,7 @@
     },
     "include": [ "./src/**/*.ts" ],
     "typedocOptions": {
-		"mode": "file",
 		"out": "../../docs/web-server",
-		"target": "ES5",
 		"excludeExternals": true,
 		"excludePrivate": true,
 		"externalPattern": "**/node_modules/**",

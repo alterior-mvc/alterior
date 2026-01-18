@@ -14,7 +14,7 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublishOnly": "npm test",
     "test": "rimraf dist && npm run build:cjs && node dist/test",
-    "docs": "typedoc ."
+    "docs": "typedoc src/index.ts"
   },
   "repository": {
     "type": "git",

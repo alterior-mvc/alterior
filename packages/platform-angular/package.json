@@ -32,7 +32,7 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "prepublishOnly": "npm test",
     "test": "npm run build && node dist/test",
-    "docs": "typedoc ."
+    "docs": "typedoc src/index.ts"
   },
   "peerDependencies": {
     "@angular/core": "^9 || ^10 || ^11 || ^12 || ^13 || ^14 || ^15 || ^16 || ^17 || ^18"

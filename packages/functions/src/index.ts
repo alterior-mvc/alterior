@@ -4,7 +4,6 @@ import * as path from "path";
 import * as process from "process";
 import * as readline from 'readline';
 import * as crypto from "crypto";
-import * as childProcess from "child_process";
 
 export function formEncode(obj : any) {
     return Object
