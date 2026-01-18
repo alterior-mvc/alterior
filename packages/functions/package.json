@@ -4,7 +4,6 @@
   "description": "Functional utilities",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
-  "private": true,
   "homepage": "https://github.com/alterior-mvc/alterior/blob/main/packages/di/README.md",
   "repository": {
     "type": "git",
