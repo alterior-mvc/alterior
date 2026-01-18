@@ -1,6 +1,6 @@
 {
   "name": "@alterior/terminal",
-  "version": "3.6.7",
+  "version": "3.13.3",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "publishConfig": {

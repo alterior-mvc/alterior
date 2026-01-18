@@ -1,6 +1,6 @@
 {
   "name": "@alterior/build",
-  "version": "3.13.2",
+  "version": "3.13.3",
   "description": "A build tool for mono repos",
   "keywords": [
     "build"
@@ -14,10 +14,10 @@
     "url": "git+https://github.com/alterior-mvc/alterior.git"
   },
   "dependencies": {
-    "@alterior/command-line": "^3.13.2",
-    "@alterior/common": "^3.9.1",
+    "@alterior/command-line": "^3.13.3",
+    "@alterior/common": "^3.13.3",
     "@alterior/functions": "^3.11.1",
-    "@alterior/terminal": "^3.6.7",
+    "@alterior/terminal": "^3.13.3",
     "mkdirp": "^3.0.1",
     "rxjs": "^6.6.7",
     "semver": "^7.7.2",
