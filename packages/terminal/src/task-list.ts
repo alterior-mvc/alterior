@@ -56,12 +56,19 @@ export class CLITaskList {
     stop() {
         if (!this.interactive)
             return;
+        if (!this.started)
+            return;
 
+        // Render once more to be sure we capture the final state.
+        this.render();
+        
         this.started = false;
         clearInterval(this.timer);
         this.timer = undefined;
-        this.renderedLineCount = 0;
         this.spinner.stop();
+
+
+        this.renderedLineCount = 0;     
     }
 
     get remainingLines() {

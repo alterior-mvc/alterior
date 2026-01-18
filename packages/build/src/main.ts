@@ -102,13 +102,25 @@ async function main(args: string[]) {
                     id: 'skip-already-published-check',
                     description: 'Skip checking if the packages are already published'
                 })
+                .option({
+                    id: 'skip-prepublish',
+                    description: 'Skip prepublish tasks'
+                })
+                .option({
+                    id: 'skip-login',
+                    description: 'Skip logging in prior to publish'
+                })
+                .option({
+                    id: 'dry-run',
+                    description: 'Do not actually publish'
+                })
                 .run(async () => {
                     await validateProject(cmd);
 
                     let taskList = new CLITaskList();
 
                     try {
-                        let task = taskList.startTask('Publish packages');
+                        let prepTask = taskList.startTask('Preparation');
 
                         let packages = await findPackages();
 
@@ -116,7 +128,7 @@ async function main(args: string[]) {
                         
                         if (!cmd.option('skip-already-published-check').present) {
                             let alreadyPublished = 0;
-                            let precheck = task.subtask(`Ensure packages are not already published...`);
+                            let precheck = prepTask.subtask(`Ensure packages are not already published...`);
                             for (let pkg of packages) {
                                 try {
                                     let listing = await getPackageFromRepository(pkg.name, `${pkg.manifest.version}`);
@@ -131,29 +143,39 @@ async function main(args: string[]) {
                             }
                             if (alreadyPublished > 0) {
                                 precheck.error(`Some packages are already published.`);
-                                task.error();
+                                prepTask.error();
+                                return;
+                            } else {
+                                precheck.finish();
+                            }
+                        }
+
+                        if (!cmd.option('skip-prepublish').present) {
+                            let prepublishTask = prepTask.subtask(`Prepublish tasks`);
+                            try {
+                                await runInAll('prepublishOnly', prepublishTask);
+                                prepublishTask.finish();
+                            } catch (e) {
+                                prepublishTask.error(e.message);
                                 return;
                             }
                         }
 
-                        let prepublishTask = task.subtask(`Prepublish tasks`);
-                        try {
-                            await runInAll('prepublishOnly', prepublishTask);
-                            prepublishTask.finish();
-                        } catch (e) {
-                            prepublishTask.error(e.message);
-                            return;
-                        }
-
                         let projectRoot = process.cwd();
                         let tmpDir = pathCombine(projectRoot, 'tmp');
-                        let packTask = task.subtask(`Packing`);
+                        let packTask = prepTask.subtask(`Packing`);
                         try {
                             await makeDirectory(tmpDir);
 
                             await runAndCaptureLines(
                                 `npm pack --pack-destination "${tmpDir}" ${packages.map(x => `"${x.folder}"`).join(' ')}`, 
-                                (line, error) => logToTask(packTask, line, error)
+                                (line, error) => {
+                                    if (/^npm notice\b/.test(line))
+                                        return;
+                                    if (line.endsWith('.tgz'))
+                                        return;
+                                    logToTask(packTask, line, false)
+                                }
                             );
                             packTask.finish();
                         } catch (e) {
@@ -161,18 +183,30 @@ async function main(args: string[]) {
                             return;
                         }
 
+                        prepTask.finish();
                         taskList.stop();
 
-                        await runShellCommand(`npm login`);
+                        if (!cmd.option('skip-login').present)
+                            await runShellCommand(`npm login`);
 
-                        for (let pkg of packages) {
+                        await visitInDependencyOrder(async pkg => {
                             try {
-                                await runShellCommand(`npm publish "${pathCombine(tmpDir, `${pkg.name.replace(/^@/, '').replace(/\//g, '-')}-${pkg.manifest.version}.tgz`)}"`);
+                                let tarballFile = pathCombine(
+                                    tmpDir, 
+                                    `${pkg.name.replace(/^@/, '').replace(/\//g, '-')}-${pkg.manifest.version}.tgz`
+                                );
+
+                                let publishCommand = `npm publish "${tarballFile}"`;
+                                if (cmd.option('dry-run').present) {
+                                    console.log(`Would run: ${publishCommand}`);
+                                } else {
+                                    await runShellCommand(publishCommand);
+                                }
                             } catch (e) {
                                 console.log(`Failed to publish ${pkg}: ${e.stack}`);
-                                return;
+                                return false;
                             }
-                        }
+                        });
                     } finally {
                         taskList.stop();
                     }
