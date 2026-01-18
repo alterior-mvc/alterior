@@ -23,11 +23,13 @@ export async function validateProject(cmd: CommandLineProcessor) {
     }
 }
 
-export async function runInAll(command: string, task?: CLITask, unordered = false) {
-    if (unordered) {
+export async function runInAll(command: string, task?: CLITask, mode: 'serial' | 'parallel-wait' | 'parallel' = 'parallel-wait') {
+    if (mode === 'parallel') {
         await visitInParallel(unit => runInUnit(command, unit, task?.subtask(unit.name), true));
-    } else {
+    } else if (mode === 'parallel-wait') {
         await visitInDependencyOrderParallel((unit, unitTask) => runInUnit(command, unit, unitTask), task);
+    } else {
+        await visitInDependencyOrder(unit => runInUnit(command, unit, task?.subtask(unit.name)));
     }
 }
 

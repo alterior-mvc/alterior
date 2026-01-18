@@ -15,6 +15,12 @@ async function main(args: string[]) {
     let cmd = new CommandLine()
 
     cmd
+        .info({
+            executable: 'alt-build',
+            description: 'Build Alterior projects',
+            copyright: 'Copyright 2025 The Alterior Project',
+            version: PKG.version
+        })
         .option({
             id: 'unattended',
             description: `Operate as if not running in an interactive terminal`
@@ -23,11 +29,13 @@ async function main(args: string[]) {
             id: 'silent',
             description: `Disable all normal output`
         })
-        .info({
-            executable: 'alt-build',
-            description: 'Build Alterior projects',
-            copyright: 'Copyright 2025 The Alterior Project',
-            version: PKG.version
+        .option({
+            id: 'parallel',
+            description: `Run tasks fully in parallel (ignoring dependency order)`
+        })
+        .option({
+            id: 'serial',
+            description: `Run the tasks in serial`
         })
         .command('version', cmd => {
             cmd .info({
@@ -90,15 +98,11 @@ async function main(args: string[]) {
             ;
         })
         .command('run', async cmd => {
-            cmd.option({
-                id: 'parallel',
-                description: `Run the tasks in parallel (ignoring dependency order)`
-            })
             cmd.run(async ([arg]) => {
                 await validateProject(cmd);
                 let taskList = newTaskList(cmd);
                 try {
-                    await runInAll(arg, taskList.startTask(`Run: ${arg}`), cmd.option('parallel').present);
+                    await runInAll(arg, taskList.startTask(`Run: ${arg}`), getParallelMode(cmd));
                 } finally {
                     taskList.stop();
                 }
@@ -110,7 +114,7 @@ async function main(args: string[]) {
 
                 let taskList = newTaskList(cmd);
                 try {
-                    await runInAll('build', taskList.startTask(`Build`));
+                    await runInAll('build', taskList.startTask(`Build`), getParallelMode(cmd));
                 } finally {
                     taskList.stop();
                 }
@@ -122,7 +126,7 @@ async function main(args: string[]) {
 
                 let taskList = newTaskList(cmd);
                 try {
-                    await runInAll('test', taskList.startTask(`Test`));
+                    await runInAll('test', taskList.startTask(`Test`), getParallelMode(cmd));
                 } finally {
                     taskList.stop();
                 }
@@ -187,7 +191,7 @@ async function main(args: string[]) {
                         if (!cmd.option('skip-prepublish').present) {
                             let prepublishTask = prepTask.subtask(`Prepublish tasks`);
                             try {
-                                await runInAll('prepublishOnly', prepublishTask);
+                                await runInAll('prepublishOnly', prepublishTask, getParallelMode(cmd));
                                 prepublishTask.finish();
                             } catch (e) {
                                 prepublishTask.error(e.message);
@@ -251,7 +255,7 @@ async function main(args: string[]) {
 
             let taskList = newTaskList(cmd);
             try {
-                await runInAll('build', taskList.startTask(`Build`));
+                await runInAll('build', taskList.startTask(`Build`), getParallelMode(cmd));
             } finally {
                 taskList.stop();
             }
@@ -260,6 +264,14 @@ async function main(args: string[]) {
     ;
 }
 
+function getParallelMode(cmd: CommandLineProcessor) {
+    return cmd.option('parallel').present 
+        ? 'parallel' 
+        : cmd.option('serial') 
+            ? 'serial' 
+            : 'parallel-wait'
+    ;
+}
 function newTaskList(cmd: CommandLineProcessor) {
     return new CLITaskList(!cmd.option('unattended').present, cmd.option('silent').present);
 }
