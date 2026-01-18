@@ -1,0 +1,44 @@
+{
+  "name": "@alterior/build",
+  "version": "3.13.2",
+  "description": "A build tool for mono repos",
+  "keywords": [
+    "build"
+  ],
+  "homepage": "https://github.com/alterior-mvc/alterior#readme",
+  "bugs": {
+    "url": "https://github.com/alterior-mvc/alterior/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alterior-mvc/alterior.git"
+  },
+  "dependencies": {
+    "@alterior/command-line": "^3.13.2",
+    "@alterior/common": "^3.9.1",
+    "@alterior/functions": "^3.11.1",
+    "mkdirp": "^3.0.1",
+    "rxjs": "^6.6.7",
+    "semver": "^7.7.2",
+    "simple-git": "^3.30.0"
+  },
+  "license": "MIT",
+  "author": "The Alterior Project (https://github.com/alterior-mvc)",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "module": "dist.esm/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rimraf dist dist.esm",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "prepublishOnly": "npm test",
+    "test": "npm run build && node dist/test.js",
+    "docs": "typedoc ."
+  },
+  "devDependencies": {
+    "@types/mkdirp": "^0.5.2",
+    "@types/semver": "^7.7.1"
+  }
+}
