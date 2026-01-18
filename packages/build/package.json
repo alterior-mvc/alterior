@@ -23,6 +23,7 @@
     "semver": "^7.7.2",
     "simple-git": "^3.30.0"
   },
+  "private": true,
   "license": "MIT",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "type": "commonjs",
