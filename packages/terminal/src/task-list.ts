@@ -12,6 +12,9 @@ export interface CLITaskInit {
 
 export class CLITaskList {
     constructor(readonly interactive = true, readonly silent = false) {
+        if (!process.stdout.isTTY)
+            this.interactive = false;
+        
         this.globalTask.onUpdated = task => {
             if (!this.interactive) {
                 if (task.children.length === 0)
