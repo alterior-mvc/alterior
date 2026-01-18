@@ -21,8 +21,8 @@ commands:
             - node_modules
           key: v1-dependencies-<< parameters.version >>-{{ checksum "package.json" }}
       - run: npm run bootstrap
-      - run: npm run build -- --unattended
-      - run: npm test -- --unattended
+      - run: npm run build -- --unattended --serial
+      - run: npm test -- --unattended --serial
 jobs:
   node-21:
     docker:
