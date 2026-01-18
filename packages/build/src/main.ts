@@ -18,9 +18,17 @@ async function main(args: string[]) {
         })
         .command('version', cmd => {
             cmd .info({
-                description: 'Bump the version of the entire mono-repo',
-                argumentUsage: '<major|minor|patch>'
-            })
+                    description: 'Bump the version of the entire mono-repo',
+                    argumentUsage: '<major|minor|patch>'
+                })
+                .option({
+                    id: 'skip-tag',
+                    description: 'Do not make a Git tag'
+                })
+                .option({
+                    id: 'skip-commit',
+                    description: 'Do not make a Git commit (implies --skip-tag)'
+                })
                 .run(async ([ releaseType ]) => {
                     await validateProject(cmd);
 
@@ -33,14 +41,38 @@ async function main(args: string[]) {
 
                     console.log(`${oldVersion} -> ${newVersion}`);
 
-                    let files: string[] = [];
-                    for (let pkg of await findPackages(projectRoot)) {
+                    let files: string[] = [rootManifestFile];
+
+                    rootManifest.version = newVersion;
+                    await writeJsonFile(rootManifestFile, rootManifest);
+
+                    let packages = await findPackages(projectRoot);
+                    for (let pkg of packages) {
                         pkg.manifest.version = newVersion;
+
+                        for (let dependencies of ['dependencies', 'devDependencies', 'peerDependencies']) {
+                            if (pkg.manifest[dependencies]) {
+                                for (let otherPkg of packages) {
+                                    if (otherPkg === pkg)
+                                        continue;
+                                    if (pkg.manifest[dependencies][otherPkg.name]) {
+                                        pkg.manifest[dependencies][otherPkg.name] = `^${newVersion}`;
+                                    }
+                                }
+                            } 
+                        }
+                        
                         await writeJsonFile(pathCombine(pkg.folder, 'package.json'), pkg.manifest);
                         files.push(pathCombine(pkg.folder, 'package.json'));
                     }
 
-                    await git(projectRoot).commit(`v${newVersion}`, files).addTag(`v${newVersion}`);
+                    // Commit and tag
+
+                    if (!cmd.option('skip-commit').present) {
+                        await git(projectRoot).commit(`v${newVersion}`, files);
+                        if (!cmd.option('skip-tag').present)
+                            await git(projectRoot).addTag(`v${newVersion}`);
+                    }
                 })
             ;
         })
