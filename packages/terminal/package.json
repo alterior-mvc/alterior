@@ -7,7 +7,8 @@
     "access": "public"
   },
   "dependencies": {
-    "mute-stream": "~1.0.0"
+    "mute-stream": "~1.0.0",
+    "@alterior/functions": "^3.11.1"
   },
   "devDependencies": {
     "@types/mute-stream": "^0.0.1"

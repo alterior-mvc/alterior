@@ -1,7 +1,8 @@
-import { CommandLine } from '@alterior/command-line';
-import { listDirectory, makeDirectory, runCommand, runShellCommand, runSimple } from './utils';
-import { fileExists, pathCombine, readJsonFile, writeJsonFile } from '@alterior/functions';
-import { SemVer, ReleaseType } from 'semver';
+import { Command, CommandLine } from '@alterior/command-line';
+import { dirExists, fileExists, pathCombine, readJsonFile, writeJsonFile } from '@alterior/functions';
+import { CLITask, CLITaskList, style, styled } from '@alterior/terminal';
+import { ReleaseType, SemVer } from 'semver';
+import { listDirectory, makeDirectory, runAndCapture, runAndCaptureLines, runShellCommand } from './utils';
 
 import git from 'simple-git';
 
@@ -21,14 +22,10 @@ async function main(args: string[]) {
                 argumentUsage: '<major|minor|patch>'
             })
                 .run(async ([ releaseType ]) => {
+                    await validateProject(cmd);
+
                     let projectRoot = process.cwd();
                     let rootManifestFile = pathCombine(projectRoot, 'package.json');
-                    if (!await fileExists(rootManifestFile)) {
-                        console.log(`Error: Current directory must be root of the mono-repo.`);
-                        cmd.showHelp();
-                        return;
-                    }
-
                     let rootManifest = await readJsonFile(rootManifestFile);
                     let oldVersion = rootManifest.version;
                     let newVersion = new SemVer(oldVersion)
@@ -47,41 +44,255 @@ async function main(args: string[]) {
                 })
             ;
         })
-        .command('publish', async cmd => {
-            cmd.run(async () => {
-                let projectRoot = process.cwd();
-                let rootManifestFile = pathCombine(projectRoot, 'package.json');
-                if (!await fileExists(rootManifestFile)) {
-                    console.log(`Error: Current directory must be root of the mono-repo.`);
-                    cmd.showHelp();
-                    return;
+        .command('run', async cmd => {
+            cmd.run(async ([arg]) => {
+                await validateProject(cmd);
+                await runInAll(arg);
+            })
+        })
+        .command('build', async cmd => {
+            cmd.run(async ([]) => {
+                await validateProject(cmd);
+
+                let taskList = new CLITaskList();
+                try {
+                    await runInAll('build', taskList.startTask(`Build`));
+                } finally {
+                    taskList.stop();
                 }
+            })
+        })
+        .command('publish', async cmd => {
+            cmd .info({
+                    description: `Publish the current package version(s) to NPM`
+                })
+                .option({
+                    id: 'skip-already-published-check',
+                    description: 'Skip checking if the packages are already published'
+                })
+                .run(async () => {
+                    await validateProject(cmd);
 
-                let packages = await findPackages(projectRoot);
-                let tmpDir = pathCombine(projectRoot, 'tmp');
-                await makeDirectory(tmpDir);
+                    let taskList = new CLITaskList();
 
-                await runShellCommand(`npm pack --pack-destination "${tmpDir}" ${packages.map(x => `"${x.folder}"`).join(' ')}`);
+                    try {
+                        let task = taskList.startTask('Publish packages');
 
-                //await runShellCommand(`npm login`);
-            });
+                        let packages = await findPackages();
+
+                        // Make sure all the packages are publishable
+                        
+                        if (!cmd.option('skip-already-published-check').present) {
+                            let alreadyPublished = 0;
+                            let precheck = task.subtask(`Ensure packages are not already published...`);
+                            for (let pkg of packages) {
+                                try {
+                                    let listing = await getPackageFromRepository(pkg.name, `${pkg.manifest.version}`);
+
+                                    if (alreadyPublished === 0) 
+                                        precheck.log(`Cannot proceed, the following packages already exist in the NPM registry:`);
+                                    ++alreadyPublished;
+                                    precheck.log(` - ${pkg.name}@${pkg.manifest.version}`);
+                                } catch (e) {
+                                    continue;
+                                }
+                            }
+                            if (alreadyPublished > 0) {
+                                precheck.error(`Some packages are already published.`);
+                                task.error();
+                                return;
+                            }
+                        }
+
+                        let prepublishTask = task.subtask(`Prepublish tasks`);
+                        try {
+                            await runInAll('prepublishOnly', prepublishTask);
+                            prepublishTask.finish();
+                        } catch (e) {
+                            prepublishTask.error(e.message);
+                            return;
+                        }
+
+                        let projectRoot = process.cwd();
+                        let tmpDir = pathCombine(projectRoot, 'tmp');
+                        let packTask = task.subtask(`Packing`);
+                        try {
+                            await makeDirectory(tmpDir);
+
+                            await runAndCaptureLines(
+                                `npm pack --pack-destination "${tmpDir}" ${packages.map(x => `"${x.folder}"`).join(' ')}`, 
+                                (line, error) => logToTask(packTask, line, error)
+                            );
+                            packTask.finish();
+                        } catch (e) {
+                            packTask.error(e.message);
+                            return;
+                        }
+
+                        taskList.stop();
+
+                        await runShellCommand(`npm login`);
+
+                        for (let pkg of packages) {
+                            try {
+                                await runShellCommand(`npm publish "${pathCombine(tmpDir, `${pkg.name.replace(/^@/, '').replace(/\//g, '-')}-${pkg.manifest.version}.tgz`)}"`);
+                            } catch (e) {
+                                console.log(`Failed to publish ${pkg}: ${e.stack}`);
+                                return;
+                            }
+                        }
+                    } finally {
+                        taskList.stop();
+                    }
+                });
         })
         .process();
     ;
 }
 
 export interface Package {
+    name: string;
     folder: string;
     manifest: any;
 }
 
-async function findPackages(projectRoot: string) {
+async function getPackageFromRepository(name: string, version?: string) {
+    let result = await runAndCapture(`npm view ${version ? `${name}@${version}` : name} --json`);
+    let data = JSON.parse(result.stdout);
+    if (data.error)
+        throw new Error(`[${data.error.code}] ${data.error.summary}`);
+    return data;
+}
+
+async function validateProject(cmd: Command) {
+    let projectRoot = process.cwd();
+    let rootManifestFile = pathCombine(projectRoot, 'package.json');
+
+    if (!await fileExists(rootManifestFile)) {
+        console.log(`Error: Current directory must be root of the mono-repo.`);
+        cmd.showHelp();
+        return;
+    }
+}
+
+async function runInAll(command: string, task?: CLITask) {
+    await visitInDependencyOrder(async unit => {
+        let subtask = task?.subtask(unit.name);
+        if (unit.manifest.scripts[command]) {
+            if (subtask) {
+                try {
+                    let exitCode = await runAndCaptureLines(
+                        `npm run ${command}`, 
+                        (line, error) => logToTask(subtask, line, error), 
+                        unit.folder
+                    );
+
+                    if (exitCode !== 0)
+                        throw new Error(`${unit.name}: Failed to run '${command}'`);
+                    
+                    subtask?.finish();
+                } catch(e) {
+                    subtask?.error(e.message);
+                    throw e;
+                }
+            } else {
+                runShellCommand(`npm run ${command}`, undefined, unit.folder);
+            }
+        }
+    });
+}
+
+async function visitInDependencyOrder(visitor: (unit: Package) => Promise<boolean|void>) {
+    let units = await findPackages();
+    let visited: Package[] = [];
+    for (let unit of units) {
+        let result = await visitPackageInDependencyOrder(unit, visitor, units, visited);
+        if (result === false)
+            return false;
+    }
+}
+
+async function visitInReverseDependencyOrder(visitor: (unit: Package) => Promise<boolean>) {
+    let units: Package[] = [];
+    await visitInDependencyOrder(async unit => (units.push(unit), true));
+    units.reverse();
+    for (let unit of units) {
+        if (await visitor(unit) === false)
+            break;
+    }
+}
+
+async function visitDependents(dependency: Package, visitor: (unit: Package) => Promise<boolean>) {
+    let units = await findPackages();
+
+    for (let dependent of units) {
+        if (dependent.name === dependency.name)
+            continue;
+        
+        if (dependent.manifest.dependencies?.[dependency.name]) {
+            let result = await visitor(dependent);
+            if (result === false)
+                return;
+        }
+    }
+}
+
+async function visitPackageInDependencyOrder(
+    pkg: Package, 
+    visitor: (pkg: Package) => Promise<boolean|void>, 
+    packages: Package[], 
+    visited: Package[] = [],
+    depth = 0
+) {
+    if (visited.includes(pkg))
+        return;
+    visited.push(pkg);
+
+    //console.log(`${fill(depth, () => `-- `).join('')} ${pkg.name}`);
+    
+    for (let depName of Object.keys(pkg.manifest.dependencies || {})) {
+        let dep = packages.find(x => x.name === depName);
+        if (!dep)
+            continue;
+
+        let result = await visitPackageInDependencyOrder(dep, visitor, packages, visited, depth + 1);
+        if (result === false)
+            return false;
+    }
+
+    if ((await visitor(pkg)) === false)
+        return false;
+}
+
+async function findPackages(projectRoot: string = process.cwd(), includePrivate = false) {
     let packages: Package[] = [];
-    for (let folder of await listDirectory(pathCombine(projectRoot))) {
-        let manifest = await readJsonFile(pathCombine(folder, 'package.json'));
-        packages.push({ folder, manifest });
+    for (let folder of await listDirectory(pathCombine(projectRoot, 'packages'))) {
+        let folderPath = pathCombine(projectRoot, 'packages', folder);
+        if (!await dirExists(folderPath))
+            continue;
+
+        let manifestFile = pathCombine(folderPath, 'package.json');
+        if (!await fileExists(manifestFile))
+            continue;
+
+        let manifest = await readJsonFile(manifestFile);
+
+        if (!includePrivate && manifest.private)
+            continue;
+
+        if (!manifest.name)
+            continue;
+
+        packages.push({ name: manifest.name, folder: folderPath, manifest });
     }
     return packages;
+}
+
+function logToTask(task: CLITask, line: string, error: boolean) {
+    if (error)
+        task.log(styled(style.$red(line)));
+    else
+        task.log(line);
 }
 
 main(process.argv.slice(1));

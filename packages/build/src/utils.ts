@@ -1,5 +1,4 @@
 import { pathCombine } from '@alterior/functions';
-import { Response } from '@alterior/web-server';
 import { exec, spawn } from 'child_process';
 import { Glob } from 'glob';
 import { mkdirp } from "mkdirp";
@@ -17,17 +16,17 @@ import * as process from "process";
 import * as readline from 'readline';
 import { Observable } from 'rxjs';
 
-const execFile = promisify(childProcess.execFile);
+const pExec = promisify(childProcess.exec);
 
 export async function openEditor(filename: string) {
     runCommand(`code ${filename}`);
 }
 
 export async function runSimple(command: string): Promise<void> {
-    let proc = spawn(command, { stdio: 'inherit'});
-    await new Promise<void>((rs, rj) => 
-           proc.addListener('exit', code => 
-                code ? rj(new Error(`Exited with code ${code}`)) : rs())
+    let proc = spawn(command, { stdio: 'inherit' });
+    await new Promise<void>((rs, rj) =>
+        proc.addListener('exit', code =>
+            code ? rj(new Error(`Exited with code ${code}`)) : rs())
     )
 }
 
@@ -186,6 +185,22 @@ export function streamToString(stream: Readable): Promise<string> {
         stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
         stream.on('error', (err) => reject(err));
         stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+    })
+}
+export function streamLines(stream: Readable, lineReceived: (line: string) => void): Promise<void> {
+    let string = '';
+    return new Promise<void>((resolve, reject) => {
+        stream.on('data', (chunk: Buffer) => {
+            string += chunk.toString('utf-8');
+
+            let lineMatch: RegExpMatchArray;
+            while (lineMatch = /\r?\n/.exec(string)) {
+                lineReceived(string.slice(0, lineMatch.index));
+                string = string.slice(lineMatch.index + lineMatch[0].length);
+            }
+        });
+        stream.on('error', (err) => reject(err));
+        stream.on('end', () => resolve());
     })
 }
 
@@ -431,16 +446,6 @@ export async function renameFile(oldFilename: string, newFilename: string) {
     });
 }
 
-export async function webResultOrNotFound<T>(promise: Promise<T>): Promise<T | Response> {
-    let result = await promise;
-
-    if (!result) {
-        return Response.notFound({ error: 'not-found', message: 'Not found.' });
-    }
-
-    return result;
-}
-
 export function recordEach<T>(record: Record<string, T>, callback: (key: string, value: T, object: Record<string, T>) => void) {
     if (!record)
         return;
@@ -641,11 +646,41 @@ export function alongside(work: () => Promise<void>): void {
     work();
 }
 
-
-export async function runAndCapture(program: string, args: string[]): Promise<string> {
+export async function runAndCapture(program: string): Promise<{ exitCode: number, stdout: string, stderr: string }> {
     const TEN_MEGABYTES = 1000 * 1000 * 10;
-	let result = await execFile(program, args, {maxBuffer: TEN_MEGABYTES});
-	return result.stdout.replace(/\r\n/g, "\n");
+    let proc = exec(program, {
+        maxBuffer: TEN_MEGABYTES,
+    });
+
+    let [exitCode, stdout, stderr] = await Promise.all([
+        new Promise<number>(res => proc.addListener('exit', code => res(code))),
+        streamToString(proc.stdout),
+        streamToString(proc.stderr),
+    ]);
+
+    stdout = stdout.replace(/\r\n/g, "\n");
+    stderr = stderr.replace(/\r\n/g, "\n");
+
+    return { exitCode, stdout, stderr };
+}
+
+export async function runAndCaptureLines(
+    program: string, 
+    lineReceived: (line: string, error: boolean) => void,
+    cwd?: string
+): Promise<number> {
+    const TEN_MEGABYTES = 1000 * 1000 * 10;
+    let proc = exec(program, {
+        maxBuffer: TEN_MEGABYTES,
+        cwd
+    });
+
+    streamLines(proc.stdout, line => lineReceived(line, false));
+    streamLines(proc.stderr, line => lineReceived(line, true));
+
+    let exitCode = new Promise<number>(res => proc.addListener('exit', code => res(code)));
+
+    return exitCode;
 }
 
 export async function runShellCommand(commandLine: string, interrupted?: Observable<void>, cwd?: string) {
@@ -655,7 +690,7 @@ export async function runShellCommand(commandLine: string, interrupted?: Observa
     process.stdin.cork();
     process.stdout.cork();
 
-    let proc = childProcess.spawn(commandLine, { 
+    let proc = childProcess.spawn(commandLine, {
         shell: true,
         stdio: 'inherit',
         cwd

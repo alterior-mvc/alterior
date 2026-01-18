@@ -17,6 +17,7 @@
     "@alterior/command-line": "^3.13.2",
     "@alterior/common": "^3.9.1",
     "@alterior/functions": "^3.11.1",
+    "@alterior/terminal": "^3.6.7",
     "mkdirp": "^3.0.1",
     "rxjs": "^6.6.7",
     "semver": "^7.7.2",

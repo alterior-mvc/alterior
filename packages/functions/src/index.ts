@@ -328,3 +328,12 @@ export function isConstructor(f) {
     }
     return true;
 }
+
+export function count<T>(array: T[], check: (element: T) => boolean) {
+    let count = 0;
+    for (let element of array) {
+        if (check(element))
+            count += 1;
+    }
+    return count;
+}
