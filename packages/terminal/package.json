@@ -1,6 +1,6 @@
 {
   "name": "@alterior/terminal",
-  "version": "3.13.3",
+  "version": "3.13.4",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "publishConfig": {
@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "mute-stream": "~1.0.0",
-    "@alterior/functions": "^3.11.1"
+    "@alterior/functions": "^3.13.4"
   },
   "devDependencies": {
     "@types/mute-stream": "^0.0.1"
