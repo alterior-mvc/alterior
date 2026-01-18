@@ -29,11 +29,11 @@
   },
   "scripts": {
     "clean": "rimraf dist dist.esm",
-    "build": "npm run clean && npm run build:cjs && npm run build:esm",
-    "build:cjs": "tsc",
-    "build:esm": "tsc -p tsconfig.esm.json",
+    "build": "npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc -b",
+    "build:esm": "tsc -b tsconfig.esm.json",
     "prepublishOnly": "npm test",
-    "test": "npm run build && node dist/test.js",
+    "test": "node dist/test.js",
     "docs": "typedoc src/index.ts"
   },
   "dependencies": {
@@ -43,5 +43,8 @@
   "peerDependencies": {
     "reflect-metadata": "^0.1.13"
   },
-  "gitHead": "87f31ea4078faaca53b45573c6a0013cdb40dd07"
+  "gitHead": "87f31ea4078faaca53b45573c6a0013cdb40dd07",
+  "devDependencies": {
+    "@types/node": "^20.19.30"
+  }
 }

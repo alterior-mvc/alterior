@@ -363,7 +363,7 @@ export class BackendBuilder {
                     if (!customTransformers.before)
                         customTransformers.before = [];
 
-                    customTransformers.before.push(rttiTransformer(program.getProgram()));
+                    //customTransformers.before.push(rttiTransformer(program.getProgram()));
                     
                     return origEmit.apply(program, [
                         targetSourceFile,

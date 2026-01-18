@@ -17,6 +17,8 @@
     "@alterior/command-line": "^3.13.3",
     "@alterior/functions": "^3.11.1",
     "@alterior/terminal": "^3.13.3",
+    "@types/node": "^25.0.9",
+    "glob": "^13.0.0",
     "mkdirp": "^3.0.1",
     "rxjs": "^6.6.7",
     "semver": "^7.7.2",
@@ -34,11 +36,11 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rimraf dist dist.esm",
-    "build": "npm run clean && npm run build:cjs && npm run build:esm",
-    "build:cjs": "tsc",
-    "build:esm": "tsc -p tsconfig.esm.json",
+    "build": "npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc -b",
+    "build:esm": "tsc -b tsconfig.esm.json",
     "prepublishOnly": "npm test",
-    "test": "npm run build && node dist/test.js",
+    "test": "node dist/test.js",
     "docs": "typedoc src/index.ts"
   },
   "devDependencies": {

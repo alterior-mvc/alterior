@@ -109,7 +109,7 @@ export class Application {
 		// into the bootstrapped providers
 
 		let appOptionsAnnotation = AppOptionsAnnotation.getForClass(entryModule);
-		let appProvidedOptions: ApplicationOptions = appOptionsAnnotation ? appOptionsAnnotation.options: {} || {};
+		let appProvidedOptions: ApplicationOptions = appOptionsAnnotation?.options ?? {};
 		
 		return Object.assign(
 			<ApplicationOptions>{

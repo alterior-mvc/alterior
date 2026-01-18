@@ -14,7 +14,7 @@ export class CLITaskList {
     constructor(readonly interactive = true, readonly silent = false) {
         if (!process.stdout.isTTY)
             this.interactive = false;
-        
+
         this.globalTask.onUpdated = task => {
             if (!this.interactive) {
                 if (task.children.length === 0)
@@ -44,6 +44,16 @@ export class CLITaskList {
     private started = false;
     startCursor: { x: number, y: number } = { x: 0, y: 0 };
 
+    /**
+     * Customize how tasks are prioritized in order as the task list progresses.
+     */
+    statusOrder: Record<CLITaskStatus, number> = {
+        'running': 0,
+        'error': 1,
+        'finished': 2,
+        'waiting': 3
+    };
+
     private start() {
         if (!this.interactive)
             return;
@@ -71,7 +81,7 @@ export class CLITaskList {
         this.spinner.stop();
 
 
-        this.renderedLineCount = 0;     
+        this.renderedLineCount = 0;
     }
 
     get remainingLines() {
@@ -241,7 +251,7 @@ class LineTracker {
 }
 
 export type CLITaskCharm = () => string;
-export type CLITaskStatus = 'running' | 'error' | 'finished';
+export type CLITaskStatus = 'running' | 'error' | 'finished' | 'waiting';
 export class CLITask {
     constructor(title: string, init: CLITaskInit = {}) {
         this.title = title;
@@ -259,6 +269,18 @@ export class CLITask {
     staleAfter = 0;
     staleWithErrorsAndLogAfter = 10_000;
     omitInNonInteractive = false;
+
+    waiting(message: string) {
+        this.status = 'waiting';
+        this.waitingFor = message;
+    }
+
+    resume(message: string) {
+        this.status = 'running';
+        this.waitingFor = undefined;
+    }
+
+    waitingFor: string | undefined;
 
     private logMessages: string[] = [];
 
@@ -384,7 +406,14 @@ export class CLITask {
     renderSelf(renderer: CLITaskList, lineTracker: LineTracker) {
         renderer.drawLine(
             `${this.indent ?? ''}`
-            + `${this.statusStyle(`${this.iconForStatus(renderer)} ${this.title}`, this.status)}`
+            + `${this.statusStyle(
+                `${this.iconForStatus(renderer)} ${this.title}${
+                    this.status === 'waiting' 
+                        ? `: ${this.waitingFor}`
+                        : ``
+                    }`, 
+                this.status
+                )}`
             + `${this.summarizeCounts(renderer)}`
             //+ ` DEBUG: ${maxLines}`
         );
@@ -402,18 +431,14 @@ export class CLITask {
     }
 
     renderLogLine(renderer: CLITaskList, line: string) {
-        renderer.drawLine(`${this.indent ?? ''}  ${styled(style.$dim(line))}`);
+        renderer.drawLine(`${this.indent ?? ''}  ${styled(style.$dim(`⠇ ${line}`))}`);
     }
 
     renderChildren(renderer: CLITaskList, lineTracker: LineTracker, parentFinished = false) {
         if (lineTracker.maxLines <= 0)
             return 0;
 
-        let statusOrder = {
-            'error': 0,
-            'finished': 1,
-            'running': 2
-        };
+        let statusOrder = renderer.statusOrder;
         this.children.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
 
         let maxDisplayedTasks = lineTracker.maxLines;
@@ -488,6 +513,8 @@ export class CLITask {
             line = styled(style.$green(line));
         } else if (status === 'error') {
             line = styled(style.$red(line));
+        } else if (status === 'waiting') {
+            line = styled(style.$dim(line));
         }
 
         return line;
@@ -505,7 +532,6 @@ export class CLITask {
 
 export class CLITaskStatusWidget {
     constructor(private task?: CLITask) {
-        this.start();
     }
 
     protected readonly spinner: string[] = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']

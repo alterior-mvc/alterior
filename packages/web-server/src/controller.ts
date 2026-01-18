@@ -95,7 +95,7 @@ export class ControllerInstance {
 		let routeReflector = new RouteReflector(this.type);
 		let routeDefinitions = routeReflector.routes;
 		let controllerMetadata = ControllerAnnotation.getForClass(this.type);
-		let controllerOptions = controllerMetadata ? controllerMetadata.options : {} || {};
+		let controllerOptions = controllerMetadata?.options ?? {};
 		this._options = controllerOptions;
 
 		for (let mount of routeReflector.mounts) {

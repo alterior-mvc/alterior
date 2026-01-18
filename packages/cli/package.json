@@ -10,9 +10,9 @@
   },
   "scripts": {
     "clean": "rimraf dist dist.esm",
-    "build": "npm run clean && npm run build:cjs && npm run build:esm",
-    "build:cjs": "tsc",
-    "build:esm": "tsc -p tsconfig.esm.json",
+    "build": "npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc -b",
+    "build:esm": "tsc -b tsconfig.esm.json",
     "start": "rimraf dist && npm run build:cjs && node dist/main",
     "prepublishOnly": "npm test",
     "test": "rimraf dist && npm run build:cjs && node dist/test"
@@ -36,7 +36,7 @@
     "@alterior/common": "^3.13.3",
     "@alterior/runtime": "^3.13.3",
     "mkdirp": "^1.0.4",
-    "rimraf": "^5.0.5",
+    "rimraf": "^6.1.2",
     "source-map-support": "^0.5.19",
     "tslib": "^2.3.1",
     "typescript": "^4.9.5",

@@ -23,11 +23,11 @@ export async function validateProject(cmd: CommandLineProcessor) {
     }
 }
 
-export async function runInAll(command: string, task?: CLITask, parallel = false) {
-    if (parallel) {
-        await visitInParallel(unit => runInUnit(command, unit, task, true));
+export async function runInAll(command: string, task?: CLITask, unordered = false) {
+    if (unordered) {
+        await visitInParallel(unit => runInUnit(command, unit, task?.subtask(unit.name), true));
     } else {
-        await visitInDependencyOrder(unit => runInUnit(command, unit, task));
+        await visitInDependencyOrderParallel((unit, unitTask) => runInUnit(command, unit, unitTask), task);
     }
 }
 
@@ -35,14 +35,13 @@ export async function visitInParallel(work: (unit: Package) => Promise<void>) {
     await Promise.all((await findPackages()).map(p => work(p)));
 }
 
-export async function runInUnit(command: string, unit: Package, task?: CLITask, allowFailure = false) {
-    let subtask = task?.subtask(unit.name);
+export async function runInUnit(command: string, unit: Package, subtask?: CLITask, allowFailure = false) {
     if (unit.manifest.scripts[command]) {
         if (subtask) {
             try {
                 let exitCode = await runAndCaptureLines(
                     `npm run ${command}`,
-                    (line, error) => logToTask(subtask, line, error),
+                    (line, error) => logToTask(unit, subtask, line, error),
                     unit.folder
                 );
 
@@ -69,6 +68,64 @@ export async function visitInDependencyOrder(visitor: (unit: Package) => Promise
             return false;
     }
 }
+
+export async function visitInDependencyOrderParallel(visitor: (unit: Package, task?: CLITask) => Promise<void>, task?: CLITask) {
+    let packages = await findPackages();
+    let packageReady = new Map<string, Future<void>>();
+    packages.forEach(p => packageReady.set(p.name, newFuture<void>()))
+
+    await Promise.all(packages.map(async pkg => {
+        let pkgTask = task?.subtask(pkg.name);
+        let pendingDeps = Object.keys(dependenciesOf(pkg)).filter(x => packageReady.has(x));
+
+        if (pendingDeps.length > 0) {
+            pkgTask.status = 'waiting';
+            function updateWaiting() {
+                pkgTask.waitingFor = `Waiting for ${pendingDeps.join(', ')}`;
+            }
+
+            updateWaiting();
+            await Promise.all(pendingDeps.map(async depName => {
+                await packageReady.get(depName)?.promise;
+                let index = pendingDeps.indexOf(depName);
+                if (index >= 0)
+                    pendingDeps.splice(index, 1);
+                updateWaiting();
+            }));
+            pkgTask.status = 'running';
+        }
+
+        try {
+            await visitor(pkg, pkgTask);
+            packageReady.get(pkg.name).resolve();
+        } catch (e) {
+            packageReady.get(pkg.name).resolve(undefined, e);
+        }
+    }));
+}
+
+export function dependenciesOf(pkg: Package) {
+    return {
+        ...(pkg.manifest.dependencies ?? {}),
+        ...(pkg.manifest.peerDependencies ?? {}),
+        ...(pkg.manifest.devDependencies ?? {}),
+    };
+}
+
+export function newFuture<T>() {
+    let resolve: (value: T) => void;
+    let reject: (error?: any) => void;
+    return {
+        promise: new Promise<T>((rs, rj) => (resolve = rs, reject = rj)),
+        resolve: (value: T, error?) => error ? reject(error) : resolve(value)
+    };
+}
+
+export interface Future<T> {
+    promise: Promise<T>;
+    resolve: (value: T | Promise<T> | undefined, error?: any) => void;
+}
+
 
 export async function visitInReverseDependencyOrder(visitor: (unit: Package) => Promise<boolean>) {
     let units: Package[] = [];
@@ -146,7 +203,13 @@ export async function findPackages(projectRoot: string = process.cwd(), includeP
     return packages;
 }
 
-export function logToTask(task: CLITask, line: string, error: boolean) {
+export function logToTask(unit: Package, task: CLITask, line: string, error: boolean) {
+    if (!line.trim())
+        return;
+
+    if (unit && line.startsWith(`> ${unit.name}@${unit.manifest?.version ?? ''}`))
+        return;
+
     if (error)
         task.log(styled(style.$red(line)));
     else

@@ -59,7 +59,7 @@ export class TasksModule implements OnInit {
     worker : TaskWorker;
 
     get options(): TaskModuleOptions {
-        return this._options ? this._options.options : {} || {};
+        return this._options?.options ?? {};
     }
 
     get tasks(): Function[] {

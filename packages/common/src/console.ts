@@ -8,17 +8,6 @@ export interface Console {
     dir(...args : any[]);
 }
 
-function safeRequire(name : string) {
-    if (typeof require === 'undefined')
-        return undefined;
-       
-    try {
-        return require(name);
-    } catch (e) {
-        return undefined;
-    }
-}
-
 /**
  * Intercept console messages emitted within the given function, allowing you to programmatically call the underlying raw console implementation (or not).
  * 
@@ -59,11 +48,7 @@ export function indentConsole(spaces : number, callback : Function) {
 
     return interceptConsole((method, original, console, args) => {
         if (method == 'dir') {
-            const util = safeRequire('util');
-            if (util)
-                console.log(`${indent}${util.inspect(args[0])}`)
-            else
-                original(...args);
+            original(...args);
         } else {
             original(`${indent}${args.join(' ')}`);
         }
@@ -80,12 +65,7 @@ export function indentConsole(spaces : number, callback : Function) {
 export function formatConsole(formatter : (message : string) => string, callback : Function) {
     return interceptConsole((method, original, console, args) => {
         if (method == 'dir') {
-            const util = safeRequire('util');
-            if (util) {
-                console.log(`${formatter(util.inspect(args[0]))}`)
-            } else {
-                original(...args);
-            }
+            original(...args);
         } else {
             original(`${formatter(args.join(' '))}`);
         }

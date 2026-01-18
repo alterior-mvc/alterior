@@ -31,11 +31,11 @@
   },
   "scripts": {
     "clean": "rimraf dist dist.esm",
-    "build": "npm run clean && npm run build:cjs && npm run build:esm",
-    "build:cjs": "tsc",
-    "build:esm": "tsc -p tsconfig.esm.json",
+    "build": "npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc -b",
+    "build:esm": "tsc -b tsconfig.esm.json",
     "prepublishOnly": "npm test",
-    "test": "npm run build && node dist/test/test",
+    "test": "node dist/test/test",
     "docs": "typedoc src/index.ts"
   },
   "dependencies": {

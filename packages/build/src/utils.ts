@@ -9,7 +9,6 @@ import { promisify } from 'util';
 import * as childProcess from 'child_process';
 import * as crypto from "crypto";
 import * as fs from 'fs';
-import * as jsonc from 'jsonc-parser';
 import * as os from "os";
 import * as path from "path";
 import * as process from "process";
@@ -136,10 +135,6 @@ export function formEncode(obj: any) {
         .filter(x => x !== '=')
         .join('&')
         ;
-}
-
-export function sha1(data: string | Buffer): string {
-    return crypto.createHash('sha1').update(data).digest('hex');
 }
 
 export async function stat(filename: string) {
@@ -375,11 +370,6 @@ export async function readJsonFile<T = any>(filename: string): Promise<T> {
                 try {
                     object = JSON.parse(content);
                 } catch (e) {
-                    let errors: jsonc.ParseError[] = [];
-                    object = jsonc.parse(content, errors);
-                    // if (errors.length > 0) {
-                    //     err = Error(`Failed to parse JSONC: ${errors.map(e => e.error).join(', ')}`);
-                    // }
                     if (!object) {
                         throw new Error(`Failed to parse JSON: '${content}': ${e.stack}\n---`);
                     }

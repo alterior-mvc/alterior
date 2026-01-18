@@ -1,5 +1,7 @@
 import { Injectable } from './decorators';
 
+declare let process: any;
+
 /**
  * Access the environment variables of the current process.
  */

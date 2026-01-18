@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { CommandLine } from '@alterior/command-line';
+import { CommandLine, CommandLineProcessor } from '@alterior/command-line';
 import { pathCombine, readJsonFile, writeJsonFile } from '@alterior/functions';
 import { CLITaskList } from '@alterior/terminal';
 import { ReleaseType, SemVer } from 'semver';
@@ -15,6 +15,14 @@ async function main(args: string[]) {
     let cmd = new CommandLine()
 
     cmd
+        .option({
+            id: 'unattended',
+            description: `Operate as if not running in an interactive terminal`
+        })
+        .option({
+            id: 'silent',
+            description: `Disable all normal output`
+        })
         .info({
             executable: 'alt-build',
             description: 'Build Alterior projects',
@@ -88,7 +96,7 @@ async function main(args: string[]) {
             })
             cmd.run(async ([arg]) => {
                 await validateProject(cmd);
-                let taskList = new CLITaskList();
+                let taskList = newTaskList(cmd);
                 try {
                     await runInAll(arg, taskList.startTask(`Run: ${arg}`), cmd.option('parallel').present);
                 } finally {
@@ -100,7 +108,7 @@ async function main(args: string[]) {
             cmd.run(async ([]) => {
                 await validateProject(cmd);
 
-                let taskList = new CLITaskList();
+                let taskList = newTaskList(cmd);
                 try {
                     await runInAll('build', taskList.startTask(`Build`));
                 } finally {
@@ -112,7 +120,7 @@ async function main(args: string[]) {
             cmd.run(async ([]) => {
                 await validateProject(cmd);
 
-                let taskList = new CLITaskList();
+                let taskList = newTaskList(cmd);
                 try {
                     await runInAll('test', taskList.startTask(`Test`));
                 } finally {
@@ -143,7 +151,7 @@ async function main(args: string[]) {
                 .run(async () => {
                     await validateProject(cmd);
 
-                    let taskList = new CLITaskList();
+                    let taskList = newTaskList(cmd);
 
                     try {
                         let prepTask = taskList.startTask('Preparation');
@@ -200,7 +208,7 @@ async function main(args: string[]) {
                                         return;
                                     if (line.endsWith('.tgz'))
                                         return;
-                                    logToTask(packTask, line, false)
+                                    logToTask(undefined, packTask, line, false)
                                 }
                             );
                             packTask.finish();
@@ -241,7 +249,7 @@ async function main(args: string[]) {
         .run(async ([]) => {
             await validateProject(cmd);
 
-            let taskList = new CLITaskList();
+            let taskList = newTaskList(cmd);
             try {
                 await runInAll('build', taskList.startTask(`Build`));
             } finally {
@@ -250,6 +258,10 @@ async function main(args: string[]) {
         })
         .process();
     ;
+}
+
+function newTaskList(cmd: CommandLineProcessor) {
+    return new CLITaskList(!cmd.option('unattended').present, cmd.option('silent').present);
 }
 
 main(process.argv.slice(1));
