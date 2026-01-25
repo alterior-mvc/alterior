@@ -305,12 +305,15 @@ export class MyService {
 
 # HTTP/2
 
-HTTP/2 support is built-in. Specify `protocols` to enable it. If you provide a TLS certificate HTTP/2 is enabled by default. Otherwise only HTTP is enabled. However, if you add `h2` (or one of the `spdy/*` versions) to `protocols` but you do not specify a TLS certificate, then Alterior will automatically generate and use a self-signed certificate which is useful for testing HTTP/2 services in development.
+HTTP/2 support is built-in. Specify `protocols` to enable it. If you provide a TLS certificate HTTP/2 is enabled by 
+default. Otherwise only HTTP is enabled. However, if you add `h2` to `protocols` but you do not specify a TLS 
+certificate, then Alterior will automatically generate and use a self-signed certificate which is useful for testing 
+HTTP/2 services in development.
 
 ```typescript
 @WebService({
     server: {
-        protocols: [`h2`, `spdy/3.1`, `spdy/3`, `spdy/2`, `http/1.1`, `http/1.0`]
+        protocols: [`h2`, `http/1.1`, `http/1.0`]
     }
 })
 export class MyService {

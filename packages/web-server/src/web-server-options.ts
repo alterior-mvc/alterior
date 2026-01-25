@@ -7,9 +7,6 @@ import { Constructor } from "@alterior/runtime";
 import { MiddlewareProvider } from "./middleware";
 
 type Protocol = 'h2'
-	| 'spdy/3.1'
-	| 'spdy/3'
-	| 'spdy/2'
 	| 'http/1.1'
 	| 'http/1.0';
 
@@ -81,8 +78,8 @@ export interface WebServerOptions {
 	requestIdValidator? : RegExp;
 
 	/**
-	 * What protocols should be supported on incoming client connections If not specified, HTTP/2, SPDY and HTTP/1.1 
-	 * will all be supported if an SSL certificate is provided. If not, then only HTTP/1.1 will be supported.
+	 * What protocols should be supported on incoming client connections. If not specified, HTTP/2 and HTTP/1.1 
+	 * will be supported if an SSL certificate is provided. If not, then only HTTP/1.1 will be supported.
 	 * 
 	 * When listening on both HTTPS and HTTP (via the insecurePort option), you can specify the non-secure protocols
 	 * to be supported via the insecureProtocols option.

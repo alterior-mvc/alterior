@@ -1,4 +1,11 @@
 # ⏭ vNext
+
+- `@/web-server`
+    * Switched to Node.js' built in HTTP/2 module (`http2`) instead of the `spdy` library, which has been unmaintained
+      and no longer works in modern Node.js runtimes. Feature set is the same, but explicit support for the `spdy` 
+      protocols has been dropped.
+
+# v3.14.0
 - `@/logging`
     * You can now assign the `listeners` array on a `Logger` to customize where logs from that particular instance are 
       sent. There is also `withListeners()` to clone and set `listeners` in one operation.

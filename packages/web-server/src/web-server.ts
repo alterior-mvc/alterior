@@ -1,5 +1,6 @@
 import * as uuid from 'uuid';
 import * as http from 'http';
+import * as http2 from 'http2';
 import * as ws from 'ws';
 
 import { Injector, ReflectiveInjector, Module, Provider } from "@alterior/di";
@@ -73,7 +74,7 @@ export class WebServer {
 		return this._websockets;
 	}
 
-	private _httpServer: http.Server;
+	private _httpServer: http.Server | http2.Http2Server;
 	get httpServer() { return this._httpServer; }
 
 	private _insecureHttpServer: http.Server;
