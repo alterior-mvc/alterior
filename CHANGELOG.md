@@ -1,5 +1,7 @@
 # ⏭ vNext
 
+# v3.14.4
+
 - `@/web-server`
     * Switched to Node.js' built in HTTP/2 module (`http2`) instead of the `spdy` library, which has been unmaintained
       and no longer works in modern Node.js runtimes. Feature set is the same, but explicit support for the `spdy` 
