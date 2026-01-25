@@ -5,7 +5,13 @@
       and no longer works in modern Node.js runtimes. Feature set is the same, but explicit support for the `spdy` 
       protocols has been dropped.
 
-# v3.14.0
+# v3.13.4
+- `@/terminal`
+    * Adds the `CLITaskList` API which provides a performant task list terminal user interface option.
+
+# v3.13.3
+- Releases are now managed by `@alterior/build` instead of Lerna. The new package is currently an internal tool, but 
+  may be published for use externally in the future.
 - `@/logging`
     * You can now assign the `listeners` array on a `Logger` to customize where logs from that particular instance are 
       sent. There is also `withListeners()` to clone and set `listeners` in one operation.
