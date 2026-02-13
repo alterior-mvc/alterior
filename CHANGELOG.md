@@ -1,8 +1,10 @@
 # ⏭ vNext
+
+# v3.14.1
 - `@/web-server`
     * Fixed a bug where throwing an HttpError containing an `undefined` body would be handled incorrectly
 
-# v3.14.4
+# v3.14.0
 
 - `@/web-server`
     * Switched to Node.js' built in HTTP/2 module (`http2`) instead of the `spdy` library, which has been unmaintained
