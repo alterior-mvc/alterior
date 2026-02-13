@@ -1,4 +1,6 @@
 # ⏭ vNext
+- `@/web-server`
+    * Fixed a bug where throwing an HttpError containing an `undefined` body would be handled incorrectly
 
 # v3.14.4
 

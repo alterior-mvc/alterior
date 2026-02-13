@@ -558,7 +558,8 @@ export class WebServer {
 				.forEach(header => event.response.setHeader(header[0], header[1]));
 
 			event.response.setHeader('Content-Type', 'application/json; charset=utf-8');
-			event.response.write(JSON.stringify(httpError.body));
+            if (httpError.body !== undefined)
+			    event.response.write(JSON.stringify(httpError.body));
 			event.response.end();
 
 			return;

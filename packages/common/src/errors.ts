@@ -137,9 +137,11 @@ export class AccessDeniedError extends SystemError {
 export class HttpError extends Error {
 	constructor(
         public statusCode : number, 
-        public body : any, 
-        public headers : string[][] = []
+        public body? : any, 
+        public headers? : string[][]
     ) {
         super(`HttpError statusCode=${statusCode} [are you sure you meant to catch this?]`);
+        this.body ??= { status: statusCode };
+        this.headers ??= [];
 	}
 }

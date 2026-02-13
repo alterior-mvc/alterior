@@ -6,6 +6,8 @@ import { teststrap } from './teststrap';
 import { Module } from '@alterior/di';
 import { Application } from '@alterior/runtime';
 import * as fetch from 'node-fetch';
+import { Response } from './response';
+import { HttpError } from '@alterior/common';
 
 suite(describe => {
     describe('@Controller', it => {
@@ -87,6 +89,70 @@ suite(describe => {
             expect(started, `Controller's altOnStart should have run exactly once`)
                 .to.equal(1);
 
+            app.stop();
+        });
+        it('should translate Response values to responses', async () => {
+            @WebService({
+                server: { port: 32554 }
+            })
+            class FakeModule {
+				@Get('/foo')
+				getX() {
+					return Response.conflict();
+				}
+            }
+
+            let app = await Application.bootstrap(FakeModule, { silent: true });
+            let response = await fetch('http://localhost:32554/foo');
+            expect(response.status).to.equal(409);
+            app.stop();
+        });
+        it('should catch HttpExceptions and convert them to responses', async () => {
+            @WebService({
+                server: { port: 32555 }
+            })
+            class FakeModule {
+				@Get('/foo')
+				getX() {
+					throw new HttpError(409, {});
+				}
+            }
+
+            let app = await Application.bootstrap(FakeModule, { silent: true });
+            let response = await fetch('http://localhost:32555/foo');
+            expect(response.status).to.equal(409);
+            app.stop();
+        });
+        it('should catch Response.throw() and convert them to responses', async () => {
+            @WebService({
+                server: { port: 32556 }
+            })
+            class FakeModule {
+				@Get('/foo')
+				getX() {
+					Response.conflict().throw();
+				}
+            }
+
+            let app = await Application.bootstrap(FakeModule, { silent: true });
+            let response = await fetch('http://localhost:32556/foo');
+            expect(response.status).to.equal(409);
+            app.stop();
+        });
+        it('should catch Response.throw() and convert them to responses', async () => {
+            @WebService({
+                server: { port: 32556 }
+            })
+            class FakeModule {
+				@Get('/foo')
+				getX() {
+					Response.conflict().throw();
+				}
+            }
+
+            let app = await Application.bootstrap(FakeModule, { silent: true });
+            let response = await fetch('http://localhost:32556/foo');
+            expect(response.status).to.equal(409);
             app.stop();
         });
     })
