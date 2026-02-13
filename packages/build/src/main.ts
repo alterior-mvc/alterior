@@ -241,7 +241,7 @@ async function main(args: string[]) {
                                     await runShellCommand(publishCommand);
                                 }
                             } catch (e) {
-                                console.log(`Failed to publish ${pkg}: ${e.stack}`);
+                                console.log(`Failed to publish ${pkg.name}: ${e.stack}`);
                                 return false;
                             }
                         });
