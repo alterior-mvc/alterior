@@ -19,7 +19,7 @@ export interface PresentedProperty {
 
 export class PresentationSchema<T> {
     constructor(readonly type : Constructor<Presentation<T>>) {
-        this.populate();        
+        this.populate();
     }
 
     private populate() {
