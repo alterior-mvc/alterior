@@ -1,5 +1,9 @@
 # ⏭ vNext
 
+# v3.14.2
+- `@/web-server`
+    * The `Response.throw()` method now is marked as returning `never` for better Typescript static analysis
+
 # v3.14.1
 - `@/web-server`
     * Fixed a bug where throwing an HttpError containing an `undefined` body would be handled incorrectly
