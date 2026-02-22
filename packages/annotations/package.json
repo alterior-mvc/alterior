@@ -1,6 +1,6 @@
 {
   "name": "@alterior/annotations",
-  "version": "3.14.1",
+  "version": "3.14.2",
   "description": "Create and interact with Typescript metadata decorators",
   "author": "The Alterior Project (https://github.com/alterior-mvc)",
   "license": "MIT",
@@ -37,7 +37,7 @@
     "docs": "typedoc src/index.ts"
   },
   "dependencies": {
-    "@alterior/common": "^3.14.1",
+    "@alterior/common": "^3.14.2",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
