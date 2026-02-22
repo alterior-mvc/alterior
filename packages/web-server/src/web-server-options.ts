@@ -133,6 +133,13 @@ export interface WebServerOptions {
     silentErrors?: boolean;
 
     /**
+     * Maximum size for request body before responding with 413 Request Entity Too Large.
+     * This only applies to body parsing done by Alterior, if you use your own body parsing
+     * for a request, you must manage the maximum size yourself. Defaults to 100kb
+     */
+    maxBodySize?: number;
+
+    /**
      * Specify the default handler for a request when no other 
      * route matches (aka 404). When explicitly set to `null`, 
      * no default handler will be used (useful when chaining the

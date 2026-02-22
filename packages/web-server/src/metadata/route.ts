@@ -81,6 +81,12 @@ export interface RouteOptions {
 	interceptors?: Interceptor[];
 	summary?: string;
 	group?: string;
+
+    /**
+     * Override the global maximum body size for this specific request. See also `WebServerOptions.maxBodySize`.
+     * The default global size is 100 KB.
+     */
+    maxBodySize?: number;
 }
 
 export function Get(path? : string, options? : RouteOptions) { return Route('GET', path, options); }

@@ -1,5 +1,11 @@
 # ⏭ vNext
 
+# v3.14.3
+- `@/web-server`
+    * Adds `maxBodySize` option to `WebServerOptions` allowing the global maximum body size to be modified from the 
+      previous unconfigurable default of 100 KB. Adds `maxBodySize` to `RouteOptions` to allow the limit to be overridden
+      per route.
+
 # v3.14.2
 - `@/web-server`
     * The `Response.throw()` method now is marked as returning `never` for better Typescript static analysis

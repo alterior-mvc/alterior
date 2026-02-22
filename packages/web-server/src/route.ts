@@ -358,12 +358,14 @@ export class RouteInstance {
 			}
 
 			let bodyMiddleware: any;
+            let limit = route.options.maxBodySize ?? this.server.options.maxBodySize ?? 100_000;
+
 			if (format === 'text')
-				bodyMiddleware = bodyParser.text({ type: () => true });
+				bodyMiddleware = bodyParser.text({ type: () => true, limit });
 			else if (format === 'raw')
-				bodyMiddleware = bodyParser.raw({ type: () => true });
+				bodyMiddleware = bodyParser.raw({ type: () => true, limit });
 			else if (format === 'json')
-				bodyMiddleware = bodyParser.json({ type: () => true, strict: false });
+				bodyMiddleware = bodyParser.json({ type: () => true, strict: false, limit });
 
 			if (bodyMiddleware) {
 				this.resolvedMiddleware.push(bodyMiddleware);
