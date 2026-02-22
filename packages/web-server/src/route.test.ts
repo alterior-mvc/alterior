@@ -1,14 +1,15 @@
-import { Controller, Get, Post, Put, Patch, Delete, Options, WebEvent, Mount } from './metadata';
-import { suite } from 'razmin';
-import { expect } from 'chai';
 import * as bodyParser from 'body-parser';
-import { Module } from '@alterior/di';
-import { teststrap } from './teststrap';
-import { QueryParam, Body, PathParam, QueryParams } from './input';
-import { WebService } from './service';
+
 import { HttpError } from '@alterior/common';
 import { Application } from '@alterior/runtime';
+import { expect } from 'chai';
+import { suite } from 'razmin';
+import { Body, PathParam, QueryParam, QueryParams } from './input';
+import { Controller, Delete, Get, Mount, Options, Patch, Post, Put, WebEvent } from './metadata';
 import { Response } from './response';
+import { WebService } from './service';
+import { teststrap } from './teststrap';
+import createHttpError from 'http-errors';
 
 let nextFreePort = 10010;
 
@@ -33,8 +34,20 @@ function fakeAppVarietyOfMethods() {
 			ev.response.end();
 		}
 
+		@Get('/http-errors')
+		getHttpErrors() {
+            throw createHttpError(420, 'You should enhance your calm.');
+		}
+
 		@Post('/foo')
 		postX(ev : WebEvent) {
+			ev.response.statusCode = 200;
+			ev.response.write(JSON.stringify({foo:"post"}));
+			ev.response.end();
+		}
+
+		@Post('/body')
+		postWithBody(@Body() body: any, ev : WebEvent) {
 			ev.response.statusCode = 200;
 			ev.response.write(JSON.stringify({foo:"post"}));
 			ev.response.end();
@@ -148,7 +161,7 @@ suite(describe => {
 			await teststrap(FakeApp)
 				.post('/foo')
 				.send("invalid json")
-				.expect(500)
+				.expect(400)
 			;
 		});
 
@@ -1247,5 +1260,17 @@ suite(describe => {
 				.expect(200, { foo: 123 })
 			;
 		});
+
+        it('should gracefully handle errors from the http-errors package', async () => {
+            await teststrap(fakeAppVarietyOfMethods()).get('/http-errors')
+                .expect(420, { message: 'You should enhance your calm.'})
+            ;
+        });
+
+        it('should gracefully handle payload too large', async () => {
+            let req = teststrap(fakeAppVarietyOfMethods()).post('/body');
+            await req.send(Array.from(Array(200_000)).map(x => 'a'))
+                .expect(413);
+        });
 	});
 })

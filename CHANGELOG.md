@@ -1,5 +1,18 @@
 # ⏭ vNext
 
+# v3.15.0
+- `@/web-server`
+    * Adds proper support for the `http-errors` package so that `body-parser` and other Express/Connect/Koa middleware 
+      which throws such errors will be properly conveyed to the client instead of going down the unhandled error path
+      and resulting in `500`. 
+    * This also fixes a bug where invalid JSON bodies resulted in `500` instead of `400`.
+    * Improved the type declaration for `headers` on `HttpError` and made `body` optional.
+    * Improved handling of `HttpError.body` when constructing response for the client. Now `undefined` properly results
+      in no body being sent, and bodies of type string, Buffer, ArrayBuffer, or ArrayBufferView now result in sending 
+      that body unaltered instead of JSON encoding it. 
+    * HttpError handling no longer overwrites `Content-Type` if it is present.
+    * Fixes an issue where errors thrown in middlewares did not abort the request properly, in some cases causing the 
+      last-chance error handler to fire, potentially even ending the process if not otherwise handled.
 # v3.14.3
 - `@/web-server`
     * Adds `maxBodySize` option to `WebServerOptions` allowing the global maximum body size to be modified from the 

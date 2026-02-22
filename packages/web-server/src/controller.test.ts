@@ -139,21 +139,5 @@ suite(describe => {
             expect(response.status).to.equal(409);
             app.stop();
         });
-        it('should catch Response.throw() and convert them to responses', async () => {
-            @WebService({
-                server: { port: 32556 }
-            })
-            class FakeModule {
-				@Get('/foo')
-				getX() {
-					Response.conflict().throw();
-				}
-            }
-
-            let app = await Application.bootstrap(FakeModule, { silent: true });
-            let response = await fetch('http://localhost:32556/foo');
-            expect(response.status).to.equal(409);
-            app.stop();
-        });
     })
 });

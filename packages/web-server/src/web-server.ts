@@ -557,9 +557,17 @@ export class WebServer {
 			httpError.headers
 				.forEach(header => event.response.setHeader(header[0], header[1]));
 
-			event.response.setHeader('Content-Type', 'application/json; charset=utf-8');
-            if (httpError.body !== undefined)
-			    event.response.write(JSON.stringify(httpError.body));
+            if (!httpError.headers.some(([key, value]) => key.toLowerCase() === 'content-type'))
+			    event.response.setHeader('Content-Type', 'application/json; charset=utf-8');
+
+            if (httpError.body !== undefined) {
+                if (typeof httpError.body === 'string' || Buffer.isBuffer(httpError.body) || httpError.body instanceof ArrayBuffer || ArrayBuffer.isView(httpError.body)) {
+                    event.response.write(httpError.body);
+                } else {
+			        event.response.write(JSON.stringify(httpError.body));
+                }
+            }
+            
 			event.response.end();
 
 			return;

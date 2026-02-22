@@ -9,19 +9,18 @@ export class Response {
 	 */
 	constructor(
 		public status : number, 
-		headers : string[][] | any, 
-		body : any,
+		headers : [key: string, value: string][] | Record<string, string>, 
+		body? : any,
 		isRawBody? : boolean
 	) {
+        isRawBody ??= false;
+
 		// Normalize headers 
 
-		if (typeof headers === 'object' && !headers.length)
-			headers = Object.keys(headers).map(key => [key, headers[key]]);
+        headers ??= [];
+		if (!Array.isArray(headers))
+			headers = Object.entries(headers).map(([key, value]) => [key, value]) as [string, string][];
 		this.headers = headers;
-
-		if (isRawBody === undefined)
-			isRawBody = false;
-		headers = headers || [];
 
 		this.unencodedBody = body;
 		this.encodeAs(isRawBody ? 'raw' : 'json');
@@ -30,7 +29,7 @@ export class Response {
 	/**
 	 * Headers for the response, as an array of [key, value] tuple arrays.
 	 */
-	public headers : string[][];
+	public headers : [key: string, value: string][];
 
 	/**
 	 * Body of the response.
@@ -428,8 +427,12 @@ export class Response {
 	 * Throw this response as an `HttpError`
 	 */
 	public throw(): never {
-		throw new HttpError(this.status, this.body, this.headers);
+		throw this.asError();
 	}
+
+    public asError() {
+		return new HttpError(this.status, this.body, this.headers);
+    }
 
 	private _encoding : 'raw' | 'json';
 
@@ -443,7 +446,12 @@ export class Response {
 	 * encodeAs('raw').
 	 */
 	public encodeAs(encoding : EncodingType) {
-		
+		if (this.unencodedBody === undefined) {
+            this._encoding = 'raw';
+            this.body = undefined;
+            return;
+        }
+
 		if (!['raw', 'json'].includes(encoding))
 			throw new Error(`Unknown encoding '${encoding}'`);
 

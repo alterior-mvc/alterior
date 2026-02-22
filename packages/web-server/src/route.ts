@@ -12,6 +12,7 @@ import { Response } from './response';
 import { ellipsize } from './utils';
 import { ConnectMiddleware } from './web-server-engine';
 import { Interceptor } from './web-server-options';
+import { isHttpError } from 'http-errors';
 
 export interface RouteDescription {
 	definition : RouteDefinition;
@@ -456,6 +457,29 @@ export class RouteInstance {
 		return this._parameters.slice();
 	}
 
+    /**
+     * Converts errors from https://www.npmjs.com/package/http-errors to Alterior's HttpError instances.
+     * @param e 
+     * @returns 
+     */
+    private normalizeHttpError(e: any) {
+        if (isHttpError(e)) {
+            if (e.status >= 500) {
+                e = new Response(e.status, e.headers, {
+                    message: e.expose ? e.message : `Internal server error`,
+                    constructor: e.constructor.name ?? '«undefined»',
+                    stack: e.stack ?? '«undefined»'
+                }).asError();
+            } else if (e.expose) {
+                e = new Response(e.status, e.headers, { message: e.message }).asError();
+            } else {
+                e = new Response(e.status, e.headers, undefined).asError();
+            }
+        }
+
+        return e;
+    }
+
 	private async execute(instance, event : WebEvent) {
 		if (!instance) 
 			throw new ArgumentNullError('instance');
@@ -480,11 +504,12 @@ export class RouteInstance {
 
 		// Middleware
 
-		await event.context(async () => {
+		let aborted = await event.context(async () => {
 			for (let item of this.resolvedMiddleware) {
 				try {
 					await new Promise<void>((resolve, reject) => item(event.request, event.response, (err?: any) => err ? reject(err) : resolve()));
 				} catch (e) {
+                    e = this.normalizeHttpError(e);
 					event.metadata['uncaughtError'] = e;
 					this.server.handleError(
 						e,
@@ -493,10 +518,15 @@ export class RouteInstance {
 						`Middleware ${item.name || 'anonymous'}()`
 					);
 					this.server.reportRequest('finished', event, reportSource);
-					return;
+					return true;
 				}
 			}
+            
+            return false;
 		});
+
+        if (aborted)
+            return;
 
 		// Execute our function by resolving the parameter factories into a set of parameters to provide to the 
 		// function.
@@ -552,6 +582,7 @@ export class RouteInstance {
 
 				});
 			} catch (e) {
+                e = this.normalizeHttpError(e);
 				event.metadata['uncaughtError'] = e;
 				this.server.handleError(e, event, this, reportSource);
 				return;

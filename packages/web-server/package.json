@@ -49,6 +49,7 @@
     "@types/node-forge": "^1.3.11",
     "body-parser": "^1.20.1",
     "fast-json-stringify": "^1.21.0",
+    "http-errors": "^2.0.0",
     "kind-of": ">=6.0.3",
     "node-forge": "^1.3.1",
     "qs": "^6.10.1",
@@ -63,6 +64,7 @@
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.5",
+    "@types/http-errors": "^2.0.5",
     "@types/supertest": "^2.0.9",
     "@types/uuid": "^8.3.3",
     "@types/ws": "^7.4.0",
