@@ -34,6 +34,8 @@
     * Moved to strict Typescript
 - `@/logging`
     * Moved to strict Typescript
+- `@/functions`
+    * Moved to strict Typescript
 
 # v3.15.0
 - `@/web-server`

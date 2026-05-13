@@ -78,15 +78,18 @@ export function twoDigitYear(fullYear: number) {
     return Number(fullYear.toString().slice(2));
 }
 
-export function zeroPad(number, digits = 2) {
-    let str = `${number}`;
+export function zeroPad(number: number | string, digits = 2) {
+    let str = String(number);
     while (str.length < digits)
         str = '0' + str;
 
     return str;
 }
 
-export function randomItem<T>(arr : T[], emptyValue? : T) : T {
+export function randomItem<T>(arr : T[], emptyValue : T) : T;
+export function randomItem<T>(arr : T[]) : T | undefined;
+export function randomItem<T>(arr : T[], emptyValue? : T) : T | undefined;
+export function randomItem<T>(arr : T[], emptyValue? : T) : T | undefined {
     if (arr.length === 0)
         return emptyValue;
 
@@ -160,7 +163,7 @@ export function lineRangeTagEnd(name : string) {
 }
 
 export function replaceTaggedLineRange(content : string[], tagName : string, lines : string[]) {
-    let startIndex = content.findIndex(line => line.includes(this.lineRangeTagStart(tagName)));
+    let startIndex = content.findIndex(line => line.includes(lineRangeTagStart(tagName)));
     content = removeTaggedLineRange(content, tagName);
 
     if (startIndex) {
@@ -196,7 +199,7 @@ export function removeTaggedLineRange(content : string[], tag : string) {
 }
 
 export async function writeFileLines(filename : string, lines : string[]): Promise<void> {
-    this.writeTextFile(filename, lines.join(os.EOL));
+    writeTextFile(filename, lines.join(os.EOL));
 }
 
 export async function readJsonFile<T = any>(filename : string, defaultValue?: T) : Promise<T> {
@@ -238,6 +241,12 @@ export async function writeTextFile(filename : string, content : string) {
 
 export const raise = (e: string|Error) => { throw typeof e === 'string' ? new Error(e) : e; };
 export const timeout = (time: number | string = 0) => new Promise<void>(r => setTimeout(r, timespan(time)));
+
+/**
+ * Convert a timespan (specified as a numeric string with s/m/h/d suffix) to milliseconds.
+ * @param amount A numeric string with a suffix of s/m/h/d or a number representing milliseconds
+ * @returns 
+ */
 export function timespan(amount: string | number): number {
     if (amount === 'inf' || !amount)
         return Infinity;
@@ -256,6 +265,8 @@ export function timespan(amount: string | number): number {
         case 'm': return number * 1000 * 60;
         case 'h': return number * 1000 * 60 * 60;
         case 'd': return number * 1000 * 60 * 60 * 24;
+        default:
+            throw new Error(`Unsupported time unit suffix '${unit}'`);
     }
 }
 
@@ -316,7 +327,7 @@ export function age(timestamp: Date) {
 /**
  * https://stackoverflow.com/a/46759625
  */
-export function isConstructor(f) {
+export function isConstructor(f: any) {
     if (f === Symbol)
         return false;
 
