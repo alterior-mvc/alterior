@@ -1,22 +1,16 @@
 # ⏭ vNext
+- Moved to strict Typescript for all libraries and all tools.
 - `@/runtime`
-    * Moved to strict Typescript
     * Fixed an issue where calling `Type.staticMethodNames` or `Type.staticFieldNames` before calling `Type.staticPropertyNames` would throw an error
 - `@/annotations`
-    * Moved to strict Typescript
     * `DecoratorSite` is now a discriminated union for better type safety and more convenience when writing strict 
       Typescript. `Mutator.create` and `Mutator.define` have been upgraded with several overloads that conveniently 
       allow type narrowing of the `DecoratorSite` parameter of the mutator function depending on the 
       `validTargets` property specified in the mutator's `options`.
-- `@/command-line`
-    * Moved to strict Typescript
 - `@/common`
-    * Moved to strict Typescript
     * `interceptConsole` now uses the standard `Console` type instead of defining its own.
 - `@/di`
-    * Moved to strict Typescript
 - `@/web-server`
-    * Moved to strict Typescript. As a result type annotations are much improved.
     * Fixed type issues related to HTTP/2 support
     * Attempting to use WebSockets in HTTP/2 now throws a useful error, as Alterior does not yet support the new `CONNECT` method extension for doing WebSockets over HTTP/2.
     * New `RequestBase` and `ResponseBase` types represent the minimum Request and Response type features that Alterior will support without having to spell out `http.IncomingMessage | http2.Http2ServerRequest` etc. The strictly typed variant of `Response.write` from `http2` module is required over the loosely typed variant in `http` module.
@@ -26,18 +20,6 @@
     * `CertificateGenerator` now defaults to SHA-256 instead of SHA-1.
     * `CertificateGenerator` now throws if you specify an unsupported hash algorithm instead of falling back to SHA-1.
     * `CertificateGenerator` now throws a more sensible error if something goes wrong
-- `@/express`
-    * Moved to strict Typescript
-- `@/fastify`
-    * Moved to strict Typescript
-- `@/cli`
-    * Moved to strict Typescript
-- `@/logging`
-    * Moved to strict Typescript
-- `@/functions`
-    * Moved to strict Typescript
-- `@/http`
-    * Moved to strict Typescript
 
 # v3.15.0
 - `@/web-server`

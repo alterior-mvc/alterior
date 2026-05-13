@@ -31,10 +31,10 @@ export class AngularPlatform {
    * 
    * @param entryModule 
    */
-  static bootstrap(entryModule): AngularProvider[] {
+  static bootstrap(entryModule: Function): AngularProvider[] {
     let app = Application.bootstrap(entryModule);
     return app.runtime.providers.map(provider => {
-      let token = provider['provide'] ? provider['provide'] : provider;
+      let token = 'provide' in provider ? provider['provide'] : provider;
       return { 
         provide: token, 
         useValue: app.injector.get(token)
@@ -51,7 +51,7 @@ export class AngularPlatform {
    * 
    * @param imports The set of Alterior modules you wish to bootstrap
    */
-  static bridge(...imports) {
+  static bridge(...imports: Function[]) {
     @Module({ imports })
     class DynamicEntryModule {}
 

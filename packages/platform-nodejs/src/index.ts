@@ -40,13 +40,12 @@ let dotEnvPath = findDotEnv();
 if (dotEnvPath)
     dotenv.config({ path: findDotEnv() });
 
-import fetch from "node-fetch";
 import WebSocket from 'ws';
 
 if (!globalThis.fetch) {
-    globalThis.fetch = <typeof globalThis.fetch><unknown>fetch;
+    globalThis.fetch = require("node-fetch");
     if (!globalThis.Response)
-        globalThis.Response = fetch.Response;
+        globalThis.Response = require("node-fetch").Response;
     else
         console.warn(`While polyfilling fetch(): globalThis.Response is already defined! Some features of Alterior may not work correctly.`);
 }

@@ -1,6 +1,6 @@
-import { Injectable, Inject } from "@alterior/di";
-import { QUEUE_OPTIONS, TaskJob, TaskAnnotation, TaskModuleOptionsRef, TaskModuleOptions, TaskWorkerRegistry, Constructor, Worker, RemoteWorker, RemoteService } from "./tasks";
-import { InvalidOperationError, ArgumentError } from "@alterior/common";
+import { Injectable } from "@alterior/di";
+import { RemoteService, RemoteWorker, TaskWorkerRegistry, Worker } from "./tasks";
+import { Constructor } from "@alterior/runtime";
 
 @Injectable()
 export class TaskRunner {
