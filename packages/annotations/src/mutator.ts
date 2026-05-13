@@ -1,5 +1,6 @@
 import { getParameterNames } from '@alterior/common';
-import { DecoratorSite, AnnotationDecoratorOptions, Annotation, AnnotationDecorator, ClassDecoratorSite, MethodDecoratorSite, ParameterDecoratorSite, PropertyDecoratorSite } from './annotations';
+import { DecoratorSite, AnnotationDecoratorOptions, Annotation, AnnotationDecorator, ClassDecoratorSite, 
+    MethodDecoratorSite, ParameterDecoratorSite, PropertyDecoratorSite, Decorator } from './annotations';
 
 /**
  * Mutators are a way to define "mutation decorators" which in some way change the value
@@ -105,12 +106,12 @@ export class Mutator {
      * }
      * ```
      */
-    public static define<Args extends any[]>(definition: MutatorDefinition<ClassDecoratorSite, Args> & { options: { validTargets: ['class'] }}): AnnotationDecorator<Args>;
-    public static define<Args extends any[]>(definition: MutatorDefinition<MethodDecoratorSite, Args> & { options: { validTargets: ['method'] }}): AnnotationDecorator<Args>;
-    public static define<Args extends any[]>(definition: MutatorDefinition<PropertyDecoratorSite, Args> & { options: { validTargets: ['property'] }}): AnnotationDecorator<Args>;
-    public static define<Args extends any[]>(definition: MutatorDefinition<ParameterDecoratorSite, Args> & { options: { validTargets: ['parameter'] }}): AnnotationDecorator<Args>;
-    public static define<Args extends any[]>(definition: MutatorDefinition): AnnotationDecorator<Args>;
-    public static define(definition: MutatorDefinition<any, any[]>): AnnotationDecorator<any> {
+    public static define(definition: MutatorDefinition<ClassDecoratorSite> & { options: { validTargets: ['class'] }}): Decorator;
+    public static define(definition: MutatorDefinition<MethodDecoratorSite> & { options: { validTargets: ['method'] }}): Decorator;
+    public static define(definition: MutatorDefinition<PropertyDecoratorSite> & { options: { validTargets: ['property'] }}): Decorator;
+    public static define(definition: MutatorDefinition<ParameterDecoratorSite> & { options: { validTargets: ['parameter'] }}): Decorator;
+    public static define(definition: MutatorDefinition): Decorator;
+    public static define(definition: MutatorDefinition<any, any[]>): Decorator {
         return this.create(definition.invoke, definition.options)();
     }
 }

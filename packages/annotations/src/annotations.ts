@@ -58,12 +58,11 @@ type DecoratorTypeForValidTargets<Targets> = UnionToIntersection<DecoratorTypeUn
 /**
  * Represents a decorator which accepts an Annotation's options object.
  */
-export type AnnotationDecorator<TS extends any[]> = (...args: TS) =>
-    ClassDecorator &
+export type AnnotationDecorator<TS extends any[]> = (...args: TS) => Decorator;
+export type Decorator = ClassDecorator &
     PropertyDecorator &
     MethodDecorator &
-    ParameterDecorator
-    ;
+    ParameterDecorator;
 
 export type DecoratorSite = ClassDecoratorSite | MethodDecoratorSite | PropertyDecoratorSite | ParameterDecoratorSite;
 export interface ClassDecoratorSite {
