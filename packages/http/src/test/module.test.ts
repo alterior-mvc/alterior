@@ -8,7 +8,7 @@
 import {describe, it, beforeEach} from 'razmin';
 import {expect} from 'chai';
 
-import {Injectable, Module, Injector} from '@alterior/di';
+import {Injectable, Module, Injector, Type} from '@alterior/di';
 
 //import {TestBed} from '@angular/core/testing';
 import {Observable} from 'rxjs';
@@ -77,10 +77,11 @@ class ReentrantInterceptor implements HttpInterceptor {
 
       injector = app.injector
     });
+    function getClient() { return injector.get(HttpClient as Type<HttpClient>); }
     it('initializes HttpClient properly', done => {
-      injector.get(HttpClient).get('/test', {responseType: 'text'}).subscribe(value => {
+      getClient().get('/test', {responseType: 'text'}).subscribe(value => {
         expect(value).to.equal('ok!');
-        done();
+        done!();
       });
 
       let thing = injector.get(HttpTestingController);
@@ -88,19 +89,19 @@ class ReentrantInterceptor implements HttpInterceptor {
     });
 
     it('intercepts outbound responses in the order in which interceptors were bound', done => {
-      injector.get(HttpClient)
+      getClient()
           .get('/test', {observe: 'response', responseType: 'text'})
-          .subscribe(value => done());
+          .subscribe(() => done!());
       const req = injector.get(HttpTestingController).expectOne('/test') as TestRequest;
       expect(req.request.headers.get('Intercepted')).to.equal('A,B');
       req.flush('ok!');
     });
     it('intercepts inbound responses in the right (reverse binding) order', done => {
-      injector.get(HttpClient)
+      getClient()
           .get('/test', {observe: 'response', responseType: 'text'})
           .subscribe(value => {
             expect(value.headers.get('Intercepted')).to.equal('B,A');
-            done();
+            done!();
           });
       injector.get(HttpTestingController).expectOne('/test').flush('ok!');
     });
@@ -117,7 +118,7 @@ class ReentrantInterceptor implements HttpInterceptor {
       let app = await Application.bootstrap(TestModule);
       let injector = app.injector;
       
-      injector.get(HttpClient).get('/test').subscribe(() => { done(); });
+      injector.get(HttpClient as Type<HttpClient>).get('/test').subscribe(() => { done!(); });
       injector.get(HttpTestingController).expectOne('/test').flush('ok!');
     });
   });

@@ -13,4 +13,4 @@ suite()
         '**/xsrf.test.js',
     ])
     .run()
-;
+    ;
