@@ -1,4 +1,4 @@
-import { Injectable, Optional } from '@alterior/di';
+import { Inject, Injectable, Optional } from '@alterior/di';
 import { ExecutionContext, Application } from '@alterior/runtime';
 
 export type LogSeverity = 'debug' | 'info' | 'warning' | 'error' | 'fatal';
@@ -250,7 +250,7 @@ export interface LoggingOptions {
 
 export class ZonedLogger {
     constructor(
-        @Optional() protected optionsRef: LoggingOptionsRef | null,
+        @Optional() @Inject(LoggingOptionsRef) protected optionsRef: LoggingOptionsRef | null,
         protected app?: Application,
         sourceLabel?: string
     ) {
@@ -408,7 +408,7 @@ export class ZonedLogger {
 @Injectable()
 export class Logger extends ZonedLogger {
     constructor(
-        @Optional() optionsRef: LoggingOptionsRef | null,
+        @Optional() @Inject(LoggingOptionsRef) optionsRef: LoggingOptionsRef | null,
         app?: Application
     ) {
         super(optionsRef, app);
