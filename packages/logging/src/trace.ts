@@ -19,7 +19,7 @@ export function setTracingEnabled(enabled : boolean) {
 /**
  * Prints messages related to the execution of the decorated method
  * to the console. 
- * 
+ *
  * - When multiple traced functions are involved, the output is indented 
  *   appropriately. 
  * - Intercepts console messages from within the function to add 
@@ -28,42 +28,44 @@ export function setTracingEnabled(enabled : boolean) {
  * - For methods returning promises, the promise itself is traced,
  *   printing a "Resolved" message upon completion or a "Rejected"
  *   message upon rejection.
- * 
+ *
  * Note that this functionality can be enabled and disabled by configuring
  * the `tracing` option when configuring this module for your application. 
- * When @Trace() is used outside of an Alterior execution context, the trace 
+ * When `@Trace()` is used outside of an Alterior execution context, the trace 
  * logs are always enabled, and the default log listeners are used.
- * 
+ *
  * For example, given a class:
+ *
+ * ```
+ * class Thing {
+ *     @ConsoleTrace()
+ *     static doSomething(data : any, stuff : number) {
+ *         console.log("ALMOST...");
+ *         try {
+ *             this.anotherSomething(stuff);
+ *         } catch (e) {
  * 
-```
-class Thing {
-    @ConsoleTrace()
-    static doSomething(data : any, stuff : number) {
-        console.log("ALMOST...");
-        try {
-            this.anotherSomething(stuff);
-        } catch (e) {
-
-        }
-    }
-    @ConsoleTrace()
-    static anotherSomething(stuff : number) {
-        console.log("NAH...");
-        throw new Error('Uh oh');
-    }
-}
-```
+ *         }
+ *     }
+ *     @ConsoleTrace()
+ *     static anotherSomething(stuff : number) {
+ *         console.log("NAH...");
+ *         throw new Error('Uh oh');
+ *     }
+ * }
+ * ```
+ *
  * When executed, one may see:
-```sh
-Thing#doSomething({"stuff":321,"other":"nice"}, 12333) {
-ALMOST...
-Thing#anotherSomething(12333) {
-   NAH...
-   (!!) Exception:
-        Error: Uh oh
-} // [Exception] Thing#anotherSomething(12333)
-} // [Done, 6ms] Thing#doSomething({"stuff":321,"other":"nice"}, 12333)
+ * 
+ * ```text
+ * Thing#doSomething({"stuff":321,"other":"nice"}, 12333) {
+ * ALMOST...
+ * Thing#anotherSomething(12333) {
+ *    NAH...
+ *    (!!) Exception:
+ *         Error: Uh oh
+ * } // [Exception] Thing#anotherSomething(12333)
+ * } // [Done, 6ms] Thing#doSomething({"stuff":321,"other":"nice"}, 12333)
  * ```
  */
 export function Trace() {
@@ -90,7 +92,7 @@ export function Trace() {
                 return;
             
             let originalMethod : Function = site.propertyDescriptor.value;
-            site.propertyDescriptor.value = function (...args) {
+            site.propertyDescriptor.value = function (...args: any[]) {
                 let type : Function;
                 let isStatic : boolean = false;
 
@@ -133,14 +135,14 @@ export function Trace() {
                         argStrings.push(''+arg);
                 }
 
-                let methodSpec = `${ConsoleColors.cyan(`${typeName}${sep}${site.propertyKey}`)}(${argStrings.join(', ')})`;
+                let methodSpec = `${ConsoleColors.cyan(`${typeName}${sep}${String(site.propertyKey)}`)}(${argStrings.join(', ')})`;
                 logger.debug(`${methodSpec} {`);
-                let value;
+                let value: any;
 
-                let finish = (message?) => {
+                let finish = (message?: string) => {
                     let time = Date.now() - startedAt;
                     let components = [message || ConsoleColors.green(`Done`)];
-                    let timingColor = m => m;
+                    let timingColor = (m: string) => m;
                     let showTiming = time > 3;
 
                     if (time > 20) {
@@ -203,7 +205,7 @@ export function ReportExceptionsToConsole() {
 
         invoke(site) {
             let originalMethod : Function = site.propertyDescriptor.value;
-            site.propertyDescriptor.value = function (...args) {
+            site.propertyDescriptor.value = function (...args: any[]) {
                 let type : Function;
                 let isStatic : boolean = false;
 
@@ -226,7 +228,7 @@ export function ReportExceptionsToConsole() {
                 try {
                     return originalMethod.apply(this, args);
                 } catch (e) {
-                    console.error(`Error occurred during ${typeName}${sep}${site.propertyKey}():`);
+                    console.error(`Error occurred during ${typeName}${sep}${String(site.propertyKey)}():`);
                     console.error(e);
                     throw e;
                 }

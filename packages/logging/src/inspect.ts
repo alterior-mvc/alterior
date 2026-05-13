@@ -4,8 +4,9 @@
 
 import { ConsoleColors } from '@alterior/common';
 
+export type StyleType = 'special' | 'number' | 'boolean' | 'undefined' | 'null' | 'string' | 'date' | 'name' | 'regexp';
 export interface InspectOptions {
-    stylize: (str, styleType) => any;
+    stylize: (str: string, styleType: StyleType) => any;
     depth?: number;
     colors?: boolean;
     showHidden?: boolean;
@@ -22,32 +23,34 @@ export interface InspectOptions {
  */
 /* legacy: obj, showHidden, depth, colors*/
 
+interface Context extends InspectOptions {
+    seen: any[];
+}
+
 export function inspect(obj : any, opts? : InspectOptions): string {
     // default options
-    interface Context extends InspectOptions {
-        seen: any[];
-    }
 
     var ctx: Context = {
         seen: [],
-        stylize: stylizeNothing
+        stylize: stylizeNothing,
+        ...opts
     };
 
     if (opts)
         Object.assign(ctx, opts);
 
-    // set default options
-    if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
-    if (isUndefined(ctx.depth)) ctx.depth = 2;
-    if (isUndefined(ctx.colors)) ctx.colors = false;
-    if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
-    if (ctx.colors) ctx.stylize = stylizeWithConsoleColors;
+    ctx.showHidden ??= false;
+    ctx.depth ??= 2;
+    ctx.colors ??= false;
+    ctx.customInspect ??= true;
+    if (ctx.colors) 
+        ctx.stylize = stylizeWithConsoleColors;
 
     return formatValue(ctx, obj, ctx.depth);
 }
 
 // Don't use 'blue' not visible on cmd.exe
-const CONSOLE_COLOR_STYLES = {
+const CONSOLE_COLOR_STYLES: Record<StyleType, string | undefined> = {
     'special': 'cyan',
     'number': 'yellow',
     'boolean': 'yellow',
@@ -55,22 +58,22 @@ const CONSOLE_COLOR_STYLES = {
     'null': 'bold',
     'string': 'green',
     'date': 'magenta',
-    // "name": intentionally not styling
+    'name': undefined, // intentionally not styling
     'regexp': 'red'
 };
 
 /**
  * Pass the string through with no stylization.
  */
-export function stylizeNothing(str, styleType) {
+export function stylizeNothing(str: string, styleType: StyleType) {
     return str;
 }
 
-function isBoolean(arg) {
+function isBoolean(arg: any): arg is boolean {
     return typeof arg === 'boolean';
 }
 
-function isUndefined(arg) {
+function isUndefined(arg: any): arg is undefined {
     return arg === void 0;
 }
 
@@ -78,64 +81,60 @@ function isUndefined(arg) {
  * Use console colors to style the string. Suitable for output to
  * terminals with ANSI color support.
  */
-export function stylizeWithConsoleColors(str, styleType) {
+export function stylizeWithConsoleColors(str: string, styleType: StyleType) {
     var style = CONSOLE_COLOR_STYLES[styleType];
     return style ? ConsoleColors[style](str) : str;
 }
 
-function isFunction(arg) {
+function isFunction(arg: any): arg is Function {
     return typeof arg === 'function';
 }
 
-function isString(arg) {
+function isString(arg: any): arg is string {
     return typeof arg === 'string';
 }
 
-function isNumber(arg) {
+function isNumber(arg: any): arg is number {
     return typeof arg === 'number';
 }
 
-function isNull(arg) {
+function isNull(arg: any): arg is null {
     return arg === null;
 }
 
-function hasOwn(obj, prop) {
+function hasOwn(obj: object, prop: string | symbol) {
     return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-function isRegExp(re) {
+function isRegExp(re: any): re is RegExp {
     return isObject(re) && objectToString(re) === '[object RegExp]';
 }
 
-function isObject(arg) {
+function isObject(arg: any): arg is object {
     return typeof arg === 'object' && arg !== null;
 }
 
-function isError(e) {
+function isError(e: any): e is Error {
     return isObject(e) &&
         (objectToString(e) === '[object Error]' || e instanceof Error);
 }
 
-function isDate(d) {
+function isDate(d: any): d is Date {
     return isObject(d) && objectToString(d) === '[object Date]';
 }
 
-function objectToString(o) {
+function objectToString(o: object) {
     return Object.prototype.toString.call(o);
 }
 
-function arrayToHash(array) {
-    var hash = {};
-
-    array.forEach(function (val, idx) {
-        hash[val] = true;
-    });
-
+function arrayToHash(array: any[]) {
+    let hash: Record<string, any> = {};
+    array.forEach((val, idx) => hash[val] = true);
     return hash;
 }
 
-function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
-    var output = [];
+function formatArray(ctx: Context, value: any[], recurseTimes: number | null, visibleKeys: Record<string, boolean>, keys: string[]): string[] {
+    let output = [];
     for (var i = 0, l = value.length; i < l; ++i) {
         if (hasOwn(value, String(i))) {
             output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
@@ -153,11 +152,11 @@ function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
     return output;
 }
 
-function formatError(value) {
+function formatError(value: any): string {
     return '[' + Error.prototype.toString.call(value) + ']';
 }
 
-function formatValue(ctx, value, recurseTimes) {
+function formatValue(ctx: Context, value: any, recurseTimes: number | null): string {
     // Provide a hook for user-specified inspect functions.
     // Check that value is an object with an inspect function on it
     if (ctx.customInspect &&
@@ -249,7 +248,7 @@ function formatValue(ctx, value, recurseTimes) {
         return braces[0] + base + braces[1];
     }
 
-    if (recurseTimes < 0) {
+    if (recurseTimes !== null && recurseTimes < 0) {
         if (isRegExp(value)) {
             return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
         } else {
@@ -263,9 +262,7 @@ function formatValue(ctx, value, recurseTimes) {
     if (array) {
         output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
     } else {
-        output = keys.map(function (key) {
-            return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
-        });
+        output = keys.map(key => formatProperty(ctx, value, recurseTimes, visibleKeys, key, array));
     }
 
     ctx.seen.pop();
@@ -273,7 +270,7 @@ function formatValue(ctx, value, recurseTimes) {
     return reduceToSingleString(output, base, braces);
 }
 
-function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+function formatProperty(ctx: Context, value: any, recurseTimes: number | null, visibleKeys: Record<string, boolean>, key: string, array: boolean) {
     var name, str, desc;
     desc = { value: void 0 };
     try {
@@ -308,7 +305,7 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
     }
     if (!str) {
         if (ctx.seen.indexOf(desc.value) < 0) {
-            if (isNull(recurseTimes)) {
+            if (recurseTimes === null) {
                 str = formatValue(ctx, desc.value, null);
             } else {
                 str = formatValue(ctx, desc.value, recurseTimes - 1);
@@ -347,7 +344,7 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
     return name + ': ' + str;
 }
 
-function formatPrimitive(ctx, value) {
+function formatPrimitive(ctx: Context, value: any) {
     if (isUndefined(value))
         return ctx.stylize('undefined', 'undefined');
     if (isString(value)) {
@@ -365,7 +362,7 @@ function formatPrimitive(ctx, value) {
         return ctx.stylize('null', 'null');
 }
 
-function reduceToSingleString(output, base, braces) {
+function reduceToSingleString(output: string[], base: string, braces: string[]) {
     var numLinesEst = 0;
     var length = output.reduce(function (prev, cur) {
         numLinesEst++;

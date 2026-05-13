@@ -28,6 +28,9 @@
     * `CertificateGenerator` now throws a more sensible error if something goes wrong
 - `@/cli`
     * Moved to strict Typescript
+- `@/logging`
+    * Moved to strict Typescript
+
 # v3.15.0
 - `@/web-server`
     * Adds proper support for the `http-errors` package so that `body-parser` and other Express/Connect/Koa middleware 

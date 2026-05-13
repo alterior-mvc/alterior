@@ -2,7 +2,6 @@ import { suite } from "razmin";
 import { Trace, setTracingEnabled, getTracingEnabled } from "./trace";
 import { interceptConsole } from "@alterior/common";
 import { expect } from 'chai';
-import { inspect } from "./inspect";
 
 suite(describe => {
     describe('Trace', it => {
@@ -11,7 +10,7 @@ suite(describe => {
             setTracingEnabled(true);
 
             try {
-                let log = [];
+                let log: { method: string, original: Function, console: Console, args: any[] }[] = [];
 
                 interceptConsole((method, original, console, args) => {
                     log.push({ method, original, console, args });
