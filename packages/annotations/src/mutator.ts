@@ -21,16 +21,16 @@ export class Mutator {
         return <AnnotationDecorator<any[]>> Annotation.decorator(Object.assign({}, options || {}, {
             factory: (target: DecoratorSite, ...args: Args) => {
                 let paramNames: string[] | undefined;
-                let orig = target.propertyDescriptor.value;
+                let value = target.propertyDescriptor?.value;
 
-                if (typeof orig === 'function') {
-                    paramNames = getParameterNames(target.propertyDescriptor.value);
+                if (typeof value === 'function') {
+                    paramNames = getParameterNames(value);
                 }
 
                 mutator(target, ...args);
 
-                let replacement = target.propertyDescriptor.value;
-                if (orig !== replacement && paramNames !== undefined && !Object.hasOwn(replacement, '__parameterNames')) {
+                let replacement = target.propertyDescriptor?.value;
+                if (value !== replacement && paramNames !== undefined && !Object.hasOwn(replacement, '__parameterNames')) {
                     Object.defineProperty(replacement, '__parameterNames', {
                         value: paramNames
                     });

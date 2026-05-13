@@ -394,11 +394,11 @@ suite(describe => {
             let annotation = new LabelAnnotation(LABEL);
             annotation.applyToClass(TestSubject);
             
-            expect((TestSubject as any)[ANNOTATIONS_KEY]).to.exist;
-            expect((TestSubject as any)[ANNOTATIONS_KEY].length > 0).to.exist;
+            expect(classAnnotationsOf(TestSubject)).to.exist;
+            expect(classAnnotationsOf(TestSubject).length > 0).to.exist;
     
             let installedAnnotations : IAnnotation[] = 
-                (TestSubject as any)[ANNOTATIONS_KEY]
+                classAnnotationsOf(TestSubject)
                     .filter(x => x.$metadataName == META_NAME)
             ;
     
@@ -423,13 +423,13 @@ suite(describe => {
             }
     
             let annotation = new LabelAnnotation(LABEL);
-            annotation.applyToMethod(TestSubject, 'helloWorld');
+            annotation.applyToMethod(TestSubject.prototype, 'helloWorld');
             
-            expect((TestSubject as any)[PROPERTY_ANNOTATIONS_KEY]).to.exist;
-            expect((TestSubject as any)[PROPERTY_ANNOTATIONS_KEY]['helloWorld']).to.exist;
+            expect(propertyAnnotationsOf(TestSubject.prototype)).to.exist;
+            expect(propertyAnnotationsOf(TestSubject.prototype)['helloWorld']).to.exist;
     
             let installedAnnotations : IAnnotation[] = 
-                (TestSubject as any)[PROPERTY_ANNOTATIONS_KEY]['helloWorld']
+                propertyAnnotationsOf(TestSubject.prototype)['helloWorld']
                     .filter(x => x.$metadataName == META_NAME)
             ;
     
@@ -448,19 +448,17 @@ suite(describe => {
         
         it("should apply to properties", () => {
             class TestSubject {
-                helloWorld() {
-                    console.log('hello world');
-                }
+                helloWorld = 'hello world';
             }
     
             let annotation = new LabelAnnotation(LABEL);
-            annotation.applyToMethod(TestSubject, 'helloWorld');
+            annotation.applyToMethod(TestSubject.prototype, 'helloWorld');
             
-            expect((TestSubject as any)[PROPERTY_ANNOTATIONS_KEY]).to.exist;
-            expect((TestSubject as any)[PROPERTY_ANNOTATIONS_KEY]['helloWorld']).to.exist;
+            expect(propertyAnnotationsOf(TestSubject.prototype)).to.exist;
+            expect(propertyAnnotationsOf(TestSubject.prototype)['helloWorld']).to.exist;
     
             let installedAnnotations : IAnnotation[] = 
-                (TestSubject as any)[PROPERTY_ANNOTATIONS_KEY]['helloWorld']
+                propertyAnnotationsOf(TestSubject.prototype)['helloWorld']
                     .filter(x => x.$metadataName == META_NAME)
             ;
     
@@ -485,13 +483,14 @@ suite(describe => {
             }
     
             let annotation = new LabelAnnotation(LABEL);
-            annotation.applyToParameter(TestSubject, 'helloString', 0);
+            annotation.applyToParameter(TestSubject.prototype, 'helloString', 0);
             
-            expect((TestSubject as any)[METHOD_PARAMETER_ANNOTATIONS_KEY]).to.exist;
-            expect((TestSubject as any)[METHOD_PARAMETER_ANNOTATIONS_KEY]['helloString']).to.exist;
+            
+            expect(methodParameterAnnotationsOf(TestSubject.prototype)).to.exist;
+            expect(methodParameterAnnotationsOf(TestSubject.prototype)['helloString']).to.exist;
     
             let paramAnnotations : IAnnotation[][] = 
-                (TestSubject as any)[METHOD_PARAMETER_ANNOTATIONS_KEY]['helloString'];
+                methodParameterAnnotationsOf(TestSubject.prototype)['helloString'];
     
             expect(paramAnnotations.length)
                 .to.equal(1,  
@@ -517,7 +516,107 @@ suite(describe => {
             
             assertClone(annotation, annotationP);
         });
+        it("should apply to static methods", () => {
+            class TestSubject {
+                static helloWorld() {
+                    console.log('hello world');
+                }
+            }
+    
+            let annotation = new LabelAnnotation(LABEL);
+            annotation.applyToMethod(TestSubject, 'helloWorld');
+            
+            expect(propertyAnnotationsOf(TestSubject)).to.exist;
+            expect(propertyAnnotationsOf(TestSubject)['helloWorld']).to.exist;
+    
+            let installedAnnotations : IAnnotation[] = 
+                propertyAnnotationsOf(TestSubject)['helloWorld']
+                    .filter(x => x.$metadataName == META_NAME)
+            ;
+    
+            expect(installedAnnotations.length).to.equal(1);
+            expect(installedAnnotations[0]).to.be.ok;
+    
+            let installedAnnotation = installedAnnotations[0];
+            let annotationP = installedAnnotation as LabelAnnotation;
+            
+            expect(annotationP.$metadataName).to.equal(META_NAME);
+            expect(annotationP.constructor).to.equal(LabelAnnotation);
+            expect(annotationP.regularProperty).to.equal(REGULAR_PROPERTY_VALUE);
+    
+            assertClone(annotation, annotationP);
+        });
         
+        it("should apply to static properties", () => {
+            class TestSubject {
+                static helloWorld = 'hello world';
+            }
+    
+            let annotation = new LabelAnnotation(LABEL);
+            annotation.applyToMethod(TestSubject, 'helloWorld');
+            
+            expect(propertyAnnotationsOf(TestSubject)).to.exist;
+            expect(propertyAnnotationsOf(TestSubject)['helloWorld']).to.exist;
+    
+            let installedAnnotations : IAnnotation[] = 
+                propertyAnnotationsOf(TestSubject)['helloWorld']
+                    .filter(x => x.$metadataName == META_NAME)
+            ;
+    
+            expect(installedAnnotations.length).to.equal(1);
+            expect(installedAnnotations[0]).to.be.ok;
+    
+            let installedAnnotation = installedAnnotations[0];
+            let annotationP = installedAnnotation as LabelAnnotation;
+            
+            expect(annotationP.$metadataName).to.equal(META_NAME);
+            expect(annotationP.constructor).to.equal(LabelAnnotation);
+            expect(annotationP.regularProperty).to.equal(REGULAR_PROPERTY_VALUE);
+            
+            assertClone(annotation, annotationP);
+        });
+        
+        it("should apply to static method parameters", () => {
+            class TestSubject {
+                static helloString(param1 : string) {
+                    console.log(`hello ${param1}`);
+                }
+            }
+    
+            let annotation = new LabelAnnotation(LABEL);
+            annotation.applyToParameter(TestSubject, 'helloString', 0);
+            
+            
+            expect(methodParameterAnnotationsOf(TestSubject)).to.exist;
+            expect(methodParameterAnnotationsOf(TestSubject)['helloString']).to.exist;
+    
+            let paramAnnotations : IAnnotation[][] = 
+                methodParameterAnnotationsOf(TestSubject)['helloString'];
+    
+            expect(paramAnnotations.length)
+                .to.equal(1,  
+                    `Should be 1 entry to match 1 parameter on TestSubject.helloString(), ` 
+                    + `not ${paramAnnotations.length}`
+                )
+            ;
+    
+            let installedAnnotations : IAnnotation[] = 
+                paramAnnotations[0]
+                    .filter(x => x.$metadataName === META_NAME)
+            ;
+    
+            expect(installedAnnotations.length).to.equal(1);
+            expect(installedAnnotations[0]).to.be.ok;
+    
+            let installedAnnotation = installedAnnotations[0];
+            let annotationP = installedAnnotation as LabelAnnotation;
+            
+            expect(annotationP.$metadataName).to.equal(META_NAME);
+            expect(annotationP.constructor).to.equal(LabelAnnotation);
+            expect(annotationP.regularProperty).to.equal(REGULAR_PROPERTY_VALUE);
+            
+            assertClone(annotation, annotationP);
+        });
         it("should fill missing parameter metadata slots with null", () => {
             class TestSubject {
                 helloStrings3(param1 : string, param2 : string) {
@@ -655,9 +754,9 @@ suite(describe => {
     
             annotationDecorator(obj);
     
-            expect(obj[ANNOTATIONS_KEY]).to.exist;
-            expect(obj[ANNOTATIONS_KEY].filter(x => x.$metadataName === META_NAME).length === 1).to.exist;
-            expect(obj[ANNOTATIONS_KEY].find(x => x.$metadataName === META_NAME).text === LABEL).to.exist;
+            expect(classAnnotationsOf(obj)).to.exist;
+            expect(findClassAnnotation<LabelAnnotation>(obj, META_NAME)).to.exist;
+            expect(findClassAnnotation<LabelAnnotation>(obj, META_NAME)!.text === LABEL).to.exist;
         });
     
         it("should handle class decorators", () => {
@@ -667,9 +766,9 @@ suite(describe => {
             class TestSubject {
             }
             
-            expect(TestSubject[ANNOTATIONS_KEY]).to.exist;
-            expect(TestSubject[ANNOTATIONS_KEY].filter(x => x.$metadataName === META_NAME).length === 1).to.exist;
-            expect(TestSubject[ANNOTATIONS_KEY].find(x => x.$metadataName === META_NAME).text === LABEL).to.exist;
+            expect(classAnnotationsOf(TestSubject)).to.exist;
+            expect(findClassAnnotation<LabelAnnotation>(TestSubject, META_NAME)).to.exist;
+            expect(findClassAnnotation<LabelAnnotation>(TestSubject, META_NAME)!.text === LABEL).to.exist;
         });
         
         it("should handle method decorators", () => {
@@ -682,10 +781,10 @@ suite(describe => {
                 }
             }
             
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]).to.exist;
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]['helloWorld']).to.exist;
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]['helloWorld'].filter(x => x.$metadataName === META_NAME).length === 1).to.exist;
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]['helloWorld'].find(x => x.$metadataName === META_NAME).text === LABEL).to.exist;
+            expect(propertyAnnotationsOf(TestSubject.prototype)).to.exist;
+            expect(propertyAnnotationsOf(TestSubject.prototype)['helloWorld']).to.exist;
+            expect(findPropertyAnnotation<LabelAnnotation>(TestSubject.prototype, 'helloWorld', META_NAME)).to.exist;
+            expect(findPropertyAnnotation<LabelAnnotation>(TestSubject.prototype, 'helloWorld', META_NAME)!.text === LABEL).to.exist;
         });
         
         it("should handle property decorators", () => {
@@ -696,10 +795,10 @@ suite(describe => {
                 stuff : number = 123;
             }
             
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]).to.exist;
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]['stuff']).to.exist;
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]['stuff'].filter(x => x.$metadataName === META_NAME).length === 1).to.exist;
-            expect(TestSubject.prototype[PROPERTY_ANNOTATIONS_KEY]['stuff'].find(x => x.$metadataName === META_NAME).text === LABEL).to.exist;
+            expect(propertyAnnotationsOf(TestSubject.prototype)).to.exist;
+            expect(propertyAnnotationsOf(TestSubject.prototype)['stuff']).to.exist;
+            expect(findPropertyAnnotation<LabelAnnotation>(TestSubject.prototype, 'stuff', META_NAME)).to.exist;
+            expect(findPropertyAnnotation<LabelAnnotation>(TestSubject.prototype, 'stuff', META_NAME)!.text === LABEL).to.exist;
         });
         
         it("should handle method parameters decorators", () => {
@@ -711,17 +810,18 @@ suite(describe => {
                 }
             }
             
-            expect(TestSubject.prototype[METHOD_PARAMETER_ANNOTATIONS_KEY]).to.exist;
-            expect(TestSubject.prototype[METHOD_PARAMETER_ANNOTATIONS_KEY]['helloWorld']).to.exist;
+            
+            expect(methodParameterAnnotationsOf(TestSubject.prototype)).to.exist;
+            expect(methodParameterAnnotationsOf(TestSubject.prototype)['helloWorld']).to.exist;
     
-            let parameters = TestSubject.prototype[METHOD_PARAMETER_ANNOTATIONS_KEY]['helloWorld'];
+            let parameters = methodParameterAnnotationsOf(TestSubject.prototype)['helloWorld'];
     
             expect(parameters.length).to.equal(1);
             
             let paramAnnotations = parameters[0];
     
             expect(paramAnnotations.filter(x => x.$metadataName === META_NAME).length).to.equal(1);
-            expect(paramAnnotations.find(x => x.$metadataName === META_NAME).text).to.equal(LABEL);
+            expect((paramAnnotations.find(x => x.$metadataName === META_NAME) as LabelAnnotation).text).to.equal(LABEL);
         });
         
         it("should handle constructor parameters decorators", () => {
@@ -733,15 +833,15 @@ suite(describe => {
                 }
             }
             
-            expect(TestSubject[CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY]).to.exist;
-            let parameters = TestSubject[CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY];
+            expect(ctorParameterAnnotationsOf(TestSubject)).to.exist;
+            let parameters = ctorParameterAnnotationsOf(TestSubject);
     
             expect(parameters.length).to.equal(1);
             
             let paramAnnotations = parameters[0];
     
             expect(paramAnnotations.filter(x => x.$metadataName === META_NAME).length === 1).to.exist;
-            expect(paramAnnotations.find(x => x.$metadataName === META_NAME).text === LABEL).to.exist;
+            expect((paramAnnotations.find(x => x.$metadataName === META_NAME) as LabelAnnotation).text === LABEL).to.exist;
         });
         
         it("should ensure a decorator is applied only to supported targets", () => {
@@ -763,3 +863,24 @@ suite(describe => {
     });
 });
 
+function classAnnotationsOf(obj: Function): IAnnotation[] {
+    return (obj as any)[ANNOTATIONS_KEY] ?? [];
+}
+function findClassAnnotation<T>(obj: Function, metadataName: string): T | undefined {
+    return classAnnotationsOf(obj).find(x => x.$metadataName === metadataName) as T | undefined;
+}
+
+function propertyAnnotationsOf(obj: any): Record<string, IAnnotation[]> {
+    return obj[PROPERTY_ANNOTATIONS_KEY] ?? {};
+}
+
+function findPropertyAnnotation<T>(obj: any, property: string, metadataName: string): T {
+    return (propertyAnnotationsOf(obj)[property] ?? []).find(x => x.$metadataName === metadataName) as T;
+}
+
+function methodParameterAnnotationsOf(obj: any): Record<string, IAnnotation[][]> {
+    return obj[METHOD_PARAMETER_ANNOTATIONS_KEY] ?? {};
+}
+function ctorParameterAnnotationsOf(obj: any): IAnnotation[][] {
+    return obj[CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY] ?? {};
+}

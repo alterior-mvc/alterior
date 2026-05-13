@@ -15,7 +15,7 @@ import { NotSupportedError } from '@alterior/common';
  * on a class.
  */
 export interface IAnnotation {
-    $metadataName? : string;
+    $metadataName?: string;
 }
 
 // These are the properties on a class where annotation metadata is deposited 
@@ -32,8 +32,8 @@ export const METHOD_PARAMETER_ANNOTATIONS_KEY = '__parameter__metadata__';
  * construct itself by passing an options object.
  */
 interface AnnotationConstructor<AnnoT extends Annotation, TS extends any[]> {
-    new (...args : TS) : AnnoT;
-    getMetadataName();
+    new(...args: TS): AnnoT;
+    getMetadataName(): string;
 }
 
 export type AnnotationClassDecorator<TS extends any[]> = (...args: TS) => ((target: any) => void);
@@ -42,11 +42,11 @@ export type AnnotationMethodDecorator<TS extends any[]> = (...args: TS) => ((tar
 export type AnnotationParameterDecorator<TS extends any[]> = (...args: TS) => ((target: any, propertyKey: string | symbol, index: number) => void);
 // (...args: TS): (target, ...args) => void;
 
-type UnionToIntersection<U> = 
-  (U extends any ? (x: U)=>void : never) extends ((x: infer I)=>void) ? I : never
-  
-type DecoratorTypeUnionForValidTargets<Targets> = 
-      Targets extends 'class' ? ClassDecorator 
+type UnionToIntersection<U> =
+    (U extends any ? (x: U) => void : never) extends ((x: infer I) => void) ? I : never
+
+type DecoratorTypeUnionForValidTargets<Targets> =
+    Targets extends 'class' ? ClassDecorator
     : Targets extends 'method' ? MethodDecorator
     : Targets extends 'property' ? PropertyDecorator
     : Targets extends 'parameter' ? ParameterDecorator
@@ -58,27 +58,27 @@ type DecoratorTypeForValidTargets<Targets> = UnionToIntersection<DecoratorTypeUn
 /**
  * Represents a decorator which accepts an Annotation's options object.
  */
-export type AnnotationDecorator<TS extends any[]> = (...args: TS) => 
+export type AnnotationDecorator<TS extends any[]> = (...args: TS) =>
     ClassDecorator &
     PropertyDecorator &
     MethodDecorator &
     ParameterDecorator
-;
+    ;
 
 export interface DecoratorSite {
-    type : 'class' | 'method' | 'property' | 'parameter';
-    target : any;
-    propertyKey? : string;
-    propertyDescriptor? : PropertyDescriptor;
-    index? : number;
+    type: 'class' | 'method' | 'property' | 'parameter';
+    target: any;
+    propertyKey?: string;
+    propertyDescriptor?: PropertyDescriptor;
+    index?: number;
 }
 
 export type AnnotationDecoratorTarget = 'class' | 'property' | 'method' | 'parameter';
 
 export interface AnnotationDecoratorOptions<AnnoT, TS extends any[] = []> {
-    factory? : (target : DecoratorSite, ...args : TS) => AnnoT | void;
-    validTargets? : AnnotationDecoratorTarget[];
-    allowMultiple? : boolean;
+    factory?: (target: DecoratorSite, ...args: TS) => AnnoT | void;
+    validTargets?: AnnotationDecoratorTarget[];
+    allowMultiple?: boolean;
 }
 
 /**
@@ -86,7 +86,7 @@ export interface AnnotationDecoratorOptions<AnnoT, TS extends any[] = []> {
  * annotation does not support that target.
  */
 export class AnnotationTargetError extends NotSupportedError {
-    constructor(annotationClass, invalidType: string, supportedTypes: string[], message?: string) {
+    constructor(annotationClass: Function, invalidType: string, supportedTypes: string[], message?: string) {
         super(message || `You cannot decorate a ${invalidType} with annotation ${annotationClass.name}. Valid targets: ${supportedTypes.join(', ')}`);
 
         this._invalidType = invalidType;
@@ -94,11 +94,11 @@ export class AnnotationTargetError extends NotSupportedError {
         this._supportedTypes = supportedTypes;
     }
 
-    private _invalidType : string;
-    private _annotationClass : Function;
-    private _supportedTypes : string[];
-    
-    get invalidType() : string {
+    private _invalidType: string;
+    private _annotationClass: Function;
+    private _supportedTypes: string[];
+
+    get invalidType(): string {
         return this._invalidType;
     }
 
@@ -119,15 +119,14 @@ export class AnnotationTargetError extends NotSupportedError {
  * @param options 
  */
 function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
-    ctor : AnnotationConstructor<AnnoT, TS>, 
-    options? : AnnotationDecoratorOptions<AnnoT, TS>
-): AnnotationDecorator<TS> 
-{
+    ctor: AnnotationConstructor<AnnoT, TS>,
+    options?: AnnotationDecoratorOptions<AnnoT, TS>
+): AnnotationDecorator<TS> {
     if (!ctor)
         throw new Error(`Cannot create decorator: Passed class reference was undefined/null: This can happen due to circular dependencies.`);
 
-    let factory : (target : DecoratorSite, ...args : TS) => AnnoT | void = null;
-    let validTargets : string[] = null;
+    let factory: ((target: DecoratorSite, ...args: TS) => AnnoT | void) | null = null;
+    let validTargets: string[] | null = null;
     let allowMultiple = false;
 
     if (options) {
@@ -141,12 +140,12 @@ function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
 
     if (!factory)
         factory = (target, ...args) => new ctor(...args);
-    
+
     if (!validTargets)
         validTargets = ['class', 'method', 'property', 'parameter'];
-    
-    return (...decoratorArgs : TS) => {
-        return (target, ...args) => {
+
+    return (...decoratorArgs: TS) => {
+        return (target: any, ...args: any[]) => {
 
             // Note that checking the length is not enough, because for properties
             // two arguments are passed, but the property descriptor is `undefined`.
@@ -155,8 +154,8 @@ function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
             if (args.length === 2 && args[1] !== undefined) {
                 if (typeof args[1] === 'number') {
                     // Parameter decorator on a method or a constructor (methodName will be undefined)
-                    let methodName : string = args[0];
-                    let index : number = args[1];
+                    let methodName: string = args[0];
+                    let index: number = args[1];
 
                     if (!validTargets.includes('parameter'))
                         throw new AnnotationTargetError(ctor, 'parameter', validTargets);
@@ -164,14 +163,14 @@ function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
                     if (!allowMultiple) {
                         let existingParamDecs = Annotations.getParameterAnnotations(target, methodName, true);
                         let existingParamAnnots = existingParamDecs[index] || [];
-                        if (existingParamAnnots.find(x => x.$metadataName === ctor['$metadataName'])) 
+                        if (existingParamAnnots.find(x => x.$metadataName === (ctor as any)['$metadataName']))
                             throw new Error(`Annotation ${ctor.name} can only be applied to an element once.`);
                     }
 
                     if (methodName) {
                         let annotation = factory({
                             type: 'parameter',
-                            target, 
+                            target,
                             propertyKey: methodName,
                             index
                         }, ...decoratorArgs);
@@ -189,20 +188,20 @@ function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
 
                         if (!annotation)
                             return;
-                            
+
                         annotation.applyToConstructorParameter(target, index);
                     }
                 } else {
                     // Method decorator
-                    let methodName : string = args[0];
-                    let descriptor : PropertyDescriptor = args[1];
-                    
+                    let methodName: string = args[0];
+                    let descriptor: PropertyDescriptor = args[1];
+
                     if (!validTargets.includes('method'))
                         throw new AnnotationTargetError(ctor, 'method', validTargets);
-                       
+
                     if (!allowMultiple) {
                         let existingAnnots = Annotations.getMethodAnnotations(target, methodName, true);
-                        if (existingAnnots.find(x => x.$metadataName === ctor['$metadataName'])) 
+                        if (existingAnnots.find(x => x.$metadataName === (ctor as any)['$metadataName']))
                             throw new Error(`Annotation ${ctor.name} can only be applied to an element once.`);
                     }
 
@@ -218,16 +217,16 @@ function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
 
                     annotation.applyToMethod(target, methodName);
                 }
-            } else if (args.length >= 1) { 
+            } else if (args.length >= 1) {
                 // Property decorator
-                let propertyKey : string = args[0];
-                
+                let propertyKey: string = args[0];
+
                 if (!validTargets.includes('property'))
                     throw new AnnotationTargetError(ctor, 'property', validTargets);
 
                 if (!allowMultiple) {
                     let existingAnnots = Annotations.getPropertyAnnotations(target, propertyKey, true);
-                    if (existingAnnots.find(x => x.$metadataName === ctor['$metadataName'])) 
+                    if (existingAnnots.find(x => x.$metadataName === (ctor as any)['$metadataName']))
                         throw new Error(`Annotation ${ctor.name} can only be applied to an element once.`);
                 }
 
@@ -247,10 +246,10 @@ function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
 
                 if (!validTargets.includes('class'))
                     throw new AnnotationTargetError(ctor, 'class', validTargets);
-                    
+
                 if (!allowMultiple) {
                     let existingAnnots = Annotations.getClassAnnotations(target);
-                    if (existingAnnots.find(x => x.$metadataName === ctor['$metadataName'])) 
+                    if (existingAnnots.find(x => x.$metadataName === (ctor as any)['$metadataName']))
                         throw new Error(`Annotation ${ctor.name} can only be applied to an element once.`);
                 }
 
@@ -271,12 +270,12 @@ function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
     }
 }
 
-export function MetadataName(name : string) {
-    return target => Object.defineProperty(target, '$metadataName', { value: name });
+export function MetadataName(name: string) {
+    return (target: any) => Object.defineProperty(target, '$metadataName', { value: name });
 }
 
 export interface MutatorDefinition {
-    invoke: (site : DecoratorSite) => void;
+    invoke: (site: DecoratorSite) => void;
     options?: AnnotationDecoratorOptions<void>;
 }
 
@@ -329,12 +328,12 @@ class ABC {
  */
 export class Annotation implements IAnnotation {
     constructor(
-        props? : any
+        props?: any
     ) {
-        this.$metadataName = this.constructor['$metadataName'];
+        this.$metadataName = (this.constructor as any)['$metadataName'];
         if (!this.$metadataName || !this.$metadataName.includes(':')) {
             throw new Error(
-                `You must specify a metadata name for this annotation in the form of ` 
+                `You must specify a metadata name for this annotation in the form of `
                 + ` 'mynamespace:myproperty'. You specified: '${this.$metadataName || '<none>'}'`
             );
         }
@@ -342,19 +341,19 @@ export class Annotation implements IAnnotation {
         Object.assign(this, props || {});
     }
 
-    readonly $metadataName : string;
+    readonly $metadataName: string;
 
     toString() {
         return `@${this.constructor.name}`;
     }
 
     static getMetadataName(): string {
-        if (!this['$metadataName'])
+        if (!(this as any)['$metadataName'])
             throw new Error(`Annotation subclass ${this.name} must have @MetadataName()`);
 
-        return this['$metadataName'];
+        return (this as any)['$metadataName'];
     }
-    
+
     /**
      * Construct a decorator suitable for attaching annotations of the called type 
      * onto classes, constructor parameters, methods, properties, and parameters.
@@ -366,12 +365,12 @@ export class Annotation implements IAnnotation {
      *  See the DecoratorOptions documentation for more information.
      */
     public static decorator<
-        T extends Annotation, 
-        TS extends any[], 
+        T extends Annotation,
+        TS extends any[],
         U extends AnnotationDecoratorTarget
     >(
-        this: AnnotationConstructor<T, TS>, 
-        options? : Exclude<AnnotationDecoratorOptions<T, TS>, 'validTargets'> & { validTargets: U[] }
+        this: AnnotationConstructor<T, TS>,
+        options?: Exclude<AnnotationDecoratorOptions<T, TS>, 'validTargets'> & { validTargets: U[] }
     ): (...args: TS) => DecoratorTypeForValidTargets<U>;
     public static decorator<T extends Annotation, TS extends any[]>(this: AnnotationConstructor<T, TS>, options?: AnnotationDecoratorOptions<T, TS>): AnnotationDecorator<TS>;
     public static decorator<T extends Annotation, TS extends any[]>(this: AnnotationConstructor<T, TS>, options?: AnnotationDecoratorOptions<T, TS>): AnnotationDecorator<TS> {
@@ -394,7 +393,7 @@ export class Annotation implements IAnnotation {
      * Apply this annotation to a given target. 
      * @param target 
      */
-    public applyToClass(target : any): this {
+    public applyToClass(target: any): this {
         return Annotations.applyToClass(this, target);
     }
 
@@ -403,7 +402,7 @@ export class Annotation implements IAnnotation {
      * @param target 
      * @param name 
      */
-    public applyToProperty(target : any, name : string): this {
+    public applyToProperty(target: any, name: string): this {
         return Annotations.applyToProperty(this, target, name);
     }
 
@@ -412,7 +411,7 @@ export class Annotation implements IAnnotation {
      * @param target 
      * @param name 
      */
-    public applyToMethod(target : any, name : string): this {
+    public applyToMethod(target: any, name: string): this {
         return Annotations.applyToMethod(this, target, name);
     }
 
@@ -422,7 +421,7 @@ export class Annotation implements IAnnotation {
      * @param name 
      * @param index 
      */
-    public applyToParameter(target : any, name : string, index : number): this {
+    public applyToParameter(target: any, name: string, index: number): this {
         return Annotations.applyToParameter(this, target, name, index);
     }
 
@@ -432,7 +431,7 @@ export class Annotation implements IAnnotation {
      * @param name 
      * @param index 
      */
-    public applyToConstructorParameter(target : any, index : number): this {
+    public applyToConstructorParameter(target: any, index: number): this {
         return Annotations.applyToConstructorParameter(this, target, index);
     }
 
@@ -444,9 +443,9 @@ export class Annotation implements IAnnotation {
      * @param annotations 
      */
     public static filter<T extends Annotation, TS extends any[]>(
-        this : AnnotationConstructor<T, TS>,
-        annotations : IAnnotation[]
-    ) : T[] {
+        this: AnnotationConstructor<T, TS>,
+        annotations: IAnnotation[]
+    ): T[] {
         return annotations.filter(
             x => x.$metadataName === this.getMetadataName()
         ) as T[];
@@ -460,12 +459,12 @@ export class Annotation implements IAnnotation {
      * @param type The class to check
      */
     public static getAllForClass<T extends Annotation, TS extends any[]>(
-        this : AnnotationConstructor<T, TS>, 
-        type : any
+        this: AnnotationConstructor<T, TS>,
+        type: any
     ): T[] {
         return (Annotations.getClassAnnotations(type) as T[])
             .filter(x => x.$metadataName === this.getMetadataName())
-        ;
+            ;
     }
 
     /**
@@ -477,8 +476,8 @@ export class Annotation implements IAnnotation {
      * @param type 
      */
     public static getForClass<T extends Annotation, TS extends any[]>(
-        this : AnnotationConstructor<T, TS>, 
-        type : any
+        this: AnnotationConstructor<T, TS>,
+        type: any
     ): T {
         return (this as any).getAllForClass(type)[0];
     }
@@ -493,13 +492,13 @@ export class Annotation implements IAnnotation {
      * @param methodName The name of the method to check
      */
     public static getAllForMethod<T extends Annotation, TS extends any[]>(
-        this : AnnotationConstructor<T, TS>, 
-        type : any, 
-        methodName : string
+        this: AnnotationConstructor<T, TS>,
+        type: any,
+        methodName: string
     ): T[] {
         return (Annotations.getMethodAnnotations(type, methodName) as T[])
             .filter(x => x.$metadataName === this.getMetadataName())
-        ;
+            ;
     }
 
     /**
@@ -512,13 +511,13 @@ export class Annotation implements IAnnotation {
      * @param methodName The name of the method to check
      */
     public static getForMethod<T extends Annotation, TS extends any[]>(
-        this : AnnotationConstructor<T, TS>, 
-        type : any,
-        methodName : string
+        this: AnnotationConstructor<T, TS>,
+        type: any,
+        methodName: string
     ): T {
         return (this as any).getAllForMethod(type, methodName)[0];
     }
-    
+
     /**
      * Get all instances of this annotation class attached to the given property.
      * If called on a subclass of Annotation, it returns only annotations that match 
@@ -529,13 +528,13 @@ export class Annotation implements IAnnotation {
      * @param propertyName The name of the property to check
      */
     public static getAllForProperty<T extends Annotation, TS extends any[]>(
-        this : AnnotationConstructor<T, TS>, 
-        type : any, 
-        propertyName : string
+        this: AnnotationConstructor<T, TS>,
+        type: any,
+        propertyName: string
     ): T[] {
         return (Annotations.getPropertyAnnotations(type, propertyName) as T[])
             .filter(x => x.$metadataName === this.getMetadataName())
-        ;
+            ;
     }
 
     /**
@@ -548,13 +547,13 @@ export class Annotation implements IAnnotation {
      * @param propertyName The name of the property to check
      */
     public static getForProperty<T extends Annotation, TS extends any[]>(
-        this : AnnotationConstructor<T, TS>, 
-        type : any,
-        propertyName : string
+        this: AnnotationConstructor<T, TS>,
+        type: any,
+        propertyName: string
     ): T {
         return (this as any).getAllForProperty(type, propertyName)[0];
     }
-    
+
     /**
      * Get all instances of this annotation class attached to the parameters of the given method.
      * If called on a subclass of Annotation, it returns only annotations that match 
@@ -565,13 +564,13 @@ export class Annotation implements IAnnotation {
      * @param methodName The name of the method where parameter annotations should be checked for
      */
     public static getAllForParameters<T extends Annotation, TS extends any[]>(
-        this : AnnotationConstructor<T, TS>, 
-        type : any, 
-        methodName : string
+        this: AnnotationConstructor<T, TS>,
+        type: any,
+        methodName: string
     ): T[][] {
         return (Annotations.getParameterAnnotations(type, methodName) as T[][])
             .map(set => (set || []).filter(x => (this as any) === Annotation ? true : (x.$metadataName === this.getMetadataName())))
-        ;
+            ;
     }
 
     /**
@@ -584,14 +583,14 @@ export class Annotation implements IAnnotation {
      * @param type The class where constructor parameter annotations should be checked for
      */
     public static getAllForConstructorParameters<T extends Annotation, TS extends any[]>(
-        this : AnnotationConstructor<T, TS>, 
-        type : any
+        this: AnnotationConstructor<T, TS>,
+        type: any
     ): T[][] {
-        
+
         let finalSet = new Array(<any>type.length).fill(undefined);
         let annotations = (Annotations.getConstructorParameterAnnotations(type) as T[][])
             .map(set => (set || []).filter(x => (this as any) === Annotation ? true : (x.$metadataName === this.getMetadataName())))
-        ;
+            ;
 
         for (let i = 0, max = annotations.length; i < max; ++i)
             finalSet[i] = annotations[i];
@@ -610,7 +609,7 @@ export class Annotations {
      * @param from The class to copy annotations from
      * @param to The class to copy annotations to
      */
-    public static copyClassAnnotations(from : Function, to : Function) {
+    public static copyClassAnnotations(from: Function, to: Function) {
         let annotations = Annotations.getClassAnnotations(from);
         annotations.forEach(x => Annotations.applyToClass(x, to));
     }
@@ -619,7 +618,7 @@ export class Annotations {
      * Apply this annotation to a given target. 
      * @param target 
      */
-    public static applyToClass<T extends IAnnotation>(annotation : T, target : any): T {
+    public static applyToClass<T extends IAnnotation>(annotation: T, target: any): T {
         let list = this.getOrCreateListForClass(target);
         let clone = this.clone(annotation);
         list.push(clone);
@@ -638,11 +637,11 @@ export class Annotations {
      * @param target 
      * @param name 
      */
-    public static applyToProperty<T extends IAnnotation>(annotation : T, target : any, name : string): T {
+    public static applyToProperty<T extends IAnnotation>(annotation: T, target: any, name: string): T {
         let list = this.getOrCreateListForProperty(target, name);
         let clone = this.clone(annotation);
         list.push(clone);
-        
+
         if (Reflect.getOwnMetadata) {
             let reflectedAnnotations = Reflect.getOwnMetadata('propMetadata', target, name) || [];
             reflectedAnnotations.push({ toString() { return `${clone.$metadataName}`; }, annotation: clone });
@@ -657,7 +656,7 @@ export class Annotations {
      * @param target 
      * @param name 
      */
-    public static applyToMethod<T extends IAnnotation>(annotation : T, target : any, name : string): T {
+    public static applyToMethod<T extends IAnnotation>(annotation: T, target: any, name: string): T {
         let list = this.getOrCreateListForMethod(target, name);
         let clone = Annotations.clone(annotation);
         list.push(clone);
@@ -678,8 +677,8 @@ export class Annotations {
      * @param name 
      * @param index 
      */
-    public static applyToParameter<T extends IAnnotation>(annotation : T, target : any, name : string, index : number): T {
-        let list = this.getOrCreateListForMethodParameters(target, name);
+    public static applyToParameter<T extends IAnnotation>(annotation: T, target: any, name: string, index: number): T {
+        let list: (IAnnotation[] | null)[] = this.getOrCreateListForMethodParameters(target, name);
         while (list.length < index)
             list.push(null);
 
@@ -697,8 +696,8 @@ export class Annotations {
      * @param name 
      * @param index 
      */
-    public static applyToConstructorParameter<T extends IAnnotation>(annotation : T, target : any, index : number): T {
-        let list = this.getOrCreateListForConstructorParameters(target);
+    public static applyToConstructorParameter<T extends IAnnotation>(annotation: T, target: any, index: number): T {
+        let list: (IAnnotation[] | null)[] = this.getOrCreateListForConstructorParameters(target);
         while (list.length < index)
             list.push(null);
 
@@ -709,7 +708,7 @@ export class Annotations {
 
         if (Reflect.getOwnMetadata) {
             let parameterList = Reflect.getOwnMetadata('parameters', target) || [];
-            
+
             while (parameterList.length < index)
                 parameterList.push(null);
 
@@ -729,10 +728,10 @@ export class Annotations {
      * 
      * @param annotation 
      */
-    public static clone<T extends IAnnotation>(annotation : T): T {
+    public static clone<T extends IAnnotation>(annotation: T): T {
         if (!annotation)
             return annotation;
-        
+
         return Object.assign(Object.create(Object.getPrototypeOf(annotation)), annotation);
     }
 
@@ -742,7 +741,7 @@ export class Annotations {
      * 
      * @param target The target to fetch annotations for
      */
-    public static getClassAnnotations(target : any): IAnnotation[] {
+    public static getClassAnnotations(target: any): IAnnotation[] {
         return (this.getListForClass(target) || [])
             .map(x => this.clone(x));
     }
@@ -753,7 +752,7 @@ export class Annotations {
      * 
      * @param target The target to fetch annotations for
      */
-    public static getMethodAnnotations(target : any, methodName : string, isStatic : boolean = false): IAnnotation[] {
+    public static getMethodAnnotations(target: any, methodName: string, isStatic: boolean = false): IAnnotation[] {
         return (this.getListForMethod(isStatic ? target : target.prototype, methodName) || [])
             .map(x => this.clone(x));
     }
@@ -764,7 +763,7 @@ export class Annotations {
      * 
      * @param target The target to fetch annotations for
      */
-    public static getPropertyAnnotations(target : any, methodName : string, isStatic : boolean = false): IAnnotation[] {
+    public static getPropertyAnnotations(target: any, methodName: string, isStatic: boolean = false): IAnnotation[] {
         return (this.getListForProperty(isStatic ? target : target.prototype, methodName) || [])
             .map(x => this.clone(x));
     }
@@ -778,7 +777,7 @@ export class Annotations {
      * @param isStatic Whether `type` itself (isStatic = true), or `type.prototype` (isStatic = false) should be the target.
      *  Note that passing true may indicate that the passed `type` is already the prototype of a class.
      */
-    public static getParameterAnnotations(type : any, methodName : string, isStatic : boolean = false): IAnnotation[][] {
+    public static getParameterAnnotations(type: any, methodName: string, isStatic: boolean = false): IAnnotation[][] {
         return (this.getListForMethodParameters(isStatic ? type : type.prototype, methodName) || [])
             .map(set => set ? set.map(anno => this.clone(anno)) : []);
     }
@@ -790,7 +789,7 @@ export class Annotations {
      * @param type 
      * @param methodName 
      */
-    public static getConstructorParameterAnnotations(type : any): IAnnotation[][] {
+    public static getConstructorParameterAnnotations(type: any): IAnnotation[][] {
         return (this.getListForConstructorParameters(type) || [])
             .map(set => set ? set.map(anno => this.clone(anno)) : []);
     }
@@ -799,11 +798,11 @@ export class Annotations {
      * Get a list of annotations for the given class.
      * @param target 
      */
-    private static getListForClass(target : Object): IAnnotation[] {
+    private static getListForClass(target: Object): IAnnotation[] {
         if (!target)
             return [];
-        
-        let combinedSet = [];
+
+        let combinedSet: IAnnotation[] = [];
 
         let superclass = Object.getPrototypeOf(target);
 
@@ -811,7 +810,7 @@ export class Annotations {
             combinedSet = combinedSet.concat(this.getListForClass(superclass));
 
         if (target.hasOwnProperty(ANNOTATIONS_KEY))
-            combinedSet = combinedSet.concat(target[ANNOTATIONS_KEY] || []);
+            combinedSet = combinedSet.concat((target as any)[ANNOTATIONS_KEY] || []);
 
         return combinedSet;
     }
@@ -820,17 +819,17 @@ export class Annotations {
      * Get a list of own annotations for the given class, or create that list.
      * @param target 
      */
-    private static getOrCreateListForClass(target : Object): IAnnotation[] {
+    private static getOrCreateListForClass(target: Object): IAnnotation[] {
         if (!target.hasOwnProperty(ANNOTATIONS_KEY))
             Object.defineProperty(target, ANNOTATIONS_KEY, { enumerable: false, value: [] });
-        return target[ANNOTATIONS_KEY];
+        return (target as any)[ANNOTATIONS_KEY];
     }
 
     /**
      * Gets a map of the annotations defined on all properties of the given class/function. To get the annotations of instance fields,
      * make sure to use `Class.prototype`, otherwise static annotations are returned.
      */
-    public static getMapForClassProperties(target : Object, mapToPopulate? : Record<string,IAnnotation[]>): Record<string,IAnnotation[]> {
+    public static getMapForClassProperties(target: Object, mapToPopulate?: Record<string, IAnnotation[]>): Record<string, IAnnotation[]> {
         let combinedSet = mapToPopulate || {};
         if (!target || target === Function)
             return combinedSet;
@@ -838,7 +837,7 @@ export class Annotations {
         this.getMapForClassProperties(Object.getPrototypeOf(target), combinedSet);
 
         if (target.hasOwnProperty(PROPERTY_ANNOTATIONS_KEY)) {
-            let ownMap : Record<string,IAnnotation[]> = target[PROPERTY_ANNOTATIONS_KEY] || {};
+            let ownMap: Record<string, IAnnotation[]> = (target as any)[PROPERTY_ANNOTATIONS_KEY] || {};
             for (let key of Object.keys(ownMap))
                 combinedSet[key] = (combinedSet[key] || []).concat(ownMap[key]);
         }
@@ -846,34 +845,32 @@ export class Annotations {
         return combinedSet;
     }
 
-    private static getOrCreateMapForClassProperties(target : Object): Record<string,IAnnotation[]> {
+    private static getOrCreateMapForClassProperties(target: Object): Record<string, IAnnotation[]> {
         if (!target.hasOwnProperty(PROPERTY_ANNOTATIONS_KEY))
             Object.defineProperty(target, PROPERTY_ANNOTATIONS_KEY, { enumerable: false, value: [] });
-        return target[PROPERTY_ANNOTATIONS_KEY];
+        return (target as any)[PROPERTY_ANNOTATIONS_KEY];
     }
 
-    private static getListForProperty(target : any, propertyKey : string): IAnnotation[] {
+    private static getListForProperty(target: any, propertyKey: string): IAnnotation[] | null {
         let map = this.getMapForClassProperties(target);
-
         if (!map)
             return null;
-        
         return map[propertyKey];
     }
 
-    private static getOrCreateListForProperty(target : any, propertyKey : string): IAnnotation[] {
+    private static getOrCreateListForProperty(target: any, propertyKey: string): IAnnotation[] {
         let map = this.getOrCreateMapForClassProperties(target);
         if (!map[propertyKey])
             map[propertyKey] = [];
-        
+
         return map[propertyKey];
     }
 
-    private static getOrCreateListForMethod(target : any, methodName : string): IAnnotation[] {
+    private static getOrCreateListForMethod(target: any, methodName: string): IAnnotation[] {
         return this.getOrCreateListForProperty(target, methodName);
     }
 
-    private static getListForMethod(target : any, methodName : string): IAnnotation[] {
+    private static getListForMethod(target: any, methodName: string): IAnnotation[] | null {
         return this.getListForProperty(target, methodName);
     }
 
@@ -881,7 +878,7 @@ export class Annotations {
      * Get a map of the annotations defined on all parameters of all methods of the given class/function.
      * To get instance methods, make sure to pass `Class.prototype`, otherwise the results are for static fields.
      */
-    public static getMapForMethodParameters(target : Object, mapToPopulate? : Record<string,IAnnotation[][]>): Record<string,IAnnotation[][]> {
+    public static getMapForMethodParameters(target: Object, mapToPopulate?: Record<string, IAnnotation[][]>): Record<string, IAnnotation[][]> {
         let combinedMap = mapToPopulate || {};
 
         if (!target || target === Function)
@@ -889,9 +886,9 @@ export class Annotations {
 
         // superclass/prototype
         this.getMapForMethodParameters(Object.getPrototypeOf(target), combinedMap);
-        
+
         if (target.hasOwnProperty(METHOD_PARAMETER_ANNOTATIONS_KEY)) {
-            let ownMap : Record<string,IAnnotation[][]> = target[METHOD_PARAMETER_ANNOTATIONS_KEY] || {};
+            let ownMap: Record<string, IAnnotation[][]> = (target as any)[METHOD_PARAMETER_ANNOTATIONS_KEY] || {};
 
             for (let methodName of Object.keys(ownMap)) {
                 let parameters = ownMap[methodName];
@@ -908,22 +905,20 @@ export class Annotations {
         return combinedMap;
     }
 
-    private static getOrCreateMapForMethodParameters(target : Object): Record<string, IAnnotation[][]> {
+    private static getOrCreateMapForMethodParameters(target: Object): Record<string, IAnnotation[][]> {
         if (!target.hasOwnProperty(METHOD_PARAMETER_ANNOTATIONS_KEY))
             Object.defineProperty(target, METHOD_PARAMETER_ANNOTATIONS_KEY, { enumerable: false, value: {} });
-        return target[METHOD_PARAMETER_ANNOTATIONS_KEY];
+        return (target as any)[METHOD_PARAMETER_ANNOTATIONS_KEY];
     }
 
-    private static getListForMethodParameters(target : any, methodName : string): IAnnotation[][] {
+    private static getListForMethodParameters(target: any, methodName: string): IAnnotation[][] | null {
         let map = this.getMapForMethodParameters(target);
-
         if (!map)
             return null;
-
         return map[methodName];
     }
 
-    private static getOrCreateListForMethodParameters(target : any, methodName : string): IAnnotation[][] {
+    private static getOrCreateListForMethodParameters(target: any, methodName: string): IAnnotation[][] {
         let map = this.getOrCreateMapForMethodParameters(target);
         if (!map[methodName])
             map[methodName] = [];
@@ -931,13 +926,13 @@ export class Annotations {
         return map[methodName];
     }
 
-    private static getOrCreateListForConstructorParameters(target : any): IAnnotation[][] {
+    private static getOrCreateListForConstructorParameters(target: any): IAnnotation[][] {
         if (!target[CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY])
             Object.defineProperty(target, CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY, { enumerable: false, value: [] });
         return target[CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY];
     }
 
-    private static getListForConstructorParameters(target : any): IAnnotation[][] {
+    private static getListForConstructorParameters(target: any): IAnnotation[][] {
         return target[CONSTRUCTOR_PARAMETERS_ANNOTATIONS_KEY];
     }
 }
@@ -948,7 +943,7 @@ export class Annotations {
  */
 @MetadataName('alterior:Label')
 export class LabelAnnotation extends Annotation {
-    constructor(readonly text : string) {
+    constructor(readonly text: string) {
         super();
     }
 }

@@ -2,7 +2,8 @@
 - `@/runtime`
     * Moved to strict Typescript
     * Fixed an issue where calling `Type.staticMethodNames` or `Type.staticFieldNames` before calling `Type.staticPropertyNames` would throw an error
-    
+- `@/annotations`
+    * Moved to strict Typescript
 
 # v3.15.0
 - `@/web-server`
