@@ -15,7 +15,7 @@ suite(describe => {
                 original.apply(this, args);
             }
             prop.value = replacement;
-        });
+        }, { validTargets: ['method'] });
 
         it("should mutate the method", () => {
             class Subject {
@@ -80,7 +80,7 @@ suite(describe => {
                 let params = getParameterNames(site.propertyDescriptor!.value);
                 site.propertyDescriptor!.value = function () { }
                 Object.defineProperty(site.propertyDescriptor!.value, '__parameterNames', { value: params });
-            });
+            }, { validTargets: ['method'] });
 
             class Subject {
                 @AddParams()

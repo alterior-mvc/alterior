@@ -4,6 +4,10 @@
     * Fixed an issue where calling `Type.staticMethodNames` or `Type.staticFieldNames` before calling `Type.staticPropertyNames` would throw an error
 - `@/annotations`
     * Moved to strict Typescript
+    * `DecoratorSite` is now a discriminated union for better type safety and more convenience when writing strict 
+      Typescript. `Mutator.create` and `Mutator.define` have been upgraded with several overloads that conveniently 
+      allow type narrowing of the `DecoratorSite` parameter of the mutator function depending on the 
+      `validTargets` property specified in the mutator's `options`.
 - `@/command-line`
     * Moved to strict Typescript
 - `@/common`

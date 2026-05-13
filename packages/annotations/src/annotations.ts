@@ -65,12 +65,41 @@ export type AnnotationDecorator<TS extends any[]> = (...args: TS) =>
     ParameterDecorator
     ;
 
-export interface DecoratorSite {
-    type: 'class' | 'method' | 'property' | 'parameter';
+export type DecoratorSite = ClassDecoratorSite | MethodDecoratorSite | PropertyDecoratorSite | ParameterDecoratorSite;
+export interface ClassDecoratorSite {
+    type: 'class';
     target: any;
-    propertyKey?: string;
+}
+
+export interface MethodDecoratorSite {
+    type: 'method';
+    target: any;
+    propertyKey: string | symbol;
+    propertyDescriptor: PropertyDescriptor;
+}
+
+export interface PropertyDecoratorSite {
+    type: 'property';
+    target: any;
+    propertyKey: string | symbol;
+
+    /**
+     * Field properties may not have a property descriptor, for instance `class` does not create one by default unless 
+     * you specify `get` or `set` for the property.
+     */
     propertyDescriptor?: PropertyDescriptor;
-    index?: number;
+}
+
+export interface ParameterDecoratorSite {
+    type: 'parameter';
+    target: any;
+
+    /**
+     * The property key of the method whose parameter is being decorated.
+     * If this is undefined, it means we are looking at a constructor parameter.
+     */
+    propertyKey?: string | symbol;
+    index: number;
 }
 
 export type AnnotationDecoratorTarget = 'class' | 'property' | 'method' | 'parameter';
@@ -182,6 +211,7 @@ function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
                     } else {
                         let annotation = factory({
                             type: 'parameter',
+                            propertyKey: undefined,
                             target,
                             index
                         }, ...decoratorArgs);
@@ -272,11 +302,6 @@ function makeDecorator<AnnoT extends Annotation, TS extends any[]>(
 
 export function MetadataName(name: string) {
     return (target: any) => Object.defineProperty(target, '$metadataName', { value: name });
-}
-
-export interface MutatorDefinition {
-    invoke: (site: DecoratorSite) => void;
-    options?: AnnotationDecoratorOptions<void>;
 }
 
 /**
