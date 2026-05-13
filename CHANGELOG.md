@@ -26,6 +26,10 @@
     * `CertificateGenerator` now defaults to SHA-256 instead of SHA-1.
     * `CertificateGenerator` now throws if you specify an unsupported hash algorithm instead of falling back to SHA-1.
     * `CertificateGenerator` now throws a more sensible error if something goes wrong
+- `@/express`
+    * Moved to strict Typescript
+- `@/fastify`
+    * Moved to strict Typescript
 - `@/cli`
     * Moved to strict Typescript
 - `@/logging`

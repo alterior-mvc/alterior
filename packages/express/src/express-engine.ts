@@ -1,30 +1,33 @@
-import { Injectable } from '@alterior/di';
-import { WebEvent } from "@alterior/web-server";
+import { inject, Injectable } from '@alterior/di';
+import { ConnectApplication, ConnectMiddleware, RequestBase, ResponseBase, ServerOwnedWebEvent, WebEvent, WebServer } from "@alterior/web-server";
 import { WebServerEngine } from "@alterior/web-server";
 
 import express from "express";
 
 @Injectable()
 export class ExpressEngine extends WebServerEngine {
-	readonly app: express.Application = express();
+    private server = inject(WebServer);
+
+	readonly express = express();
+	readonly app = this.express as ConnectApplication;
 	readonly providers = [];
 	
 	addConnectMiddleware(path: string, middleware: any) {
-		this.app.use(path, middleware);
+		this.express.use(path, middleware);
 	}
 
-	addRoute(method: string, path: string, handler: (event: WebEvent) => void, middleware?) {
+	addRoute(method: string, path: string, handler: (event: WebEvent) => void, middleware?: ConnectMiddleware[]) {
 		if (!middleware)
 			middleware = [];
 			
-		this.app[this.getRegistrarName(method)](
+		(this.app as any)[this.getRegistrarName(method)](
 			path, ...middleware, 
-			(req, res) => handler(new WebEvent(req, res))
+			(req: RequestBase, res: ResponseBase) => handler(new WebEvent(req, res))
 		);
 	}
 
-	addAnyRoute(handler: (event: WebEvent) => void) {
-		this.app.use((req, res) => handler(new WebEvent(req, res)));
+	addAnyRoute(handler: (event: ServerOwnedWebEvent) => void) {
+		this.express.use((req, res) => handler(this.server.registerEvent(new WebEvent(req, res))));
 	}
 
 	private getRegistrarName(method: string) {
