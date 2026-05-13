@@ -9,4 +9,4 @@ export const Intercept = Mutator.create((target, interceptor: Interceptor) => {
     target.propertyDescriptor!.value = function (...args: any[]) {
         return interceptor(original.bind(this), ...args);
     }
-});
+}, { validTargets: ['method']});
