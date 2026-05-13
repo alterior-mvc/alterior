@@ -1,7 +1,7 @@
 import { TableRenderer } from "./table-renderer";
 
 export interface TerminalDriver {
-    write(message : string);
+    write(message: string): void;
 }
 
 export class NodeTerminalDriver implements TerminalDriver {
@@ -11,47 +11,47 @@ export class NodeTerminalDriver implements TerminalDriver {
 }
 
 export class StringTerminalDriver implements TerminalDriver {
-    buffer : string;
+    buffer: string | undefined;
     write(message: string) {
         this.buffer += message;
     }
 }
 
 export class TeeTerminalDriver extends StringTerminalDriver {
-    constructor(private underlyingDriver : TerminalDriver) {
+    constructor(private underlyingDriver: TerminalDriver) {
         super();
     }
 
-    write(message : string) {
+    write(message: string) {
         super.write(message);
         this.underlyingDriver.write(message);
     }
 }
 
 export class MultiplexedTerminalDriver implements TerminalDriver {
-    constructor(private drivers : TerminalDriver[]) {
+    constructor(private drivers: TerminalDriver[]) {
     }
 
-    write(message : string) {
+    write(message: string) {
         this.drivers.forEach(d => d.write(message));
     }
 }
 
 export class TerminalDriverSelector {
-    private static _default : TerminalDriver;
+    private static _default: TerminalDriver | undefined;
 
-    public static get default() {
+    public static get default(): TerminalDriver {
         if (this._default)
             return this._default;
-           
+
         if (typeof process !== 'undefined')
             return new NodeTerminalDriver();
         else
             return new StandardTerminalDriver();
     }
 
-    public static set default(value : TerminalDriver) {
-        this._default = value;
+    public static set default(value: TerminalDriver | null | undefined) {
+        this._default = value ?? undefined;
     }
 }
 
@@ -78,23 +78,23 @@ export class StandardTerminalDriver implements TerminalDriver {
 }
 
 export class Terminal {
-    constructor(driver? : TerminalDriver) {
+    constructor(driver?: TerminalDriver) {
         this.driver = driver || TerminalDriverSelector.default;
     }
 
-    driver : TerminalDriver;
+    driver: TerminalDriver;
 
-    write(message : string) {
+    write(message: string) {
         this.driver.write(message);
         if (typeof process !== 'undefined')
             process.stdout.write(message);
     }
 
-    writeLine(message? : string) {
+    writeLine(message?: string) {
         this.driver.write(`${message || ''}\n`);
     }
 
-    table(rows : string[][]) {
+    table(rows: string[][]) {
         TableRenderer.draw(this, rows);
     }
 }

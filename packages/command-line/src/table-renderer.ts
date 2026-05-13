@@ -4,22 +4,21 @@ import { Terminal } from "./terminal";
  * Renders data into a table format on the command line.
  */
 export class TableRenderer {
-    constructor(private _terminal : Terminal) {
+    constructor(private _terminal: Terminal) {
 
     }
 
-    public static draw(terminal : Terminal, rows : string[][])
-    public static draw(terminal : Terminal, rows : string[]) 
-    public static draw(terminal : Terminal, rows : string[][] | string[]) {
+    public static draw(terminal: Terminal, rows: string[][]): void;
+    public static draw(terminal: Terminal, rows: string[]): void;
+    public static draw(terminal: Terminal, rows: string[][] | string[]): void {
         new TableRenderer(terminal).add(rows as any).draw();
     }
 
-    private _rows : string[][] = [];
+    private _rows: string[][] = [];
 
-    add(rows : string[][])
-    add(row : string[]) 
-    add(...args : any[])
-    {
+    add(rows: string[][]): this;
+    add(row: string[]): this;
+    add(...args: any[]): this {
         let arg = args[0]
 
         if (typeof arg[0] === 'string')
@@ -34,7 +33,7 @@ export class TableRenderer {
         return this._rows.slice();
     }
 
-    rightPad(str : string, length : number) {
+    rightPad(str: string, length: number) {
         while (`${str}`.length < length)
             str += ' ';
 
@@ -55,7 +54,7 @@ export class TableRenderer {
                 let col = row[column];
                 str += this.rightPad(col, columnLengths[column]);
             }
-            
+
             this._terminal.writeLine(str);
         }
 

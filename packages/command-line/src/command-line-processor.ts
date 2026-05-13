@@ -9,7 +9,7 @@ import { CommandInfo } from "./command-info";
  * well as nested (ie subcommand) command lines.
  */
 export class CommandLineProcessor {
-    constructor(readonly parent? : CommandLineProcessor) {
+    constructor(readonly parent?: CommandLineProcessor) {
         this.option({
             id: 'help',
             short: 'h',
@@ -25,27 +25,27 @@ export class CommandLineProcessor {
         this.exit(0);
     }
 
-    exit(code : number) {
+    exit(code: number) {
         process.exit(0);
     }
 
-    get argumentUsage() {
+    get argumentUsage(): string | undefined {
         return '';
     }
 
-    get optionUsage() {
+    get optionUsage(): string {
         let usage = [];
 
         if (this.parent)
             usage.push(`${this.parent.optionUsage}`);
-        
+
         if (this.commandName)
             usage.push(this.commandName);
 
         for (let option of this._options) {
             if (['help', 'version'].includes(option.id))
                 continue;
-            
+
             if (option.valueHint) {
                 usage.push(`[--${option.id} <${option.valueHint}>]`);
             } else {
@@ -56,7 +56,7 @@ export class CommandLineProcessor {
         return usage.join(' ');
     }
 
-    get commandName() : string {
+    get commandName(): string | null {
         return null;
     }
 
@@ -93,7 +93,7 @@ export class CommandLineProcessor {
         this.showUsage();
         this.term.table(
             this.definedOptions.map(option => [
-                `--${option.id}${option.short ? `, -${option.short}` : ``} ${option.valueHint? `<${option.valueHint}>` : ``}`,
+                `--${option.id}${option.short ? `, -${option.short}` : ``} ${option.valueHint ? `<${option.valueHint}>` : ``}`,
                 `${option.description}`
             ])
         );
@@ -101,14 +101,14 @@ export class CommandLineProcessor {
 
         if (this._commands.length > 0) {
             this.term.writeLine(`Commands:`);
-            this.term.table(this._commands.map(command => [`  ${command.id}`, command.description || '' ]));
+            this.term.table(this._commands.map(command => [`  ${command.id}`, command.description || '']));
         }
 
         this.term.writeLine();
     }
 
-    private _arguments : string[] = [];
-    private _options : CommandLineOption[] = [];
+    private _arguments: string[] = [];
+    private _options: CommandLineOption[] = [];
 
     /**
      * Used to determine if a command line has been loaded into this processor. 
@@ -117,7 +117,7 @@ export class CommandLineProcessor {
      * This flag does not prevent new command lines from being loaded into the processor.
      */
     private _prepared = false;
-    private _commands : Command[] = [];
+    private _commands: Command[] = [];
 
     /**
      * Ensures the options and arguments reflect the global command line if 
@@ -162,13 +162,13 @@ export class CommandLineProcessor {
      * Get an option by its ID
      * @param id ID of the option to return
      */
-    option(id : string) : CommandLineOption
+    option(id: string): CommandLineOption
 
     /**
      * Define an option.
      * @param option The option to define
      */
-    option(option : CommandLineOption) : CommandLine
+    option(option: CommandLineOption): CommandLine
 
     /**
      * Retrieve an option.
@@ -180,14 +180,14 @@ export class CommandLineProcessor {
      * @param args 
      * @returns 
      */
-    option(...args : any[]) : any {
+    option(...args: any[]): any {
         if (args.length === 1 && typeof args[0] === 'string') {
             this.prepareOnDemand();
             return this._options.find(x => x.id === args[0]) || this.parent?.option(args[0]);
         } else if (args.length === 1) {
             let option = <CommandLineOption>args[0];
             option.values = [];
-            option.value = null;
+            option.value = undefined;
 
             this._options = this._options.filter(x => x.id !== option.id);
 
@@ -202,7 +202,7 @@ export class CommandLineProcessor {
      * @param id The ID for the subcommand
      * @param definer A function that defines the available command line options and commands for the subcommand.
      */
-    command(id : string, definer : (line : Command) => void) {
+    command(id: string, definer: (line: Command) => void) {
         let command = new Command(id, this);
         definer(command);
         this._commands.push(command);
@@ -219,7 +219,7 @@ export class CommandLineProcessor {
      * 
      * @param id 
      */
-    one(id : string) : string {
+    one(id: string): string | undefined {
         this.prepareOnDemand();
         return this.option(id).value;
     }
@@ -233,9 +233,9 @@ export class CommandLineProcessor {
      * 
      * @param id 
      */
-    multiple(id : string) : string[] {
+    multiple(id: string): string[] {
         this.prepareOnDemand();
-        return this.option(id).values;
+        return this.option(id).values ?? [];
     }
 
     /**
@@ -247,9 +247,12 @@ export class CommandLineProcessor {
      * 
      * @param id 
      */
-    flag(id : string) : boolean {
+    flag(id: string): boolean {
         this.prepareOnDemand();
         let value = this.option(id).value;
+
+        if (value === undefined)
+            return false;
 
         if (['false', '0'].includes(value))
             return false;
@@ -260,11 +263,11 @@ export class CommandLineProcessor {
     /**
      * Get the description of this command line processor.
      */
-    get description() {
+    get description(): string | undefined {
         return '';
     }
 
-    private _runners : ((args : string[]) => void)[] = [];
+    private _runners: ((args: string[]) => void)[] = [];
 
     /**
      * Define a function that should be run when this instance processes a command line.
@@ -274,7 +277,7 @@ export class CommandLineProcessor {
      * 
      * @param handler The function to call.
      */
-    run(handler : (args : string[]) => void) {
+    run(handler: (args: string[]) => void) {
         this._runners.push(handler);
         return this;
     }
@@ -293,7 +296,7 @@ export class CommandLineProcessor {
      * Returns a promise that resolves when all run() tasks have completed.
      * @param args 
      */
-    async process(args? : string[]): Promise<void> {
+    async process(args?: string[]): Promise<void> {
         for (let task of this.prepare(args))
             await task();
     }
@@ -307,15 +310,15 @@ export class CommandLineProcessor {
      * @param args The arguments
      * @returns The set of runner tasks that should be run, in order, waiting for each to resolve before continuing.
      */
-    private prepare(args? : string[]): (() => Promise<void> | void)[] {
+    private prepare(args?: string[]): (() => Promise<void> | void)[] {
         if (!args)
             args = process.argv.slice(2);
-        
+
         this._prepared = true;
         this._arguments = [];
         this._options.forEach(x => {
             x.values = [];
-            x.value = null;
+            x.value = undefined;
             x.present = false;
         });
 
@@ -323,7 +326,7 @@ export class CommandLineProcessor {
 
         for (let i = 0, max = args.length; i < max; ++i) {
             let arg = args[i];
-            let option : CommandLineOption;
+            let option: CommandLineOption | undefined;
 
             if (arg.startsWith('--')) {
                 option = this.option(arg.slice(2));
@@ -354,8 +357,9 @@ export class CommandLineProcessor {
                 }
 
                 option.value = value;
+                option.values ??= [];
                 option.values.push(value);
-                
+
                 if (option.handler)
                     option.handler();
             } else {
@@ -382,7 +386,7 @@ export class CommandLineProcessor {
  * Represents a Command defined via the command() method.
  */
 export class Command extends CommandLineProcessor {
-    constructor(readonly id : string, readonly parent : CommandLineProcessor) {
+    constructor(readonly id: string, readonly parent: CommandLineProcessor) {
         super(parent);
     }
 
@@ -394,8 +398,8 @@ export class Command extends CommandLineProcessor {
         return this._info.argumentUsage;
     }
 
-    private _info : CommandInfo = {};
-    info(info : CommandInfo) {
+    private _info: CommandInfo = {};
+    info(info: CommandInfo) {
         this._info = info;
         return this;
     }

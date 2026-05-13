@@ -6,18 +6,18 @@ import { StringTerminalDriver, TerminalDriverSelector } from "./terminal";
 describe('CommandLineProcessor', it => {
     let terminalDriver = new StringTerminalDriver();
     let processor = new CommandLineProcessor();
-    let exitCode : number;
+    let exitCode: number | undefined;
 
     before(() => {
         TerminalDriverSelector.default = terminalDriver;
         terminalDriver.buffer = '';
         processor = new CommandLineProcessor();
-        processor.exit = (code : number) => exitCode = code;
+        processor.exit = (code: number) => exitCode = code;
         exitCode = undefined;
     })
 
     after(() => {
-        TerminalDriverSelector.default = null;
+        TerminalDriverSelector.default = undefined;
     });
 
     it('allows options to be defined', () => {
@@ -109,7 +109,7 @@ describe('CommandLineProcessor', it => {
     });
     it('passes command subarguments', () => {
         let executed = false;
-        let receivedArgs : string[];
+        let receivedArgs!: string[];
         processor.command('hello', cmd => cmd.run(args => (receivedArgs = args, executed = true)));
         processor.process(['hello', 'world']);
         expect(executed).to.be.true;
@@ -118,8 +118,8 @@ describe('CommandLineProcessor', it => {
     });
     it('allows command to have options', () => {
         let executed = false;
-        let receivedArgs : string[];
-        processor.command('hello', cmd => 
+        let receivedArgs!: string[];
+        processor.command('hello', cmd =>
             cmd
                 .option({
                     id: 'place',
@@ -141,10 +141,10 @@ describe('CommandLineProcessor', it => {
     });
     it('allows commands to have subcommands', () => {
         let executed = 0;
-        let receivedArgs : string[] = [];
-        processor.command('hello', cmd => 
+        let receivedArgs: string[] = [];
+        processor.command('hello', cmd =>
             cmd
-                .command('world', cmd => 
+                .command('world', cmd =>
                     cmd.run(args => {
                         expect(args).to.eql(['baz']);
                         executed += 2;
@@ -161,10 +161,10 @@ describe('CommandLineProcessor', it => {
     });
     it('should not run command when subcommand is invoked', () => {
         let executed = false;
-        processor.command('hello', cmd => 
+        processor.command('hello', cmd =>
             cmd
-                .command('world', cmd => 
-                    cmd.run(() => {})
+                .command('world', cmd =>
+                    cmd.run(() => { })
                 )
                 .run(() => executed = true)
         );
@@ -175,14 +175,14 @@ describe('CommandLineProcessor', it => {
 
 describe('--help', it => {
     let terminalDriver = new StringTerminalDriver();
-    let processor : CommandLineProcessor;
-    let exitCode : number;
+    let processor: CommandLineProcessor;
+    let exitCode: number | undefined;
 
     before(() => {
         TerminalDriverSelector.default = terminalDriver;
         terminalDriver.buffer = '';
         processor = new CommandLineProcessor();
-        processor.exit = (code : number) => exitCode = code;
+        processor.exit = (code: number) => exitCode = code;
         exitCode = undefined;
     });
     after(() => {
@@ -254,12 +254,12 @@ describe('--help', it => {
         expect(terminalDriver.buffer).to.match(/--hello, -H.*<place>.*Hello/);
     });
     it('will show defined commands', () => {
-        processor.command('hello', cmd => 
+        processor.command('hello', cmd =>
             cmd
                 .info({ description: 'Hello' })
-                .run(() => {})
+                .run(() => { })
         );
-        
+
         processor.process(['--help']);
 
         expect(exitCode).to.eql(0);
@@ -271,16 +271,16 @@ describe('--help', it => {
             id: 'nothing',
             description: 'Nothing to see here'
         });
-        processor.command('hello', cmd => 
+        processor.command('hello', cmd =>
             cmd
                 .option({
                     id: 'something',
                     description: 'Something to see here'
                 })
                 .info({ description: 'Hello' })
-                .run(() => {})
+                .run(() => { })
         );
-        
+
         processor.process(['hello', '--help']);
 
         expect(exitCode).to.eql(0);
