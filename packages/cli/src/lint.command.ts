@@ -9,9 +9,9 @@ export class LintCommand {
 
     runner = new CommandRunner();
 
-    private dir : string;
+    private dir!: string;
 
-    private reportLintError(code : string, message : string) {
+    private reportLintError(code: string, message: string) {
         console.error(`[${code}] ${message}`);
         console.error(`    https://github.com/alterior-mvc/alterior/wiki/Lint_${code}`);
         console.error();
@@ -23,13 +23,13 @@ export class LintCommand {
         let currentAccess = await pkgConfig.getPackageAccess();
         if (currentAccess !== buildConfig.packageAccess) {
             this.reportLintError(
-                'PackageAccessMismatch', 
+                'PackageAccessMismatch',
                 'The packageAccess option of alterior.json does not match the publishing behavior specified in package.json'
             );
         }
     }
 
-    private async checkEntrypoint(name : string, filename : string, errorMessage : string) {
+    private async checkEntrypoint(name: string, filename: string, errorMessage: string) {
         if (!filename) {
             this.reportLintError(
                 'MissingEntrypoint',
@@ -47,7 +47,7 @@ export class LintCommand {
         }
     }
 
-    private async checkTypes(pkgJson : any) {
+    private async checkTypes(pkgJson: any) {
         if (!pkgJson.types && !pkgJson.typings) {
             this.reportLintError(
                 'TypesNotProvided',
@@ -73,7 +73,7 @@ export class LintCommand {
         await this.checkEntrypoint('main', pkgJson.main, 'Package will not be usable in CommonJS environments');
         await this.checkEntrypoint('browser', pkgJson.browser, 'Package will not be usable in older versions of Webpack');
         await this.checkEntrypoint('module', pkgJson.module, 'Package will not be usable in environments which require Ecmascript modules');
-        
+
         // TypesNotProvided
 
         await this.checkTypes(pkgJson);
@@ -87,37 +87,37 @@ export class LintCommand {
 
         if (!await fileExists(guessedMainTS)) {
             this.reportLintError(
-                `NoMainTS`, 
+                `NoMainTS`,
                 `No main.ts file can be found`
             );
             return;
         }
-        
+
         let mainTS = await readTextFile(guessedMainTS);
 
         if (!mainTS.match(/import ['"]source-map-support\/register['"]/)) {
             this.reportLintError(
-                `MissingSourceMapSupport`, 
+                `MissingSourceMapSupport`,
                 `The main entrypoint does not import "source-map-support/register", stack traces will not use Typescript sources`
             );
         }
 
         if (!mainTS.match(/import ['"]zone.js['"]/)) {
             this.reportLintError(
-                `MissingZoneJS`, 
+                `MissingZoneJS`,
                 `The main entrypoint does not import "zone.js", some Alterior functionality may not work correctly`
             );
         }
 
         if (!mainTS.match(/import ['"]reflect-metadata['"]/)) {
             this.reportLintError(
-                `MissingReflectMetadata`, 
+                `MissingReflectMetadata`,
                 `The main entrypoint does not import "reflect-metadata". This could cause problems if decorators are used before Alterior is loaded`
             );
         }
     }
 
-    async run(args : string[]) {
+    async run(args: string[]) {
         if (args.length !== 0) {
             console.error(`usage: alt lint`);
             console.error(`** Extra arguments were passed (none expected)`);

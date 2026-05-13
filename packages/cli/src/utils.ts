@@ -91,7 +91,7 @@ export function lineRangeTagEnd(name : string) {
 }
 
 export function replaceTaggedLineRange(content : string[], tagName : string, lines : string[]) {
-    let startIndex = content.findIndex(line => line.includes(this.lineRangeTagStart(tagName)));
+    let startIndex = content.findIndex(line => line.includes(lineRangeTagStart(tagName)));
     content = removeTaggedLineRange(content, tagName);
 
     if (startIndex) {
@@ -127,7 +127,7 @@ export function removeTaggedLineRange(content : string[], tag : string) {
 }
 
 export async function writeFileLines(filename : string, lines : string[]): Promise<void> {
-    this.writeTextFile(filename, lines.join(os.EOL));
+    writeTextFile(filename, lines.join(os.EOL));
 }
 
 export async function readJsonFile<T = any>(filename : string) : Promise<T> {
@@ -140,7 +140,7 @@ export async function readJsonFile<T = any>(filename : string) : Promise<T> {
 
             try {
                 res(JSON.parse(buf.toString('utf-8')));
-            } catch (e) {
+            } catch (e: any) {
                 rej(new Error(`Failed to read JSON file '${filename}': ${e.message} -- JSON was ${buf.toString('utf-8')}`));
             }
         })
@@ -170,7 +170,7 @@ export async function writeTextFile(filename : string, content : string) {
 /**
  * https://stackoverflow.com/a/46759625/1995204
  */
-export function isConstructor(f) {
+export function isConstructor(f: any) {
     if (f === Symbol)
         return false;
 

@@ -238,7 +238,7 @@ export class ClientBuilder {
 
                     try {
                         await compiler.compileMethod(method);
-                    } catch (e) {
+                    } catch (e: any) {
                         throw new BuildError(`[${serviceAnnot.compiler.name}] ${exportObj.name}: ${e.message}`);
                     }
 
@@ -338,7 +338,7 @@ export class BackendBuilder {
             
             createProgram = (
                 rootNames: readonly string[] | undefined, 
-                options: ts.CompilerOptions, 
+                options: ts.CompilerOptions | undefined, 
                 host?: ts.CompilerHost, 
                 oldProgram?: ts.EmitAndSemanticDiagnosticsBuilderProgram, 
                 configFileParsingDiagnostics?: readonly ts.Diagnostic[], 

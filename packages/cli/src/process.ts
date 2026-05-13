@@ -4,24 +4,27 @@ import * as os from 'os';
 import { fileExists, pathCombine } from './utils';
 
 export interface ProcessExitedEvent {
-    code : number;
-    signal : NodeJS.Signals;
-}
+    /**
+     * The exit code if the child process exited on its own, or null if the child process terminated due to a signal.
+     */
+    code: number | null;
 
-export interface ProcessResult {
-    code : number;
-    signal : NodeJS.Signals;
+    /**
+     * The signal by which the child process was terminated, or null if the child process did not terminated due to 
+     * a signal.
+     */
+    signal: NodeJS.Signals | null;
 }
 
 export interface ProcessStartInfo {
-    command : string;
-    args : string[];
-    shell : string | boolean;
+    command: string;
+    args: string[];
+    shell: string | boolean;
     stdio: childProcess.StdioOptions;
 }
 
 export class Process {
-    constructor(readonly handle : childProcess.ChildProcess) {
+    constructor(readonly handle: childProcess.ChildProcess) {
         handle.on('exit', (code, signal) => {
             this._exited.next({ code, signal: <NodeJS.Signals>signal });
             this._exited.complete();
@@ -31,23 +34,23 @@ export class Process {
 
     private _exited = new ReplaySubject<ProcessExitedEvent>();
 
-    get exited() : Observable<ProcessExitedEvent> {
+    get exited(): Observable<ProcessExitedEvent> {
         return this._exited;
     }
 
-    static whichCache : Record<string,string> = {};
+    static whichCache: Record<string, string | undefined> = {};
 
-    static async which(command : string): Promise<string> {
+    static async which(command: string): Promise<string | undefined> {
 
         if (this.whichCache[command])
             return this.whichCache[command];
-        
+
         let colon = ':';
 
         if (os.platform() === 'win32')
             colon = ';';
-           
-        let dirs = process.env.PATH.split(colon);
+
+        let dirs = process.env.PATH ? process.env.PATH.split(colon) : [];
 
         let options = Promise.all(
             dirs.map(async dir => {
@@ -72,14 +75,14 @@ export class Process {
         return path;
     }
 
-    static async start(psi : ProcessStartInfo): Promise<Process> {
+    static async start(psi: ProcessStartInfo): Promise<Process> {
         let path = await this.which(psi.command);
         if (!path)
             throw new Error(`Cannot find command '${psi.command}'`);
 
         return new Process(
             childProcess.spawn(
-                path, 
+                path,
                 psi.args,
                 {
                     stdio: psi.stdio,
@@ -89,7 +92,7 @@ export class Process {
         );
     }
 
-    static async run(psi : ProcessStartInfo) : Promise<ProcessResult> {
+    static async run(psi: ProcessStartInfo): Promise<ProcessExitedEvent> {
         let proc = await this.start(psi);
         let result = await proc.exited.toPromise();
         return result;
