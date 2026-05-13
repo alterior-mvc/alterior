@@ -40,11 +40,11 @@
     "@alterior/di": "^3.15.0",
     "@alterior/logging": "^3.15.0",
     "@alterior/web-server": "^3.15.0",
-    "express": "^4.17.3"
+    "express": "^5.2.1"
   },
   "devDependencies": {
-    "@types/express": "^4.17.15",
-    "@types/serve-static": "1.15.0"
+    "@types/express": "^5.0.6",
+    "@types/serve-static": "^2.2.0"
   },
   "gitHead": "87f31ea4078faaca53b45573c6a0013cdb40dd07"
 }

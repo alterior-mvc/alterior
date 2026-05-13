@@ -20,7 +20,10 @@
     * `CertificateGenerator` now defaults to SHA-256 instead of SHA-1.
     * `CertificateGenerator` now throws if you specify an unsupported hash algorithm instead of falling back to SHA-1.
     * `CertificateGenerator` now throws a more sensible error if something goes wrong
-
+- `@/fastify`
+    * Upgraded to Fastify 5.8.5
+- `@/express`
+    * Upgraded to Express 5.2.1
 # v3.15.0
 - `@/web-server`
     * Adds proper support for the `http-errors` package so that `body-parser` and other Express/Connect/Koa middleware 
