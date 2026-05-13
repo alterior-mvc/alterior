@@ -45,7 +45,7 @@
     "@alterior/di": "^3.15.0",
     "@alterior/logging": "^3.15.0",
     "@alterior/runtime": "^3.15.0",
-    "bull": "^3.18.0",
+    "bull": "^4.16.5",
     "kind-of": ">=6.0.3",
     "tslib": "^2.3.1"
   },
@@ -54,7 +54,7 @@
     "zone.js": "^0.14.3"
   },
   "devDependencies": {
-    "@types/bull": "^3.13.0",
+    "@types/bull": "^4.10.4",
     "@types/supertest": "^2.0.9",
     "supertest": "^3.1.0",
     "swagger-editor-dist": "^3.9.0",
