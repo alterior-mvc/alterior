@@ -13,14 +13,14 @@ suite(describe => {
             }
             
             function Nothing() {
-                return (target, ...args) => target;
+                return (target: any, ...args: any[]) => target;
             }
 
             @Nothing()
             class ApiMovie extends Presentation<Movie> {
-                @Expose() description : string;
-                @Expose() title : string;
-                @Expose() rating : number;
+                @Expose() description! : string;
+                @Expose() title! : string;
+                @Expose() rating! : number;
             }
 
             let props = ApiMovie.properties;
@@ -33,9 +33,9 @@ suite(describe => {
             expect(titleProp).to.exist
             expect(ratingProp).to.exist
             
-            expect(descProp.designType).to.equal(String);
-            expect(titleProp.designType).to.equal(String);
-            expect(ratingProp.designType).to.equal(Number);
+            expect(descProp!.designType).to.equal(String);
+            expect(titleProp!.designType).to.equal(String);
+            expect(ratingProp!.designType).to.equal(Number);
         });
 
         it('correctly handles subclassing', () => {
@@ -45,11 +45,11 @@ suite(describe => {
             }
             
             class ApiAbridgedMovie extends Presentation<Movie> {
-                @Expose() title : string;
+                @Expose() title! : string;
             }
             
             class ApiMovie extends ApiAbridgedMovie {
-                @Expose() description : string;
+                @Expose() description! : string;
             }
 
             let abridgedPresenter = new ApiAbridgedMovie({ title: 'Title', description: 'Description' });

@@ -15,7 +15,7 @@ import { Observable, Subject } from 'rxjs';
  * and no further execution is possible.
  */
 export class AsyncZone {
-    public constructor(name : string, properties : any = {}) {
+    public constructor(name: string, properties: any = {}) {
         let self = this;
 
         this._outside = Zone.current;
@@ -26,7 +26,7 @@ export class AsyncZone {
             onInvoke(delegate, current, target, callback, applyThis, applyArgs, source) {
                 return self.innerInvoke(() => delegate.invoke(target, callback, applyThis, applyArgs, source));
             },
-            
+
             onInvokeTask(delegate: ZoneDelegate, current: Zone, target: Zone, task: Task, applyThis: any, applyArgs: any) {
                 return self.innerInvoke(() => delegate.invokeTask(target, task, applyThis, applyArgs));
             },
@@ -45,7 +45,7 @@ export class AsyncZone {
                     self._hasPendingMicrotasks = hasTaskState.microTask;
                 } else if (hasTaskState.change == 'macroTask') {
                     self._hasPendingMacrotasks = hasTaskState.macroTask;
-                    
+
                     if (hasTaskState.macroTask) {
                         if (!self._zonesWithPendingMacrotasks.includes(target))
                             self._zonesWithPendingMacrotasks.push(target);
@@ -56,7 +56,7 @@ export class AsyncZone {
 
                 self.checkStable();
             },
-            
+
             onHandleError(delegate, current, target, error) {
                 self.runOutside(() => self._onError.next(error));
                 return false;
@@ -64,23 +64,23 @@ export class AsyncZone {
         });
     }
 
-    private _zonesWithPendingMicrotasks : Zone[] = [];
-    private _zonesWithPendingMacrotasks : Zone[] = [];
+    private _zonesWithPendingMicrotasks: Zone[] = [];
+    private _zonesWithPendingMacrotasks: Zone[] = [];
 
-    private _outside : Zone;
-    private _nesting : number = 0;
-    private _hasPendingMicrotasks : boolean;
-    private _hasPendingMacrotasks : boolean;
-    private _zone : Zone;
-    private _onError : Subject<Error> = new Subject<Error>();
-    private _isStable : boolean;
-    private _onMicrotaskEmpty : Subject<void> = new Subject<void>();
-    private _onStable : Subject<void> = new Subject<void>();
+    private _outside: Zone;
+    private _nesting: number = 0;
+    private _hasPendingMicrotasks = false;
+    private _hasPendingMacrotasks = false;
+    private _zone: Zone;
+    private _onError: Subject<Error> = new Subject<Error>();
+    private _isStable = false;
+    private _onMicrotaskEmpty: Subject<void> = new Subject<void>();
+    private _onStable: Subject<void> = new Subject<void>();
 
-    public static run<T>(cb : () => (Promise<T> | T)): Promise<T> {
+    public static run<T>(cb: () => (Promise<T> | T)): Promise<T> {
         return new Promise<T>((resolve, reject) => {
             let zone = new AsyncZone('AsyncZone');
-            let value;
+            let value: T;
 
             zone.onStable.subscribe(() => resolve(value));
             zone.onError.subscribe(e => reject(e));
@@ -117,16 +117,16 @@ export class AsyncZone {
 
         if (this._zonesWithPendingMicrotasks.length > 0 || this._zonesWithPendingMacrotasks.length > 0)
             return;
-        
+
         try {
             this._nesting++;
-            this._onMicrotaskEmpty.next(null);
+            this._onMicrotaskEmpty.next();
         } finally {
             this._nesting--;
 
             if (!this._hasPendingMicrotasks) {
                 try {
-                    this.runOutside(() => this._onStable.next(null));
+                    this.runOutside(() => this._onStable.next());
                 } finally {
                     this._isStable = true;
                 }
@@ -134,15 +134,15 @@ export class AsyncZone {
         }
     }
 
-    public runOutside(runnable) {
+    public runOutside(runnable: Function) {
         this._outside.run(runnable);
     }
 
-    public invoke(callback : () => void) {
+    public invoke(callback: () => void) {
         this._zone.runGuarded(() => this.innerInvoke(callback));
     }
 
-    private innerInvoke(callback : () => void) {
+    private innerInvoke(callback: () => void) {
         this.onEnter();
         try {
             return callback();

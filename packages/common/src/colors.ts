@@ -20,9 +20,11 @@
  * THE SOFTWARE.
 */
 
-export const CONSOLE_COLORS = {
+import { objectEntriesTyped, objectKeysTyped } from "./object-entries-typed";
+
+export const CONSOLE_COLORS: Record<string, [number, number]> = {
     reset: [0, 0],
-  
+
     bold: [1, 22],
     dim: [2, 22],
     italic: [3, 23],
@@ -30,7 +32,7 @@ export const CONSOLE_COLORS = {
     inverse: [7, 27],
     hidden: [8, 28],
     strikethrough: [9, 29],
-  
+
     black: [30, 39],
     red: [31, 39],
     green: [32, 39],
@@ -41,7 +43,7 @@ export const CONSOLE_COLORS = {
     white: [37, 39],
     gray: [90, 39],
     grey: [90, 39],
-  
+
     bgBlack: [40, 49],
     bgRed: [41, 49],
     bgGreen: [42, 49],
@@ -50,24 +52,19 @@ export const CONSOLE_COLORS = {
     bgMagenta: [45, 49],
     bgCyan: [46, 49],
     bgWhite: [47, 49],
-  };
-  
-export type ColorLibrary<T> = {
-    [K in keyof T] : (message : string) => string;
 };
 
-function objectLibrary<T>(codes : T): ColorLibrary<T> {
-    let library : ColorLibrary<T> = {} as any;
+export type ColorLibrary<T> = {
+    [K in keyof T]: (message: string) => string;
+};
 
-    Object.keys(codes).forEach(function(key) {
-        let val = codes[key];
-        let open = '\u001b[' + val[0] + 'm';
-        let close = '\u001b[' + val[1] + 'm';
-
-        library[key] = (message : string) => `${open}${message}${close}`;
-    });
-
-    return library;
+function objectLibrary<T extends Record<string, [number, number]>>(codes: T): ColorLibrary<T> {
+    return Object.fromEntries(
+        objectEntriesTyped(codes)
+            .map(
+                ([key, [start, end]]) => [key, (message: string) => `\u001b[${start}m${message}\u001b[${end}m`]
+            )
+    ) as ColorLibrary<T>;
 }
 
 /**

@@ -32,7 +32,7 @@ describe('Cache', () => {
             expect(value2).to.equal('bar');
         });
         it('caches null correctly', async () => {
-            let cache = new Cache<string>(1000, 1000);
+            let cache = new Cache<string | null>(1000, 1000);
             let value1 = await cache.fetch('foo', async () => null, { timeToLive: 1000 });
             let value2 = await cache.fetch('foo', async () => 'bar');
             
@@ -40,7 +40,7 @@ describe('Cache', () => {
             expect(value2).to.be.null;
         });
         it('caches undefined correctly', async () => {
-            let cache = new Cache<string>(1000, 1000);
+            let cache = new Cache<string | undefined>(1000, 1000);
             let value1 = await cache.fetch('foo', async () => undefined, { timeToLive: 1000 });
             let value2 = await cache.fetch('foo', async () => 'bar');
             

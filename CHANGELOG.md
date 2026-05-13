@@ -4,7 +4,11 @@
     * Fixed an issue where calling `Type.staticMethodNames` or `Type.staticFieldNames` before calling `Type.staticPropertyNames` would throw an error
 - `@/annotations`
     * Moved to strict Typescript
-
+- `@/command-line`
+    * Moved to strict Typescript
+- `@/common`
+    * Moved to strict Typescript
+   
 # v3.15.0
 - `@/web-server`
     * Adds proper support for the `http-errors` package so that `body-parser` and other Express/Connect/Koa middleware 

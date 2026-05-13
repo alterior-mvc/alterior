@@ -8,7 +8,7 @@ export class Lock {
     constructor() {
     }
 
-    private _ready : Promise<void>;
+    private _ready : Promise<void> | undefined;
     private static _namedLocks : Map<any, Lock>;
 
     static forToken<T extends Lock>(this : { new() : T }, token : any): T {
@@ -37,7 +37,7 @@ export class Lock {
         return lock;
     }
 
-    protected async executeCallback(cb) {
+    protected async executeCallback(cb: Function) {
         return await cb();
     }
 
@@ -76,7 +76,7 @@ export class ZoneLock extends Lock {
         super();
     }
 
-    protected async executeCallback(cb) {
+    protected async executeCallback<T>(cb: () => Promise<T> | T): Promise<T> {
         return await AsyncZone.run(cb);
     }
 }

@@ -1,3 +1,3 @@
 export function Injectable() {
-    return target => {};
+    return (target: any) => {};
 }

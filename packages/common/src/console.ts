@@ -1,11 +1,11 @@
 
 export interface Console {
-    log(...args : any[]);
-    info(...args : any[]);
-    warn(...args : any[]);
-    error(...args : any[]);
-    debug(...args : any[]);
-    dir(...args : any[]);
+    log(...args : any[]): void;
+    info(...args : any[]): void;
+    warn(...args : any[]): void;
+    error(...args : any[]): void;
+    debug(...args : any[]): void;
+    dir(...args : any[]): void;
 }
 
 /**
@@ -15,10 +15,10 @@ export interface Console {
  * @param callback 
  */
 export function interceptConsole(handler : (method : string, originalImpl : Function, console : Console, args : any[]) => void, callback : Function) {
-    let methods = [ 'log', 'info', 'warn', 'error', 'debug', 'dir' ];
+    let methods = [ 'log', 'info', 'warn', 'error', 'debug', 'dir' ] as const;
 
     let rawConsole : Console = {} as any;
-    let origConsole = {};
+    let origConsole: Console = {} as any;
     
     for (let method of methods) {
         origConsole[method] = console[method];

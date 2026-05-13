@@ -6,27 +6,27 @@ import { clone } from "./clone";
 export const EXPOSE_PROTOTYPE_STORAGE_KEY = '@alterior/common:Expose';
 
 export interface PresentedPropertyOptions {
-    useProperty? : string;
-    class? : Constructor<Presentation<any>>;
-    defaultValue? : any;
+    useProperty?: string;
+    class?: Constructor<Presentation<any>>;
+    defaultValue?: any;
 }
 
 export interface PresentedProperty {
-    propertyKey : string;
-    options : PresentedPropertyOptions;
-    designType? : any;
+    propertyKey: string;
+    options: PresentedPropertyOptions;
+    designType?: any;
 }
 
 export class PresentationSchema<T> {
-    constructor(readonly type : Constructor<Presentation<T>>) {
+    constructor(readonly type: Constructor<Presentation<T>>) {
         this.populate();
     }
 
     private populate() {
-        let exposureSets : PresentedProperty[][] = [];
+        let exposureSets: PresentedProperty[][] = [];
 
         let prototype = this.type.prototype;
-        let prototypes = [ ];
+        let prototypes = [];
 
         while (prototype) {
             prototypes.push(prototype);
@@ -38,13 +38,13 @@ export class PresentationSchema<T> {
 
         // Reverse the order so that the super-most properties appear first,
         // followed by the subproperties.
-        
+
         exposureSets = exposureSets.reverse();
 
         let exposures = exposureSets
             .reduce((pv, cv) => (pv.push(...cv), pv), [])
             .map(x => clone(x))
-        ;
+            ;
 
         for (let exposure of exposures) {
             let key = exposure.propertyKey;
@@ -54,7 +54,7 @@ export class PresentationSchema<T> {
             }
 
             let designType = null;
-            
+
             for (let prototype of prototypes) {
                 designType = Reflect.getMetadata('design:type', prototype, key);
                 if (designType)
@@ -68,7 +68,7 @@ export class PresentationSchema<T> {
         this.properties = exposures;
     }
 
-    properties : PresentedProperty[];
+    properties: PresentedProperty[] = [];
 }
 
 /**
@@ -83,7 +83,7 @@ export class PresentationSchema<T> {
  */
 export class Presentation<T> {
     constructor(
-        readonly instance : T
+        readonly instance: T
     ) {
     }
 
@@ -94,39 +94,39 @@ export class Presentation<T> {
      * @param this 
      * @param array 
      */
-    public static from<T extends Presentation<U>, U>(this : Constructor<T>, array : U[]) : T[] {
+    public static from<T extends Presentation<U>, U>(this: Constructor<T>, array: U[]): T[] {
         return array.map(x => new this(x));
     }
 
-    public static get properties() : PresentedProperty[] {
+    public static get properties(): PresentedProperty[] {
         return new PresentationSchema(this).properties;
     }
 
     public toJSON() {
         if (!this.instance)
             return null;
-        
+
         let properties = {};
-        let exposures : PresentedProperty[] = (this.constructor as any).properties;
+        let exposures: PresentedProperty[] = (this.constructor as any).properties;
 
         for (let exposure of exposures) {
             let key = exposure.propertyKey;
             let options = exposure.options;
-            
+
             let prototype = Object.getPrototypeOf(this);
 
             let propertyType = Reflect.getMetadata('design:type', this.constructor.prototype, key);
             let propertyDescriptor = Object.getOwnPropertyDescriptor(prototype, key);
-            let value = this[key];
+            let value = (this as any)[key];
 
             if (options.useProperty) {
-                value = this.instance[options.useProperty];
+                value = (this.instance as any)[options.useProperty];
             } else if (!propertyDescriptor || !propertyDescriptor.get) {
                 // Data property, fill from original object.
-                value = this.instance[key];
+                value = (this.instance as any)[key];
             }
 
-            let entityType : Constructor<Presentation<any>>;
+            let entityType: Constructor<Presentation<any>> | undefined;
 
             if (options.class) {
                 entityType = options.class;
@@ -141,7 +141,7 @@ export class Presentation<T> {
             if (value && value.toJSON)
                 value = value.toJSON();
 
-            properties[key] = value;
+            (properties as any)[key] = value;
         }
 
         return properties;
@@ -154,7 +154,7 @@ export class Presentation<T> {
  * 
  * @see Presentation<T>
  */
-export function Expose(options : PresentedPropertyOptions = {}) {
+export function Expose(options: PresentedPropertyOptions = {}) {
     return function (target: Object, propertyKey: string, descriptor?: PropertyDescriptor) {
 
         if (!target.hasOwnProperty(EXPOSE_PROTOTYPE_STORAGE_KEY)) {
@@ -164,11 +164,11 @@ export function Expose(options : PresentedPropertyOptions = {}) {
             });
         }
 
-        let exposures : PresentedProperty[] = target[EXPOSE_PROTOTYPE_STORAGE_KEY];
+        let exposures: PresentedProperty[] = (target as any)[EXPOSE_PROTOTYPE_STORAGE_KEY];
 
-		exposures.push(<PresentedProperty>{
-			propertyKey: propertyKey,
-			options
+        exposures.push(<PresentedProperty>{
+            propertyKey: propertyKey,
+            options
         });
-	};
+    };
 }
