@@ -37,10 +37,10 @@
     "docs": "typedoc src/index.ts"
   },
   "dependencies": {
+    "@alterior/di": "^3.15.0",
     "@alterior/logging": "^3.15.0",
     "@alterior/web-server": "^3.15.0",
-    "@alterior/di": "^3.15.0",
-    "fastify": "^2.15.3"
+    "fastify": "^5.8.5"
   },
   "gitHead": "87f31ea4078faaca53b45573c6a0013cdb40dd07"
 }
