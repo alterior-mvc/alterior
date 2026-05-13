@@ -12,6 +12,7 @@
     * Moved to strict Typescript
 - `@/common`
     * Moved to strict Typescript
+    * `interceptConsole` now uses the standard `Console` type instead of defining its own.
 - `@/di`
     * Moved to strict Typescript
 - `@/web-server`

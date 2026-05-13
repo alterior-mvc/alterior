@@ -1,29 +1,20 @@
 
-export interface Console {
-    log(...args : any[]): void;
-    info(...args : any[]): void;
-    warn(...args : any[]): void;
-    error(...args : any[]): void;
-    debug(...args : any[]): void;
-    dir(...args : any[]): void;
-}
-
 /**
  * Intercept console messages emitted within the given function, allowing you to programmatically call the underlying raw console implementation (or not).
  * 
  * @param handler 
  * @param callback 
  */
-export function interceptConsole(handler : (method : string, originalImpl : Function, console : Console, args : any[]) => void, callback : Function) {
-    let methods = [ 'log', 'info', 'warn', 'error', 'debug', 'dir' ] as const;
+export function interceptConsole(handler: (method: string, originalImpl: Function, console: Console, args: any[]) => void, callback: Function) {
+    let methods = ['log', 'info', 'warn', 'error', 'debug', 'dir'] as const;
 
-    let rawConsole : Console = {} as any;
+    let rawConsole: Console = {} as any;
     let origConsole: Console = {} as any;
-    
+
     for (let method of methods) {
         origConsole[method] = console[method];
         rawConsole[method] = (console[method] || console.log).bind(console);
-        console[method] = function() {
+        console[method] = function () {
             handler(method, rawConsole[method], rawConsole, Array.from(arguments));
         };
     }
@@ -43,7 +34,7 @@ export function interceptConsole(handler : (method : string, originalImpl : Func
  * @param spaces 
  * @param callback 
  */
-export function indentConsole(spaces : number, callback : Function) {
+export function indentConsole(spaces: number, callback: Function) {
     let indent = Array(spaces).join(' ');
 
     return interceptConsole((method, original, console, args) => {
@@ -62,7 +53,7 @@ export function indentConsole(spaces : number, callback : Function) {
  * @param formatter 
  * @param callback 
  */
-export function formatConsole(formatter : (message : string) => string, callback : Function) {
+export function formatConsole(formatter: (message: string) => string, callback: Function) {
     return interceptConsole((method, original, console, args) => {
         if (method == 'dir') {
             original(...args);
