@@ -1,9 +1,9 @@
 import * as bodyParser from 'body-parser';
 import { IAnnotation } from "@alterior/annotations";
-import { BodyOptions, InputAnnotation } from "./input";
+import { BodyOptions, InputAnnotation, InputType } from "./input";
 import { WebEvent, RouteDefinition, RouteOptions } from "./metadata";
 import { Injector } from '@alterior/di';
-import { MiddlewareProvider, prepareMiddleware } from "./middleware";
+import { AlteriorMiddlewareFunction, MiddlewareProvider, prepareMiddleware } from "./middleware";
 import { Annotations } from "@alterior/annotations";
 import { WebServer } from "./web-server";
 import { WebServerSetupError } from "./web-server-setup-error";
@@ -11,451 +11,457 @@ import { HttpError, ArgumentError, ArgumentNullError, getParameterNames, isConst
 import { Response } from './response';
 import { ellipsize } from './utils';
 import { ConnectMiddleware } from './web-server-engine';
-import { Interceptor } from './web-server-options';
+import { Interceptor, ServerOwnedWebEvent } from './web-server-options';
 import { isHttpError } from 'http-errors';
 
 export interface RouteDescription {
-	definition : RouteDefinition;
+    definition: RouteDefinition;
 
-	httpMethod : string;
-	method? : string;
-	path : string;
-	pathPrefix? : string;
-	group? : string;
-	
-	description? : string;
-	parameters? : RouteParamDescription[];
+    httpMethod: string;
+    method?: string;
+    path: string;
+    pathPrefix?: string;
+    group?: string;
+
+    description?: string;
+    parameters?: RouteParamDescription[];
 }
 
 export interface RouteParamDescription {
-	name : string;
-	type : string;
-	description? : string;
-	required? : boolean;
+    name: string;
+    type?: InputType;
+    description?: string;
+    required?: boolean;
 }
 
 export interface RouteMethodMetadata {
-	returnType : any;
-	paramTypes : any[];
-	paramNames : any[];
-	pathParamNames : any[];
-	paramAnnotations : IAnnotation[][];
+    returnType: any;
+    paramTypes: any[];
+    paramNames: any[];
+    pathParamNames: any[];
+    paramAnnotations: IAnnotation[][];
 }
+
+export type RouteMethodParameterFactory<T = any> = (ev: WebEvent) => Promise<T> | T;
 
 /**
  * Represents a parameter of a route-handling Typescript method. 
  */
 export class RouteMethodParameter<T = any> {
-	constructor(
-		readonly route : RouteInstance,
-		readonly target : Function,
-		readonly methodName : string,
-		readonly index : number,
-		readonly name : string,
-		readonly type : any,
-		readonly annotations : IAnnotation[]
-	) {
-		this.prepare();
-	}
+    constructor(
+        readonly route: RouteInstance,
+        readonly target: Function,
+        readonly methodName: string,
+        readonly index: number,
+        readonly name: string,
+        readonly type: any,
+        readonly annotations: IAnnotation[]
+    ) {
+        this.prepare();
+    }
 
-	get inputAnnotation() {
-		return this.annotations.find(x => x instanceof InputAnnotation) as InputAnnotation;
-	}
-	
-	private _factory : (ev : WebEvent) => Promise<T>;
-	public get factory() {
-		return this._factory;
-	}
+    get inputAnnotation() {
+        return this.annotations.find(x => x instanceof InputAnnotation) as InputAnnotation;
+    }
 
-	async resolve(ev : WebEvent) {
-		return await this._factory(ev);
-	}
+    private _factory: RouteMethodParameterFactory<T> | null = null;
+    public get factory() {
+        return this._factory;
+    }
 
-	private _description : RouteParamDescription;
+    async resolve(ev: WebEvent) {
+        if (!this._factory)
+            throw new Error(`Cannot resolve method parameter '${this.name}': No value factory available`);
+        return await this._factory(ev);
+    }
 
-	get description() {
-		return this._description;
-	}
+    private _description!: RouteParamDescription;
 
-	prepare() {
-		let inputAnnotation = this.inputAnnotation;
-		let paramName = this.name;
-		let factory : (ev : WebEvent) => any = null;
-		let paramDesc = null;
-		let paramType = this.type;
-		let route = this.route;
-		let simpleTypes = [String, Number];
+    get description() {
+        return this._description;
+    }
 
-		paramDesc = { 
-			name: paramName, 
-			type: null,
-			description: `An instance of ${paramType}`
-		};
+    prepare() {
+        let inputAnnotation = this.inputAnnotation;
+        let paramName = this.name;
+        let factory: RouteMethodParameterFactory<any> | null = null;
+        let paramType = this.type;
+        let route = this.route;
+        let simpleTypes = [String, Number];
 
-		if (inputAnnotation) {
-			paramDesc.type = inputAnnotation.type;
+        let paramInputType: InputType | undefined = undefined;
 
-			let inputName = inputAnnotation.name || paramName;
+        type HasParams = { request: { params?: Record<string, any> }};
+        type HasQuery =  { request: { query?: Record<string, any>; }};
+        type HasSession =  { request: { session?: Record<string, any>; }};
+        type HasBody =  { request: { body?: any; }};
 
-			let typeFactories = {
-				path: (ev : WebEvent) => ev.request['params'] ? ev.request['params'][inputName] : undefined,
-				queryParam: (ev : WebEvent) => ev.request['query'] ? ev.request['query'][inputName] : undefined,
-				queryParams: (ev : WebEvent) => ev.request['query'] ?? {},
-				session: (ev : WebEvent) => inputAnnotation.name ? 
-					(ev.request['session'] || {})[inputAnnotation.name]
-					: ev.request['session'],
-				body: (ev : WebEvent) => ev.request['body']
-			};
-			
-			factory = typeFactories[inputAnnotation.type];
-			
-			if (!this.route.pathParameterMap[inputName])
-				this.route.pathParameterMap[inputName] = paramDesc;
+        let paramInputName = paramName;
 
-			if (inputAnnotation.default !== void 0) {
-				let originalFactory = factory;
-				factory = (ev : WebEvent) => originalFactory(ev) ?? inputAnnotation.default;
-			}
+        if (inputAnnotation) {
+            paramInputType = inputAnnotation.type;
+            paramInputName = inputAnnotation.name ?? paramName;
 
-		} else if (paramType === WebEvent) {
-			factory = ev => ev;
-		} 
-		
-		// Name based matching for path parameters
+            let typeFactories = {
+                path: (ev: WebEvent & HasParams) => ev.request.params?.[paramInputName],
+                queryParam: (ev: WebEvent & HasQuery) => ev.request.query?.[paramInputName],
+                queryParams: (ev: WebEvent & HasQuery) => ev.request.query ?? {},
+                session: (ev: WebEvent & HasSession) => inputAnnotation.name ?
+                    ev.request.session?.[inputAnnotation.name]
+                    : ev.request.session,
+                body: (ev: WebEvent & HasBody) => ev.request.body
+            };
 
-		if (!factory) {
-			if (this.route.params.find(x => x == paramName) && simpleTypes.includes(paramType)) {
-				factory = (ev : WebEvent) => ev.request['params'] ? ev.request['params'][paramName] : undefined;
-				paramDesc.type = 'path';
-			}
-		}
+            factory = typeFactories[inputAnnotation.type];
 
-		// Well-known names
 
-		if (!factory) {
-			let paramNameFactories = {
-				body: (ev : WebEvent) => ev.request['body'],
-				session: (ev : WebEvent) => ev.request['session']
-			};
+            if (inputAnnotation.default !== void 0) {
+                let originalFactory = factory;
+                factory = (ev: WebEvent) => originalFactory(ev) ?? inputAnnotation.default;
+            }
 
-			if (paramNameFactories[paramName]) {
-				factory = paramNameFactories[paramName];
-				paramDesc.type = paramName;
-			}
-		}
+        } else if (paramType === WebEvent) {
+            factory = ev => ev;
+        }
 
-		if (!factory) {
-			let sanitizedType = paramType ? (paramType.name || '<unknown>') : '<undefined>';
+        // Name based matching for path parameters
 
-			throw new Error(
-				`Unable to fulfill route method parameter '${paramName}' of type '${sanitizedType}'\r\n`
-				+ (this.route.params.find(x => x == paramName) 
-					? `There is a path parameter (:${paramName}) but it was not bound because `
-					  + `the method parameter is not one of ${simpleTypes.map(x => x.name).join(', ')}.\r\n`
-					: ``
-				  )
-				+ `While preparing route ${this.route.definition.method} ${this.route.definition.path} ` 
-				+ `with method ${this.route.definition.method}()`
-			);
-		}
+        if (!factory) {
+            if (this.route.params.find(x => x == paramName) && simpleTypes.includes(paramType)) {
+                factory = (ev: WebEvent & HasParams) => ev.request.params?.[paramName];
+                paramInputType = 'path';
+            }
+        }
 
-		// Handle format...
+        // Well-known names
 
-		if (paramType === Number) {
-			let originalFactory = factory;
-			factory = ev => {
-				let value = originalFactory(ev);
+        if (!factory) {
+            let paramNameFactories: Record<'body' | 'session', RouteMethodParameterFactory> = {
+                body: (ev: WebEvent & HasBody) => ev.request.body,
+                session: (ev: WebEvent & HasSession) => ev.request.session
+            };
 
-				// Do not try to validate `undefined` (ie the parameter is not present)
-				
-				if (value === void 0)
-					return value;
-				
-				let number = parseFloat(value);
-				if (isNaN(number)) {
-					throw new HttpError(400, {
-						error: 'invalid-request',
-						message: `The parameter ${paramDesc.name} must be a valid number`
-					});
-				}
+            if (paramName in paramNameFactories) {
+                factory = paramNameFactories[paramName as 'body' | 'session'];
+                paramInputType = paramName as 'body' | 'session';
+            }
+        }
 
-				return number;
-			}
-		} else if (paramType === Boolean) {
-			let originalFactory = factory;
-			factory = ev => {
-				let value = originalFactory(ev);
-				if (value === void 0)
-					return value;
-				
-				return !['', 'no', '0', 'false', 'off'].includes(`${value}`.toLowerCase());
-			}
-		} else if (paramType === Date) {
-			let originalFactory = factory;
-			factory = ev => {
-				let value = originalFactory(ev);
-				if (value === void 0)
-					return value;
-				
-				let date = new Date(value);
+        if (!factory) {
+            let sanitizedType = paramType ? (paramType.name || '<unknown>') : '<undefined>';
 
-				if (!date.getDate()) {
-					throw new HttpError(400, {
-						error: 'invalid-request',
-						message: `The parameter ${paramDesc.name} must be a valid timestamp`
-					});
-				}
-			}
-		}
+            throw new Error(
+                `Unable to fulfill route method parameter '${paramName}' of type '${sanitizedType}'\r\n`
+                + (this.route.params.find(x => x == paramName)
+                    ? `There is a path parameter (:${paramName}) but it was not bound because `
+                    + `the method parameter is not one of ${simpleTypes.map(x => x.name).join(', ')}.\r\n`
+                    : ``
+                )
+                + `While preparing route ${this.route.definition.method} ${this.route.definition.path} `
+                + `with method ${this.route.definition.method}()`
+            );
+        }
 
-		if (paramType === String) {
-			let originalFactory = factory;
-			factory = ev => {
-				let value = originalFactory(ev);
-				if (value === undefined || value === null)
-					return value;
+        // Handle format...
 
-				return ''+value;
-			}
-		}
+        if (paramType === Number) {
+            let originalFactory = factory;
+            factory = ev => {
+                let value = originalFactory(ev);
 
-		this._factory = factory;
-		this._description = paramDesc;
-	}
+                // Do not try to validate `undefined` (ie the parameter is not present)
+
+                if (value === void 0)
+                    return value;
+
+                let number = parseFloat(value);
+                if (isNaN(number)) {
+                    throw new HttpError(400, {
+                        error: 'invalid-request',
+                        message: `The parameter ${paramInputName} must be a valid number`
+                    });
+                }
+
+                return number;
+            }
+        } else if (paramType === Boolean) {
+            let originalFactory = factory;
+            factory = ev => {
+                let value = originalFactory(ev);
+                if (value === void 0)
+                    return value;
+
+                return !['', 'no', '0', 'false', 'off'].includes(`${value}`.toLowerCase());
+            }
+        } else if (paramType === Date) {
+            let originalFactory = factory;
+            factory = ev => {
+                let value = originalFactory(ev);
+                if (value === void 0)
+                    return value;
+
+                let date = new Date(value);
+
+                if (!date.getDate()) {
+                    throw new HttpError(400, {
+                        error: 'invalid-request',
+                        message: `The parameter ${paramInputName} must be a valid timestamp`
+                    });
+                }
+            }
+        }
+
+        if (paramType === String) {
+            let originalFactory = factory;
+            factory = ev => {
+                let value = originalFactory(ev);
+                if (value === undefined || value === null)
+                    return value;
+
+                return '' + value;
+            }
+        }
+
+        this._factory = factory;
+        
+        this.route.pathParameterMap[paramInputName] = this._description = {
+            name: paramInputName,
+            type: paramType,
+            description: `An instance of ${paramType}`
+        };
+    }
 }
 
+export interface RouteTableEntry {
+    controller: Function;
+    route: RouteDefinition;
+}
+
+export type RoutePathParameterMap = Record<string, RouteParamDescription>;
 /**
  * Represents a Route instance
  */
 export class RouteInstance {
-	constructor(
-		readonly server : WebServer,
-		readonly controllerInstance : any,
-        readonly injector : Injector,
+    constructor(
+        readonly server: WebServer,
+        readonly controllerInstance: any,
+        readonly injector: Injector,
         readonly preMiddleware: any[],
-		readonly postMiddleware: any[],
-		readonly interceptors: Interceptor[],
+        readonly postMiddleware: any[],
+        readonly interceptors: Interceptor[],
         readonly parentGroup: string,
-        readonly controllerType : Function,
-        readonly routeTable : any[],
-		readonly definition : RouteDefinition
-	) {
-		this.prepare();
-	}
+        readonly controllerType: Function,
+        readonly routeTable: RouteTableEntry[],
+        readonly definition: RouteDefinition
+    ) {
+        // Add it to the global route list
+        this.routeTable.push({
+            controller: this.controllerType,
+            route: this.definition
+        });
 
-	get params() {
-		return this._params;
-	}
+        let routeParams = (this.definition.path || "").match(/:([A-Za-z][A-Za-z0-9]*)/g) || [];
+        this._params = routeParams.map(x => x.substr(1));
 
-	private _params : string[];
+        this.prepareMethodMetadata();
+        this.prepareMiddleware();
+        this.prepareParameters();
+        this.prepareMetadata();
+    }
 
-	private prepare() {
+    private _params: string[] = [];
+    get params() {
+        return this._params;
+    }
 
-		// Add it to the global route list
+    get options(): RouteOptions {
+        return this.definition.options || {};
+    }
 
-		this.routeTable.push({
-			controller: this.controllerType,
-			route: this.definition
-		});
+    get group(): string {
+        return this.options.group || this.parentGroup;
+    }
 
-		let routeParams = (this.definition.path || "").match(/:([A-Za-z][A-Za-z0-9]*)/g) || [];
-		this._params = routeParams.map(x => x.substr(1));
+    private _pathParameterMap: RoutePathParameterMap = {};
 
-		this.prepareMethodMetadata();
-		this.prepareMiddleware();
-		this.prepareParameters();
-		this.prepareMetadata();
-	}
+    get pathParameterMap() {
+        return this._pathParameterMap;
+    }
 
-	get options(): RouteOptions {
-		return this.definition.options || {};
-	}
+    private prepareMetadata() {
+        let route = this.definition;
+        let routeDescription: RouteDescription = {
+            definition: route,
+            httpMethod: route.httpMethod,
+            group: this.group,
+            method: route.method,
+            path: this.definition.path,
+            parameters: []
+        };
+        routeDescription.parameters ??= [];
+        routeDescription.parameters.push(
+            ...this._methodMetadata.pathParamNames
+                .map(id => <RouteParamDescription>{
+                    name: id.replace(/^:/, ''),
+                    type: 'path'
+                })
+                .map(desc => this.pathParameterMap[desc.name] = desc)
+        );
 
-	get group(): string {
-		return this.options.group || this.parentGroup;
-	}
+        this._description = routeDescription;
+    }
 
-	private _pathParameterMap = {};
+    private _description!: RouteDescription;
 
-	get pathParameterMap() {
-		return this._pathParameterMap;
-	}
+    public get description() {
+        return this._description;
+    }
 
-	private prepareMetadata() {
-		let route = this.definition;
-		let routeDescription : RouteDescription = {
-			definition: route,
-			httpMethod: route.httpMethod,
-			group: this.group,
-			method: route.method,
-			path: this.definition.path,
-			parameters: []
-		};
+    private prepareMiddleware() {
 
-		routeDescription.parameters.push(
-			...this._methodMetadata.pathParamNames
-				.map(id => <RouteParamDescription>{
-					name: id.replace(/^:/, ''),
-					type: 'path'
-				})
-				.map(desc => this.pathParameterMap[desc.name] = desc)
-		);
+        // Load up the defined middleware for this route
+        let route = this.definition;
+        let middleware = [
+            ...(this.server.options?.preRouteMiddleware ?? []),
+            ...this.preMiddleware,
+            ...(route.options.middleware ?? []),
+            ...this.postMiddleware,
+            ...(this.server.options?.postRouteMiddleware ?? [])
+        ];
 
-		this._description = routeDescription;
-	}
+        // Ensure indexes are valid.
 
-	private _description : RouteDescription;
+        let invalidIndex = middleware.findIndex(x => !x);
+        if (invalidIndex >= 0)
+            throw new Error(`Route '${route.path}' provided null middleware at position ${invalidIndex}`);
 
-	public get description() {
-		return this._description;
-	}
+        // Prepare the middlewares (if they are DI middlewares, they get injected)
 
-	private prepareMiddleware() {
-		
-		// Load up the defined middleware for this route
-		let route = this.definition;
-		let middleware = [
-			...(this.server.options?.preRouteMiddleware ?? []),
-			...this.preMiddleware,
-			...(route.options.middleware ?? []),
-			...this.postMiddleware,
-			...(this.server.options?.postRouteMiddleware ?? [])
-		];
+        this.middleware = middleware;
+        this.resolvedMiddleware = middleware.map(x => prepareMiddleware(this.injector, x));
 
-		// Ensure indexes are valid.
+        // Automatically handle body parsing 
 
-		let invalidIndex = middleware.findIndex(x => !x);
-		if (invalidIndex >= 0)
-			throw new Error(`Route '${route.path}' provided null middleware at position ${invalidIndex}`);
+        let { paramTypes, paramAnnotations } = this._methodMetadata;
 
-		// Prepare the middlewares (if they are DI middlewares, they get injected)
+        let bodyAnnotation = paramAnnotations
+            .map(annots => annots.find(x => x instanceof InputAnnotation && x.type === 'body') as InputAnnotation)
+            .filter(x => x)
+        [0]
+            ;
+        let bodyIndex = paramAnnotations.findIndex(annots => annots.some(x => x === bodyAnnotation));
+        if (bodyAnnotation) {
+            // need to add bodyParser
+            const options = (bodyAnnotation ?? {}) as BodyOptions;
+            const paramType = paramTypes[bodyIndex];
+            let format = options.format;
 
-		this.middleware = middleware;
-		this.resolvedMiddleware = middleware.map(x => prepareMiddleware(this.injector, x));
+            if (!format) {
+                if (paramType === String)
+                    format = 'text';
+                else if (paramType === Buffer)
+                    format = 'raw';
+                else
+                    format = 'json';
+            }
 
-		// Automatically handle body parsing 
-
-		let { paramTypes, paramAnnotations } = this._methodMetadata;
-		
-		let bodyAnnotation = paramAnnotations
-			.map(annots => annots.find(x => x instanceof InputAnnotation && x.type === 'body') as InputAnnotation)
-			.filter(x => x)
-			[0]
-		;
-		let bodyIndex = paramAnnotations.findIndex(annots => annots.some(x => x === bodyAnnotation));
-		if (bodyAnnotation) {
-			// need to add bodyParser
-			const options = (bodyAnnotation ?? {}) as BodyOptions;
-			const paramType = paramTypes[bodyIndex];
-			let format = options.format;
-
-			if (!format) {
-				if (paramType === String)
-					format = 'text';
-				else if (paramType === Buffer)
-					format = 'raw';
-				else
-					format = 'json';
-			}
-
-			let bodyMiddleware: any;
+            let bodyMiddleware: any;
             let limit = route.options.maxBodySize ?? this.server.options.maxBodySize ?? 100_000;
 
-			if (format === 'text')
-				bodyMiddleware = bodyParser.text({ type: () => true, limit });
-			else if (format === 'raw')
-				bodyMiddleware = bodyParser.raw({ type: () => true, limit });
-			else if (format === 'json')
-				bodyMiddleware = bodyParser.json({ type: () => true, strict: false, limit });
+            if (format === 'text')
+                bodyMiddleware = bodyParser.text({ type: () => true, limit });
+            else if (format === 'raw')
+                bodyMiddleware = bodyParser.raw({ type: () => true, limit });
+            else if (format === 'json')
+                bodyMiddleware = bodyParser.json({ type: () => true, strict: false, limit });
 
-			if (bodyMiddleware) {
-				this.resolvedMiddleware.push(bodyMiddleware);
-			}
-		}
-	}
+            if (bodyMiddleware) {
+                this.resolvedMiddleware.push(bodyMiddleware);
+            }
+        }
+    }
 
-	middleware : MiddlewareProvider[];
-	resolvedMiddleware : ConnectMiddleware[];
+    middleware: MiddlewareProvider[] = [];
+    resolvedMiddleware: AlteriorMiddlewareFunction[] = [];
 
-	private prepareMethodMetadata() {
-		let controller = this.controllerType;
-		let route = this.definition;
+    private prepareMethodMetadata() {
+        let controller = this.controllerType;
+        let route = this.definition;
 
-		let returnType = Reflect.getMetadata("design:returntype", controller.prototype, route.method);
-		let paramTypes = Reflect.getMetadata("design:paramtypes", controller.prototype, route.method);
-		let paramNames = getParameterNames(controller.prototype[route.method]);
+        let returnType = Reflect.getMetadata("design:returntype", controller.prototype, route.method);
+        let paramTypes = Reflect.getMetadata("design:paramtypes", controller.prototype, route.method);
+        let paramNames = getParameterNames(controller.prototype[route.method]);
 
-		// Construct a set of easily addressable path parameter descriptions (pathParameterMap)
-		// that can be decorated with insights from reflection later.
+        // Construct a set of easily addressable path parameter descriptions (pathParameterMap)
+        // that can be decorated with insights from reflection later.
 
-		let pathParamMatches = Array.from(route.path.match(/:([A-Za-z0-9]+)/g) ?? []);
-		let pathParamNames = Object.keys(pathParamMatches.reduce((pv, cv) => (pv[cv] = 1, pv), {}));
+        let pathParamMatches = Array.from(route.path.match(/:([A-Za-z0-9]+)/g) ?? []);
+        let pathParamNames = Object.keys(pathParamMatches.reduce((pv, cv) => (pv[cv] = 1, pv), {} as Record<string, 1>));
 
-		this._methodMetadata = {
-			returnType,
-			paramTypes, 
-			paramNames,
-			pathParamNames,
-			paramAnnotations: Annotations.getParameterAnnotations(controller, route.method, false)
-		}
-	}
+        this._methodMetadata = {
+            returnType,
+            paramTypes,
+            paramNames,
+            pathParamNames,
+            paramAnnotations: Annotations.getParameterAnnotations(controller, route.method, false)
+        }
+    }
 
-	private _methodMetadata : RouteMethodMetadata;
+    private _methodMetadata!: RouteMethodMetadata;
+    get methodMetadata() {
+        return this._methodMetadata;
+    }
 
-	get methodMetadata() {
-		return this._methodMetadata;
-	}
+    private prepareParameters() {
+        let controller = this.controllerType;
+        let route = this.definition;
+        let sourceName = `${controller.name || controller}.${route.method}()`;
+        let { returnType, paramTypes, paramNames, paramAnnotations } = this._methodMetadata;
 
-	private prepareParameters() {
-		let controller = this.controllerType;
-		let route = this.definition;
-		let sourceName = `${controller.name || controller}.${route.method}()`;
-		let { returnType, paramTypes, paramNames, paramAnnotations } = this._methodMetadata;
-		
-		let paramFactories = [];
-		//let pathParameterMap : any = {};
+        let paramFactories = [];
+        //let pathParameterMap : any = {};
 
-		if (!paramTypes) {
-			paramFactories = [
-				(ev : WebEvent) => ev.request, 
-				(ev : WebEvent) => ev.response
-			];
-			return;
-		}
+        if (!paramTypes) {
+            paramFactories = [
+                (ev: WebEvent) => ev.request,
+                (ev: WebEvent) => ev.response
+            ];
+            return;
+        }
 
-		for (let i = 0, max = paramNames.length; i < max; ++i) {
-			this._parameters.push(new RouteMethodParameter(
-				this,
-				this.controllerType,
-				this.definition.method,
-				i, 
-				paramNames[i],
-				paramTypes[i],
-				paramAnnotations[i] || []
-			));
-		}
+        for (let i = 0, max = paramNames.length; i < max; ++i) {
+            this._parameters.push(new RouteMethodParameter(
+                this,
+                this.controllerType,
+                this.definition.method,
+                i,
+                paramNames[i],
+                paramTypes[i],
+                paramAnnotations[i] || []
+            ));
+        }
 
-		let unresolvedParameters = this._parameters.filter(x => !x.factory);
+        let unresolvedParameters = this._parameters.filter(x => !x.factory);
 
-		if (unresolvedParameters.length > 0) {
-			let details = unresolvedParameters
-				.map(x => `${x.name} : ${x.type || 'any'} (#${x.index + 1})`)
-				.join(', ')
-			;
+        if (unresolvedParameters.length > 0) {
+            let details = unresolvedParameters
+                .map(x => `${x.name} : ${x.type || 'any'} (#${x.index + 1})`)
+                .join(', ')
+                ;
 
-			throw new WebServerSetupError(
-				`Could not resolve some method parameters on ${sourceName}: ` 
-				+ `${details}`
-			);
-		}
+            throw new WebServerSetupError(
+                `Could not resolve some method parameters on ${sourceName}: `
+                + `${details}`
+            );
+        }
 
-	}
+    }
 
-	_parameters : RouteMethodParameter[] = [];
+    _parameters: RouteMethodParameter[] = [];
 
-	get parameters() {
-		return this._parameters.slice();
-	}
+    get parameters() {
+        return this._parameters.slice();
+    }
 
     /**
      * Converts errors from https://www.npmjs.com/package/http-errors to Alterior's HttpError instances.
@@ -465,225 +471,224 @@ export class RouteInstance {
     private normalizeHttpError(e: any) {
         if (isHttpError(e)) {
             if (e.status >= 500) {
-                e = new Response(e.status, e.headers, {
+                e = new Response(e.status, e.headers ?? {}, {
                     message: e.expose ? e.message : `Internal server error`,
                     constructor: e.constructor.name ?? '«undefined»',
                     stack: e.stack ?? '«undefined»'
                 }).asError();
             } else if (e.expose) {
-                e = new Response(e.status, e.headers, { message: e.message }).asError();
+                e = new Response(e.status, e.headers ?? {}, { message: e.message }).asError();
             } else {
-                e = new Response(e.status, e.headers, undefined).asError();
+                e = new Response(e.status, e.headers ?? {}, undefined).asError();
             }
         }
 
         return e;
     }
 
-	private async execute(instance, event : WebEvent) {
-		if (!instance) 
-			throw new ArgumentNullError('instance');
-		
-		event.controller = instance;
-		event.server = this.server;
-		event.route = this;
+    private async execute(instance: any, event: ServerOwnedWebEvent) {
+        if (!instance)
+            throw new ArgumentNullError('instance');
 
-		if (!instance[this.definition.method]) {
-			throw new ArgumentError(
-				'instance', 
-				`Provided instance does not have an implementation ` 
-				+ `for method ${this.definition.method}()`
-			);
-		}
+        event.controller = instance;
+        event.route = this;
 
-		let route = this.definition;
-		let controllerType = this.controllerType;
-		let reportSource = `${controllerType.name}.${route.method}()`;
+        if (!instance[this.definition.method]) {
+            throw new ArgumentError(
+                'instance',
+                `Provided instance does not have an implementation `
+                + `for method ${this.definition.method}()`
+            );
+        }
 
-		this.server.reportRequest('middleware', event, reportSource);
+        let route = this.definition;
+        let controllerType = this.controllerType;
+        let reportSource = `${controllerType.name}.${route.method}()`;
 
-		// Middleware
+        this.server.reportRequest('middleware', event, reportSource);
 
-		let aborted = await event.context(async () => {
-			for (let item of this.resolvedMiddleware) {
-				try {
-					await new Promise<void>((resolve, reject) => item(event.request, event.response, (err?: any) => err ? reject(err) : resolve()));
-				} catch (e) {
+        // Middleware
+
+        let aborted = await event.context(async () => {
+            for (let item of this.resolvedMiddleware) {
+                try {
+                    await new Promise<void>((resolve, reject) => item(event.request, event.response, (err?: any) => err ? reject(err) : resolve()));
+                } catch (e) {
                     e = this.normalizeHttpError(e);
-					event.metadata['uncaughtError'] = e;
-					this.server.handleError(
-						e,
-						event, 
-						this, 
-						`Middleware ${item.name || 'anonymous'}()`
-					);
-					this.server.reportRequest('finished', event, reportSource);
-					return true;
-				}
-			}
-            
+                    event.metadata['uncaughtError'] = e;
+                    this.server.handleError(
+                        e,
+                        event,
+                        this,
+                        `Middleware ${item.name || 'anonymous'}()`
+                    );
+                    this.server.reportRequest('finished', event, reportSource);
+                    return true;
+                }
+            }
+
             return false;
-		});
+        });
 
         if (aborted)
             return;
 
-		// Execute our function by resolving the parameter factories into a set of parameters to provide to the 
-		// function.
+        // Execute our function by resolving the parameter factories into a set of parameters to provide to the 
+        // function.
 
-		let resolvedParams: any[];
+        let resolvedParams: any[];
 
-		try {
-			resolvedParams = await Promise.all(this.parameters.map(x => x.resolve(event)));
-		} catch (e) {
-			event.metadata['uncaughtError'] = e;
-			this.server.handleError(e, event, this, reportSource);
-			this.server.reportRequest('finished', event, reportSource);
-			return;
-		}
+        try {
+            resolvedParams = await Promise.all(this.parameters.map(x => x.resolve(event)));
+        } catch (e) {
+            event.metadata['uncaughtError'] = e;
+            this.server.handleError(e, event, this, reportSource);
+            this.server.reportRequest('finished', event, reportSource);
+            return;
+        }
 
-		let displayableParams = resolvedParams
-			.map(param => {
-				if (typeof param === 'undefined')
-					return 'undefined';
-				
-				try {
-					return JSON.stringify(param);
-				} catch (e) {
-					return String(param);
-				}
-			})
-			.map(param => ellipsize(this.server.options.longParameterThreshold ?? 100, param))
-		;
-		reportSource = `${controllerType.name}.${route.method}(${displayableParams.join(', ')})`;
+        let displayableParams = resolvedParams
+            .map(param => {
+                if (typeof param === 'undefined')
+                    return 'undefined';
 
-		this.server.reportRequest('starting', event, reportSource);
+                try {
+                    return JSON.stringify(param);
+                } catch (e) {
+                    return String(param);
+                }
+            })
+            .map(param => ellipsize(this.server.options.longParameterThreshold ?? 100, param))
+            ;
+        reportSource = `${controllerType.name}.${route.method}(${displayableParams.join(', ')})`;
 
-		
-		try { // To finally report request completion.
+        this.server.reportRequest('starting', event, reportSource);
 
-			let result;
 
-			let interceptors = [
-				...this.server.options.interceptors ?? [],
-				...this.interceptors ?? [],
-				...this.definition.options.interceptors ?? [],
-			].reverse();
+        try { // To finally report request completion.
 
-			try {
-				result = await event.context(async () => {
-					let action = (...params) => instance[route.method](...params);
-					for (let interceptor of interceptors) {
-						let inner = action;
-						action = (...params) => interceptor(inner, ...params);
-					}
+            let result;
 
-					return await action(...resolvedParams);
+            let interceptors = [
+                ...this.server.options.interceptors ?? [],
+                ...this.interceptors ?? [],
+                ...this.definition.options.interceptors ?? [],
+            ].reverse();
 
-				});
-			} catch (e) {
+            try {
+                result = await event.context(async () => {
+                    let action = (...params: any[]) => instance[route.method](...params);
+                    for (let interceptor of interceptors) {
+                        let inner = action;
+                        action = (...params) => interceptor(inner, ...params);
+                    }
+
+                    return await action(...resolvedParams);
+
+                });
+            } catch (e) {
                 e = this.normalizeHttpError(e);
-				event.metadata['uncaughtError'] = e;
-				this.server.handleError(e, event, this, reportSource);
-				return;
-			}
+                event.metadata['uncaughtError'] = e;
+                this.server.handleError(e, event, this, reportSource);
+                return;
+            }
 
-			// Return value handling
+            // Return value handling
 
-			if (result === undefined) {
-				if (!event.response.headersSent && event.response.statusCode === 200)
-					event.response.statusCode = 204;
-				event.response.end();
-				return;
-			}
+            if (result === undefined) {
+                if (!event.response.headersSent && event.response.statusCode === 200)
+                    event.response.statusCode = 204;
+                event.response.end();
+                return;
+            }
 
-			if (result === null) {
-				this.server.engine.sendJsonBody(event, result);
-				return;
-			}
+            if (result === null) {
+                this.server.engine.sendJsonBody(event, result);
+                return;
+            }
 
-			try {
-				if (result.constructor === Response) {
-					let response = <Response>result;
+            try {
+                if (result.constructor === Response) {
+                    let response = <Response>result;
 
-					event.response.statusCode = response.status;
-					response.headers.forEach(x => event.response.setHeader(x[0], x[1]));
-					
-					if (response.encoding === 'raw') {
-						if (response.body instanceof Buffer) {
-							event.response.write(response.body);
-						} else if (typeof response.body === 'string') {
-							event.response.write(Buffer.from(response.body)); 
-						} else if (response.body === undefined || response.body === null) {
-							if (!event.response.headersSent && event.response.statusCode === 200)
-								event.response.statusCode = 204;
-						} else {
-							throw new Error(`Unknown response body type ${response.body}`);
-						}
+                    event.response.statusCode = response.status;
+                    response.headers.forEach(x => event.response.setHeader(x[0], x[1]));
 
-						event.response.end();
-					} else if (response.encoding === 'json') {
-						if (response.unencodedBody)
-							this.server.engine.sendJsonBody(event, response.unencodedBody);
-						else
-							event.response.end();
+                    if (response.encoding === 'raw') {
+                        if (response.body instanceof Buffer) {
+                            event.response.write(response.body);
+                        } else if (typeof response.body === 'string') {
+                            event.response.write(Buffer.from(response.body));
+                        } else if (response.body === undefined || response.body === null) {
+                            if (!event.response.headersSent && event.response.statusCode === 200)
+                                event.response.statusCode = 204;
+                        } else {
+                            throw new Error(`Unknown response body type ${response.body}`);
+                        }
 
-					} else {
-						throw new Error(`Unknown encoding type ${response.encoding}`);
-					}
+                        event.response.end();
+                    } else if (response.encoding === 'json') {
+                        if (response.unencodedBody)
+                            this.server.engine.sendJsonBody(event, response.unencodedBody);
+                        else
+                            event.response.end();
 
-				} else {
-					// event.response
-					// 	.status(200)
-					// 	.send(result)
-					// ;
+                    } else {
+                        throw new Error(`Unknown encoding type ${response.encoding}`);
+                    }
 
-					event.response.statusCode = 200;
-					this.server.engine.sendJsonBody(event, result);
-				}
-			} catch (e) {
-				console.error(`Caught exception:`);
-				console.error(e);
+                } else {
+                    // event.response
+                    // 	.status(200)
+                    // 	.send(result)
+                    // ;
 
-				throw e;
-			}
-		} finally {
-			this.server.reportRequest('finished', event, reportSource);
-		}
-	}
+                    event.response.statusCode = 200;
+                    this.server.engine.sendJsonBody(event, result);
+                }
+            } catch (e) {
+                console.error(`Caught exception:`);
+                console.error(e);
 
-	/**
-	 * Installs this route into the given web server application. 
-	 * @param app 
-	 */
-	mount(pathPrefix : string) {
-		this.description.pathPrefix = pathPrefix;
+                throw e;
+            }
+        } finally {
+            this.server.reportRequest('finished', event, reportSource);
+        }
+    }
 
-		this.server.addRoute(
-			this.description,
-			this.definition.httpMethod, 
-			`${pathPrefix || ''}${this.definition.path}`,
-			async ev => {
-				// SECURITY-SENSITIVE: Prevent denial-of-service by exploiting a fault within Alterior's request handling.
-				// Return a 500 error to the client and log.
+    /**
+     * Installs this route into the given web server application. 
+     * @param app 
+     */
+    mount(pathPrefix: string) {
+        this.description.pathPrefix = pathPrefix;
 
-				try {
-					return await this.execute(this.controllerInstance, ev);
-				} catch (e) {
-					this.server.logger.fatal(`Alterior failed to process request ${ev.request.method} ${ev.request.url}: ${e.stack || e.message || e}`);
-					this.server.logger.fatal(`The above error was caught using Alterior's last-chance error handler. This is always a bug. Please report this issue.`);
-					
-					ev.metadata['uncaughtError'] = e;
-					this.server.handleError(
-						e,
-						ev, 
-						this,
-						`Last-chance error handler (Alterior bug)`
-					);
-					this.server.reportRequest('finished', ev, `Last-chance error handler (Alterior bug)`);
-				}
-			},
-			[]
-		);
-	}
+        this.server.addRoute(
+            this.description,
+            this.definition.httpMethod,
+            `${pathPrefix || ''}${this.definition.path}`,
+            async ev => {
+                // SECURITY-SENSITIVE: Prevent denial-of-service by exploiting a fault within Alterior's request handling.
+                // Return a 500 error to the client and log.
+
+                try {
+                    return await this.execute(this.controllerInstance, ev);
+                } catch (e: any) {
+                    this.server.logger.fatal(`Alterior failed to process request ${ev.request.method} ${ev.request.url}: ${e.stack || e.message || e}`);
+                    this.server.logger.fatal(`The above error was caught using Alterior's last-chance error handler. This is always a bug. Please report this issue.`);
+
+                    ev.metadata['uncaughtError'] = e;
+                    this.server.handleError(
+                        e,
+                        ev,
+                        this,
+                        `Last-chance error handler (Alterior bug)`
+                    );
+                    this.server.reportRequest('finished', ev, `Last-chance error handler (Alterior bug)`);
+                }
+            },
+            []
+        );
+    }
 }

@@ -42,11 +42,12 @@ suite(describe => {
 				let httpe = <HttpError>e;
 				expect(httpe.body).to.equal(`"hello"`);
 				expect(httpe.statusCode).to.equal(123);
-				expect(httpe.headers.length).to.equal(2);
-				expect(httpe.headers[0][0]).to.equal('X-Test');
-				expect(httpe.headers[0][1]).to.equal('pass');
-				expect(httpe.headers[1][0]).to.equal('Content-Type');
-				expect(httpe.headers[1][1]).to.equal('application/json; charset=utf-8');
+				expect(httpe.headers).to.exist;
+				expect(httpe.headers!.length).to.equal(2);
+				expect(httpe.headers![0][0]).to.equal('X-Test');
+				expect(httpe.headers![0][1]).to.equal('pass');
+				expect(httpe.headers![1][0]).to.equal('Content-Type');
+				expect(httpe.headers![1][1]).to.equal('application/json; charset=utf-8');
 			}
 		});
 		

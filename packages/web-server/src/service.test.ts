@@ -42,10 +42,12 @@ describe("WebServiceDecorator", () => {
         expect(appOptionsAnnotation).to.not.eq(null);
         expect(moduleAnnotation).to.not.eq(null);
 
-        expect(appOptionsAnnotation.options.version).to.eq('1.2.3');
+        expect(appOptionsAnnotation.options).to.exist;
+        expect(appOptionsAnnotation.options!.version).to.eq('1.2.3');
+        expect(moduleAnnotation.providers).to.exist;
         expect(moduleAnnotation.providers.length).to.eq(1);
-        expect(moduleAnnotation.providers[0]['provide']).to.eq('foo');
-        expect(moduleAnnotation.providers[0]['useValue']).to.eq(123);
+        expect((moduleAnnotation.providers[0] as any)['provide']).to.eq('foo');
+        expect((moduleAnnotation.providers[0] as any)['useValue']).to.eq(123);
 
         let webServerModule = moduleAnnotation.imports.find(x => typeof x === 'function' && x.name === 'WebServerModule');
         expect(webServerModule).to.exist;

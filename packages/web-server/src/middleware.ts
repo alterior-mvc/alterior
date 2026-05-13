@@ -4,16 +4,18 @@ import { isClass } from '@alterior/common';
 import type * as http from 'http';
 import { ConnectMiddleware } from './web-server-engine';
 import { Constructor } from '@alterior/runtime';
-import { WebEvent } from './metadata';
+import { RequestBase, ResponseBase, WebEvent } from './metadata';
 
 @MetadataName('@alterior/web-server:Middleware')
 export class MiddlewareAnnotation extends Annotation {}
 
-export interface AlteriorMiddleware {
-	handle(req: http.IncomingMessage, res: http.ServerResponse, next?: () => void): void;
+export interface AlteriorMiddlewareProvider {
+	handle(req: RequestBase, res: ResponseBase, next: () => void): void;
 }
 
-export type MiddlewareProvider = Constructor<AlteriorMiddleware> | ConnectMiddleware;
+export type AlteriorMiddlewareFunction = (req: RequestBase, res: ResponseBase, next: () => void) => void;
+export type AlteriorMiddleware = Constructor<AlteriorMiddlewareProvider> | AlteriorMiddlewareFunction;
+export type MiddlewareProvider =  AlteriorMiddleware | ConnectMiddleware;
 
 /**
  * Mark a class as a Middleware provider. 
@@ -31,7 +33,7 @@ export function prepareMiddleware(injector : Injector, middleware: any) {
 		return middleware;
 
 	
-	return (req, res, next) => {
+	return (req: RequestBase, res: ResponseBase, next: () => void) => {
 		let ownInjector = ReflectiveInjector.resolveAndCreate([ 
 			middleware,
 			{ provide: WebEvent, useValue: WebEvent.current } 

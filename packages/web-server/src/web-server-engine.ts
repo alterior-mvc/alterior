@@ -1,6 +1,6 @@
 import { Provider, inject } from "@alterior/di";
-import { WebEvent } from "./metadata";
-import { WebServerOptions } from './web-server-options';
+import { RequestBase, ResponseBase, WebEvent } from "./metadata";
+import { ServerOwnedWebEvent, WebServerOptions } from './web-server-options';
 import { Constructor } from "@alterior/runtime";
 import { LogSeverity, Logger } from "@alterior/logging";
 import { CertificateGenerator } from "./certificate-generator";
@@ -11,18 +11,23 @@ import * as http2 from "http2";
 import * as net from "net";
 import * as tls from "tls";
 
-export type ConnectMiddleware = (req: http.IncomingMessage | http2.Http2ServerRequest, res: http.ServerResponse | http2.Http2ServerResponse, next: (err?: any) => void) => void;
-export type ConnectApplication = (req: http.IncomingMessage | http2.Http2ServerRequest, res: http.ServerResponse | http2.Http2ServerResponse, next?: (err?: any) => void) => void;
+export type ConnectMiddlewareH1 = (req: http.IncomingMessage, res: http.ServerResponse, next: (err?: any) => void) => void;
+export type ConnectMiddlewareH2 = (req: http2.Http2ServerRequest, res: http2.Http2ServerResponse, next: (err?: any) => void) => void;
+export type ConnectMiddleware = ConnectMiddlewareH1 | ConnectMiddlewareH2;
+export type ConnectApplication = (req: RequestBase, res: ResponseBase, next?: (err?: any) => void) => void;
+
+export type RequestHandlerH1 = (request: http.IncomingMessage, response: http.ServerResponse) => void;
+export type RequestHandlerH2 = (request: http2.Http2ServerRequest, response: http2.Http2ServerResponse) => void;
 
 export abstract class WebServerEngine {
     protected logger = inject(Logger, { optional: true });
 
-    readonly app: ConnectApplication;
+    readonly app!: ConnectApplication;
     readonly providers: Provider[] = [];
 
-    abstract addConnectMiddleware(path: string, middleware: ConnectMiddleware);
-    abstract addRoute(method: string, path: string, handler: (event: WebEvent) => void, middleware?);
-    abstract addAnyRoute(handler: (event: WebEvent) => void);
+    abstract addConnectMiddleware(path: string, middleware: ConnectMiddleware): void;
+    abstract addRoute(method: string, path: string, handler: (event: WebEvent) => void, middleware?: ConnectMiddleware[]): void;
+    abstract addAnyRoute(handler: (event: ServerOwnedWebEvent) => void): void;
 
     readonly supportedMethods = [
         "checkout", "copy", "delete", "get", "head", "lock", "merge",
@@ -82,12 +87,19 @@ export abstract class WebServerEngine {
             let tlsOptions: tls.TlsOptions = {};
 
             if (options.sniHandler) {
+                let sniHandler = options.sniHandler;
                 tlsOptions.SNICallback = async (servername, callback) => {
                     try {
-                        let context = await options.sniHandler(servername)
-                        callback(undefined, context);
-                    } catch (e) {
-                        callback(e);
+                        let context = await sniHandler(servername)
+                        callback(null, context);
+                    } catch (e: unknown) {
+                        let error: Error;
+                        if (e instanceof Error)
+                            error = e;
+                        else
+                            error = new Error(`An unknown error occurred: ${(e as any).message || e}`, { cause: e });
+
+                        callback(error);
                     }
                 };
             } else if (options.certificate) {
@@ -96,10 +108,12 @@ export abstract class WebServerEngine {
             }
             
             primaryServer = primaryProtocols.includes('h2')
-                ? http2.createSecureServer(tlsOptions, this.app)
-                : https.createServer(tlsOptions, this.app);
+                ? http2.createSecureServer(tlsOptions, this.app as RequestHandlerH2)
+                : https.createServer(tlsOptions, this.app as RequestHandlerH1);
+
+
         } else {
-            primaryServer = http.createServer(this.app);
+            primaryServer = http.createServer(this.app as RequestHandlerH1);
         }
 
         this.log('info', `WebServer: Listening on port ${options.port}`);
@@ -117,7 +131,7 @@ export abstract class WebServerEngine {
      * @param options 
      */
     async listenInsecurely(options: WebServerOptions) {
-        let server = http.createServer(this.app);
+        let server = http.createServer(this.app as RequestHandlerH1);
         this.attachWebSocketHandler(server);
         server.listen(options.insecurePort);
         return server;
@@ -133,7 +147,7 @@ export abstract class WebServerEngine {
         routeEvent.response.end();
     }
 
-    static default: Constructor<WebServerEngine> = null;
+    static default: Constructor<WebServerEngine> | null = null;
 
     protected log(severity: LogSeverity, message: string) {
         if (this.logger)
@@ -156,9 +170,9 @@ export abstract class WebServerEngine {
      * @param server 
      */
     protected attachWebSocketHandler(server: http.Server | http2.Http2Server) {
-        server.on('upgrade', (req: http.IncomingMessage, socket: net.Socket, head: Buffer) => {
-            let res = new http.ServerResponse(req);
-            req['__upgradeHead'] = head;
+        server.on('upgrade', (req: RequestBase, socket: net.Socket, head: Buffer) => {
+            let res = new http.ServerResponse(req as http.IncomingMessage);
+            req.__upgradeHead = head;
             res.assignSocket(req.socket);
             this.app(req, res);
         });

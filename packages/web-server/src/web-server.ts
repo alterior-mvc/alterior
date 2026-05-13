@@ -5,19 +5,21 @@ import * as ws from 'ws';
 
 import { Injector, ReflectiveInjector, Module, Provider } from "@alterior/di";
 import { prepareMiddleware } from "./middleware";
-import { WebEvent } from "./metadata";
+import { ResponseBase, WebEvent } from "./metadata";
 import { RouteInstance, RouteDescription } from './route';
 import { ApplicationOptions, Application, AppOptionsAnnotation, AppOptions } from '@alterior/runtime';
 import { LogSeverity, Logger } from '@alterior/logging';
 import { WebServerEngine } from './web-server-engine';
-import { ParameterDisplayFormatter, RequestReporter, RequestReporterFilter, WebServerOptions } from './web-server-options';
+import { ParameterDisplayFormatter, RequestReporter, RequestReporterFilter, ServerOwnedWebEvent, WebServerOptions } from './web-server-options';
 import { ServiceDescription } from './service-description';
 import { ServiceDescriptionRef } from './service-description-ref';
 import { WebConduit } from './web-conduit';
 import { ellipsize } from './utils';
 import { HttpError } from '@alterior/common';
 import { HTTP_MESSAGES } from './http-messages';
+import { Socket } from 'net';
 
+const DEFAULT_LONG_PARAMETER_THRESHOLD = 100;
 const REPORTING_STATE = Symbol('Reporting state');
 
 /**
@@ -26,7 +28,7 @@ const REPORTING_STATE = Symbol('Reporting state');
 export class WebServer {
 	constructor(
 		injector: Injector,
-		options: WebServerOptions,
+		options: WebServerOptions | undefined,
 		readonly logger: Logger,
 		readonly appOptions: ApplicationOptions = {}
 	) {
@@ -41,28 +43,36 @@ export class WebServer {
 			}
 		}
 
-		this._engine = this._injector.get(WebServerEngine, null);
+		let engine = this._injector.get(WebServerEngine, null);
+        const noEngineFoundMessage = 
+			`No WebServerEngine found! Set WebServerEngine.default to an engine (@alterior/express, @alterior/fastify) `
+			+ `or provide a WebServerEngine via dependency injection.`
+        ;
 
-		if (!this._engine) {
-			this._engine = ReflectiveInjector.resolveAndCreate([
-				{ provide: WebServerEngine, useClass: options?.engine ?? WebServerEngine.default }
+		if (!engine) {
+            let engineClass = options?.engine ?? WebServerEngine.default;
+            if (!engineClass) {
+    			throw new Error(noEngineFoundMessage);
+            }
+
+			engine = ReflectiveInjector.resolveAndCreate([
+				{ provide: WebServerEngine, useClass: engineClass },
+                { provide: WebServer, useValue: this }
 			], this._injector).get(WebServerEngine, null);
 		}
 
-		if (!this._engine) {
-			throw new Error(
-				`No WebServerEngine found! Set WebServerEngine.default to an engine (@alterior/express, @alterior/fastify) `
-				+ `or provide a WebServerEngine via dependency injection.`
-			);
+		if (!engine) {
+			throw new Error(noEngineFoundMessage);
 		}
 
+        this._engine = engine;
 		this.installGlobalMiddleware();
 		this._websockets = new ws.Server({ noServer: true });
 		this.requestReporter = options?.requestReporter ?? this.requestReporter;
 		this.requestReporterFilters = options?.requestReporterFilters ?? this.requestReporterFilters;
 	}
 
-	private _injector: Injector;
+	private _injector!: Injector;
 	readonly options: WebServerOptions;
 	private _websockets: ws.Server;
 
@@ -74,13 +84,13 @@ export class WebServer {
 		return this._websockets;
 	}
 
-	private _httpServer: http.Server | http2.Http2Server;
+	private _httpServer: http.Server | http2.Http2Server | null = null;
 	get httpServer() { return this._httpServer; }
 
-	private _insecureHttpServer: http.Server;
+	private _insecureHttpServer?: http.Server;
 	get insecureHttpServer() { return this._insecureHttpServer; }
 
-	private _serviceDescription: ServiceDescription;
+	private _serviceDescription!: ServiceDescription;
 	private _engine: WebServerEngine;
 
 	get engine() {
@@ -239,7 +249,7 @@ export class WebServer {
 	 * @param forKey 
 	 * @returns 
 	 */
-	formatParameterForDisplay(event: WebEvent, value: any, forKey: string): string {
+	formatParameterForDisplay(event: ServerOwnedWebEvent, value: any, forKey: string): string {
 		return this.parameterDisplayFormatter(event, value, forKey);
 	}
 
@@ -268,7 +278,7 @@ export class WebServer {
 		this.requestReporter = reporter;
 	}
 
-	reportRequest(reportingEvent: 'middleware' | 'starting' | 'finished', event: WebEvent, source: string) {
+	reportRequest(reportingEvent: 'middleware' | 'starting' | 'finished', event: ServerOwnedWebEvent, source: string) {
 		if (this.options.silent)
 			return;
 
@@ -332,29 +342,29 @@ export class WebServer {
 		}
 
 		return ellipsize(
-			event.server.options.longParameterThreshold, 
-			event.server.maskSensitiveInformation(parameterString, forKey)
+			event.server?.options.longParameterThreshold ?? DEFAULT_LONG_PARAMETER_THRESHOLD,
+			event.server?.maskSensitiveInformation(parameterString, forKey) ?? parameterString
 		);
 	};
 
-	public static DEFAULT_REQUEST_REPORTER: RequestReporter = (reportingEvent: 'middleware' | 'starting' | 'finished', event: WebEvent, source: string, logger: Logger) => {
+	public static DEFAULT_REQUEST_REPORTER: RequestReporter = (reportingEvent: 'middleware' | 'starting' | 'finished', event: ServerOwnedWebEvent, source: string, logger: Logger) => {
 		let metadata = event.metadata[REPORTING_STATE] ??= { startedAt: Date.now(), state: 'running' };
 
 		let logRequest = () => {
 			let req: any = event.request;
-			let method = event.request.method;
-			let path = event.request['path'];
+			let method = event.request.method ?? 'UNKNOWN-METHOD';
 			if (!('path' in event.request))
 				throw new Error(`WebServerEngine must provide request.path!`);
-
+            
+            let path = event.request.path;
 			let queryString = '';
 			let host = event.request.headers?.['host'] ?? '';
-			let longParameterThreshold = event.server.longParameterThreshold;
+			let longParameterThreshold = event.server?.longParameterThreshold ?? DEFAULT_LONG_PARAMETER_THRESHOLD;
 
 			if ('query' in event.request) {
 				if (typeof event.request.query === 'string') {
 					queryString = event.request.query.startsWith('?') ? event.request.query : `?${event.request.query}`;
-				} else if (typeof event.request.query === 'object') {
+				} else if (typeof event.request.query === 'object' && event.request.query) {
 					queryString = `?${
 						Object.keys(event.request.query)
 							.map(key => [key, (event.request as any).query[key]])
@@ -399,7 +409,7 @@ export class WebServer {
 				if (event.response.statusCode >= 500)
 					severity = 'error';
 				
-				statusSuffix = ` » ${event.response.statusCode} ${event.response.statusMessage ?? HTTP_MESSAGES[event.response.statusCode]}`;
+				statusSuffix = ` » ${event.response.statusCode} ${(event.response.statusMessage as string | undefined) ?? HTTP_MESSAGES[event.response.statusCode]}`;
 			} else {
 				displayState = 'running';
 				if (state === 'long') {
@@ -411,7 +421,7 @@ export class WebServer {
 				}
 			}
 
-			if (event.metadata['uncaughtError'] && !event.server.options.silentErrors) {
+			if (event.metadata['uncaughtError'] && !event.server!.options.silentErrors) {
 				let error = event.metadata['uncaughtError'];
 				
 				if (error instanceof HttpError) {
@@ -467,18 +477,24 @@ export class WebServer {
 		if (!WebEvent.current)
 			throw new Error(`WebSocket.start() can only be called while handling an incoming HTTP request`);
 
-		if (!WebEvent.request['__upgradeHead'])
+        const request = WebEvent.request;
+        const response = WebEvent.response as ResponseBase & { detachSocket: (socket: Socket) => void };
+
+        if (!('detachSocket' in response))
+            throw new Error(`Websockets is currently only supported in HTTP 1.1.`);
+
+		if (!('__upgradeHead' in request) || !request.__upgradeHead)
 			throw new Error(`Client is not requesting an upgrade`);
 
 		return await new Promise<WebSocket>((resolve, reject) => {
 			this
 				._websockets
 				.handleUpgrade(
-					WebEvent.request,
-					WebEvent.request.socket,
-					WebEvent.request['__upgradeHead'],
+					request as http.IncomingMessage,
+					request.socket,
+					request.__upgradeHead as Buffer,
 					socket => {
-						WebEvent.response.detachSocket(WebEvent.request.socket);
+						response.detachSocket(request.socket);
 						resolve(<any>socket);
 					}
 				)
@@ -495,12 +511,15 @@ export class WebServer {
 	}
 
 	/**
-	 * Determine the request ID for a web event and apply it to the 
-	 * requestId field.
+     * Register the given event with the web server. This assigns the `server` field 
+     * and assigns a request ID.
 	 * @param event 
 	 */
-	 private addRequestId(event: WebEvent) {
-		let requestId: string;
+	 public registerEvent(event: WebEvent): ServerOwnedWebEvent {
+        let serverOwnedWebEvent = event as ServerOwnedWebEvent;
+        serverOwnedWebEvent.server = this;
+
+		let requestId: string | undefined;
 		let idHeaderNames = this.options.requestIdHeader;
 
 		if (typeof idHeaderNames === 'string')
@@ -508,7 +527,7 @@ export class WebServer {
 
 		if (idHeaderNames) {
 			for (let idHeaderName of idHeaderNames) {
-				let idHeader = event.request.headers[idHeaderName];
+				let idHeader = serverOwnedWebEvent.request.headers[idHeaderName];
 				if (!idHeader)
 					continue;
 
@@ -532,40 +551,47 @@ export class WebServer {
 			requestId = uuid.v4();
 
 		event.requestId = requestId;
+
+        return serverOwnedWebEvent;
 	}
 
 	/**
 	 * Installs this route into the given web server application. 
 	 * @param app 
 	 */
-	addRoute(definition: RouteDescription, method: string, path: string, handler: (event: WebEvent) => void, middleware = []) {
+	addRoute(definition: RouteDescription, method: string, path: string, handler: (event: ServerOwnedWebEvent) => void, middleware = []) {
+        this.serviceDescription.routes ??= [];
 		this.serviceDescription.routes.push(definition);
 
 		this.engine.addRoute(method, path, ev => {
-			this.addRequestId(ev);
+			let ownedEvent = this.registerEvent(ev);
 			this.logger.run(() => {
-				this.logger.withContext({ host: 'web-server', requestId: ev.requestId }, ev.requestId, () => handler(ev));
+				this.logger.withContext({ host: 'web-server', requestId: ev.requestId }, (ev as ServerOwnedWebEvent).requestId, () => handler(ownedEvent));
 			});
 		}, middleware);
 	}
 
-	handleError(error: any, event: WebEvent, route: RouteInstance, source: string) {
+	handleError(error: any, event: ServerOwnedWebEvent, route: RouteInstance, source: string) {
 		if (error instanceof HttpError || error.constructor === HttpError) {
 			let httpError = <HttpError>error;
 			event.response.statusCode = httpError.statusCode;
 			
-			httpError.headers
-				.forEach(header => event.response.setHeader(header[0], header[1]));
-
-            if (!httpError.headers.some(([key, value]) => key.toLowerCase() === 'content-type'))
+            const headers = (httpError.headers ?? []);
+			headers.forEach(header => event.response.setHeader(header[0], header[1]));
+            if (!headers.some(([key, value]) => key.toLowerCase() === 'content-type'))
 			    event.response.setHeader('Content-Type', 'application/json; charset=utf-8');
 
             if (httpError.body !== undefined) {
-                if (typeof httpError.body === 'string' || Buffer.isBuffer(httpError.body) || httpError.body instanceof ArrayBuffer || ArrayBuffer.isView(httpError.body)) {
+                if (httpError.body instanceof ArrayBuffer)
+                    event.response.write(new Uint8Array(httpError.body));
+                else if (ArrayBuffer.isView(httpError.body))
+                    event.response.write(new Uint8Array(httpError.body.buffer, httpError.body.byteOffset, httpError.body.byteLength));
+                else if (Buffer.isBuffer(httpError.body))
                     event.response.write(httpError.body);
-                } else {
+                else if (typeof httpError.body === 'string')
+                    event.response.write(httpError.body);
+                else
 			        event.response.write(JSON.stringify(httpError.body));
-                }
             }
             
 			event.response.end();
@@ -587,7 +613,7 @@ export class WebServer {
 
 		if (!this.options.hideExceptions) {
 			if (error instanceof Error && !('toJSON' in error)) {
-				let stack = error.stack.split(/\r?\n/).slice(1).map(line => line.replace(/ +at /, ''));
+				let stack = (error.stack ?? '').split(/\r?\n/).slice(1).map(line => line.replace(/ +at /, ''));
 				response.error = {
 					message: error.message ?? '«undefined»',
 					constructor: error.constructor.name ?? '«undefined»',

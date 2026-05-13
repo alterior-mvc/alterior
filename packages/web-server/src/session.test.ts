@@ -7,7 +7,7 @@ import { Injectable } from '@alterior/di';
 describe('Session', it => {
     it('transparently requests properties via get()', () => {
         class FooSession extends Session {
-            bar : number;
+            bar!: number;
         }
 
         let event = new WebEvent(<any>{
@@ -22,13 +22,13 @@ describe('Session', it => {
     });
     it.skip('transparently coerces properties based on type', () => {
         function nothing() {
-            return (t, p) => {};
+            return (t: any, p: any) => { };
         }
-        
+
         @Injectable()
         class FooSession extends Session {
             @nothing()
-            bar : number;
+            bar!: number;
         }
 
         let event = new WebEvent(<any>{
@@ -41,7 +41,7 @@ describe('Session', it => {
             expect(FooSession.current().bar).to.equal(123);
             expect(FooSession.current().bar).to.be.a('number');
         });
-        
+
         let event2 = new WebEvent(<any>{
             session: {
                 bar: 123

@@ -1,13 +1,12 @@
 import { suite } from 'razmin';
 import { expect } from 'chai';
 import { WebService } from './service';
-import { Get, Controller, Mount } from './metadata';
+import { Get } from './metadata';
 import { teststrap } from './teststrap';
-import { Module } from '@alterior/di';
 import { Application } from '@alterior/runtime';
-import * as fetch from 'node-fetch';
 import { Response } from './response';
 import { HttpError } from '@alterior/common';
+import { altFetch } from './utils';
 
 suite(describe => {
     describe('@Controller', it => {
@@ -51,7 +50,7 @@ suite(describe => {
             }
 
             let app = await Application.bootstrap(FakeModule, { silent: true });
-            let response = await fetch('http://localhost:32552/foo');
+            let response = await altFetch('http://localhost:32552/foo');
             expect(response.status).to.equal(200);
             
             expect(started, `Controller's altOnStart should have run exactly once`)
@@ -81,7 +80,7 @@ suite(describe => {
             }
 
             let app = await Application.bootstrap(FakeModule, { silent: true });
-            let response = await fetch('http://localhost:32553/foo');
+            let response = await altFetch('http://localhost:32553/foo');
             expect(response.status).to.equal(200);
             
             expect(initialized, `Controller's altOnInit should have run exactly once`)
@@ -103,7 +102,7 @@ suite(describe => {
             }
 
             let app = await Application.bootstrap(FakeModule, { silent: true });
-            let response = await fetch('http://localhost:32554/foo');
+            let response = await altFetch('http://localhost:32554/foo');
             expect(response.status).to.equal(409);
             app.stop();
         });
@@ -119,7 +118,7 @@ suite(describe => {
             }
 
             let app = await Application.bootstrap(FakeModule, { silent: true });
-            let response = await fetch('http://localhost:32555/foo');
+            let response = await altFetch('http://localhost:32555/foo');
             expect(response.status).to.equal(409);
             app.stop();
         });
@@ -135,7 +134,7 @@ suite(describe => {
             }
 
             let app = await Application.bootstrap(FakeModule, { silent: true });
-            let response = await fetch('http://localhost:32556/foo');
+            let response = await altFetch('http://localhost:32556/foo');
             expect(response.status).to.equal(409);
             app.stop();
         });

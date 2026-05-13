@@ -10,6 +10,17 @@
     * Moved to strict Typescript
 - `@/di`
     * Moved to strict Typescript
+- `@/web-server`
+    * Moved to strict Typescript. As a result type annotations are much improved.
+    * Fixed type issues related to HTTP/2 support
+    * Attempting to use WebSockets in HTTP/2 now throws a useful error, as Alterior does not yet support the new `CONNECT` method extension for doing WebSockets over HTTP/2.
+    * New `RequestBase` and `ResponseBase` types represent the minimum Request and Response type features that Alterior will support without having to spell out `http.IncomingMessage | http2.Http2ServerRequest` etc. The strictly typed variant of `Response.write` from `http2` module is required over the loosely typed variant in `http` module.
+    * Fixes a bug where using the tuple array or `Headers` types for `request.headers` within your own code would cause Alterior to fail to apply `Content-Type` properly.
+    * `Session.current.get()` and `Session.current.set()` now throw a proper explainable error if there is no session available within the current web server, instead of `TypeError`. Use the new `Session.current.exists()` to check if the server has a session before using get()/set().
+    * The types for middleware providers and functions are much improved, now supporting Connect-style middleware which explicitly requests HTTP/2 requests and responses, instead of forcing an assumption of HTTP/1.1 requests and responses.
+    * `CertificateGenerator` now defaults to SHA-256 instead of SHA-1.
+    * `CertificateGenerator` now throws if you specify an unsupported hash algorithm instead of falling back to SHA-1.
+    * `CertificateGenerator` now throws a more sensible error if something goes wrong
    
 # v3.15.0
 - `@/web-server`

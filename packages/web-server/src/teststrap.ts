@@ -1,12 +1,14 @@
-import { Application, AppOptions, AppOptionsAnnotation } from "@alterior/runtime";
 import supertest from 'supertest';
+
 import { Module } from "@alterior/di";
-import { WebServerOptions } from "./web-server-options";
-import { WebServerEngine } from "./web-server-engine";
+import { Application, AppOptions, AppOptionsAnnotation } from "@alterior/runtime";
+import { IncomingMessage, ServerResponse } from "http";
 import { WebServer } from './web-server';
+import { WebServerOptions } from "./web-server-options";
+import { RequestBase, ResponseBase } from './metadata';
 
 export function teststrap(module : Function, options? : WebServerOptions) {
-    return supertest(async (req, res, next) => {
+    return supertest(async (req: IncomingMessage, res: ServerResponse, next: () => void) => {
 
         let appOptionsAnnot = AppOptionsAnnotation.getForClass(module);
 
@@ -24,6 +26,6 @@ export function teststrap(module : Function, options? : WebServerOptions) {
         
         let server = WebServer.for(app.injector.get(module));
         server.options.silent = true;
-        server.engine.app(req, res, next);
+        server.engine.app(req as RequestBase, res as ResponseBase, next);
     });
 }

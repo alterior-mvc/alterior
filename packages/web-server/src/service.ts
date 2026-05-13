@@ -11,23 +11,27 @@ import { ControllerInstance } from './controller';
 import { RouteDefinition } from './metadata/route';
 import { InputAnnotation } from "./input";
 import { getParameterNames } from "@alterior/common";
+import { addToHeadersInit, altFetch } from "./utils";
+import { RouteTableEntry } from "./route";
+
+const JSON_MIME_TYPE = 'application/json';
 
 export type RestClient<T> = {
-    [P in keyof T as T[P] extends ((...args) => any) ? P : never]: 
-        T[P] extends ((...args) => any) 
-            ? (...args : Parameters<T[P]>) => (
-                ReturnType<T[P]> extends Promise<any> 
-                    ? ReturnType<T[P]> 
-                    : Promise<ReturnType<T[P]>>
-            )
-            : never
+    [P in keyof T as T[P] extends ((...args: any[]) => any) ? P : never]:
+    T[P] extends ((...args: any[]) => any)
+    ? (...args: Parameters<T[P]>) => (
+        ReturnType<T[P]> extends Promise<any>
+        ? ReturnType<T[P]>
+        : Promise<ReturnType<T[P]>>
+    )
+    : never
     ;
 };
 
 export interface ClientOptions { }
 
 export interface RestClientConstructor<T> {
-    new (endpoint : string, options? : ClientOptions) : T;
+    new(endpoint: string, options?: ClientOptions): T;
 }
 
 /**
@@ -35,7 +39,7 @@ export interface RestClientConstructor<T> {
  * of the options available for @Module() as well as WebServerModule.configure(...).
  */
 export interface WebServiceOptions extends ApplicationOptions, ModuleOptions {
-    server? : WebServerOptions;
+    server?: WebServerOptions;
 }
 
 /**
@@ -44,13 +48,13 @@ export interface WebServiceOptions extends ApplicationOptions, ModuleOptions {
  */
 @MetadataName('@alterior/web-server:WebService')
 export class WebServiceAnnotation extends Annotation {
-    constructor(options? : WebServiceOptions) {
+    constructor(options?: WebServiceOptions) {
         super();
     }
 }
 
 export interface WebServiceDecorator {
-    (options? : WebServiceOptions): (target : any, ...args: any[]) => void; 
+    (options?: WebServiceOptions): (target: any, ...args: any[]) => void;
 
     /**
      * (Experimental)
@@ -62,7 +66,7 @@ export interface WebServiceDecorator {
      * @param endpoint The endpoint where the service is hosted
      * @param options A set of options
      */
-    clientFor<T>(klass : Constructor<T>, endpoint : string, options? : ClientOptions): RestClient<T>;
+    clientFor<T>(klass: Constructor<T>, endpoint: string, options?: ClientOptions): RestClient<T>;
 
     /**
      * (Experimental)
@@ -72,7 +76,7 @@ export interface WebServiceDecorator {
      * 
      * @param klass 
      */
-    clientClassFor<T>(klass : Constructor<T>): RestClientConstructor<RestClient<T>>;
+    clientClassFor<T>(klass: Constructor<T>): RestClientConstructor<RestClient<T>>;
 }
 
 /**
@@ -81,31 +85,31 @@ export interface WebServiceDecorator {
  * can both act as the entry module of an Alterior application as well as define
  * REST routes using the @alterior/web-server @Get()/@Post()/etc decorators.
  */
-export const WebService : WebServiceDecorator = <any>WebServiceAnnotation.decorator({
-    validTargets: [ 'class' ],
-    factory: (site, options : WebServiceOptions) => {
+export const WebService: WebServiceDecorator = <any>WebServiceAnnotation.decorator({
+    validTargets: ['class'],
+    factory: (site, options: WebServiceOptions) => {
         @Module({
-            imports: [ LoggingModule ]
+            imports: [LoggingModule]
         })
         class WebServerModule {
             constructor(
-                private app : Application,
-                private rolesService : RolesService,
-                private logger : Logger
+                private app: Application,
+                private rolesService: RolesService,
+                private logger: Logger
             ) {
             }
 
             altOnInit() {
-                let  webserver : WebServer;
+                let webserver: WebServer;
 
                 webserver = new WebServer(this.app.runtime.injector, options.server, this.logger, this.app.options);
-                let allRoutes = [];
+                let allRoutes: RouteTableEntry[] = [];
                 let serviceInstance = new ControllerInstance(
-                    webserver, 
-                    site.target, 
-                    webserver.injector, 
-                    allRoutes, 
-                    undefined, 
+                    webserver,
+                    site.target,
+                    webserver.injector,
+                    allRoutes,
+                    undefined,
                     true
                 );
 
@@ -118,7 +122,7 @@ export const WebService : WebServiceDecorator = <any>WebServiceAnnotation.decora
                             webserver.options.defaultHandler(ev);
                             return;
                         }
-                        
+
                         ev.response.statusCode = 404;
                         ev.response.setHeader('Content-Type', 'application/json; charset=utf-8');
                         ev.response.write(JSON.stringify({ error: 'not-found' }));
@@ -143,7 +147,7 @@ export const WebService : WebServiceDecorator = <any>WebServiceAnnotation.decora
                 })
             }
         }
-        
+
         options = Object.assign({}, options);
 
         if (!options.imports)
@@ -154,64 +158,46 @@ export const WebService : WebServiceDecorator = <any>WebServiceAnnotation.decora
         Module(options)(site.target);
         AppOptions(options)(site.target);
         Service({ compiler: WebServiceCompiler })(site.target);
-        
+
         return new WebServiceAnnotation(options);
     }
 });
 
 export class RestClientError extends Error {
-    constructor(message : string, readonly response : Response) {
+    constructor(message: string, readonly response: Response) {
         super(message);
     }
 }
 
-WebService.clientClassFor = function<T>(klass : Constructor<T>): RestClientConstructor<RestClient<T>> {
-    function ctor(endpoint : string, options? : ClientOptions) {
-        let routes : RouteDefinition[] = klass.prototype['alterior:routes'] || [];
+WebService.clientClassFor = function <T>(klass: Constructor<T>): RestClientConstructor<RestClient<T>> {
+    function ctor(endpoint: string, options?: ClientOptions) {
+        let routes: RouteDefinition[] = klass.prototype['alterior:routes'] || [];
         let routeMap = new Map<string, RouteDefinition>();
         for (let route of routes)
             routeMap.set(route.method, route);
 
         return new Proxy({}, {
             get(target, prop, receiver) {
-                if (typeof prop === 'symbol' || typeof prop === 'number') 
-                    return undefined; 
-                let route = routeMap.get(prop);
-                if (!route) 
+                if (typeof prop === 'symbol' || typeof prop === 'number')
                     return undefined;
-
-                let fetchp : typeof fetch;
-
-                if (typeof fetch !== 'undefined') {
-                    fetchp = fetch;
-                } else {
-                    if (typeof require !== 'undefined') {
-                        try {
-                            fetchp = require('node-fetch');
-                        } catch (e) {
-                            console.error(`Failed to load node-fetch:`);
-                            console.error(e);
-                        }
-                    }
-                }
-
-                if (!fetchp)
-                    throw new Error(`No fetch() implementation available`);
+                let route = routeMap.get(prop);
+                if (!route)
+                    return undefined;
 
                 let returnType = Reflect.getMetadata('design:returntype', klass.prototype, route.method);
                 let paramTypes = Reflect.getMetadata('design:paramtypes', klass.prototype, route.method);
-                let paramNames : string[] = getParameterNames(klass.prototype[route.method]);
+                let paramNames: string[] = getParameterNames(klass.prototype[route.method]);
                 let paramAnnotations = Annotations.getParameterAnnotations(klass, route.method, false);
-        		let pathParamNames = Object.keys(
+                let pathParamNames = Object.keys(
                     Array.from(route.path.match(/:([A-Za-z0-9]+)/g) || [])
-                        .reduce((pv, cv) => (pv[cv] = 1, pv), {})
+                        .reduce((pv, cv) => (pv[cv] = 1, pv), {} as Record<string, 1>)
                 );
 
                 let paramFactories = paramNames.map((paramName, i) => {
                     let annots = paramAnnotations[i] || [];
                     let inputAnnot = <InputAnnotation>annots.find(x => x instanceof InputAnnotation);
 
-                    return (request : RequestInit, path : Record<string,string>, query : Record<string,string>, value : any) => {
+                    return (request: RequestInit, path: Record<string, string>, query: Record<string, string>, value: any) => {
                         let isBody = false;
 
                         if (inputAnnot) {
@@ -235,14 +221,15 @@ WebService.clientClassFor = function<T>(klass : Constructor<T>): RestClientConst
                         }
 
                         if (isBody) {
-                            request.headers['Content-Type'] = 'application/json';
+                            request.headers ??= {};
+                            addToHeadersInit(request.headers, 'Content-Type', JSON_MIME_TYPE);
                             request.body = JSON.stringify(value); // TODO: handle other body types
                         }
                     }
                 });
 
-                let pathVars = route.path.match(/:[^:/]/g);
-                let pathChunks : string[] = [];
+                let pathVars = route.path.match(/:[^:/]/g) ?? [];
+                let pathChunks: string[] = [];
                 let unconsumedPath = route.path;
                 for (let pathVar of pathVars) {
                     let index = unconsumedPath.indexOf(pathVar);
@@ -250,7 +237,7 @@ WebService.clientClassFor = function<T>(klass : Constructor<T>): RestClientConst
 
                     if (before)
                         pathChunks.push(before);
-                       
+
                     pathChunks.push(pathVar);
                     unconsumedPath = unconsumedPath.slice(index + pathVar.length);
                 }
@@ -258,16 +245,16 @@ WebService.clientClassFor = function<T>(klass : Constructor<T>): RestClientConst
                 if (unconsumedPath)
                     pathChunks.push(unconsumedPath);
 
-        		// Construct a set of easily addressable path parameter descriptions (pathParameterMap)
-        		// that can be decorated with insights from reflection later.
+                // Construct a set of easily addressable path parameter descriptions (pathParameterMap)
+                // that can be decorated with insights from reflection later.
 
-                return async (...args : any[]) => {
-                    let init : RequestInit = {
+                return async (...args: any[]) => {
+                    let init: RequestInit = {
                         method: route.httpMethod,
                         headers: []
                     };
-                    let path : Record<string,string> = {};
-                    let query : Record<string,string> = {};
+                    let path: Record<string, string> = {};
+                    let query: Record<string, string> = {};
 
                     for (let i = 0, max = args.length; i < max; ++i)
                         paramFactories[i](init, path, query, args[i]);
@@ -286,11 +273,11 @@ WebService.clientClassFor = function<T>(klass : Constructor<T>): RestClientConst
                     if (queryString !== '')
                         url = `${url}?${queryString}`;
 
-                    let response = await fetchp(url, init);
+                    let response = await altFetch(url, init);
 
                     if (response.status >= 400)
                         throw new RestClientError(`${response.status} ${response.statusText}`, response);
-                    
+
                     // TODO: more exotic response body types
                     return await response.json();
                 };
@@ -302,6 +289,6 @@ WebService.clientClassFor = function<T>(klass : Constructor<T>): RestClientConst
 };
 
 
-WebService.clientFor = function<T>(klass : Constructor<T>, endpoint : string, options? : ClientOptions) {
+WebService.clientFor = function <T>(klass: Constructor<T>, endpoint: string, options?: ClientOptions) {
     return new (WebService.clientClassFor(klass))(endpoint, options);
 };

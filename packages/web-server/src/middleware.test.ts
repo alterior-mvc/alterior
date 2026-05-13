@@ -2,6 +2,7 @@ import { suite } from 'razmin';
 import { prepareMiddleware, Middleware } from './middleware';
 import { ReflectiveInjector, Inject, InjectionToken } from '@alterior/di';
 import { expect } from 'chai';
+import { RequestBase, ResponseBase } from './metadata';
 
 suite(describe => {
 	describe('prepareMiddleware', it => {
@@ -12,7 +13,7 @@ suite(describe => {
 
             @Middleware()
             class SampleMiddleware {
-                handle(req, res, next) {
+                handle(req: RequestBase, res: ResponseBase, next: () => void) {
                     observedReq = req;
                     observedRes = res;
                     observedNext = next;        
@@ -50,7 +51,7 @@ suite(describe => {
                     observedSampleInjectable = sampleInjectable;
                 }
 
-                handle(req, res, next) {
+                handle(req: RequestBase, res: ResponseBase, next: () => void) {
                 }
             }
 
@@ -65,7 +66,7 @@ suite(describe => {
             let injector = ReflectiveInjector.resolveAndCreate([]);
             let observedReq, observedRes, observedNext;
 
-            function connectMiddleware(req, res, next) {
+            function connectMiddleware(req: RequestBase, res: ResponseBase, next: () => void) {
                 observedReq = req;
                 observedRes = res;
                 observedNext = next;

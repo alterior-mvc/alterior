@@ -20,7 +20,7 @@ export interface GeneratedCertificate {
 export type CertAttributes = { name? : string, shortName? : string, value : string }[];
 
 export class CertificateGenerator {
-    private toPositiveHex(hexString) {
+    private toPositiveHex(hexString: string) {
         // a hexString is considered negative if it's most significant bit is 1
         // because serial numbers use ones' complement notation
         // this RFC in section 4.1.2.2 requires serial numbers to be positive
@@ -35,12 +35,14 @@ export class CertificateGenerator {
         return mostSignificantHexAsInt.toString() + hexString.substring(1);
     }
 
-    private getAlgorithm(key) {
+    private getAlgorithm(key: 'sha256' | 'sha1') {
         switch (key) {
             case 'sha256':
                 return forge.md.sha256.create();
-            default:
+            case 'sha1':
                 return forge.md.sha1.create();
+            default:
+                throw new Error(`Unsupported hash algorithm '${key}'`);
         }
     }
 
@@ -99,26 +101,26 @@ export class CertificateGenerator {
                 }]
             }]);
 
-            cert.sign(forge.pki.privateKeyFromPem(keyPair.privateKey), this.getAlgorithm(options && options.algorithm));
+            cert.sign(forge.pki.privateKeyFromPem(keyPair.privateKey), this.getAlgorithm(options?.algorithm ?? 'sha256'));
 
             const fingerprint = forge.md.sha1
                 .create()
                 .update(forge.asn1.toDer(forge.pki.certificateToAsn1(cert)).getBytes())
                 .digest()
                 .toHex()
-                .match(/.{2}/g)
+                .match(/.{2}/g)!
                 .join(':');
 
             let pem = {
                 private: keyPair.privateKey,
                 public: keyPair.publicKey,
                 cert: forge.pki.certificateToPem(cert),
-                pkcs7: null,
+                pkcs7: null as string | null,
                 fingerprint: fingerprint,
-                clientprivate: null,
-                clientpublic: null,
-                clientcert: null,
-                clientpkcs7: null
+                clientprivate: null as forge.pki.PEM | null,
+                clientpublic: null as forge.pki.PEM | null,
+                clientcert: null as forge.pki.PEM | null,
+                clientpkcs7: null as forge.pki.PEM | null
             };
 
             if (options && options.pkcs7) {
@@ -178,9 +180,8 @@ export class CertificateGenerator {
                         }
                         return true;
                     });
-            }
-            catch (ex) {
-                throw new Error(ex);
+            } catch (e: any) {
+                throw new Error(`Failed to verify certificate chain: ${e.message || e}`, { cause: e });
             }
 
             return pem;
@@ -207,6 +208,6 @@ export class CertificateGenerator {
             });
         }
 
-        return generatePem(keyPair);
+        return generatePem(keyPair!);
     }
 }

@@ -2,16 +2,16 @@ import { Controller, Get, WebEvent } from "./metadata";
 import { ServiceDescriptionRef } from "./service-description-ref";
 
 export interface OpenApiContact {
-    name : string;
-    email : string;
-    url : string;
+    name: string;
+    email: string;
+    url: string;
 }
 
 export interface OpenApiServiceInfo {
-    title : string;
-    description : string;
-    contact? : OpenApiContact;
-    version : string;
+    title: string;
+    description?: string;
+    contact?: OpenApiContact;
+    version: string;
 }
 
 export interface OpenApiSecurityDefinition {
@@ -19,110 +19,110 @@ export interface OpenApiSecurityDefinition {
 }
 
 export interface OpenApiSecurityDefinitionMap {
-    [key : string] : OpenApiSecurityDefinition;
+    [key: string]: OpenApiSecurityDefinition;
 }
 
 export interface OpenApiTag {
-    name : string;
-    description : string;
+    name: string;
+    description: string;
 }
 
 export interface OpenApiComponents {
-    schemas : OpenApiMap<OpenApiSchema>;
+    schemas: OpenApiMap<OpenApiSchema>;
 }
 export interface OpenApiService {
-    info : OpenApiServiceInfo;
-    openapi : string;
-    tags : (OpenApiTag | string)[];
-    paths : OpenApiMap<OpenApiMap<OpenApiOperation>>;
-    components : OpenApiComponents;
+    info: OpenApiServiceInfo;
+    openapi: string;
+    tags: (OpenApiTag | string)[];
+    paths: OpenApiMap<OpenApiMap<OpenApiOperation>>;
+    components: OpenApiComponents;
 }
 
 export interface OpenApiResponseMap {
-    [status : string] : OpenApiResponse;
+    [status: string]: OpenApiResponse;
 }
 
 export interface OpenApiResponse {
-    description? : string;
-    schema? : OpenApiSchemaRef;
+    description?: string;
+    schema?: OpenApiSchemaRef;
 }
 
 export interface OpenApiSchemaRef {
-    type? : string;
-    $ref? : string;
+    type?: string;
+    $ref?: string;
 }
 
 export interface OpenApiParameter {
-    in? : string;
-    name? : string;
-    schema? : OpenApiSchemaRef;
-    format? : string;
-    required? : boolean;
-    example? : any;
+    in?: string;
+    name?: string;
+    schema?: OpenApiSchemaRef;
+    format?: string;
+    required?: boolean;
+    example?: any;
 }
 
 export interface OpenApiOperation {
-    operationId : string;
-    summary : string;
-    description : string;
-    parameters : OpenApiParameter[];
-    responses : OpenApiResponseMap;
-    tags : (OpenApiTag | string)[];
+    operationId?: string;
+    summary?: string;
+    description?: string;
+    parameters: OpenApiParameter[];
+    responses: OpenApiResponseMap;
+    tags: (OpenApiTag | string)[];
 }
 
 export interface OpenApiMap<T> {
-    [key : string] : T;
+    [key: string]: T;
 }
 
 export interface OpenApiSchema {
-    type : "object";
-    properties : OpenApiDefinitionPropertyMap;
-    required : string[];
-    description : string;
+    type: "object";
+    properties: OpenApiDefinitionPropertyMap;
+    required: string[];
+    description: string;
 }
 
 export interface OpenApiDefinitionPropertyMap {
-    [name : string] : OpenApiDefinitionProperty;
+    [name: string]: OpenApiDefinitionProperty;
 }
 
 export interface OpenApiDefinitionProperty {
-    type? : string;
-    format? : string;
-    description? : string;
-    $ref? : string;
+    type?: string;
+    format?: string;
+    description?: string;
+    $ref?: string;
 }
 
 @Controller('', { group: 'openapi' })
 export class OpenApiController {
     constructor(
-        private serviceDescriptionRef : ServiceDescriptionRef
+        private serviceDescriptionRef: ServiceDescriptionRef
     ) {
     }
 
     @Get('')
-    home(ev : WebEvent) : OpenApiService {
+    home(ev: WebEvent): OpenApiService {
         let desc = this.serviceDescriptionRef.description;
 
-        let info : OpenApiServiceInfo = {
+        let info: OpenApiServiceInfo = {
             title: desc.name || 'Untitled Web Service',
             description: desc.description,
             version: desc.version || '0.0.0'
         };
-        let paths : OpenApiMap<OpenApiMap<OpenApiOperation>> = {};
-        let components : OpenApiComponents = {} as any;
-        let securityDefinitions : OpenApiMap<OpenApiSecurityDefinition> = {};
-        let tags : (OpenApiTag | string)[] = [];
+        let paths: OpenApiMap<OpenApiMap<OpenApiOperation>> = {};
+        let components: OpenApiComponents = {} as any;
+        let securityDefinitions: OpenApiMap<OpenApiSecurityDefinition> = {};
+        let tags: (OpenApiTag | string)[] = [];
 
-        for (let route of desc.routes) {
+        for (let route of (desc.routes || [])) {
             let path = route.path;
             if (route.pathPrefix)
                 path = `${route.pathPrefix}${path}`;
-               
+
             path = path.replace(/\/+$/g, '');
 
             if (path === undefined || path === null || path === '')
                 path = '/';
-            
+
             let oapiPathName = path.replace(/:([A-Za-z0-9]+)/g, '{$1}');
             let loweredHttpMethod = route.httpMethod.toLowerCase();
 
@@ -133,7 +133,7 @@ export class OpenApiController {
                 operationId: route.method,
                 summary: (route.definition.options || {}).summary,
                 description: (route.definition.options || {}).description,
-                parameters: route.parameters.map(routeParam => ({
+                parameters: (route.parameters || []).map(routeParam => ({
                     in: routeParam.type,
                     name: routeParam.name,
                     schema: {
@@ -149,7 +149,7 @@ export class OpenApiController {
                         description: 'Unexpected error'
                     }
                 }),
-                tags: route.group ? [ route.group ] : []
+                tags: route.group ? [route.group] : []
             };
         }
 

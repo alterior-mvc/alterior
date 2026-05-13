@@ -11,11 +11,24 @@ export class Session {
         });
     }
 
+    exists() {
+        const request = WebEvent.request;
+        if (!('session' in request))
+            return false;
+    }
+
     get<T>(id : string, defaultValue? : T): T {
-        return WebEvent.current.request['session'][id] ?? defaultValue;
+        const request = WebEvent.request;
+        if (!('session' in request))
+            throw new Error(`Session is not available`);
+        return (request.session as Record<string, any>)[id] ?? defaultValue;
     }
 
     set<T>(id : string, value : T) {
-        WebEvent.current.request['session'][id] = value;
+        const request = WebEvent.request;
+        if (!('session' in request))
+            throw new Error(`Session is not available`);
+
+        (request.session as Record<string, any>)[id] = value;
     }
 }

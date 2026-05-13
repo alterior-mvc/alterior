@@ -1,6 +1,6 @@
 
 export interface FileUpload {
-	mv(destinationFile, callback : (err) => void);
+	mv(destinationFile: string, callback : (err: any) => void): void;
 	name : string;
 	data : Buffer;
 	encoding : string;

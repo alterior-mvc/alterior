@@ -362,11 +362,12 @@ a `handle()` function which takes the same arguments as a normal Connect-style m
 
 ```typescript
 import { inject } from '@alterior/di';
+import { RequestBase, ResponseBase } from '@alterior/web-server';
 
 class MyMiddleware {
     private service = inject(MyService);
 
-    handle(request: IncomingMessage, response: ServerResponse, next: (err?: any) => void) {
+    handle(request: RequestBase, response: ResponseBase, next: (err?: any) => void) {
         // ...
         next();
     }

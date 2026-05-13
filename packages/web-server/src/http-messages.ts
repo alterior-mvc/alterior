@@ -1,4 +1,4 @@
-export const HTTP_MESSAGES = {
+export const HTTP_MESSAGES: Record<number, string> = {
     100: 'Continue',
     101: 'Switching Protocols',
     102: 'Processing',

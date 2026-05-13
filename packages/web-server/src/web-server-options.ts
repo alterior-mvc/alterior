@@ -5,14 +5,16 @@ import * as tls from 'tls';
 import { WebServerEngine } from "./web-server-engine";
 import { Constructor } from "@alterior/runtime";
 import { MiddlewareProvider } from "./middleware";
+import type { WebServer } from './web-server';
 
 type Protocol = 'h2'
     | 'http/1.1'
     | 'http/1.0';
 
-export type RequestReporter = (reportingEvent: 'middleware' | 'starting' | 'finished', event: WebEvent, source: string, logger: Logger) => void;
-export type RequestReporterFilter = (event: WebEvent, source: string) => boolean;
-export type ParameterDisplayFormatter = (event: WebEvent, value: any, forKey: string) => string;
+export type ServerOwnedWebEvent = WebEvent & { requestId: string; server: WebServer };
+export type RequestReporter = (reportingEvent: 'middleware' | 'starting' | 'finished', event: ServerOwnedWebEvent, source: string, logger: Logger) => void;
+export type RequestReporterFilter = (event: ServerOwnedWebEvent, source: string) => boolean;
+export type ParameterDisplayFormatter = (event: ServerOwnedWebEvent, value: any, forKey: string) => string;
 
 export type InterceptedAction = (...args: any[]) => any;
 export type Interceptor = (action: InterceptedAction, ...args: any[]) => any;
@@ -145,14 +147,14 @@ export interface WebServerOptions {
      * no default handler will be used (useful when chaining the
      * Alterior application into a larger application)
      */
-    defaultHandler?: (ev: WebEvent) => void;
+    defaultHandler?: (ev: ServerOwnedWebEvent) => void;
 
     /**
      * A handler which is run when an error occurs while processing
      * a request. After the handler is completed, the default error handling
      * will proceed.
      */
-    onError?: (error: any, event: WebEvent, route: RouteInstance, source: string) => void;
+    onError?: (error: any, event: ServerOwnedWebEvent, route: RouteInstance, source: string) => void;
 
     /**
      * A handler which is run when an error occurs while processing
@@ -160,7 +162,7 @@ export interface WebServerOptions {
      * is skipped. If you want to observe errors without suppressing the default
      * error handling, use onError instead.
      */
-    handleError?: (error: any, event: WebEvent, route: RouteInstance, source: string) => void;
+    handleError?: (error: any, event: ServerOwnedWebEvent, route: RouteInstance, source: string) => void;
 
     /**
      * A function responsible for reporting incoming requests to logging. See also

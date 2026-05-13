@@ -1,6 +1,6 @@
 import { MetadataName, Annotation } from "@alterior/annotations";
 
-type InputType = 'queryParam' | 'queryParams' | 'path' | 'body';
+export type InputType = 'queryParam' | 'queryParams' | 'path' | 'body' | 'session';
 
 export interface InputOptions {
 	type: InputType;
@@ -15,12 +15,16 @@ export interface InputOptions {
  */
 @MetadataName('@alterior/web-server:Input')
 export class InputAnnotation extends Annotation {
-	constructor(options: InputOptions) {
+	constructor(options: Omit<InputOptions, 'name'> & { name?: string }) {
 		super(options);
 	}
 
-	type: InputType;
-	name: string;
+	type!: InputType;
+
+    /**
+     * Name specified for this input annotation. If unspecified, the name of the property is used instead.
+     */
+	name?: string;
 	default?: any;
 	format?: any;
 }
@@ -58,7 +62,7 @@ export function QueryParams() {
 		allowMultiple: false
 	})({
 		type: 'queryParams',
-		name: null,
+		name: undefined,
 		default: {}
 	});
 }

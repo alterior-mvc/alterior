@@ -1,4 +1,6 @@
 import * as http from 'http';
+import * as http2 from 'http2';
+
 import type { WebServer } from '../web-server';
 import { RouteInstance } from '../route';
 import { InjectionToken } from '@alterior/di';
@@ -11,12 +13,22 @@ export interface ServerSentEvent {
 	retry?: number;
 }
 
+export type RequestBase = (http.IncomingMessage | http2.Http2ServerRequest) & {
+    path: string;
+    __upgradeHead?: Buffer;
+}
+
+export type ResponseBase = (http.ServerResponse | http2.Http2ServerResponse) & {
+    write(chunk: string | Uint8Array<ArrayBufferLike>, callback?: (err: Error | null | undefined) => void): boolean;
+    write(chunk: string | Uint8Array, encoding: BufferEncoding, callback?: (err: Error | null | undefined) => void): boolean;
+};
+
 /**
  * Represents 
  */
 export class WebEvent<
-	RequestT extends http.IncomingMessage = http.IncomingMessage, 
-	ResponseT extends http.ServerResponse = http.ServerResponse
+	RequestT extends RequestBase = RequestBase, 
+	ResponseT extends ResponseBase = ResponseBase
 > {
 	constructor(request: RequestT, response: ResponseT) {		
 		this.request = request;
@@ -36,12 +48,13 @@ export class WebEvent<
 	request: RequestT;
 	response: ResponseT;
 	controller: any;
-	server: WebServer;
-	route: RouteInstance;
-
-	requestId: string;
+	server: WebServer | undefined;
+	route: RouteInstance | undefined;
+	requestId: string | undefined;
 
 	inject<T>(token: InjectionToken<T> | AnyConstructor<T>): T {
+        if (!this.server)
+            throw new Error(`Dependency injection is not available on a WebEvent without an associated WebServer`);
 		return this.server.injector.get(token);
 	}
 
@@ -66,7 +79,7 @@ export class WebEvent<
 	}
 
 	context<T>(callback: () => T): T {
-		return WebEvent.with(this, callback);
+		return WebEvent.with<T, RequestT, ResponseT>(this, callback);
 	}
 
 	static get request() {
@@ -89,17 +102,21 @@ export class WebEvent<
         if (!WebEvent.current)
             throw new Error(`WebSocket.start() can only be called while handling an incoming HTTP request`);
         
-		let contentType = WebEvent.response.getHeader('content-type');
+        const request = WebEvent.request;
+        const response = WebEvent.response;
 
-		if (contentType !== 'text/event-stream' && WebEvent.response.headersSent)
+		let contentType = response.getHeader('content-type');
+
+		if (contentType !== 'text/event-stream' && response.headersSent)
 			throw new Error(`Cannot send server-sent-event, headers are already sent and content type is not text/event-stream (it is '${contentType}')`);
 
-		if (!WebEvent.response.headersSent) {
-			WebEvent.response.statusCode = 200;
-			WebEvent.response.setHeader('Content-Type', 'text/event-stream');
-			WebEvent.response.setHeader('Cache-Control', 'no-cache');
-			WebEvent.response.removeHeader('Transfer-Encoding');
-			WebEvent.response.flushHeaders();
+		if (!response.headersSent) {
+			response.statusCode = 200;
+			response.setHeader('Content-Type', 'text/event-stream');
+			response.setHeader('Cache-Control', 'no-cache');
+			response.removeHeader('Transfer-Encoding');
+            if ('flushHeaders' in response)
+			    response.flushHeaders();
 		}
 		
 		let lines: string[] = [];
@@ -115,7 +132,7 @@ export class WebEvent<
 			lines.push(`data: ${JSON.stringify(event.data)}`);
 		}
 
-		WebEvent.request.socket.write(`${lines.join("\n")}\n\n`);
+		request.socket.write(`${lines.join("\n")}\n\n`);
 	}
 
 	static async sendEvent(event: ServerSentEvent) {
@@ -129,7 +146,7 @@ export class WebEvent<
 		return this.current.connected;
 	}
 
-	static with<T, RequestT extends http.IncomingMessage, ResponseT extends http.ServerResponse>(routeEvent: WebEvent<RequestT, ResponseT>, callback: () => T): T {
+	static with<T, RequestT extends RequestBase = RequestBase, ResponseT extends ResponseBase = ResponseBase>(routeEvent: WebEvent<RequestT, ResponseT>, callback: () => T): T {
 		let zone = Zone.current.fork({
 			name: `WebEventZone`,
 			properties: {

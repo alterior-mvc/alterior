@@ -5,70 +5,54 @@ import "reflect-metadata";
 import "source-map-support/register";
 
 import { suite } from 'razmin';
-import { WebServerEngine } from "./web-server-engine";
+import { ConnectApplication, ConnectMiddleware, ConnectMiddlewareH1, WebServerEngine } from "./web-server-engine";
 import { WebEvent } from "./metadata";
-import { WebServerOptions } from "./web-server-options";
+import { ServerOwnedWebEvent, WebServerOptions } from "./web-server-options";
 import * as http from 'http';
 
 import express from "express";
 import * as net from "net";
-import { Injectable } from '@alterior/di';
+import { inject, Injectable } from '@alterior/di';
+import { WebServer } from "./web-server";
 
 @Injectable()
 export class TestWebServerEngine extends WebServerEngine {
-	app = express();
+    private server = inject(WebServer);
 
-	sendJsonBody(routeEvent : WebEvent, body : any) {
-		routeEvent.response.setHeader('Content-Type', 'application/json; charset=utf-8');
-		routeEvent.response.write(JSON.stringify(body))
-		routeEvent.response.end();
-	}
-	
-	private getRegistrarName(method : string) {
-		let registrar = method.toLowerCase();
-		if (!this.supportedMethods.includes(registrar))
-			throw new Error(`The specified method '${method}' is not supported by Express.`);
-			
-		return registrar;
-	}
+    readonly express = express();
+    readonly app = this.express as ConnectApplication; // TODO: Express does not technically support HTTP/2
 
-	addConnectMiddleware(path : string, middleware : any) {
-		this.app.use(path, middleware);
-	}
+    sendJsonBody(routeEvent: WebEvent, body: any) {
+        routeEvent.response.setHeader('Content-Type', 'application/json; charset=utf-8');
+        routeEvent.response.write(JSON.stringify(body))
+        routeEvent.response.end();
+    }
 
-	async listen(options : WebServerOptions) {
-		let server : http.Server;
-		let protocols = ['http/1.1', 'http/1.0'];
+    private getRegistrarName(method: string) {
+        let registrar = method.toLowerCase();
+        if (!this.supportedMethods.includes(registrar))
+            throw new Error(`The specified method '${method}' is not supported by Express.`);
 
-		if (options.protocols)
-			protocols = options.protocols;
-		
-		server = http.createServer(this.app);
-		server.listen(options.port);
+        return registrar;
+    }
 
-		server.on('upgrade', (req : http.IncomingMessage, socket : net.Socket, head : Buffer) => {
-			let res = new http.ServerResponse(req);
-			req['__upgradeHead'] = head;
-			res.assignSocket(req.socket);
-			this.app(req, res);
-		});
+    override addConnectMiddleware(path: string, middleware: ConnectMiddleware) {
+        this.express.use(path, middleware as ConnectMiddlewareH1); // TODO: Express doesn't support H/2 yet.
+    }
 
-		return server;
-	}
-	
-	addRoute(method : string, path : string, handler : (event : WebEvent) => void, middleware?) {
-		if (!middleware)
-			middleware = [];
-			
-		this.app[this.getRegistrarName(method)](
-			path, ...middleware, 
-			(req, res) => handler(new WebEvent(req, res))
-		);
-	}
+    override addRoute(method: string, path: string, handler: (event: WebEvent) => void, middleware?: ConnectMiddleware[]) {
+        if (!middleware)
+            middleware = [];
 
-	addAnyRoute(handler : (event : WebEvent) => void) {
-		this.app.use((req, res) => handler(new WebEvent(req, res)));
-	}
+        (this.app as any)[this.getRegistrarName(method)](
+            path, ...middleware,
+            (req: express.Request, res: express.Response) => handler(new WebEvent(req, res))
+        );
+    }
+
+    override addAnyRoute(handler: (event: ServerOwnedWebEvent) => void) {
+        this.express.use((req, res) => handler(this.server.registerEvent(new WebEvent(req, res))));
+    }
 }
 
 
@@ -78,4 +62,4 @@ suite()
     .withTimeout(10 * 1000)
     .include(['**/*.test.js'])
     .run()
-;
+    ;
