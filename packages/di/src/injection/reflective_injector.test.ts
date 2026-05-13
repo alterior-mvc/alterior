@@ -147,7 +147,7 @@ suite(describe => {
         }
 
         @Inject()
-        foo : Dependency;
+        foo! : Dependency;
       }
 
       const injector = createInjector([Sample]);
@@ -364,7 +364,7 @@ suite(describe => {
       try {
         injector.get(Car);
         throw 'Must throw';
-      } catch (e) {
+      } catch (e: any) {
         expect(e.message).to.contain(`Error during instantiation of Engine! (${stringify(Car)} -> Engine)`);
         expect(getOriginalError(e) instanceof Error).to.be.ok;
         expect(e.keys[0].token).to.equal(Engine);

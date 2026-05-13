@@ -10,7 +10,7 @@ import { DebugContext } from './lang';
 export const ERROR_TYPE = 'ngType';
 export const ERROR_COMPONENT_TYPE = 'ngComponentType';
 export const ERROR_DEBUG_CONTEXT = 'ngDebugContext';
-export const ERROR_ORIGINAL_ERROR = 'ngOriginalError';
+export const ERROR_ORIGINAL_ERROR = 'cause';
 export const ERROR_LOGGER = 'ngErrorLogger';
 
 export function getType(error: Error): Function {

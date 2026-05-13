@@ -10,7 +10,7 @@ export interface ConfiguredModule extends ModuleOptions {
     ngModule? : ModuleLike;
 }
 
-export function configureModule(module, providers : Provider[]): ConfiguredModule {
+export function configureModule(module: ModuleLike, providers : Provider[]): ConfiguredModule {
     return {
         $module: module,
         ngModule: module,
@@ -29,24 +29,24 @@ export interface ModuleOptions {
 @MetadataName('@alterior/di:Module')
 export class ModuleAnnotation extends Annotation implements ModuleOptions {
     constructor(moduleOptions? : ModuleOptions) {
-        super(moduleOptions);
+        super({ tasks: [], imports: [], providers: [], ...moduleOptions });
     }
 
     /**
      * Task classes which are part of this module
      * @deprecated
      */
-    tasks : any[];
+    tasks! : any[];
 
     /**
      * Modules imported by this module
      */
-    imports: ModuleLike[];
+    imports!: ModuleLike[];
 
     /**
      * Dependency injection providers
      */
-    providers: Provider[];
+    providers!: Provider[];
 }
 
 /**

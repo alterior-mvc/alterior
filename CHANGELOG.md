@@ -8,6 +8,8 @@
     * Moved to strict Typescript
 - `@/common`
     * Moved to strict Typescript
+- `@/di`
+    * Moved to strict Typescript
    
 # v3.15.0
 - `@/web-server`

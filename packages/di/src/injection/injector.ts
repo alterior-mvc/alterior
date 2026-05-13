@@ -24,7 +24,7 @@ class _NullInjector implements Injector {
   }
 }
 
-let CURRENT_INJECTOR: Injector = null;
+let CURRENT_INJECTOR: Injector | null = null;
 
 export interface InjectorGetOptions {
   /**
