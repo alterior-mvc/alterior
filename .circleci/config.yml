@@ -13,13 +13,13 @@ commands:
       - run: sudo npm install npm@9 -g
       - restore_cache:
           keys:
-          - v1-dependencies-<< parameters.version >>-{{ checksum "package.json" }}
-          - v1-dependencies-<< parameters.version >>-
+          - v2-dependencies-<< parameters.version >>-{{ checksum "package.json" }}
+          - v2-dependencies-<< parameters.version >>-
       - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-<< parameters.version >>-{{ checksum "package.json" }}
+          key: v2-dependencies-<< parameters.version >>-{{ checksum "package.json" }}
       - run: npm run bootstrap
       - run: npm run build -- --unattended --serial
       - run: npm test -- --unattended --serial
