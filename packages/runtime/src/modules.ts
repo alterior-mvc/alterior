@@ -1,14 +1,15 @@
 import { ModuleAnnotation, ModuleOptions, Module, ModuleLike } from "@alterior/di";
 import { Injector, Provider, ReflectiveInjector } from "@alterior/di";
-import { timeout, Environment } from "@alterior/common";
+import { Environment } from "@alterior/common";
 import { RoleConfigurationMode, RoleState, RolesService } from "./roles.service";
+
 /**
  * Combines a module annotation and a target class into a single 
  * object for storage purposes in Runtime and related objects.
  */
-export class ModuleDefinition {
-    metadata : ModuleAnnotation;
-    target : any;
+export interface ModuleDefinition {
+    readonly metadata: ModuleAnnotation;
+    readonly target: any;
 }
 
 /**
@@ -16,12 +17,9 @@ export class ModuleDefinition {
  * Contains both the module definition as well 
  * as a reference to the module instance itself.
  */
-export class ModuleInstance {
-    constructor(
-        readonly definition : ModuleDefinition,
-        readonly instance : any
-    ) {
-    }
+export interface ModuleInstance {
+    readonly definition: ModuleDefinition;
+    readonly instance: any;
 }
 
 /**
@@ -30,19 +28,25 @@ export class ModuleInstance {
  * the module instances and running lifecycle events.
  */
 export class Runtime {
-    constructor(entryModule : Function) {
+    constructor(entryModule: Function) {
         this.resolveModule(entryModule);
     }
 
-    definitions : ModuleDefinition[] = [];
-    visited : ModuleLike[] = [];
-    instances : ModuleInstance[] = null;
+    definitions: ModuleDefinition[] = [];
+    visited: ModuleLike[] = [];
+    private _instances: ModuleInstance[] | undefined = undefined;
+    
+    get instances() {
+        if (!this._instances)
+            throw new Error(`Cannot acquire module instances before the Runtime instance is loaded (see load())`);
+        return this._instances;
+    }
 
     /**
      * Get a specific service from the dependency injector.
      * @param ctor 
      */
-    getService<T>(ctor : { new(...args) : T }): T {
+    getService<T>(ctor: { new(...args: any[]): T }): T {
         return this.injector.get(ctor);
     }
 
@@ -50,7 +54,7 @@ export class Runtime {
      * Retrieve the providers that were collected from the 
      * module graph and used to create the primary injector.
      */
-    providers : Provider[] = [];
+    providers: Provider[] = [];
 
     /**
      * Iterate over the module definitions which are part of this 
@@ -59,12 +63,12 @@ export class Runtime {
      *  
      * @param providers An array which will be populated
      */
-    contributeProviders(providers : Provider[]) {
+    contributeProviders(providers: Provider[]) {
         providers.push({ provide: Runtime, useValue: this });
         this.definitions
             .filter(defn => defn.metadata && defn.metadata.providers)
             .forEach(defn => providers.push(...defn.metadata.providers))
-        ;
+            ;
     }
 
     /**
@@ -77,7 +81,7 @@ export class Runtime {
                 ALT_ROLES_ALL_EXCEPT: string,
                 ALT_ROLES_DEFAULT_EXCEPT: string;
             }>()
-        ;
+            ;
 
         let roleMode: RoleConfigurationMode = 'default';
         let roles: string[] = [];
@@ -91,7 +95,7 @@ export class Runtime {
         } else if (roleEnv.ALT_ROLES_DEFAULT_EXCEPT) {
             roleMode = 'default-except';
             roles = roleEnv.ALT_ROLES_DEFAULT_EXCEPT.split(',');
-        } 
+        }
 
         let rolesService = this.injector.get(RolesService);
         if (roleMode !== 'default') {
@@ -112,14 +116,14 @@ export class Runtime {
         return this._selfTest;
     }
 
-    processCommandLine(args : string[]) {
+    processCommandLine(args: string[]) {
         let argIndex = 0;
 
         let optionValue = () => {
             let arg = args[argIndex];
             if (argIndex + 1 >= args.length)
                 throw new Error(`You must specify a value for option ${arg}`);
-            
+
 
             let value = args[++argIndex];
 
@@ -131,7 +135,7 @@ export class Runtime {
         };
 
         let roleMode = 'default';
-        let roles: string[];
+        let roles: string[] | undefined;
 
         for (; argIndex < args.length; ++argIndex) {
             let arg = args[argIndex];
@@ -151,8 +155,17 @@ export class Runtime {
 
         let rolesService = this.injector.get(RolesService);
         if (roleMode !== 'default') {
+            if (!roles)
+                throw new Error(`Internal error: roleMode is set, but roles is not`);
             rolesService.configure({ mode: 'only', roles });
         }
+    }
+
+    /**
+     * True if the runtime instance has been loaded. Becomes true after calling load().
+     */
+    get loaded() { 
+        return !!this._instances;
     }
 
     /**
@@ -160,20 +173,25 @@ export class Runtime {
      * to fire the altOnStart() method, send "OnStart". 
      * @param eventName 
      */
-    fireEvent(eventName : string) {
-        for (let modInstance of this.instances) {
+    fireEvent(eventName: string) {
+        if (!this._instances)
+            throw new Error(`Cannot fire events until the Runtime instance has been loaded (see load())`);
+        
+        for (let modInstance of this._instances) {
             if (modInstance.instance[`alt${eventName}`])
                 modInstance.instance[`alt${eventName}`]();
         }
     }
 
-    private _injector : Injector = null;
+    private _injector: Injector | undefined = undefined;
 
     /**
      * Get the runtime's dependency injector. This injector can provide all dependencies specified 
      * in the imported modules' `providers` definitions.
      */
     get injector() {
+        if (!this._injector)
+            throw new Error(`Cannot acquire injector before the Runtime instance is loaded (see load())`);
         return this._injector;
     }
 
@@ -184,16 +202,16 @@ export class Runtime {
      * 
      * @param injector 
      */
-    load(injector : Injector): ModuleInstance[] {
-        if (this.instances)
-            return;
+    load(injector: Injector): ModuleInstance[] {
+        if (this._instances)
+            return this._instances;
 
-        let ownInjector : ReflectiveInjector;
+        let ownInjector: ReflectiveInjector;
         let providers = this.definitions.map(x => x.target);
 
         try {
             ownInjector = ReflectiveInjector.resolveAndCreate(
-                providers, 
+                providers,
                 injector
             );
         } catch (e) {
@@ -206,11 +224,9 @@ export class Runtime {
         }
 
         this._injector = ownInjector;
-
-        let moduleInstances = this.definitions.map (defn => new ModuleInstance(defn, ownInjector.get(defn.target)));
-        this.instances = moduleInstances;
-        
-        return this.instances;
+        return this._instances = this.definitions.map(definition => ({
+            definition, instance: ownInjector.get(definition.target)
+        }));
     }
 
     /**
@@ -259,7 +275,7 @@ export class Runtime {
      * 
      * @param module 
      */
-    public getMetadataForModule(module : ModuleLike): ModuleAnnotation {
+    public getMetadataForModule(module: ModuleLike): ModuleAnnotation {
         return ModuleAnnotation.getForClass(module);
     }
 
@@ -269,7 +285,7 @@ export class Runtime {
      * so resolveModule() on the same runtime object will not work, preventing 
      * loops.
      */
-    private resolveModule(module : ModuleLike) {
+    private resolveModule(module: ModuleLike) {
 
         // Prevent infinite recursion
 
@@ -278,29 +294,20 @@ export class Runtime {
         this.visited.push(module);
 
         // Construct this compilation unit
-        let isExtension = false;
+        if ('$module' in module) {
+            let parentModule = module.$module;
+            let options: ModuleOptions = { ...module };
+            delete (options as any).$module;
 
-        if (module['$module']) {
-            isExtension = true;
-            // This is a mask
-            module = Object.assign({}, module);
-            let parentModule = module['$module'];
-            let options : ModuleOptions = Object.assign({}, module as any);
-            delete module['$module'];
-
-            if (!options.imports)
-                options.imports = [];
-
+            options.imports ??= [];
             options.imports.push(parentModule);
 
-            @Module(options) class subModule {};
-            module = subModule;
-            
-            let metadata = this.getMetadataForModule(module);
+            @Module(options) class ConfiguredModule { };
+            module = ConfiguredModule;
         }
 
         let metadata = this.getMetadataForModule(module);
-        
+
         if (metadata && metadata.imports) {
             let position = 0;
 
@@ -313,8 +320,8 @@ export class Runtime {
                 ++position;
             }
         }
-        
-        this.definitions.push({ 
+
+        this.definitions.push({
             target: module,
             metadata,
         });

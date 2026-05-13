@@ -6,29 +6,27 @@ import { Time, Environment } from '@alterior/common';
 
 describe("Modules", () => {
     it('allows injection of the Injector', () => {
-        let sawInjector : Injector = null;
+        let sawInjector: Injector | undefined;
         @Module({
 
         })
         class TestModule {
-            constructor(injector : Injector) {
+            constructor(injector: Injector) {
                 sawInjector = injector;
             }
         }
 
         Application.bootstrap(TestModule);
 
-        expect(sawInjector).not.to.be.null;
+        expect(sawInjector).to.exist;
 
-        let directInjectedInjector = sawInjector.get(Injector);
-
-        expect(directInjectedInjector).not.to.be.null;
+        let directInjectedInjector = sawInjector!.get(Injector);
+        expect(directInjectedInjector).not.to.be.null; // should be impossible, get() will throw instead
         expect(directInjectedInjector).to.equal(sawInjector);
-
     });
 
     it('uses providers for dependency injection', async () => {
-        let sawFoo : number = null;
+        let sawFoo: number | undefined;
 
         @Module({
             providers: [
@@ -36,7 +34,7 @@ describe("Modules", () => {
             ]
         })
         class TestModule {
-            constructor(@Inject('foo') foo : number) {
+            constructor(@Inject('foo') foo: number) {
                 sawFoo = foo;
             }
         }
@@ -45,20 +43,20 @@ describe("Modules", () => {
         expect(sawFoo).to.eq(123);
     });
     it('provides providers of imported modules', async () => {
-        let sawFoo : number = null;
-        
+        let sawFoo: number | undefined;
+
         @Module({
-            providers: [ 
+            providers: [
                 { provide: "foo", useValue: 123456 }
             ]
         })
-        class SubModule {}
+        class SubModule { }
 
         @Module({
-            imports: [ SubModule ]
+            imports: [SubModule]
         })
         class TestModule {
-            constructor(@Inject('foo') foo : number) {
+            constructor(@Inject('foo') foo: number) {
                 sawFoo = foo;
             }
         }
@@ -70,25 +68,25 @@ describe("Modules", () => {
         expect(sawFoo).to.eq(123456);
     });
     it('does not fail with multiple instances of the same shared dependency', async () => {
-        let sawFoo : number = null;
-        
+        let sawFoo: number | undefined;
+
         @Module({
-            providers: [ 
+            providers: [
                 { provide: "foo", useValue: 123456 }
             ]
         })
-        class DependencyModule {}
+        class DependencyModule { }
 
         @Module({
-            imports: [ DependencyModule ]
+            imports: [DependencyModule]
         })
-        class SubModule {}
+        class SubModule { }
 
         @Module({
-            imports: [ SubModule, DependencyModule ]
+            imports: [SubModule, DependencyModule]
         })
         class TestModule {
-            constructor(@Inject('foo') foo : number) {
+            constructor(@Inject('foo') foo: number) {
                 sawFoo = foo;
             }
         }
@@ -100,29 +98,29 @@ describe("Modules", () => {
         expect(sawFoo).to.eq(123456);
     });
     it('does not fail with multiple differently configured instances of the same shared dependency', async () => {
-        let sawFoo : string = null;
-        let sawBar : number = null;
-        
+        let sawFoo: string | undefined;
+        let sawBar: number | undefined;
+
         interface DependencyConfigInterface {
-            foo? : string;
-            bar? : number;
+            foo?: string;
+            bar?: number;
         }
 
         @Injectable()
         class DependencyConfig implements DependencyConfigInterface {
-            constructor(config : DependencyConfigInterface) {
+            constructor(config: DependencyConfigInterface) {
                 Object.assign(this, config);
             }
 
-            foo : string = 'abcdef';
-            bar : number = 98765;
+            foo: string = 'abcdef';
+            bar: number = 98765;
         }
 
         @Injectable()
         class DependencyService {
             constructor(
                 @Optional()
-                private config : DependencyConfig
+                private config: DependencyConfig
             ) {
             }
 
@@ -136,10 +134,10 @@ describe("Modules", () => {
         }
 
         @Module({
-            providers: [ DependencyService ]
+            providers: [DependencyService]
         })
         class DependencyModule {
-            static configure(config : DependencyConfigInterface) {
+            static configure(config: DependencyConfigInterface) {
                 return {
                     $module: DependencyModule,
                     providers: [
@@ -150,15 +148,15 @@ describe("Modules", () => {
         }
 
         @Module({
-            imports: [ DependencyModule ]
+            imports: [DependencyModule]
         })
-        class SubModule {}
+        class SubModule { }
 
         @Module({
-            imports: [ SubModule, DependencyModule.configure({ bar: 999 }) ]
+            imports: [SubModule, DependencyModule.configure({ bar: 999 })]
         })
         class TestModule {
-            constructor(service : DependencyService) {
+            constructor(service: DependencyService) {
                 sawFoo = service.getFoo();
                 sawBar = service.getBar();
             }
@@ -180,14 +178,14 @@ describe("Modules", () => {
         }
 
         @Module({
-            imports: [ DependencyModule ]
+            imports: [DependencyModule]
         })
         class SubModule {
             constructor() { log += 'sub;' }
         }
 
         @Module({
-            imports: [ SubModule, DependencyModule ]
+            imports: [SubModule, DependencyModule]
         })
         class TestModule {
             constructor() { log += 'test;' }
@@ -199,7 +197,7 @@ describe("Modules", () => {
         expect(application.runtime.instances.filter(x => x.definition.target === SubModule).length).to.eq(1);
         expect(log).to.eq('dependency;sub;test;');
     });
-    
+
     it('runs the altOnInit of all modules in dependency-order', async () => {
         let log = '';
 
@@ -209,14 +207,14 @@ describe("Modules", () => {
         }
 
         @Module({
-            imports: [ DependencyModule ]
+            imports: [DependencyModule]
         })
         class SubModule {
             altOnInit() { log += 'sub;' }
         }
 
         @Module({
-            imports: [ SubModule, DependencyModule ]
+            imports: [SubModule, DependencyModule]
         })
         class TestModule {
             altOnInit() { log += 'test;' }
@@ -228,14 +226,14 @@ describe("Modules", () => {
         expect(application.runtime.instances.filter(x => x.definition.target === SubModule).length).to.eq(1);
         expect(log).to.eq('dependency;sub;test;');
     });
-    
+
     it('injects Time', async () => {
-        let observedTime : Time;
+        let observedTime: Time | undefined;
         let baseTime = Date.now();
 
         @Module()
         class TestModule {
-            constructor(time : Time) {
+            constructor(time: Time) {
                 observedTime = time;
             }
         }
@@ -244,12 +242,12 @@ describe("Modules", () => {
 
         expect(observedTime).to.exist;
         expect(observedTime).to.be.instanceOf(Time);
-        expect(typeof observedTime.now() === 'number');
-        expect(observedTime.now()).to.be.at.least(baseTime);
+        expect(typeof observedTime!.now() === 'number');
+        expect(observedTime!.now()).to.be.at.least(baseTime);
     });
 
     it('allows Time to be overridden', async () => {
-        let observedTime : Time;
+        let observedTime: Time | undefined;
         let specialDate = new Date();
 
         class FakeTime extends Time {
@@ -263,10 +261,10 @@ describe("Modules", () => {
         }
 
         @Module({
-            providers: [ { provide: Time, useClass: FakeTime }]
+            providers: [{ provide: Time, useClass: FakeTime }]
         })
         class TestModule {
-            constructor(time : Time) {
+            constructor(time: Time) {
                 observedTime = time;
             }
         }
@@ -275,15 +273,15 @@ describe("Modules", () => {
 
         expect(observedTime).to.exist;
         expect(observedTime).to.be.instanceOf(FakeTime);
-        expect(observedTime.now()).to.equal(123);
-        expect(observedTime.current()).to.equal(specialDate);
+        expect(observedTime!.now()).to.equal(123);
+        expect(observedTime!.current()).to.equal(specialDate);
     });
 
     it('injects Environment', async () => {
-        let observedEnv : Environment;
+        let observedEnv: Environment | undefined;
         @Module()
         class TestModule {
-            constructor(env : Environment) {
+            constructor(env: Environment) {
                 observedEnv = env;
             }
         }
@@ -295,25 +293,24 @@ describe("Modules", () => {
     });
 
     it('allows Environment to be overridden', async () => {
-        let observedEnv : Environment;
+        let observedEnv: Environment | undefined;
 
         class FakeEnvironment extends Environment {
 
         }
 
-        @Module({ providers: [ { provide: Environment, useClass: FakeEnvironment } ] })
+        @Module({ providers: [{ provide: Environment, useClass: FakeEnvironment }] })
         class TestModule {
-            constructor(env : Environment) {
+            constructor(env: Environment) {
                 observedEnv = env;
             }
         }
 
-        let application = await Application.bootstrap(TestModule);
-
+        await Application.bootstrap(TestModule);
         expect(observedEnv).to.exist;
         expect(observedEnv).to.be.instanceOf(FakeEnvironment);
     });
-    
+
     it('allows an injection token within a module', async () => {
         let log = '';
 
@@ -322,8 +319,8 @@ describe("Modules", () => {
         @Injectable()
         class Options {
             constructor(
-                @Inject(ITEM) 
-                readonly options
+                @Inject(ITEM)
+                readonly options: any
             ) {
             }
         }
@@ -331,7 +328,7 @@ describe("Modules", () => {
         @Injectable()
         class MyService {
             constructor(
-                readonly options : Options
+                readonly options: Options
             ) {
 
             }
@@ -342,7 +339,7 @@ describe("Modules", () => {
             static configure() {
                 return {
                     $module: DependencyModule,
-                    providers: [ 
+                    providers: [
                         { provide: ITEM, useValue: { foo: 123 } },
                         Options,
                         MyService
@@ -352,16 +349,16 @@ describe("Modules", () => {
         }
 
         @Module({
-            imports: [ DependencyModule.configure() ]
+            imports: [DependencyModule.configure()]
         })
         class TestModule {
             constructor(
-                private service : MyService
+                private service: MyService
             ) {
             }
 
-            altOnInit() { 
-                log += this.service.options.options.foo; 
+            altOnInit() {
+                log += this.service.options.options.foo;
             }
         }
 
@@ -370,5 +367,5 @@ describe("Modules", () => {
         expect(application.runtime).to.exist;
         expect(log).to.eq('123');
     });
-    
+
 })

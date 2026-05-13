@@ -4,6 +4,7 @@ import { Environment, Time } from '@alterior/common';
 import {
 	inject,
 	Injectable,
+	Injector,
 	ModuleAnnotation,
 	Provider,
 	ReflectiveInjector
@@ -33,7 +34,16 @@ export class ExecutionContext {
 	 * Retrieve the Alterior application which is currently being executed.
 	 * If an application has not been bootstrapped yet, the value is null.
 	 */
-	public application: Application = null;
+    private _application: Application | undefined;
+	get application(): Application {
+        if (!this._application)
+            throw new Error(`Cannot acquire application before ExecutionContext has been fully initialized`);
+        return this._application;
+    }
+
+    set application(value: Application) {
+        this._application = value;
+    }
 
 	static readonly ZONE_LOCAL_NAME  = '@alterior/runtime:ExecutionContext';
 
@@ -92,7 +102,7 @@ export class Application {
 		return this.runtime.injector;
 	}
 
-	inject<T>(ctor: { new(...args): T }, notFoundValue?: T): T {
+	inject<T>(ctor: { new(...args: any[]): T }, notFoundValue?: T): T {
 		return this.injector.get(ctor, notFoundValue);
 	}
 
@@ -104,24 +114,18 @@ export class Application {
 		return this._optionsRef.options;
 	}
 
-	private static loadOptions(entryModule: Function, bootstrapOptions: ApplicationOptions): ApplicationOptions {
+	private static loadOptions(entryModule: Function, bootstrapOptions: ApplicationOptions | undefined): ApplicationOptions {
 		// Read an @AppOptions() decorator if any, and merge providers from it 
 		// into the bootstrapped providers
-
-		let appOptionsAnnotation = AppOptionsAnnotation.getForClass(entryModule);
-		let appProvidedOptions: ApplicationOptions = appOptionsAnnotation?.options ?? {};
-		
-		return Object.assign(
-			<ApplicationOptions>{
-				version: '0.0.0',
-				verbose: false,
-				silent: false,
-				autostart: true,
-				providers: []
-			}, 
-			appProvidedOptions, 
-			bootstrapOptions
-		);
+		return {
+			version: '0.0.0',
+			verbose: false,
+			silent: false,
+			autostart: true,
+			providers: [],
+			...(AppOptionsAnnotation.getForClass(entryModule)?.options ?? {}),
+			...(bootstrapOptions ?? [])
+        };
 	}
 
 	private static validateEntryModule(module: Function) {
@@ -169,7 +173,7 @@ export class Application {
 
 			runtime.providers = providers;
 	
-			let injector: ReflectiveInjector;
+			let injector: Injector;
 			try {
 				injector = ReflectiveInjector.resolveAndCreate(providers, options.parentInjector);
 			} catch (e) {
@@ -182,7 +186,7 @@ export class Application {
 				throw e;
 			}
 
-			(<RolesService>injector.get(RolesService)).silent = options.silent;
+			injector.get(RolesService).silent = options.silent ?? false;
 			
 			runtime.load(injector);
 			executionContext.application = runtime.getService(Application);

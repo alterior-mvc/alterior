@@ -1,4 +1,8 @@
 # ⏭ vNext
+- `@/runtime`
+    * Moved to strict Typescript
+    * Fixed an issue where calling `Type.staticMethodNames` or `Type.staticFieldNames` before calling `Type.staticPropertyNames` would throw an error
+    
 
 # v3.15.0
 - `@/web-server`

@@ -4,7 +4,7 @@
  * are well-formed.
  */
 export interface OnInit {
-	altOnInit(); 
+	altOnInit(): void; 
 }
 
 /**
@@ -13,7 +13,7 @@ export interface OnInit {
  * are well-formed.
  */
 export interface OnStart {
-	altOnStart(); 
+	altOnStart(): void; 
 }
 
 /**
@@ -22,5 +22,5 @@ export interface OnStart {
  * are well-formed.
  */
 export interface OnStop {
-	altOnStop(); 
+	altOnStop(): void; 
 }

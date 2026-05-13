@@ -70,7 +70,6 @@ export class RolesService {
 
     }
 
-    _activeRoles : any[] = null;
     _configuration : RoleConfiguration = { mode: 'default', roles: [] };
     _roles : RoleState[] = [];
 
@@ -140,7 +139,7 @@ export class RolesService {
         this._configuration = config;
     }
 
-    getForModule(roleModuleClass) {
+    getForModule(roleModuleClass: Function) {
         let roles = this._roles.filter(x => x.class === roleModuleClass);
 
         if (roles.length === 0)

@@ -1,8 +1,8 @@
 import { Annotation, Annotations, IAnnotation } from "@alterior/annotations";
 import { getParameterNames } from "@alterior/common";
 
-export type Constructor<T> = new(...args) => T;
-export type AbstractConstructor<T> = abstract new(...args) => T;
+export type Constructor<T> = new (...args: any[]) => T;
+export type AbstractConstructor<T> = abstract new (...args: any[]) => T;
 export type AnyConstructor<T> = Constructor<T> | AbstractConstructor<T>;
 
 export type Visibility = 'private' | 'public' | 'protected';
@@ -10,38 +10,36 @@ export type Visibility = 'private' | 'public' | 'protected';
 /**
  * Represents a property on a class. A property can also be a field or a method.
  */
-export class Property<T>{
+export class Property<T> {
     constructor(
-        private _type : Constructor<T>,
-        private _name : string,
-        private _isStatic : boolean = false
+        private _type: Constructor<T>,
+        private _name: string,
+        private _isStatic: boolean = false
     ) {
         this._visibility = _name[0] === '_' ? 'private' : 'public';
     }
 
-    private _visibility : Visibility;
-    private _descriptor : PropertyDescriptor = null;
-    private _annotations : IAnnotation[];
+    private _visibility: Visibility;
 
-    defineMetadata(key : string, value : string) {
+    defineMetadata(key: string, value: string) {
         Reflect.defineMetadata(key, value, this.type, this.name);
     }
 
-    getMetadata(key : string): any {
+    getMetadata(key: string): any {
         return Reflect.getMetadata(key, this.type, this.name);
     }
 
-    deleteMetadata(key : string) {
+    deleteMetadata(key: string) {
         Reflect.deleteMetadata(key, this.type, this.name);
     }
 
-    private _valueType : Type<any>;
-    get valueType() : Type<any> {
+    private _valueType: Type<any> | undefined;
+    get valueType(): Type<any> | undefined {
         if (!this._valueType) {
             let rawType = this.getMetadata('design:type');
             if (!rawType)
                 return undefined;
-            this._valueType = new Type<any>(rawType);    
+            this._valueType = new Type<any>(rawType);
         }
 
         return this._valueType;
@@ -55,6 +53,7 @@ export class Property<T>{
         return this._type;
     }
 
+    private _annotations: IAnnotation[] | undefined;
     get annotations() {
         if (!this._annotations) {
             if (this._name === 'constructor')
@@ -66,15 +65,16 @@ export class Property<T>{
         return this._annotations;
     }
 
-    annotationsOfType<T extends Annotation>(type : Constructor<T>) : T[] {
+    annotationsOfType<T extends Annotation>(type: Constructor<T>): T[] {
         return (type as any).filter(this.annotations);
     }
 
-    annotationOfType<T extends Annotation>(type : Constructor<T>) : T {
+    annotationOfType<T extends Annotation>(type: Constructor<T>): T {
         return (type as any).filter(this.annotations)[0];
     }
 
-    get descriptor() : PropertyDescriptor {
+    private _descriptor: PropertyDescriptor | undefined = undefined;
+    get descriptor(): PropertyDescriptor | undefined {
         if (!this._descriptor)
             this._descriptor = Object.getOwnPropertyDescriptor(this._type.prototype, this._name);
 
@@ -96,42 +96,40 @@ export class Property<T>{
  */
 export class Method<T> extends Property<T> {
     constructor(
-        type : Constructor<T>,
-        name : string,
-        isStatic : boolean = false
+        type: Constructor<T>,
+        name: string,
+        isStatic: boolean = false
     ) {
         super(type, name, isStatic);
     }
 
-    private _parameterNames : string[];
-    private _implementation : Function;
-
-    private _returnType : Type<any>;
-    get returnType() : Type<any> {
+    private _returnType: Type<any> | undefined;
+    get returnType(): Type<any> | undefined {
         if (!this._returnType) {
             let rawType = this.getMetadata('design:returntype');
             if (!rawType)
                 return undefined;
-            this._returnType = new Type<any>(rawType);    
+            this._returnType = new Type<any>(rawType);
         }
 
         return this._returnType;
     }
 
-    private _parameterTypes : Type<any>;
-    get parameterTypes() : Type<any> {
+    private _parameterTypes: (Type<any> | undefined)[] | undefined;
+    get parameterTypes(): (Type<any> | undefined)[] {
         if (!this._parameterTypes) {
-            let rawTypes = this.getMetadata('design:paramtypes');
+            let rawTypes = this.getMetadata('design:paramtypes') as Constructor<any>[];
             this._parameterTypes = rawTypes.map(x => x ? new Type<any>(x) : undefined);
         }
 
         return this._parameterTypes;
     }
 
-    get implementation() : Function {
-        return this.type[this.name];
+    get implementation(): Function {
+        return (this.type as any)[this.name];
     }
 
+    private _parameterNames: string[] | undefined;
     get parameterNames() {
         if (!this._parameterNames)
             this._parameterNames = getParameterNames(this.implementation);
@@ -143,11 +141,10 @@ export class Method<T> extends Property<T> {
         let parameterNames = this.parameterNames;
         return [...Array(this.implementation.length).keys()]
             .map(i => new Parameter(this, i, parameterNames[i]))
-        ;
+            ;
     }
 
-    private _parameterAnnotations : IAnnotation[][];
-
+    private _parameterAnnotations: IAnnotation[][] | undefined;
     get parameterAnnotations(): IAnnotation[][] {
         if (!this._parameterAnnotations)
             this._parameterAnnotations = Annotations.getParameterAnnotations(this.type, this.name);
@@ -158,9 +155,9 @@ export class Method<T> extends Property<T> {
 
 export class Field<T> extends Property<T> {
     constructor(
-        type : Constructor<T>,
-        name : string,
-        isStatic : boolean = false
+        type: Constructor<T>,
+        name: string,
+        isStatic: boolean = false
     ) {
         super(type, name, isStatic);
     }
@@ -168,12 +165,12 @@ export class Field<T> extends Property<T> {
 
 export class ConstructorMethod<T> extends Method<T> {
     constructor(
-        type : Constructor<T>
+        type: Constructor<T>
     ) {
         super(type, 'constructor');
     }
 
-    private _ctorParameterAnnotations : IAnnotation[][];
+    private _ctorParameterAnnotations: IAnnotation[][] | undefined;
     get parameterAnnotations() {
         if (!this._ctorParameterAnnotations)
             this._ctorParameterAnnotations = Annotations.getConstructorParameterAnnotations(this.type);
@@ -184,24 +181,22 @@ export class ConstructorMethod<T> extends Method<T> {
 
 export class Parameter<T> {
     constructor(
-        private _method : Method<T>,
-        private _index : number,
-        private _name : string = null
+        private _method: Method<T>,
+        private _index: number,
+        private _name: string | undefined = undefined
     ) {
-    
-    }
 
-    private _annotations : Annotation[];
+    }
 
     get annotations() {
-        return this.method.parameterAnnotations[this.index];
+        return this.method.parameterAnnotations[this.index] ?? [];
     }
 
-    annotationsOfType<T extends Annotation>(type : Constructor<T>) : T[] {
+    annotationsOfType<T extends Annotation>(type: Constructor<T>): T[] {
         return (type as any).filter(this.annotations);
     }
 
-    annotationOfType<T extends Annotation>(type : Constructor<T>) : T {
+    annotationOfType<T extends Annotation>(type: Constructor<T>): T {
         return (type as any).filter(this.annotations)[0];
     }
 
@@ -227,193 +222,143 @@ export class Parameter<T> {
  */
 export class Type<T extends Object> {
     constructor(
-        private _class : Constructor<T>
+        private _class: Constructor<T>
     ) {
     }
 
-    private _propertyNames : string[];
-    private _methodNames : string[];
-    private _fieldNames : string[];
-    private _annotations : IAnnotation[];
+    private _methodNames: string[] | undefined;
+    private _fieldNames: string[] | undefined;
 
     get name() {
         return this._class.name;
     }
 
-    getMetadata(key : string) {
+    getMetadata(key: string) {
         Reflect.getOwnMetadata(key, this._class);
     }
 
-    defineMetadata(key : string, value : any) {
+    defineMetadata(key: string, value: any) {
         Reflect.defineMetadata(key, value, this._class.prototype);
     }
 
-    deleteMetadata(key : string) {
+    deleteMetadata(key: string) {
         Reflect.deleteMetadata(key, this._class);
     }
 
-    private _metadataKeys : string[];
-    get metadataKeys() : string[] {
+    private _metadataKeys: string[] | undefined;
+    get metadataKeys(): string[] {
         if (!this._metadataKeys)
             this._metadataKeys = Reflect.getOwnMetadataKeys(this._class);
-     
         return this._metadataKeys;
     }
 
+    private _annotations: IAnnotation[] | undefined;
     /**
      * Get all annotations attached to this class
      */
     get annotations(): IAnnotation[] {
         if (!this._annotations)
             this._annotations = Annotations.getClassAnnotations(this._class);
-
         return this._annotations;
     }
 
-    annotationsOfType<T extends Annotation>(type : Constructor<T>) : T[] {
+    annotationsOfType<T extends Annotation>(type: Constructor<T>): T[] {
         return (type as any).filter(this.annotations);
     }
 
-    annotationOfType<T extends Annotation>(type : Constructor<T>) : T {
+    annotationOfType<T extends Annotation>(type: Constructor<T>): T {
         return (type as any).filter(this.annotations)[0];
     }
-
-    private fetchPropertyNames() {
-        this._propertyNames = Object.getOwnPropertyNames(this._class.prototype);
-        for (let propertyName of this._propertyNames) {
-            if (typeof this._class.prototype[propertyName] === 'function') {
-                this._methodNames.push(propertyName);
-            } else {
-                this._fieldNames.push(propertyName);
-            }
-        }
-    }
-
-    private _staticPropertyNames : string[] = [];
-    private _staticMethodNames : string[] = [];
-    private _staticFieldNames : string[] = [];
-
-    private fetchStaticPropertyNames() {
-        this._staticPropertyNames = Object.getOwnPropertyNames(this._class).filter(x => !['length', 'prototype', 'name'].includes(x));
-        
-        for (let propertyName of this._staticPropertyNames) {
-            if (typeof this._class[propertyName] === 'function') {
-                this._staticMethodNames.push(propertyName);
-            } else {
-                this._staticFieldNames.push(propertyName);
-            }
-        }
-    }
+    
+    private _staticPropertyNames: string[] = [];
+    private _staticMethodNames: string[] = [];
+    private _staticFieldNames: string[] = [];
 
     get staticPropertyNames() {
         if (!this._staticPropertyNames)
-            this.fetchStaticPropertyNames();
-
+            this._staticPropertyNames = Object.getOwnPropertyNames(this._class).filter(x => !['length', 'prototype', 'name'].includes(x));
         return this._staticPropertyNames.slice();
     }
 
     get staticMethodNames() {
         if (!this._staticPropertyNames)
-            this.fetchStaticPropertyNames();
-
+            this._staticPropertyNames = this.staticPropertyNames.filter(x => typeof (this._class as any)[x] === 'function');
         return this._staticMethodNames.slice();
     }
 
     get staticFieldNames() {
-        if (!this._staticPropertyNames)
-            this.fetchStaticPropertyNames();
-
+        if (!this._staticFieldNames)
+            this._staticFieldNames = this.staticPropertyNames.filter(x => typeof (this._class as any)[x] !== 'function');
         return this._staticFieldNames.slice();
     }
 
-    private _staticMethods : Method<T>[];
-    get staticMethods() : Method<T>[] {
-        if (this._staticMethods)
-            return this._staticMethods;
-
-        this._staticMethods = this.staticMethodNames.map(methodName => new Method<T>(this._class, methodName, true));
-
+    private _staticMethods: Method<T>[] | undefined;
+    get staticMethods(): Method<T>[] {
+        if (!this._staticMethods)
+            this._staticMethods = this.staticMethodNames.map(methodName => new Method<T>(this._class, methodName, true));
         return this._staticMethods;
     }
 
-    private _staticFields : Field<T>[];
-    get staticFields() : Field<T>[] {
-        if (this._staticFields)
-            return this._staticFields;
-
-        this._staticFields = this.staticFieldNames.map(fieldName => new Field<T>(this._class, fieldName, true));
-
+    private _staticFields: Field<T>[] | undefined;
+    get staticFields(): Field<T>[] {
+        if (!this._staticFields)
+            this._staticFields = this.staticFieldNames.map(fieldName => new Field<T>(this._class, fieldName, true));
         return this._staticFields;
     }
 
-    private _staticProperties : Property<T>[];
+    private _staticProperties: Property<T>[] | undefined;
     get staticProperties() {
-        if (this._staticProperties)
-            return this._staticProperties;
-
-        this._staticProperties = [].concat(this.staticFields, this.staticMethods);
-
+        if (!this._staticProperties)
+            this._staticProperties = ([] as Property<T>[]).concat(this.staticFields, this.staticMethods);
         return this._staticProperties;
     }
 
+    private _propertyNames: string[] | undefined;
     get propertyNames() {
         if (!this._propertyNames)
-            this.fetchPropertyNames();
-
+            this._propertyNames = Object.getOwnPropertyNames(this._class.prototype);
         return this._propertyNames.slice();
     }
 
     get methodNames() {
-        if (!this._propertyNames)
-            this.fetchPropertyNames();
-
+        if (!this._methodNames)
+            this._methodNames = this.propertyNames.filter(x => typeof this._class.prototype[x] === 'function');
         return this._methodNames.slice();
     }
 
     get fieldNames() {
-        if (!this._propertyNames)
-            this.fetchPropertyNames();
-
+        if (!this._fieldNames)
+            this._fieldNames = this.propertyNames.filter(x => typeof this._class.prototype[x] !== 'function');
         return this._fieldNames.slice();
     }
 
-    private _ctor : ConstructorMethod<T>;
+    private _ctor: ConstructorMethod<T> | undefined;
     get constructorMethod() {
         if (!this._ctor)
             this._ctor = new ConstructorMethod<T>(this._class);
-
         return this._ctor;
     }
 
-    private _methods : Method<T>[];
+    private _methods: Method<T>[] | undefined;
     get methods() {
-        if (this._methods)
-            return this._methods;
-
-        this._methods = this.methodNames.map(methodName => new Method<T>(this._class, methodName));
-
+        if (!this._methods)
+            this._methods = this.methodNames.map(methodName => new Method<T>(this._class, methodName));
         return this._methods;
     }
 
-    private _properties : Property<T>[];
+    private _properties: Property<T>[] | undefined;
 
     get properties() {
-        if (this._properties)
-            return this._properties;
-
-        this._properties = [].concat(this.fields, this.methods);
-
+        if (!this._properties)
+            this._properties = ([] as Property<T>[]).concat(this.fields, this.methods);
         return this._properties;
     }
 
-    private _fields : Field<T>[];
+    private _fields: Field<T>[] | undefined;
 
     get fields() {
-        if (this._fields)
-            return this._fields;
-
-        this._fields = this.fieldNames.map(fieldName => new Field<T>(this._class, fieldName));
-
+        if (!this._fields)
+            this._fields = this.fieldNames.map(fieldName => new Field<T>(this._class, fieldName));
         return this._fields;
     }
 
@@ -423,11 +368,11 @@ export class Type<T extends Object> {
 }
 
 export class Reflector {
-    getTypeFromInstance<T extends Object = any>(instance : T) : Type<T> {
+    getTypeFromInstance<T extends Object = any>(instance: T): Type<T> {
         return this.getTypeFromClass<T>(instance.constructor as any);
     }
 
-    getTypeFromClass<T extends object = any>(typeClass : Constructor<T>): Type<T> {
+    getTypeFromClass<T extends object = any>(typeClass: Constructor<T>): Type<T> {
         return new Type(typeClass);
     }
 }
