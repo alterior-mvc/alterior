@@ -19,7 +19,7 @@ async function main() {
         return;
 
     let packages = await findPackages();
-    await visitPackageInDependencyOrder(packages.find(x => x.name === '@alterior/build'), async pkg => {
+    await visitPackageInDependencyOrder(packages.find(x => x.name === '@alterior/build')!, async pkg => {
         if (pkg.manifest.scripts.build) {
             console.log(`build ${pkg.name}`);
             await runShellCommand(`${pathCombine(process.cwd(), `node_modules/.bin/tsc`)} -b`, pkg.folder);
