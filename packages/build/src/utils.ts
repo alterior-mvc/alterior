@@ -29,26 +29,26 @@ export async function runSimple(command: string): Promise<void> {
     )
 }
 
-export async function runCommand(command: string, stdin?: string): Promise<{ stdout, stderr, error }> {
+export async function runCommand(command: string, stdin?: string): Promise<{ stdout: string, stderr: string, error: Error | undefined }> {
     return new Promise(async (r, rej) => {
         let proc = exec(command, {
             maxBuffer: Number.MAX_SAFE_INTEGER
         }); // (ex, o, e) => r({ stdout: o, stderr: e, error: ex }));
         if (stdin !== undefined) {
-            proc.stdin.write(stdin);
-            proc.stdin.end();
+            await new Promise<void>((res, rej) => proc.stdin!.write(stdin, err => err ? rej(err) : res()));
+            await new Promise(res => proc.stdin!.end(res));
         }
 
         let stdout = '';
         let stderr = '';
-        proc.stdout.on('data', (chunk: Buffer) => {
+        proc.stdout!.on('data', (chunk: Buffer) => {
             try {
                 stdout += chunk.toString('utf-8');
             } catch (e) {
                 rej(e);
             }
         });
-        proc.stderr.on('data', (chunk: Buffer) => {
+        proc.stderr!.on('data', (chunk: Buffer) => {
             try {
                 stderr += chunk.toString('utf-8')
             } catch (e) {
@@ -57,13 +57,13 @@ export async function runCommand(command: string, stdin?: string): Promise<{ std
         });
 
         let [error] = await Promise.all([
-            new Promise<Error>(r => proc.on('exit', x => {
+            new Promise<Error | undefined>(r => proc.on('exit', x => {
                 return r(x ? new Error(`Exit code ${x}`) : undefined);
             })),
-            new Promise<void>(r => proc.stdout.on('close', () => {
+            new Promise<void>(r => proc.stdout!.on('close', () => {
                 r();
             })),
-            new Promise<void>(r => proc.stderr.on('close', () => {
+            new Promise<void>(r => proc.stderr!.on('close', () => {
                 r();
             }))
         ])
@@ -175,7 +175,7 @@ export function checksumFile(algorithm: 'sha1' | 'sha256' | 'sha512', path: stri
 }
 
 export function streamToString(stream: Readable): Promise<string> {
-    const chunks = [];
+    const chunks: Buffer[] = [];
     return new Promise((resolve, reject) => {
         stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
         stream.on('error', (err) => reject(err));
@@ -188,10 +188,10 @@ export function streamLines(stream: Readable, lineReceived: (line: string) => vo
         stream.on('data', (chunk: Buffer) => {
             string += chunk.toString('utf-8');
 
-            let lineMatch: RegExpMatchArray;
+            let lineMatch: RegExpMatchArray | null;
             while (lineMatch = /\r?\n/.exec(string)) {
                 lineReceived(string.slice(0, lineMatch.index));
-                string = string.slice(lineMatch.index + lineMatch[0].length);
+                string = string.slice(lineMatch.index! + lineMatch[0].length);
             }
         });
         stream.on('error', (err) => reject(err));
@@ -235,7 +235,7 @@ export function twoDigitYear(fullYear: number) {
     return Number(fullYear.toString().slice(2));
 }
 
-export function zeroPad(number, digits = 2) {
+export function zeroPad(number: number | string, digits = 2) {
     let str = `${number}`;
     while (str.length < digits)
         str = '0' + str;
@@ -243,7 +243,10 @@ export function zeroPad(number, digits = 2) {
     return str;
 }
 
-export function randomItem<T>(arr: T[], emptyValue?: T): T {
+export function randomItem<T>(arr: T[], emptyValue: T): T;
+export function randomItem<T>(arr: T[]): T | undefined;
+export function randomItem<T>(arr: T[], emptyValue?: T): T | undefined;
+export function randomItem<T>(arr: T[], emptyValue?: T): T | undefined {
     if (arr.length === 0)
         return emptyValue;
 
@@ -313,7 +316,7 @@ export function lineRangeTagEnd(name: string) {
 }
 
 export function replaceTaggedLineRange(content: string[], tagName: string, lines: string[]) {
-    let startIndex = content.findIndex(line => line.includes(this.lineRangeTagStart(tagName)));
+    let startIndex = content.findIndex(line => line.includes(lineRangeTagStart(tagName)));
     content = removeTaggedLineRange(content, tagName);
 
     if (startIndex) {
@@ -349,11 +352,11 @@ export function removeTaggedLineRange(content: string[], tag: string) {
 }
 
 export async function writeFileLines(filename: string, lines: string[]): Promise<void> {
-    this.writeTextFile(filename, lines.join(os.EOL));
+    writeTextFile(filename, lines.join(os.EOL));
 }
 
 export async function readJsonFile<T = any>(filename: string): Promise<T> {
-    return await new Promise((res, rej) =>
+    return await new Promise<T>((res, rej) =>
         fs.readFile(filename, (err, buf) => {
             if (err) {
                 rej(err);
@@ -365,17 +368,11 @@ export async function readJsonFile<T = any>(filename: string): Promise<T> {
                 if (content.charCodeAt(0) === 0xFEFF)
                     content = content.slice(1);
 
-                let object: T;
-
                 try {
-                    object = JSON.parse(content);
-                } catch (e) {
-                    if (!object) {
-                        throw new Error(`Failed to parse JSON: '${content}': ${e.stack}\n---`);
-                    }
+                    res(JSON.parse(content));
+                } catch (e: any) {
+                    throw new Error(`Failed to parse JSON: '${content}': ${e.stack}\n---`, { cause: e });
                 }
-
-                res(object);
             } catch (e) {
                 rej(e);
             }
@@ -397,8 +394,8 @@ export async function writeJsonFile<T = any>(filename: string, content: T) {
 
         try {
             json = JSON.stringify(content, undefined, 2);
-        } catch (e) {
-            throw new Error(`Failed to serialize JSON: ${e.message}`);
+        } catch (e: any) {
+            throw new Error(`Failed to serialize JSON: ${e.message}`, { cause: e });
         }
 
         fs.writeFile(filename, json, err => err ? reject(err) : resolve());
@@ -414,7 +411,7 @@ export async function writeTextFile(filename: string, content: string) {
 /**
  * https://stackoverflow.com/a/46759625/1995204
  */
-export function isConstructor(f) {
+export function isConstructor(f: any) {
     if (f === Symbol)
         return false;
 
@@ -451,11 +448,11 @@ export class AsyncQueue<T> {
 
     async dequeue(): Promise<T> {
         if (this.values.length > 0)
-            return this.values.shift();
+            return this.values.shift()!;
 
-        let resolve;
+        let resolve: (value: T) => void;
         let promise = new Promise<T>(res => resolve = res);
-        this.requests.push({ promise, resolve });
+        this.requests.push({ promise, resolve: resolve! });
         return await promise;
     }
 
@@ -506,21 +503,7 @@ export function resolveTemplate<T>(template: T, variables: Record<string, string
  * @returns
  */
 export function resolveVariablesInString(str: string, variables: Record<string, string>): any {
-    let castTo: string = undefined;
-    let result = str.replace(/\{\{([^\{\}]+)\}\}/g, (_, identifier: string) => {
-        identifier = identifier.trim();
-        if (identifier.startsWith('config.')) {
-            this.configService.getPath(identifier.split('.'));
-        } else if (identifier === 'asNumber') {
-            castTo = 'number';
-        } else {
-            return variables[identifier];
-        }
-    });
-
-    if (castTo === 'number')
-        return Number(result);
-    return result;
+    return str.replace(/\{\{([^\{\}]+)\}\}/g, (_, identifier: string) => variables[identifier.trim()]);
 }
 
 export interface FileSearchOptions {
@@ -531,9 +514,8 @@ export interface FileSearchOptions {
     skip?: string[];
 }
 export async function fileSearch(options: FileSearchOptions) {
-    options.taskLimit ??= 50;
-
     return await new Promise<void>(done => {
+        let taskLimit = options.taskLimit ?? 50;
         let searchPath = pathCombine(options.folder, '**', options.pattern);
         let outstandingTasks: Promise<void>[] = [];
 
@@ -552,16 +534,16 @@ export async function fileSearch(options: FileSearchOptions) {
 
                 let needsResume = false;
 
-                if (outstandingTasks.length > options.taskLimit) {
+                if (outstandingTasks.length > taskLimit) {
                     filenameStream.pause();
                     needsResume = true;
-                    while (outstandingTasks.length > options.taskLimit)
+                    while (outstandingTasks.length > taskLimit)
                         await Promise.race(outstandingTasks);
                 }
 
-                let task: Promise<void>;
+                let task: Promise<void> | undefined;
 
-                if (outstandingTasks.length > options.taskLimit)
+                if (outstandingTasks.length > taskLimit)
                     throw new Error(`Accounting failed: Task limit is over max!`);
 
                 try {
@@ -610,15 +592,17 @@ export function count<T>(array: T[], check: (element: T) => boolean) {
 
 export interface Future<T> {
     promise: Promise<T>;
-    resolve: (value: T | Promise<T> | undefined, error?: any) => void;
+    resolve: (value: T | Promise<T>) => void;
+    reject: (error: any) => void;
 }
 
-export function newFuture<T>() {
-    let resolve: (value: T) => void;
+export function newFuture<T>(): Future<T> {
+    let resolve: (value: T | PromiseLike<T>) => void;
     let reject: (error?: any) => void;
     return {
         promise: new Promise<T>((rs, rj) => (resolve = rs, reject = rj)),
-        resolve: (value: T, error?) => error ? reject(error) : resolve(value)
+        resolve: (value: T | Promise<T>) => resolve(value),
+        reject: (error: any) => reject(error)
     };
 }
 
@@ -643,9 +627,9 @@ export async function runAndCapture(program: string): Promise<{ exitCode: number
     });
 
     let [exitCode, stdout, stderr] = await Promise.all([
-        new Promise<number>(res => proc.addListener('exit', code => res(code))),
-        streamToString(proc.stdout),
-        streamToString(proc.stderr),
+        new Promise<number>(res => proc.addListener('exit', code => res(code ?? 0))),
+        streamToString(proc.stdout!),
+        streamToString(proc.stderr!),
     ]);
 
     stdout = stdout.replace(/\r\n/g, "\n");
@@ -655,7 +639,7 @@ export async function runAndCapture(program: string): Promise<{ exitCode: number
 }
 
 export async function runAndCaptureLines(
-    program: string, 
+    program: string,
     lineReceived: (line: string, error: boolean) => void,
     cwd?: string
 ): Promise<number> {
@@ -665,10 +649,10 @@ export async function runAndCaptureLines(
         cwd
     });
 
-    streamLines(proc.stdout, line => lineReceived(line, false));
-    streamLines(proc.stderr, line => lineReceived(line, true));
+    streamLines(proc.stdout!, line => lineReceived(line, false));
+    streamLines(proc.stderr!, line => lineReceived(line, true));
 
-    let exitCode = new Promise<number>(res => proc.addListener('exit', code => res(code)));
+    let exitCode = new Promise<number>(res => proc.addListener('exit', code => res(code ?? 0)));
 
     return exitCode;
 }

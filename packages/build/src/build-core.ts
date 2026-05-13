@@ -2,7 +2,7 @@ import { CommandLineProcessor } from '@alterior/command-line';
 import { dirExists, fileExists, pathCombine, readJsonFile } from '@alterior/functions';
 import { CLITask, style, styled } from '@alterior/terminal';
 import { Package } from './package';
-import { listDirectory, runAndCapture, runAndCaptureLines, runShellCommand } from './utils';
+import { Future, listDirectory, newFuture, runAndCapture, runAndCaptureLines, runShellCommand } from './utils';
 
 export async function getPackageFromRepository(name: string, version?: string) {
     let result = await runAndCapture(`npm view ${version ? `${name}@${version}` : name} --json`);
@@ -23,7 +23,7 @@ export async function validateProject(cmd: CommandLineProcessor) {
     }
 }
 
-export async function runInAll(command: string, task?: CLITask, mode: 'serial' | 'parallel-wait' | 'parallel' = 'parallel-wait') {
+export async function runInAll(command: string, task: CLITask, mode: 'serial' | 'parallel-wait' | 'parallel' = 'parallel-wait') {
     if (mode === 'parallel') {
         await visitInParallel(unit => runInUnit(command, unit, task?.subtask(unit.name), true));
     } else if (mode === 'parallel-wait') {
@@ -51,7 +51,7 @@ export async function runInUnit(command: string, unit: Package, subtask?: CLITas
                     throw new Error(`${unit.name}: Failed to run '${command}'`);
 
                 subtask?.finish();
-            } catch (e) {
+            } catch (e: any) {
                 subtask?.error(e.message);
                 throw e;
             }
@@ -71,13 +71,13 @@ export async function visitInDependencyOrder(visitor: (unit: Package) => Promise
     }
 }
 
-export async function visitInDependencyOrderParallel(visitor: (unit: Package, task?: CLITask) => Promise<void>, task?: CLITask) {
+export async function visitInDependencyOrderParallel(visitor: (unit: Package, task?: CLITask) => Promise<void>, task: CLITask) {
     let packages = await findPackages();
     let packageReady = new Map<string, Future<void>>();
     packages.forEach(p => packageReady.set(p.name, newFuture<void>()))
 
     await Promise.all(packages.map(async pkg => {
-        let pkgTask = task?.subtask(pkg.name);
+        let pkgTask = task.subtask(pkg.name);
         let pendingDeps = Object.keys(dependenciesOf(pkg)).filter(x => packageReady.has(x));
 
         if (pendingDeps.length > 0) {
@@ -99,9 +99,9 @@ export async function visitInDependencyOrderParallel(visitor: (unit: Package, ta
 
         try {
             await visitor(pkg, pkgTask);
-            packageReady.get(pkg.name).resolve();
+            packageReady.get(pkg.name)!.resolve();
         } catch (e) {
-            packageReady.get(pkg.name).resolve(undefined, e);
+            packageReady.get(pkg.name)!.reject(e);
         }
     }));
 }
@@ -113,21 +113,6 @@ export function dependenciesOf(pkg: Package) {
         ...(pkg.manifest.devDependencies ?? {}),
     };
 }
-
-export function newFuture<T>() {
-    let resolve: (value: T) => void;
-    let reject: (error?: any) => void;
-    return {
-        promise: new Promise<T>((rs, rj) => (resolve = rs, reject = rj)),
-        resolve: (value: T, error?) => error ? reject(error) : resolve(value)
-    };
-}
-
-export interface Future<T> {
-    promise: Promise<T>;
-    resolve: (value: T | Promise<T> | undefined, error?: any) => void;
-}
-
 
 export async function visitInReverseDependencyOrder(visitor: (unit: Package) => Promise<boolean>) {
     let units: Package[] = [];
@@ -205,7 +190,7 @@ export async function findPackages(projectRoot: string = process.cwd(), includeP
     return packages;
 }
 
-export function logToTask(unit: Package, task: CLITask, line: string, error: boolean) {
+export function logToTask(unit: Package | undefined, task: CLITask, line: string, error: boolean) {
     if (!line.trim())
         return;
 

@@ -193,7 +193,7 @@ async function main(args: string[]) {
                             try {
                                 await runInAll('prepublishOnly', prepublishTask, getParallelMode(cmd));
                                 prepublishTask.finish();
-                            } catch (e) {
+                            } catch (e: any) {
                                 prepublishTask.error(e.message);
                                 return;
                             }
@@ -216,7 +216,7 @@ async function main(args: string[]) {
                                 }
                             );
                             packTask.finish();
-                        } catch (e) {
+                        } catch (e: any) {
                             packTask.error(e.message);
                             return;
                         }
@@ -240,8 +240,8 @@ async function main(args: string[]) {
                                 } else {
                                     await runShellCommand(publishCommand);
                                 }
-                            } catch (e) {
-                                console.log(`Failed to publish ${pkg.name}: ${e.stack}`);
+                            } catch (e: any) {
+                                console.log(`Failed to publish ${pkg.name}: ${e.stack || e}`);
                                 return false;
                             }
                         });
