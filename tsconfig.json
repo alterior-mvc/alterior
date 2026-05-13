@@ -3,6 +3,7 @@
 		"experimentalDecorators": true,
 		"target": "es2016",
 		"sourceMap": true,
+        "strict": true,
 		"declarationMap": true,
 		"outDir": "./dist",
 		"module": "commonjs",
