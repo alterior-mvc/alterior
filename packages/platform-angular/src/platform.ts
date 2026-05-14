@@ -1,8 +1,7 @@
 /// <reference types="zone.js" />
 
 import { Application } from '@alterior/runtime';
-import { Module } from '@alterior/di';
-import { Provider as AngularProvider } from '@angular/core';
+import { Module, ValueProvider } from '@alterior/di';
 
 /**
  * Provides support for using Alterior modules within a larger Angular host 
@@ -31,7 +30,7 @@ export class AngularPlatform {
    * 
    * @param entryModule 
    */
-  static bootstrap(entryModule: Function): AngularProvider[] {
+  static bootstrap(entryModule: Function): ValueProvider[] {
     let app = Application.bootstrap(entryModule);
     return app.runtime.providers.map(provider => {
       let token = 'provide' in provider ? provider['provide'] : provider;

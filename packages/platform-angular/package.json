@@ -34,11 +34,7 @@
     "test": "node dist/test",
     "docs": "typedoc src/index.ts"
   },
-  "peerDependencies": {
-    "@angular/core": "^9 || ^10 || ^11 || ^12 || ^13 || ^14 || ^15 || ^16 || ^17 || ^18 || ^19 || ^20 || ^21"
-  },
   "devDependencies": {
-    "@angular/core": "^21.2.12",
     "rxjs": "^7.8.0"
   },
   "dependencies": {
