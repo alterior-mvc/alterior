@@ -12,8 +12,7 @@
     "clean": "rimraf dist dist.esm",
     "build": "tsc -b",
     "start": "rimraf dist && npm run build:cjs && node dist/main",
-    "prepublishOnly": "npm test",
-    "test": "rimraf dist && npm run build:cjs && node dist/test"
+    "prepublishOnly": "npm test"
   },
   "bin": {
     "alt": "./dist/main.js"
