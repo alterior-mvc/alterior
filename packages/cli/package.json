@@ -10,9 +10,7 @@
   },
   "scripts": {
     "clean": "rimraf dist dist.esm",
-    "build": "npm run build:cjs && npm run build:esm",
-    "build:cjs": "tsc -b",
-    "build:esm": "tsc -b tsconfig.esm.json",
+    "build": "tsc -b",
     "start": "rimraf dist && npm run build:cjs && node dist/main",
     "prepublishOnly": "npm test",
     "test": "rimraf dist && npm run build:cjs && node dist/test"
