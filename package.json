@@ -17,15 +17,15 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "alt-build test",
-    "bump": "alt-build version",
-    "publish": "alt-build publish",
+    "test": "npm run bootstrap && alt-build test",
+    "bump": "npm run bootstrap && alt-build version",
+    "publish": "npm run bootstrap && alt-build publish",
     "bootstrap": "ts-node scripts/bootstrap",
     "clean:npm:lock": "rimraf --glob packages/*/package-lock.json",
     "clean:npm:modules": "rimraf --glob packages/*/node_modules",
     "clean:npm": "npm run clean:npm:lock && npm run clean:npm:modules",
     "clean": "rimraf --glob packages/*/dist packages/*/dist.esm",
-    "build": "alt-build",
+    "build": "npm run bootstrap && alt-build",
     "docs": "alt-build run docs --parallel"
   },
   "devDependencies": {
