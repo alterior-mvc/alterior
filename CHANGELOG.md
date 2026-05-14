@@ -1,4 +1,6 @@
 # ⏭ vNext
+
+# v3.16.0
 - Moved to strict Typescript for all libraries and all tools.
 - `@/runtime`
     * Fixed an issue where calling `Type.staticMethodNames` or `Type.staticFieldNames` before calling `Type.staticPropertyNames` would throw an error
@@ -26,6 +28,7 @@
     * Upgraded to `express@5.2.1`
 - `@/tasks`
     * Upgraded to `bull@4.16.5`
+
 # v3.15.0
 - `@/web-server`
     * Adds proper support for the `http-errors` package so that `body-parser` and other Express/Connect/Koa middleware 
