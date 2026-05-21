@@ -145,6 +145,10 @@ async function main(args: string[]) {
                     description: 'Skip prepublish tasks'
                 })
                 .option({
+                    id: 'skip-build',
+                    description: 'Skip build tasks'
+                })
+                .option({
                     id: 'skip-login',
                     description: 'Skip logging in prior to publish'
                 })
@@ -185,6 +189,17 @@ async function main(args: string[]) {
                                 return;
                             } else {
                                 precheck.finish();
+                            }
+                        }
+
+                        if (!cmd.option('skip-build').present) {
+                            let buildTask = prepTask.subtask(`Build`);
+                            try {
+                                await runInAll('build', buildTask, getParallelMode(cmd));
+                                buildTask.finish();
+                            } catch (e: any) {
+                                buildTask.error(e.message);
+                                return;
                             }
                         }
 
