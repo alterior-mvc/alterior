@@ -1,6 +1,13 @@
 # ⏭ vNext
 
+# v3.16.2
+- Republish of `v3.16.1`
+- `@/build` 
+    * Fix: Previously `@/build` did not automate a `build` action before `publish` which resulted in `3.16.1` having 
+      stale build output.
+      
 # v3.16.1
+- NOTE: This version has stale build output. Please use `v3.16.2` instead.
 - `@/runtime`
     * Add `optionalApplication` to allow for attempting to acquire the `Application` instance before application 
       bootstrapping has completed
