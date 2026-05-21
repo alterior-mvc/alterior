@@ -1,5 +1,19 @@
 # ⏭ vNext
 
+# v3.16.1
+- `@/runtime`
+    * Add `optionalApplication` to allow for attempting to acquire the `Application` instance before application 
+      bootstrapping has completed
+- `@/logging`
+    * Fixes a regression where attempting to acquire a logger using `Logger.current` would crash if done during a
+      module or service class's constructor. Note that, as in previous versions, doing this will result in a Logger 
+      which is not configured with the application's logging settings (and thus will use the defaults). Obviously if 
+      a user caches `Logger.current` this will result in logs never using the application's logging configuration, but 
+      this has always been the case, and `Logger.current` is not intended as a way to acquire a long term logger (doing
+      so is completely incorrect as the returned logger may have been customized (ie for a specific HTTP request) 
+      using `Logger.withContext()`). 
+    * Added docblock to `Logger.current` clarifying how it should be used to avoid confusion.
+
 # v3.16.0
 - Moved to strict Typescript for all libraries and all tools.
 - `@/runtime`

@@ -272,8 +272,12 @@ export class ZonedLogger {
     static readonly ZONE_LOCAL_NAME = '@alterior/logger:Logger.current';
 
     public static get current(): ZonedLogger {
+        // NOTE: Using optionalApplication here to avoid an exception when acquiring a logger before the application 
+        // is booted, such as during the constructor of Alterior module classes. You probably shouldn't rely on this, 
+        // since the configured options won't be applied, but it's more sensible to log with default settings than to 
+        // crash.
         return Zone.current.get(Logger.ZONE_LOCAL_NAME) 
-            ?? ExecutionContext.current?.application?.inject(Logger)
+            ?? ExecutionContext.current?.optionalApplication?.inject(Logger)
             ?? new ZonedLogger(null)
         ;
     }

@@ -37,12 +37,24 @@ export class ExecutionContext {
     private _application: Application | undefined;
 	get application(): Application {
         if (!this._application)
-            throw new Error(`Cannot acquire application before ExecutionContext has been fully initialized`);
+            throw new Error(`Cannot acquire application before ExecutionContext has been fully initialized! Did you mean 'optionalApplication'?`);
         return this._application;
     }
 
+    /**
+     * Optionally acquire the current application. This may be needed for getters that can run before the application 
+     * is fully built.
+     */
     set application(value: Application) {
         this._application = value;
+    }
+
+    /**
+     * Optionally acquire the current application. This may be needed for getters that can run before the application 
+     * is fully built.
+     */
+    get optionalApplication(): Application | undefined {
+        return this._application;
     }
 
 	static readonly ZONE_LOCAL_NAME  = '@alterior/runtime:ExecutionContext';
