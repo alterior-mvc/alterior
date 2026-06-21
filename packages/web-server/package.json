@@ -56,7 +56,7 @@
     "supertest": "^4.0.2",
     "tslib": "^2.3.1",
     "uuid": "^8.3.2",
-    "ws": "^7.5.5"
+    "ws": "^8.21.0"
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.12",
