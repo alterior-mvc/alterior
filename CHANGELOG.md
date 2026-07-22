@@ -1,5 +1,17 @@
 # ⏭ vNext
 
+# v3.16.3
+
+- `@/web-server`
+    * Fixes an issue introduced in 3.16.0 with Express 5: The new routing syntax (see https://github.com/pillarjs/path-to-regexp#errors)
+      does not allow the older "wildcard" path matching syntax like `/foo/:path*`, you must use `/foo/*path` instead. 
+    * Alterior has been updated to detect path parameters of the form `*name` so that method parameter binding works 
+      when using this syntax.
+    * Support has been added for using the `string[]` type for path parameters. When used, you will receive path segments
+      as an array (ie for `/foo/*path`, given `/foo/bar/baz` you will receive `['bar', 'baz']`). When using the `string`
+      type for a multiple match path parameter, the match array elements will be converted to a string separated by `/`
+      (ie for `/foo/*path`, given `/foo/bar/baz` you will receive `"bar/baz"`).
+
 # v3.16.2
 - Republish of `v3.16.1`
 - `@/build` 
@@ -46,7 +58,11 @@
 - `@/fastify`
     * Upgraded to `fastify@5.8.5`
 - `@/express`
-    * Upgraded to `express@5.2.1`
+    * (BREAKING) Upgraded from `express@4.17.3` to `express@5.2.1`. Some routing syntax has changed, see 
+      https://github.com/pillarjs/path-to-regexp#errors -- This compatibility break was not known at release time. 
+      You may want to use `@/express@3.16.3` or later which provides better support for the new changes. 
+      In addition to the wildcard path parameter syntax changes, there are a few other subtle changes. 
+      Please see the link above for more information.
 - `@/tasks`
     * Upgraded to `bull@4.16.5`
 

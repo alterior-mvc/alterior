@@ -98,28 +98,30 @@ export class RouteMethodParameter<T = any> {
 
         let paramInputName = paramName;
 
+        let inputTypeFactories = {
+            path: (ev: WebEvent & HasParams) => {
+                const value = ev.request.params?.[paramName];
+                if (paramType === Array)
+                    return Array.isArray(value) ? value : value.split('/');
+                else
+                    return Array.isArray(value) ? value.join('/') : value;
+            },
+            queryParam: (ev: WebEvent & HasQuery) => ev.request.query?.[paramInputName],
+            queryParams: (ev: WebEvent & HasQuery) => ev.request.query ?? {},
+            session: (ev: WebEvent & HasSession) => inputAnnotation.name ?
+                ev.request.session?.[inputAnnotation.name]
+                : ev.request.session,
+            body: (ev: WebEvent & HasBody) => ev.request.body
+        };
+
         if (inputAnnotation) {
             paramInputType = inputAnnotation.type;
             paramInputName = inputAnnotation.name ?? paramName;
-
-            let typeFactories = {
-                path: (ev: WebEvent & HasParams) => ev.request.params?.[paramInputName],
-                queryParam: (ev: WebEvent & HasQuery) => ev.request.query?.[paramInputName],
-                queryParams: (ev: WebEvent & HasQuery) => ev.request.query ?? {},
-                session: (ev: WebEvent & HasSession) => inputAnnotation.name ?
-                    ev.request.session?.[inputAnnotation.name]
-                    : ev.request.session,
-                body: (ev: WebEvent & HasBody) => ev.request.body
-            };
-
-            factory = typeFactories[inputAnnotation.type];
-
-
+            factory = inputTypeFactories[inputAnnotation.type];
             if (inputAnnotation.default !== void 0) {
                 let originalFactory = factory;
                 factory = (ev: WebEvent) => originalFactory(ev) ?? inputAnnotation.default;
             }
-
         } else if (paramType === WebEvent) {
             factory = ev => ev;
         }
@@ -127,8 +129,8 @@ export class RouteMethodParameter<T = any> {
         // Name based matching for path parameters
 
         if (!factory) {
-            if (this.route.params.find(x => x == paramName) && simpleTypes.includes(paramType)) {
-                factory = (ev: WebEvent & HasParams) => ev.request.params?.[paramName];
+            if (this.route.params.find(x => x == paramName) && [Array, ...simpleTypes].includes(paramType)) {
+                factory = inputTypeFactories.path;
                 paramInputType = 'path';
             }
         }
@@ -260,7 +262,7 @@ export class RouteInstance {
             route: this.definition
         });
 
-        let routeParams = (this.definition.path || "").match(/:([A-Za-z][A-Za-z0-9]*)/g) || [];
+        let routeParams = (this.definition.path || "").match(/[:*]([A-Za-z][A-Za-z0-9]*)/g) || [];
         this._params = routeParams.map(x => x.substr(1));
 
         this.prepareMethodMetadata();

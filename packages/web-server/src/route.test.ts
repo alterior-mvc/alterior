@@ -134,6 +134,36 @@ suite(describe => {
                 ;
         });
 
+        it('should allow a multi-component input (as a string)', async () => {
+            @WebService()
+            class FakeApp {
+                @Get('/wildcard/*path')
+                postWildcard(ev: WebEvent, path: string) {
+                    return { foo: path };
+                }
+            }
+
+            await teststrap(FakeApp)
+                .get('/wildcard/foo/bar/baz')
+                .expect(200, { foo: 'foo/bar/baz' })
+                ;
+        });
+
+        it('should allow a multi-component input (as an array)', async () => {
+            @WebService()
+            class FakeApp {
+                @Get('/wildcard/*path')
+                postWildcard(ev: WebEvent, path: string[]) {
+                    return { foo: path };
+                }
+            }
+
+            await teststrap(FakeApp)
+                .get('/wildcard/foo/bar/baz')
+                .expect(200, { foo: ['foo', 'bar', 'baz'] })
+                ;
+        });
+
         it('should allow a method to return null as a JSON value', async () => {
             @WebService()
             class FakeApp {
