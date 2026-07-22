@@ -42,10 +42,11 @@ export class ServiceGenerator extends Generator {
 
         await writeJsonFile('tsconfig.json', {
             "compilerOptions": {
-                "outDir": "dist",
+                "rootDir": "./src",
+                "outDir": "./dist",
                 "target": "es2016",
                 "module": "commonjs",
-                "moduleResolution": "node",
+                "moduleResolution": "nodenext",
                 "declaration": true,
                 "emitDecoratorMetadata": true,
                 "experimentalDecorators": true,

@@ -99,7 +99,7 @@ export async function read (options?: ReadOptions): Promise<string> {
       output.end()
     }
 
-    const onError = (er) => {
+    const onError = (er: any) => {
       done()
       reject(er)
     }

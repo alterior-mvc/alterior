@@ -11,8 +11,8 @@ export class TerminalUI {
     input: ReadStream;
     output: WriteStream;
 
-    private rl: readline.Interface;
-    private _prompt: string;
+    private rl: readline.Interface | undefined;
+    private _prompt: string | undefined;
     get prompt() {
         return this._prompt;
     }
@@ -20,13 +20,13 @@ export class TerminalUI {
     set prompt(value) {
         this._prompt = value;
         if (this.rl) {
-            this.rl.setPrompt(value);
+            this.rl.setPrompt(value ?? '');
             (this.rl as any)._refreshLine();
         }
     }
 
-    runCommand: (line: string) => Promise<void>;
-    beforeShowingPrompt: () => Promise<void>;
+    runCommand: ((line: string) => Promise<void>) | undefined;
+    beforeShowingPrompt: (() => Promise<void>) | undefined;
     runningCommand = false;
 
     async start() {
@@ -46,11 +46,11 @@ export class TerminalUI {
         this.rl.addListener('SIGINT', () => {
             this.log();
         });
-        this.rl.setPrompt(this._prompt);
+        this.rl.setPrompt(this._prompt ?? '');
         this.rl.addListener('history', async lines => this.history = lines);
         this.rl.addListener('line', async line => {
-            this.rl.close();
-            this.rl = null;
+            this.rl!.close();
+            this.rl = undefined;
             this.runningCommand = true;
 
             this.output.cork();
@@ -58,7 +58,7 @@ export class TerminalUI {
             this.deletePrompt();
             this.output.uncork();
             try {
-                await this.runCommand(line);
+                await this.runCommand?.(line);
             } finally {
                 this.runningCommand = false;
                 this.output.cork();
@@ -74,13 +74,13 @@ export class TerminalUI {
     }
 
     private allocatePromptSpace() {
-        let lines = this._prompt.split("\n").length + 1;
+        let lines = this._prompt ? this._prompt.split("\n").length + 1 : 0;
         this.output.write(Array(lines + 1).join("\n"));
         this.output.moveCursor(0, -lines);
     }
 
     private deletePrompt() {
-        for (let i = 0, max = this.prompt.split("\n").length; i < max; ++i) {
+        for (let i = 0, max = this._prompt ? this._prompt.split("\n").length : 0; i < max; ++i) {
             this.output.clearLine(0);
             this.output.cursorTo(0);
             if (i + 1 < max)

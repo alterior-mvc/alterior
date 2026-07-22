@@ -6,7 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-//import {DOCUMENT, ɵparseCookieValue as parseCookieValue} from '@angular/common';
 import {Inject, Injectable, InjectionToken} from '@alterior/di';
 import {Observable} from 'rxjs';
 

@@ -1,14 +1,21 @@
 {
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "target": "ES2019",
-        "module": "CommonJS",
-        "moduleResolution": "node",
-        "esModuleInterop": true,
-        "sourceMap": true,
-        "declaration": true,
-        "outDir": "dist"
+        "rootDir": "./src",
+        "outDir": "./dist"
     },
     "include": [
         "./src/**/*.ts"
-    ]
+    ],
+    "typedocOptions": {
+		"out": "../../docs/terminal",
+		"excludeExternals": true,
+		"excludePrivate": true,
+		"externalPattern": "**/node_modules/**",
+		"exclude": "**/node_modules/**,**/dist*/**,**/example/**,**/*.test.ts",
+		"categoryOrder": [
+		  "Entrypoint",
+		  "*"
+		]
+	}
 }

@@ -40,13 +40,14 @@ export type StyleShortcuts = {
     [P in keyof typeof STYLE_CODES as `$${P}`]: (...contents: (StyledString | string | number)[]) => StyledString;
 }
 
-export type Styler = BoundStyler & StyleShortcuts;
+export type Styler = ((style: Style, ...contents: (StyledString | string | number)[]) => StyledString) 
+    & StyleShortcuts;
 
-export type Style = keyof typeof STYLE_CODES;
-export const startStyle = (key: keyof typeof STYLE_CODES) => styleIndicator(key, 0);
-export const endStyle = (key: keyof typeof STYLE_CODES) => styleIndicator(key, 1);
+export type Style = (keyof typeof STYLE_CODES) | undefined;
+export const startStyle = (key?: keyof typeof STYLE_CODES) => styleIndicator(key, 0);
+export const endStyle = (key?: keyof typeof STYLE_CODES) => styleIndicator(key, 1);
 
-export function styleIndicator(key: keyof typeof STYLE_CODES, index: number) {
+export function styleIndicator(key: Style, index: number) {
     if (key === undefined)
         return '';
     if (!(key in STYLE_CODES))
@@ -74,11 +75,11 @@ export class StyledString {
     }
 }
 
-let _style = (style: Style, ...contents: (string | number | StyledString)[]): Readonly<StyledString> => {
+let _style = <Styler>((style: Style, ...contents: (string | number | StyledString)[]): Readonly<StyledString> => {
     return new StyledString(style, contents);
-}
+});
 
-for (let key of <Style[]>Object.keys(STYLE_CODES))
+for (let key of <Exclude<Style, undefined>[]>Object.keys(STYLE_CODES))
     _style[`$${key}`] = (...contents: (string | number | StyledString)[]) => new StyledString(key, contents);
 
 export const style = <Styler>_style;

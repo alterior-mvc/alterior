@@ -10,7 +10,6 @@ import {expect} from 'chai';
 
 import {Injectable, Module, Injector, Type} from '@alterior/di';
 
-//import {TestBed} from '@angular/core/testing';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Application} from '@alterior/runtime';

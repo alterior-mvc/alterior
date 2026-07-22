@@ -5,6 +5,7 @@
 		"sourceMap": true,
         "strict": true,
 		"declarationMap": true,
+        "rootDir": "./src",
 		"outDir": "./dist",
 		"module": "node16",
 		"moduleResolution": "node16",
@@ -16,9 +17,9 @@
 			"es2022",
 			"dom"
 		],
+        "types": [ "*" ],
 		"declaration": true,
-		"emitDecoratorMetadata": true,
-		"downlevelIteration": true
+		"emitDecoratorMetadata": true
 	},
 	"exclude": [
 		"node_modules",

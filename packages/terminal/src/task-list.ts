@@ -36,7 +36,7 @@ export class CLITaskList {
         }
     }
 
-    private timer;
+    private timer?: NodeJS.Timeout;
     private renderedLineCount = 0;
     readonly spinner = new CLITaskStatusWidget();
     private globalTask = new CLITask('Global Task');
@@ -112,9 +112,9 @@ export class CLITaskList {
 
     idle = false;
     private idleTimeout: any;
-    beforeCpu: NodeJS.CpuUsage;
-    cpu: NodeJS.CpuUsage;
-    ram: NodeJS.MemoryUsage;
+    beforeCpu?: NodeJS.CpuUsage;
+    cpu?: NodeJS.CpuUsage;
+    ram?: NodeJS.MemoryUsage;
 
     lastTimestamp: bigint = BigInt(0);
     secondTicks = 1_000_000;
@@ -225,7 +225,7 @@ export class CLITaskList {
 }
 
 class LineTracker {
-    constructor(private _maxLines: number) {
+    constructor(private _maxLines?: number | undefined) {
     }
 
     static unbounded = new LineTracker(undefined);
@@ -262,7 +262,7 @@ export class CLITask {
     children: CLITask[] = [];
     title: string;
     status: CLITaskStatus = 'running';
-    finishedAt: number;
+    finishedAt: number | undefined;
     startedAt = Date.now();
 
     charms: CLITaskCharm[] = [];
@@ -286,7 +286,7 @@ export class CLITask {
 
     // Computed Properties
 
-    get depth() {
+    get depth(): number {
         return (this.parent?.depth ?? -1) + 1;
     }
 
@@ -299,7 +299,7 @@ export class CLITask {
     get isFinishedAndStale(): boolean {
         let staleTime = this.containsLogsOrError ? this.staleWithErrorsAndLogAfter : this.staleAfter;
         let freshness = Math.min(staleTime);
-        return this.status === 'finished' && this.finishedAt + freshness < Date.now();
+        return this.status === 'finished' && this.finishedAt! + freshness < Date.now();
     }
 
     get containsLogsOrError(): boolean {
@@ -320,15 +320,15 @@ export class CLITask {
         return parents;
     }
 
-    get chain() {
+    get chain(): CLITask[] {
         return [...this.parents, this];
     }
 
     // Events
 
-    onUpdated: (task: CLITask) => void;
-    onDeleted: (task: CLITask) => void;
-    onLog: (task: CLITask, message: string) => void;
+    onUpdated: ((task: CLITask) => void) | undefined;
+    onDeleted: ((task: CLITask) => void) | undefined;
+    onLog: ((task: CLITask, message: string) => void) | undefined;
 
     // Lifecycle API
 
