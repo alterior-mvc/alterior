@@ -1,5 +1,12 @@
 # ⏭ vNext
 
+# v3.16.4
+
+- `@/functions`, `@/platform-nodejs`, `@/runtime`, `@/tasks`, `@/web-server`
+    * Dependency on `zone.js` has been broadened to allow 0.14.x, 0.15.x or 0.16.x as a peer dependency on all packages
+      which depend on it in order to allow broader compatibility with Angular and workspaces that contain Angular projects,
+      which often have a more restrictive set of allowed Zone.js versions than Alterior does in practice.
+
 # v3.16.3
 
 - `@/web-server`

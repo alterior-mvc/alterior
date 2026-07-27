@@ -40,7 +40,7 @@
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.13",
-    "zone.js": "^0.14.3"
+    "zone.js": "^0.14.3 || ^0.15.0 || ^0.16.0"
   },
   "gitHead": "5c18a5ddde7719d8f439fcf22804280fb56cf255"
 }

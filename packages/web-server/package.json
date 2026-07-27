@@ -60,7 +60,7 @@
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.12",
-    "zone.js": "^0.14.3"
+    "zone.js": "^0.14.3 || ^0.15.0 || ^0.16.0"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.5",
